@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace wsep192
+namespace ServiceLayer
 {
     class Program
     {

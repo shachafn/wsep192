@@ -143,7 +143,39 @@ namespace DomainLayer
             this.userInfo = user.userInfo;
             this.shopsOwned = user.shopsOwned;
         }
+        /// <summary>
+        /// returns wether or not the use purchased a specific product 
+        /// </summary>
+        /// <param name="shop"></param>
+        /// <returns>returns trueif the user has purschased once in this Store , false otherwise</returns>
+        public bool hasPurchasedInShop(Shop shop)
+        {
+            foreach(ShoppingBag  bag in purchaseHistory)
+            {
+                if(bag.hasShop(shop))
+                {
+                    return true;
+                }
+            }
+            return false;
+        }
 
+        /// <summary>
+        /// returns wether or not the use purchased a specific product 
+        /// </summary>
+        /// <param name="product"></param>
+        /// <returns>true if purchased, flase othewrise</returns>
+        public bool hasPurchasedProduct(Product product)
+        {
+            foreach (ShoppingBag bag in purchaseHistory)
+            {
+                if (bag.hasProduct(product))
+                {
+                    return true;
+                }
+            }
+            return false;
+        }
         private void saveUserChanges()
         {
             User savedUser = users[username];

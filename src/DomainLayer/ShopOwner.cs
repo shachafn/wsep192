@@ -5,7 +5,7 @@ namespace DomainLayer
 {
     public class ShopOwner
     {
-        private ownersDictionary shopOwners;
+        private static ownersDictionary shopOwners;
         private User owner; // may be  a list of owners is needed
         private Shop shop;
         private List<ShopOwner> ownersAssigned;

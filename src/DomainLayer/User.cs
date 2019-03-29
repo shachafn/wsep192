@@ -40,7 +40,7 @@ namespace DomainLayer
             isAdmin = false;
         }
 
-        internal bool isLogged()
+        internal bool IsLogged()
         {
             return logged;
         }
@@ -52,16 +52,16 @@ namespace DomainLayer
         /// <param name="password"></param>
         /// <returns>true if the login was sucseesful, false if one or more of the parameters were wrong 
         /// or if the user is already connected</returns>
-        bool login(string username, string password)
+        bool Login(string username, string password)
         {
             // check if the user exist and the password is correct 
-            if (!users.ContainsKey(username) || users[username].checkPass(password) || users[username].logged)
+            if (!users.ContainsKey(username) || users[username].CheckPass(password) || users[username].logged)
             {
                 return false;
             }
 
             logged = true;
-            copyUserData(users[username]);// used to recive all of the data saved on the user
+            CopyUserData(users[username]);// used to recive all of the data saved on the user
             return true;
         }
 
@@ -69,13 +69,13 @@ namespace DomainLayer
          *<summary>this method logs the user out , and saves it's changed properties</summary> 
          * <returns>false if the user is not logged in , true otherwise</returns> 
          */
-        bool logout()
+        bool Logout()
         {
             if (!logged)
             {
                 return false;
             }
-            saveUserChanges();
+            SaveUserChanges();
             return true;
         }
 
@@ -103,7 +103,7 @@ namespace DomainLayer
         /// <param name="searchString"></param>
         /// <param name="filters"> an optional argument , the results of the search will be filtered using all of these</param>
         /// <returns>returns the list of products found (an empty list if found none)</returns>
-        List<Product> search(string searchString, List<ProductFilter> filters = null)
+        List<Product> Search(string searchString, List<ProductFilter> filters = null)
         {
             List<Product> productsFound = new List<Product>();
             foreach (Shop shop in shops)
@@ -121,12 +121,12 @@ namespace DomainLayer
 
         }
 
-        private bool checkPass(string password)
+        private bool CheckPass(string password)
         {
             return this.passHash.Equals(GetStringSha256Hash(password));
         }
 
-        internal void removeShop(Shop shop)
+        internal void RemoveShop(Shop shop)
         {
             this.shopsOwned.Remove(shop);
         }
@@ -134,7 +134,7 @@ namespace DomainLayer
         /*
          * this method should copy all the fields from @user to this instance.
          */
-        private void copyUserData(User user)
+        private void CopyUserData(User user)
         {
             this.username = user.username;
             this.passHash = user.passHash;
@@ -148,7 +148,7 @@ namespace DomainLayer
         /// </summary>
         /// <param name="shop"></param>
         /// <returns>returns trueif the user has purschased once in this Store , false otherwise</returns>
-        public bool hasPurchasedInShop(Shop shop)
+        public bool HasPurchasedInShop(Shop shop)
         {
             foreach(ShoppingBag  bag in purchaseHistory)
             {
@@ -165,7 +165,7 @@ namespace DomainLayer
         /// </summary>
         /// <param name="product"></param>
         /// <returns>true if purchased, flase othewrise</returns>
-        public bool hasPurchasedProduct(Product product)
+        public bool HasPurchasedProduct(Product product)
         {
             foreach (ShoppingBag bag in purchaseHistory)
             {
@@ -176,7 +176,7 @@ namespace DomainLayer
             }
             return false;
         }
-        private void saveUserChanges()
+        private void SaveUserChanges()
         {
             User savedUser = users[username];
             savedUser.currentBag = this.currentBag;

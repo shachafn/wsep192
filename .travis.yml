@@ -1,6 +1,7 @@
 language: csharp
 solution: "wsep192.sln"
-install:
-- travis_retry dotnet restore -source "https://www.nuget.org/api/v2" wsep192.sln
+mono: none
+dotnet: 2.0.0
 script:
-- dotnet build wsep192.sln
+  - dotnet restore
+  - dotnet build

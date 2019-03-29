@@ -44,6 +44,12 @@ namespace DomainLayer
             return null;
         }
 
+        /// <summary>
+        /// assigns an manager with specific actions allowed to him
+        /// </summary>
+        /// <param name="newManager">the user to assign as manager</param>
+        /// <param name="privileges">the actions allowed to this manager</param>
+        /// <returns>false if the manager couldn't be assigned ' true otherwise</returns>
         public bool addManager(User newManager,ManagingPrivileges privileges)
         {
             if (!this.privileges.hasPrivilege("addManager"))
@@ -58,6 +64,11 @@ namespace DomainLayer
             return true;
         }
 
+        /// <summary>
+        /// assigns a user as a shop owner , with all the actions available to him
+        /// </summary>
+        /// <param name="newManager">the user to assign</param>
+        /// <returns>false if the manager couldn't be assigned ' true otherwise</returns>
         public bool addOwner(User newManager)
         {
             if (!this.privileges.hasPrivilege("addOwner"))
@@ -88,6 +99,8 @@ namespace DomainLayer
         /// <summary>
         /// removes a manger or a owner you assigned
         /// </summary>
+        /// <param name="toRemove"> the Shopowner you want to remove</param>
+        /// <returns>a boolean value according to the wether this <"toRemove"> is assigned by this owner, and is not already removed </returns>
         public bool removeOwner(ShopOwner toRemove)
         {
             if (!this.privileges.hasPrivilege("addOwner")|| !ownersAssigned.Contains(toRemove))
@@ -119,8 +132,16 @@ namespace DomainLayer
             }
         }
 
+        /// <summary>
+        /// closes the shop owned by this shop owner 
+        /// removing all owners , and also this shop owner . and invoking shop.close
+        /// </summary>
         public void closeShop()
         {
+            if (!this.privileges.hasPrivilege("addOwner"))
+            {
+
+            }
             foreach(ShopOwner owner in ownersAssigned)
             {
                 removeOwner(owner);

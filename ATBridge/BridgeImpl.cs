@@ -5,124 +5,121 @@ using DomainLayer;
 
 namespace ATBridge
 {
-    class ProxyBridge : IBridge
+    class BridgeImpl : IBridge
     {
-        private IBridge _real;
-
-        public ProxyBridge()
-        {
-            _real = null;
-        }
-
-        public void SetRealBridge(IBridge impl)
-        {
-            if (_real == null)
-                _real = impl;
-        }
-
         public bool AddProduct()
         {
-            return false;
+            throw new NotImplementedException();
         }
 
         public bool AddProduct(ShopProduct product)
         {
-            return false;
+            throw new NotImplementedException();
         }
 
         public bool AddReview(User user, string text)
         {
-            return false;
+            throw new NotImplementedException();
         }
 
         public bool EditProduct(Product product, double price, int quantity)
         {
-            return false;
+            throw new NotImplementedException();
         }
 
         public void EditProfile()
         {
+            throw new NotImplementedException();
         }
 
         public void GetAllProducts()
         {
+            throw new NotImplementedException();
         }
 
         public void GetPurchaseHistory()
         {
+            throw new NotImplementedException();
         }
 
         public bool Login(string username, string password)
         {
-            return false;
+            throw new NotImplementedException();
         }
 
         public bool Logout()
         {
-            return false;
+            throw new NotImplementedException();
         }
 
         public bool OpenShop()
         {
-            return false;
+            throw new NotImplementedException();
         }
 
         public void RateProduct(User user, int rate)
         {
+            throw new NotImplementedException();
         }
 
         public void RateStore(User user, int rate)
         {
-
+            throw new NotImplementedException();
         }
 
         public User Register(string username, string password)
         {
-            return null;
+            throw new NotImplementedException();
         }
 
         public bool RemoveProduct()
         {
-            return false;
+            throw new NotImplementedException();
         }
 
         public bool RemoveProduct(ShopProduct product)
         {
-            return false;
+            throw new NotImplementedException();
         }
 
         public void Report()
         {
+            throw new NotImplementedException();
         }
 
         public List<Product> Search(string searchString, List<ProductFilter> filters = null)
         {
-            return null;
+            throw new NotImplementedException();
         }
 
         public Product SearchProduct(string searchString)
         {
-            return null;
+            throw new NotImplementedException();
         }
 
         public void SendMessage(User user, string message)
         {
+            throw new NotImplementedException();
         }
 
         public void ShutdownShop(Shop shop)
         {
+            throw new NotImplementedException();
         }
 
         public void ViewHistory(User user)
         {
+            throw new NotImplementedException();
         }
 
         public void ViewHistory(Shop shop)
         {
+            throw new NotImplementedException();
         }
 
         public void WatchHistory()
         {
+            throw new NotImplementedException();
         }
     }
 }

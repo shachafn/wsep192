@@ -11,7 +11,7 @@ namespace ATBridge
         bool Logout();
         User Register(string username, string password);
         List<Product> Search(string searchString, List<ProductFilter> filters = null);
-        void OpenShop();
+        bool OpenShop();
         void WatchHistory();
         void EditProfile();
 

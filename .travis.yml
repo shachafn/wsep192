@@ -1,6 +1,6 @@
 language: csharp
-solution: solution-name.sln
-mono:
-  - latest
-  - 3.12.0
-  - 3.10.0
+solution: "wsep192.sln"
+install:
+- travis_retry nuget restore -source "https://www.nuget.org/api/v2" wsep192.sln
+script:
+- xbuild wsep192.sln

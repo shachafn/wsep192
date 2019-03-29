@@ -5,8 +5,7 @@ namespace DomainLayer
 {
     public class ShopOwner
     {
-        public Dictionary<string, List<ShopOwner>> shopOwners = new Dictionary<string, List<ShopOwner>>();// will hold all the current shopOwners
-
+        private ownersDictionary shopOwners;
         private User owner; // may be  a list of owners is needed
         private Shop shop;
         private List<ShopOwner> ownersAssigned;
@@ -29,12 +28,12 @@ namespace DomainLayer
         /// <returns> a relvant shopOwner if one exists , null otherwise</returns>
         public ShopOwner GetShopOwner(User user, Shop shop)
         {
-            bool exists = user.isLogged() && shopOwners.ContainsKey(user.username);
+            bool exists = user.isLogged() && shopOwners.hasUser(user.username);
             if(!exists)
             {
                 return null;
             }
-            foreach(ShopOwner shopOnwer in shopOwners[user.username])
+            foreach(ShopOwner shopOnwer in shopOwners.shopsByUsername(user.username))
             {
                 if(shopOnwer.shop.Equals(shop))
                 {
@@ -60,7 +59,7 @@ namespace DomainLayer
             ShopOwner newShopOwner = new ShopOwner(newManager,this.shop,true);
             newShopOwner.privileges = privileges;
             ownersAssigned.Add(newShopOwner);
-            ownersDictAdd(newManager.username,newShopOwner);
+            shopOwners.ownersDictAdd(newManager.username,newShopOwner);
             return true;
         }
 
@@ -78,22 +77,8 @@ namespace DomainLayer
             this.shop.addOwner(newManager);
             ShopOwner newShopOwner = new ShopOwner(newManager, this.shop, false);
             ownersAssigned.Add(newShopOwner);
-            ownersDictAdd(newManager.username, newShopOwner);
+            shopOwners.ownersDictAdd(newManager.username, newShopOwner);
             return true;
-        }
-
-        private void ownersDictAdd(string username,ShopOwner newshopOwner)
-        {
-            if(shopOwners.ContainsKey(username))
-            {
-                shopOwners[username].Add(newshopOwner);
-            }
-            else
-            {
-                List<ShopOwner> userShops =new List<ShopOwner>();
-                userShops.Add(newshopOwner);
-                shopOwners.Add(username, userShops);
-            }
         }
 
         /// <summary>
@@ -113,23 +98,10 @@ namespace DomainLayer
                 removeOwner(assigned);
             }
             ownersAssigned.Remove(toRemove);
-            ownersDictRemove(toRemove.owner.username, toRemove);
+            shopOwners.ownersDictRemove(toRemove.owner.username, toRemove);
             this.shop.removeOwner(toRemove.owner);
             toRemove.owner.removeShop(toRemove.shop);
             return true;
-        }
-
-        private void ownersDictRemove(string username, ShopOwner toRemove)
-        {
-            List<ShopOwner> ownedShops = shopOwners[username];
-            if(ownedShops.Count == 1)
-            {
-                shopOwners.Remove(username);
-            }
-            else
-            {
-                ownedShops.Remove(toRemove);
-            }
         }
 
         /// <summary>
@@ -148,7 +120,7 @@ namespace DomainLayer
             }
             this.shop.removeOwner(this.owner);
             this.shop.close();
-            ownersDictRemove(this.owner.username, this); // remove yourself from the list
+            shopOwners.ownersDictRemove(this.owner.username, this); // remove yourself from the list
             this.owner.removeShop(this.shop);
         }
         // Method that overrides the base class (System.Object) implementation.
@@ -196,6 +168,52 @@ namespace DomainLayer
             {
 
                 return !isManager || allowedActions.Contains(action);
+            }
+        }
+
+        private class ownersDictionary
+        {
+            private Dictionary<string, List<ShopOwner>> shopOwners = new Dictionary<string, List<ShopOwner>>();// will hold all the current shopOwners
+
+            public ownersDictionary()
+            {
+                shopOwners = new Dictionary<string, List<ShopOwner>>();
+            }
+
+            public void ownersDictRemove(string username, ShopOwner toRemove)
+            {
+                List<ShopOwner> ownedShops = shopOwners[username];
+                if (ownedShops.Count == 1)
+                {
+                    shopOwners.Remove(username);
+                }
+                else
+                {
+                    ownedShops.Remove(toRemove);
+                }
+            }
+
+            public void ownersDictAdd(string username, ShopOwner newshopOwner)
+            {
+                if (shopOwners.ContainsKey(username))
+                {
+                    shopOwners[username].Add(newshopOwner);
+                }
+                else
+                {
+                    List<ShopOwner> userShops = new List<ShopOwner>();
+                    userShops.Add(newshopOwner);
+                    shopOwners.Add(username, userShops);
+                }
+            }
+
+            public List<ShopOwner> shopsByUsername(string username)
+            {
+                return shopOwners[username];
+            }
+            public bool hasUser(string username)
+            {
+                return shopOwners.ContainsKey(username);
             }
         }
     }

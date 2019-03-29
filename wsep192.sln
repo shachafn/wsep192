@@ -16,7 +16,7 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "UnitTests", "UnitTests\Unit
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "IntegrationTests", "IntegrationTests\IntegrationTests.csproj", "{C2F54DEE-CE1D-4644-A73D-7EB1F109F5EB}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "AcceptanceBridge", "AcceptanceBridge\AcceptanceBridge.csproj", "{43257BCF-8A6A-46A2-B1AA-9808DDAA0E3B}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "AcceptanceTests", "AcceptanceBridge\AcceptanceTests.csproj", "{43257BCF-8A6A-46A2-B1AA-9808DDAA0E3B}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

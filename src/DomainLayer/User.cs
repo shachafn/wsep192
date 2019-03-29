@@ -26,6 +26,11 @@ namespace DomainLayer
             this.passHash = GetStringSha256Hash(password);
         }
 
+        internal List<ShoppingBag> getShoppingHistory()
+        {
+           return this.purchaseHistory;
+        }
+
         bool login(string username, string password)
         {
             // check if the user exist and the password is correct 

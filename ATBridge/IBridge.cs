@@ -20,13 +20,13 @@ namespace ATBridge
         bool RemoveProduct();
         void GetAllProducts();
 
-        //shop
+        // Shop
         void RateStore(User user, int rate);
         bool AddProduct(ShopProduct product);
         bool RemoveProduct(ShopProduct product);
         void SendMessage(User user, string message);
         bool EditProduct(Product product, double price, int quantity);
-        void GetPurchaseHistory();
+        List<ShoppingBag> GetPurchaseHistory();
         Product SearchProduct(string searchString);
         bool AddReview(User user, string text);
         void RateProduct(User user, int rate);

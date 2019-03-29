@@ -48,8 +48,9 @@ namespace ATBridge
         {
         }
 
-        public void GetPurchaseHistory()
+        public List<ShoppingBag> GetPurchaseHistory()
         {
+            return null;
         }
 
         public bool Login(string username, string password)

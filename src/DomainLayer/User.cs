@@ -126,6 +126,11 @@ namespace DomainLayer
             return this.passHash.Equals(GetStringSha256Hash(password));
         }
 
+        internal void removeShop(Shop shop)
+        {
+            this.shopsOwned.Remove(shop);
+        }
+
         /*
          * this method should copy all the fields from @user to this instance.
          */

@@ -19,7 +19,6 @@ namespace DomainLayer
             this.owner = owner;
             this.shop = shop;
             ownersAssigned = new List<ShopOwner>();
-            managersAssigned = new List<ShopOwner>();
             this.privileges = new ManagingPrivileges(manager);
         }
         /// <summary>
@@ -102,6 +101,8 @@ namespace DomainLayer
             }
             ownersAssigned.Remove(toRemove);
             ownersDictRemove(toRemove.owner.username, toRemove);
+            this.shop.removeOwner(toRemove.owner);
+            toRemove.owner.removeShop(toRemove.shop);
             return true;
         }
 
@@ -120,7 +121,14 @@ namespace DomainLayer
 
         public void closeShop()
         {
-
+            foreach(ShopOwner owner in ownersAssigned)
+            {
+                removeOwner(owner);
+            }
+            this.shop.removeOwner(this.owner);
+            this.shop.close();
+            ownersDictRemove(this.owner.username, this); // remove yourself from the list
+            this.owner.removeShop(this.shop);
         }
         // Method that overrides the base class (System.Object) implementation.
         public override string ToString()

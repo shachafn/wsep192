@@ -5,7 +5,7 @@ using System.Text;
 
 namespace ServiceLayer.Public_Interfaces
 {
-    interface IUserService
+    public interface IUserService
     {
         /// <summary>
         /// Registers a user using the registration info.

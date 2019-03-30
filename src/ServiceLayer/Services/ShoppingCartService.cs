@@ -4,7 +4,7 @@ using System.Text;
 
 namespace ServiceLayer.Services
 {
-    class ShoppingCartService
+    public class ShoppingCartService
     {
     }
 }

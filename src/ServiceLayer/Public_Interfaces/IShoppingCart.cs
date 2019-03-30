@@ -5,7 +5,7 @@ using System.Text;
 
 namespace ServiceLayer.Public_Interfaces
 {
-    interface IShoppingCartService
+    public interface IShoppingCartService
     {
         /// <summary>
         /// Adds the product to the shopping cart.

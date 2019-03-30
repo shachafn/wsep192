@@ -5,7 +5,7 @@ using System.Text;
 
 namespace ServiceLayer.Public_Interfaces
 {
-    interface IShopService
+    public interface IShopService
     {
         /// <summary>
         /// Adds the product to the shop.

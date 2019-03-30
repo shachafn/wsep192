@@ -6,6 +6,8 @@ namespace DomainLayer
 
     public class Shop
     {
+        public static Dictionary<Guid, Shop> _shops = new Dictionary<Guid, Shop>();
+
         private ShopOwner _owner;
         private List<Tuple<User, string>> _messages;
         private List<ShopProduct> _shopProducts;

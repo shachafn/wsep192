@@ -40,7 +40,7 @@ namespace DomainLayer
             isAdmin = false;
         }
 
-        internal bool IsLogged()
+        public bool IsLogged()
         {
             return logged;
         }
@@ -56,7 +56,7 @@ namespace DomainLayer
         /// <param name="password"></param>
         /// <returns>true if the login was sucseesful, false if one or more of the parameters were wrong 
         /// or if the user is already connected</returns>
-        public bool Login(string username, string password)
+         public bool Login(string username, string password)
         {
             // check if the user exist and the password is correct 
             if (!users.ContainsKey(username) || users[username].CheckPass(password) || users[username].logged)
@@ -73,7 +73,7 @@ namespace DomainLayer
          *<summary>this method logs the user out , and saves it's changed properties</summary> 
          * <returns>false if the user is not logged in , true otherwise</returns> 
          */
-        bool Logout()
+        public bool Logout()
         {
             if (!logged)
             {
@@ -89,11 +89,11 @@ namespace DomainLayer
         ///  the method creates a new user with this credentials and stores it in the users list
         /// </summary>
         /// <param name="username"></param>
-        /// <param name="password"></param>
+        /// <param name="password">a string for the password, should be at least 6 characters long</param>
         /// <returns> returns the created user or null otherwise</returns>
         public static User Register(string username, string password)
         {
-            if (users.ContainsKey(username))
+            if (users.ContainsKey(username) && password.Length > 5)
             {
                 return null;
             }
@@ -120,9 +120,15 @@ namespace DomainLayer
             }
             return productsFound;
         }
-        void openShop()
+        public bool openShop()
         {
-
+            if(!logged)
+            {
+                return false;
+            }
+            Shop shop = new Shop();
+            this.shopsOwned.Add(shop);
+            return true;
         }
 
         private bool CheckPass(string password)
@@ -204,8 +210,10 @@ namespace DomainLayer
         // Method that overrides the base class (System.Object) implementation.
         public override string ToString()
         {
-            return "";
+            return "User:\n username: "+this.username+"\n"+this.userInfo.ToString()+"\n"+"logged: "+this.logged
+                + "\ncurrent shopping bag:"+this.currentBag.ToString()+"\n is admin: "+this.isAdmin;
         }
+
     }
 }
 

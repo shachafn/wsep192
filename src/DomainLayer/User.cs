@@ -12,7 +12,7 @@ namespace DomainLayer
         public bool IsAdmin { get => isAdmin; private set => isAdmin = value; }
 
         private string _passHash;
-        private ShoppingBag _currentBag;
+        public ShoppingBag CurrentBag { get; set; }
         private List<ShoppingBag> _purchaseHistory;
         private UserInfo _userInfo;
         private List<Shop> _shopsOwned;
@@ -23,7 +23,7 @@ namespace DomainLayer
             _logged = false;
             Username = "";
             _passHash = "";
-            _currentBag = new ShoppingBag();
+            CurrentBag = new ShoppingBag();
             _purchaseHistory = new List<ShoppingBag>();
             _userInfo = new UserInfo();
             _shopsOwned = new List<Shop>();
@@ -35,7 +35,7 @@ namespace DomainLayer
             Username = username;
             _passHash = GetStringSha256Hash(password);
             _logged = false;
-            _currentBag = new ShoppingBag();
+            CurrentBag = new ShoppingBag();
             _purchaseHistory = new List<ShoppingBag>();
             _userInfo = new UserInfo();
             _shopsOwned = new List<Shop>();
@@ -152,7 +152,7 @@ namespace DomainLayer
         {
             Username = user.Username;
             _passHash = user._passHash;
-            _currentBag = user._currentBag;
+            CurrentBag = user.CurrentBag;
             _purchaseHistory = user._purchaseHistory;
             _userInfo = user._userInfo;
             _shopsOwned = user._shopsOwned;
@@ -193,7 +193,7 @@ namespace DomainLayer
         private void SaveUserChanges()
         {
             User savedUser = users[Username];
-            savedUser._currentBag = _currentBag;
+            savedUser.CurrentBag = CurrentBag;
             savedUser._purchaseHistory = _purchaseHistory;
             savedUser._userInfo = _userInfo;
             savedUser._shopsOwned = _shopsOwned;
@@ -214,8 +214,8 @@ namespace DomainLayer
         // Method that overrides the base class (System.Object) implementation.
         public override string ToString()
         {
-            return "User:\n username: "+this.Username+"\n"+this._userInfo.ToString()+"\n"+"logged: "+this._logged
-                + "\ncurrent shopping bag:"+this._currentBag.ToString()+"\n is admin: "+this.IsAdmin;
+            return "User:\n username: "+Username+"\n"+this._userInfo.ToString()+"\n"+"logged: "+_logged
+                + "\ncurrent shopping bag:"+CurrentBag.ToString()+"\n is admin: "+IsAdmin;
         }
 
         public void PurchaseBag() { }

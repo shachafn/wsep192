@@ -53,13 +53,13 @@ namespace DomainLayer
         }
         public void RemoveProduct(Guid productGuid)
         {
-            var product = _shopProducts.FirstOrDefault(prod => prod.Product.Guid.Equals(productGuid));
+            var product = _shopProducts.FirstOrDefault(prod => prod.Product.ProductGuid.Equals(productGuid));
             if (product != null)
                 _shopProducts.Remove(product);
         }
         public void EditProduct(Guid productGuid, int newQuantity)
         {
-            var product = _shopProducts.FirstOrDefault(prod => prod.Product.Guid.Equals(productGuid));
+            var product = _shopProducts.FirstOrDefault(prod => prod.Product.ProductGuid.Equals(productGuid));
             product.Quantity = newQuantity;
         }
         public bool HasProduct(Product p)

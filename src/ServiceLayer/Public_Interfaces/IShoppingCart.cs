@@ -41,6 +41,6 @@ namespace ServiceLayer.Public_Interfaces
         /// <param name="productGuid"></param>
         /// <param name="newAmount"></param>
         /// <returns>True if removed successfully. False otherwise.</returns>
-        bool ChangePurchasedProductAmount(string username, Guid shopOfCartGuid, Guid productGuid, int newAmount)
+        bool ChangePurchasedProductAmount(string username, Guid shopOfCartGuid, Guid productGuid, int newAmount);
     }
 }

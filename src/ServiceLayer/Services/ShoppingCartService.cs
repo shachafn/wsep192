@@ -13,11 +13,11 @@ namespace ServiceLayer.Services
         {
             var user = User.GetUserByUsername(username);
             if (user == null) return false;
-            var cart = user.currentBag.Carts.FirstOrDefault(c => c.Shop.Guid.Equals(shopOfCartGuid));
+            var cart = user.CurrentBag.Carts.FirstOrDefault(c => c.Shop.ShopGuid.Equals(shopOfCartGuid));
             if (cart == null) return false;
             var shop = Shop.GetShopByGuid(shopOfCartGuid);
             if (shop == null) return false;
-            var product = shop.ShopProducts.FirstOrDefault(prod => prod.Product.Guid.Equals(productGuid));
+            var product = shop.ShopProducts.FirstOrDefault(prod => prod.Product.ProductGuid.Equals(productGuid));
             if (product == null) return false;
 
             cart.AddProduct(product);
@@ -35,7 +35,7 @@ namespace ServiceLayer.Services
         {
             var output = new List<Guid>();
             var cart = GetUserShoppingCartOfByShopGuid(username, shopOfCartGuid);
-            return cart.ShopProducts.Select(prod => prod.Product.Guid);
+            return cart.ShopProducts.Select(prod => prod.Product.ProductGuid);
         }
 
         public bool RemoveProduct(Guid productGuid, Guid shopOfCartGuid, string username)
@@ -50,7 +50,7 @@ namespace ServiceLayer.Services
         {
             var user = User.GetUserByUsername(username);
             if (user == null) return null;
-            var cart = user.currentBag.Carts.FirstOrDefault(c => c.Shop.Guid.Equals(shopOfCartGuid));
+            var cart = user.CurrentBag.Carts.FirstOrDefault(c => c.Shop.ShopGuid.Equals(shopOfCartGuid));
             if (cart == null) return null;
             return cart;
         }

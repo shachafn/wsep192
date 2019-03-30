@@ -24,7 +24,8 @@ namespace Tests
         {
             _proxy = new ProxyBridge();
             _proxy.SetRealBridge(new BridgeImpl());
-            _aUser = _proxy.Register("groisman", "150298");
+             _proxy.Register("groisman", "150298");
+            _aUser = new User("groisman", "150298");
             _gusetUser = new User();
             _IPhone = new Product("IPhone", "Cellphones");
             _Carrot = new Product("Carrot", "Vegtables");
@@ -153,6 +154,8 @@ namespace Tests
         public void PurchaseAT1()
         {
             //TODO: Complete when I'll know how to purchase a product.
+            Setup();
+
             Assert.Pass();
         }
 

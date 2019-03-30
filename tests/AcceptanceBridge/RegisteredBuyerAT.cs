@@ -23,7 +23,7 @@ namespace Tests
         public void LogoutAT()
         {
             SetUp();
-            Assert.AreEqual(true, _proxy.Logout());
+            Assert.AreEqual(true, _proxy.Logout("groisman"));
         }
 
         //GR 3.2 - Registered user can open new store.
@@ -31,7 +31,7 @@ namespace Tests
         public void CreationOfNewStoreByRegisteredUserAT()
         {
             SetUp();
-            Assert.AreEqual(false,_proxy.OpenShop(_aUser));
+            Assert.AreEqual(false,_proxy.OpenShop("groisman"));
             //Assume proxyBridge will operate open shop with user.
         }
 

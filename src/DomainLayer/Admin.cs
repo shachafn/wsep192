@@ -5,50 +5,47 @@ namespace DomainLayer
 {
     public class Admin
     {
-        User admin;
-        List<UserReport> reports;
+        private User _admin;
+        private List<UserReport> _reports;
+
         public Admin(User admin)
         {
-            if(!admin.IsAdmin)
+            if (!admin.IsAdmin)
             {
                 throw new System.Exception("the user is not an admin");
             }
-            this.admin = admin;
-            reports = new List<UserReport>();
+            this._admin = admin;
+            _reports = new List<UserReport>();
         }
 
-
-       
-
-        public void report(User reporter,string report)
+        public void Report(User reporter, string report)
         {
-            if(reporter==null || report.Equals(""))
+            if (reporter != null && !report.Equals(""))
             {
-                return;
+                _reports.Add(new UserReport(reporter, report));
             }
-            reports.Add(new UserReport(reporter, report));
         }
 
-        public bool removeUser(string username)//depends on the user component
+        public bool RemoveUser(string username)//depends on the user component
         {
-            if(User.users.ContainsKey(username))
+            if (!User.users.ContainsKey(username))
             {
                 return false;
             }
             User.users.Remove(username);
             return true;
         }
-        public void viewShopHistory()//depends on shop implementation
+        public void ViewShopHistory()//depends on shop implementation
         {
 
         }
 
-        public List<ShoppingBag> viewUserHistory(User user)
+        public List<ShoppingBag> ViewUserHistory(User user)
         {
             return user.getShoppingHistory();
         }
 
-        public void closeShopPermanently(Shop shop)
+        public void CloseShopPermanently(Shop shop)
         {
             shop.Adminclose();
             //curently now way how to inform users on the changes
@@ -56,7 +53,7 @@ namespace DomainLayer
         // Method that overrides the base class (System.Object) implementation.
         public override string ToString()
         {
-            return admin.ToString();
+            return _admin.ToString();
         }
 
         private class UserReport
@@ -70,7 +67,7 @@ namespace DomainLayer
                 this.ReportText = reportText;
             }
 
-            
+
         }
     }
 

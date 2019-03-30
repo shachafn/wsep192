@@ -25,11 +25,8 @@ namespace DomainLayer
 
         public Shop()
         {
-
             _guid = Guid.NewGuid();
-
             _owners = new List<User>();
-
             _messages = new List<Tuple<User, string>>();
             _shopProducts = new List<ShopProduct>();
             _purchaseHistory = new List<Tuple<User, ShoppingCart>>();
@@ -150,7 +147,7 @@ namespace DomainLayer
 
         internal void removeOwner(User owner)
         {
-           _owners.Remove(owner);
+            _owners.Remove(owner);
         }
     }
 }

@@ -2,10 +2,11 @@
 
   <PropertyGroup>
     <TargetFramework>netcoreapp2.1</TargetFramework>
+    <AssemblyName>ATBridge</AssemblyName>
   </PropertyGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\..\src\DomainLayer\DomainLayer.csproj" />
+    <ProjectReference Include="..\..\src\ServiceLayer\ServiceLayer.csproj" />
   </ItemGroup>
 
 </Project>

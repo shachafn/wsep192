@@ -11,7 +11,9 @@ namespace DomainLayer
 
         public static Shop GetShopByGuid(Guid guid) => _shops[guid];
 
+        public Guid Guid { get => _guid; set => _guid = value; }
         private Guid _guid;
+
         private ShopOwner _owner;
 
         private List<User> _owners;

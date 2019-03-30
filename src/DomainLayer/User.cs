@@ -11,12 +11,13 @@ namespace DomainLayer
         public string Username { get => Username; private set => Username=value; }
         public bool IsAdmin { get => isAdmin; private set => isAdmin = value; }
 
+        public ShoppingBag currentBag;
+
         private string passHash;
-        private ShoppingBag currentBag;
         private List<ShoppingBag> purchaseHistory;
         private UserInfo userInfo;
         private List<Shop> shopsOwned;
-        private bool isAdmin; 
+        private bool isAdmin;
         // Constructor that takes no arguments:
         public User()
         {

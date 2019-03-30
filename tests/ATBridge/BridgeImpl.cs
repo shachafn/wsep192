@@ -2,124 +2,110 @@
 using System.Collections.Generic;
 using System.Text;
 using DomainLayer;
+using ServiceLayer.Services;
 
 namespace ATBridge
 {
     public class BridgeImpl : IBridge
     {
-        public bool AddProduct()
+        private readonly UserService _userService;
+        private readonly ShopService _shopService;
+        private readonly ShoppingCartService _shoppingCartService;
+        private readonly AdminService _adminService;
+        private string _errorStr;
+
+        public BridgeImpl()
         {
-            throw new NotImplementedException();
+            _userService = new UserService();
+            _shopService = new ShopService();
+            _shoppingCartService = new ShoppingCartService();
+            _adminService = new AdminService();
+            _errorStr = "";
         }
 
-        public bool AddProduct(ShopProduct product)
+        public Guid AddProductToShop(string name, string category, double price, int quantity, Guid shopGuid)
         {
-            throw new NotImplementedException();
+            return _shopService.AddProductToShop(name, category, price, quantity,shopGuid);
         }
 
-        public bool AddReview(User user, string text)
+        public bool AddProductToShoppingCart(Guid productGuid, Guid shopOfCartGuid, string username)
         {
-            throw new NotImplementedException();
+            return _shoppingCartService.AddProductToShoppingCart(productGuid, productGuid, username);
         }
 
-        public bool EditProduct(Product product, double price, int quantity)
+        public bool AddShopManager(Guid shopGuid, string ownerUsername, string managerToAddUsername, List<string> priviliges)
         {
-            throw new NotImplementedException();
+            return _shopService.AddShopManager(shopGuid, ownerUsername, managerToAddUsername, priviliges);
         }
 
-        public void EditProfile()
+        public bool AddShopOwner(Guid shopGuid, string ownerUsername, string managerToAddUsername)
         {
-            throw new NotImplementedException();
+            return _shopService.AddShopOwner(shopGuid, ownerUsername, managerToAddUsername);
         }
 
-        public void GetAllProducts()
+        public bool CascadeRemoveShopOwner(Guid shopGuid, string ownerUsername)
         {
-            throw new NotImplementedException();
+            return _shopService.CascadeRemoveShopOwner(shopGuid, ownerUsername);
         }
 
-        public List<ShoppingBag> GetPurchaseHistory()
+        public bool ChangePurchasedProductAmount(string username, Guid shopOfCartGuid, Guid productGuid, int newAmount)
         {
-            throw new NotImplementedException();
+            return _shoppingCartService.ChangePurchasedProductAmount(username, shopOfCartGuid, productGuid, newAmount);
+        }
+
+        public bool EditProduct(Guid shopGuid, Guid productGuid, double newPrice, int newQuantity)
+        {
+            return _shopService.EditProduct(shopGuid, productGuid, newPrice, newQuantity);
+        }
+
+        public IEnumerable<Guid> GetAllProducts(string username, Guid shopOfCartGuid)
+        {
+            return _shoppingCartService.GetAllProducts(username, shopOfCartGuid);
         }
 
         public bool Login(string username, string password)
         {
-            throw new NotImplementedException();
+            return _userService.Login(username, password);
         }
 
-        public bool Logout()
+        public bool Logout(string username)
         {
-            throw new NotImplementedException();
+            return _userService.Logout(username);
         }
 
-        public bool OpenShop()
+        public Guid OpenShop(string username)
         {
-            throw new NotImplementedException();
+            return _userService.OpenShop(username, out _errorStr);
         }
 
-        public void RateProduct(User user, int rate)
+        public bool PurchaseBag(string username)
         {
-            throw new NotImplementedException();
-        }
-
-        public void RateStore(User user, int rate)
-        {
-            throw new NotImplementedException();
+            return _userService.PurchaseBag(username);
         }
 
         public User Register(string username, string password)
         {
-            throw new NotImplementedException();
+            return _userService.Register(username, password, out _errorStr);
         }
 
-        public bool RemoveProduct()
+        public bool RemoveProduct(Guid productGuid, Guid shopOfCartGuid, string username)
         {
-            throw new NotImplementedException();
+            return _shoppingCartService.RemoveProduct(productGuid, shopOfCartGuid, username);
         }
 
-        public bool RemoveProduct(ShopProduct product)
+        public bool RemoveProductFromShop(Guid productGuid, Guid shopGuid)
         {
-            throw new NotImplementedException();
+            return _shopService.RemoveProductFromShop(productGuid, shopGuid);
         }
 
-        public void Report()
+        public bool RemoveShopManager(Guid shopGuid, string ownerUsername)
         {
-            throw new NotImplementedException();
+            return _shopService.RemoveShopManager(shopGuid, ownerUsername);
         }
 
-        public List<Product> Search(string searchString, List<ProductFilter> filters = null)
+        public IEnumerable<Product> SearchProduct(Guid shopGuid, string productName)
         {
-            throw new NotImplementedException();
-        }
-
-        public Product SearchProduct(string searchString)
-        {
-            throw new NotImplementedException();
-        }
-
-        public void SendMessage(User user, string message)
-        {
-            throw new NotImplementedException();
-        }
-
-        public void ShutdownShop(Shop shop)
-        {
-            throw new NotImplementedException();
-        }
-
-        public List<ShoppingBag> ViewHistory(User user)
-        {
-            throw new NotImplementedException();
-        }
-
-        public void ViewHistory(Shop shop)
-        {
-            throw new NotImplementedException();
-        }
-
-        public void WatchHistory()
-        {
-            throw new NotImplementedException();
+            return _shopService.SearchProduct(shopGuid, productName);
         }
     }
 }

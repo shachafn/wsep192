@@ -5,7 +5,7 @@ namespace DomainLayer
 {
     public class ShopOwner
     {
-        private static OwnersDictionary shopOwners;
+        private static OwnersDictionary shopOwners = new OwnersDictionary();
         private User owner; // may be  a list of owners is needed
         private Shop shop;
         private List<ShopOwner> ownersAssigned;
@@ -19,6 +19,7 @@ namespace DomainLayer
             this.shop = shop;
             ownersAssigned = new List<ShopOwner>();
             this.privileges = new ManagingPrivileges(manager);
+            this.shop.AddOwner(owner);
         }
         /// <summary>
         /// get a shopOwner instance from the current shopOwners in the system
@@ -26,14 +27,14 @@ namespace DomainLayer
         /// <param name="user"></param>
         /// <param name="shop"></param>
         /// <returns> a relvant shopOwner if one exists , null otherwise</returns>
-        public ShopOwner GetShopOwner(User user, Shop shop)
+        public static ShopOwner GetShopOwner(User user, Shop shop)
         {
-            bool exists = user.IsLogged() && shopOwners.hasUser(user.username);
+            bool exists = user.IsLogged() && shopOwners.HasUser(user.Username);
             if(!exists)
             {
                 return null;
             }
-            foreach(ShopOwner shopOnwer in shopOwners.ShopsByUsername(user.username))
+            foreach(ShopOwner shopOnwer in shopOwners.ShopsByUsername(user.Username))
             {
                 if(shopOnwer.shop.Equals(shop))
                 {
@@ -55,11 +56,12 @@ namespace DomainLayer
             {
                 return false;
             }
-            this.shop.addOwner(newManager);
-            ShopOwner newShopOwner = new ShopOwner(newManager,this.shop,true);
-            newShopOwner.privileges = privileges;
+            ShopOwner newShopOwner = new ShopOwner(newManager, shop, true)
+            {
+                privileges = privileges
+            };
             ownersAssigned.Add(newShopOwner);
-            shopOwners.OwnersDictAdd(newManager.username,newShopOwner);
+            shopOwners.OwnersDictAdd(newManager.Username,newShopOwner);
             return true;
         }
 
@@ -74,13 +76,17 @@ namespace DomainLayer
             {
                 return false;
             }
-            this.shop.addOwner(newManager);
             ShopOwner newShopOwner = new ShopOwner(newManager, this.shop, false);
             ownersAssigned.Add(newShopOwner);
-            shopOwners.OwnersDictAdd(newManager.username, newShopOwner);
+            shopOwners.OwnersDictAdd(newManager.Username, newShopOwner);
             return true;
         }
-
+    
+        public static void NewShopOwner(User owner , Shop shop)
+        {
+            ShopOwner newShopOwner = new ShopOwner(owner, shop, false);
+            shopOwners.OwnersDictAdd(owner.Username,newShopOwner);
+        }
         /// <summary>
         /// removes a manger or a owner you assigned
         /// </summary>
@@ -88,7 +94,7 @@ namespace DomainLayer
         /// <returns>a boolean value according to the wether this <"toRemove"> is assigned by this owner, and is not already removed </returns>
         public bool RemoveOwner(ShopOwner toRemove)
         {
-            if (!this.privileges.HasPrivilege("addOwner")|| !ownersAssigned.Contains(toRemove))
+            if (!this.privileges.HasPrivilege("RemoveOwner") || !ownersAssigned.Contains(toRemove))
             {
                 return false;
             }
@@ -98,8 +104,8 @@ namespace DomainLayer
                 RemoveOwner(assigned);
             }
             ownersAssigned.Remove(toRemove);
-            shopOwners.OwnersDictRemove(toRemove.owner.username, toRemove);
-            this.shop.removeOwner(toRemove.owner);
+            shopOwners.OwnersDictRemove(toRemove.owner.Username, toRemove);
+            this.shop.RemoveOwner(toRemove.owner);
             toRemove.owner.RemoveShop(toRemove.shop);
             return true;
         }
@@ -108,65 +114,71 @@ namespace DomainLayer
         /// closes the shop owned by this shop owner 
         /// removing all owners , and also this shop owner . and invoking shop.close
         /// </summary>
-        public void CloseShop()
+        public bool CloseShop()
         {
-            if (!this.privileges.HasPrivilege("addOwner"))
+            if (!this.privileges.HasPrivilege("CloseShop"))
             {
-
+                return false;
             }
             foreach(ShopOwner owner in ownersAssigned)
             {
                 RemoveOwner(owner);
             }
-            this.shop.removeOwner(this.owner);
-            this.shop.close();
-            shopOwners.OwnersDictRemove(this.owner.username, this); // remove yourself from the list
+            this.shop.RemoveOwner(this.owner);
+            this.shop.Close();
+            shopOwners.OwnersDictRemove(this.owner.Username, this); // remove yourself from the list
             this.owner.RemoveShop(this.shop);
+            return true;
+        }
+
+        public static void CleanDict() // a method for cleaning the dictionary, used for testing
+        {
+            shopOwners.CleanDict();
         }
         // Method that overrides the base class (System.Object) implementation.
         public override string ToString()
         {
-            return "";
+            return "Owner: "+owner.ToString()+"\n Shop: "+shop.ToString();
         }
 
         public class ManagingPrivileges
         {
-            List<string> allowedActions { get => allowedActions; set => allowedActions = value; }
-            bool isManager; // if not a manager it is an owner , an owner has all the actions available 
+            private List<string> AllowedActions { get => AllowedActions; set => AllowedActions = value; }
+            private bool _isManager; // if not a manager it is an owner , an owner has all the actions available 
             public ManagingPrivileges(List<string> allowedActions)
             {
-                this.allowedActions = allowedActions;
-                this.isManager = true;
+                AllowedActions = allowedActions;
+                _isManager = true;
             }
             public ManagingPrivileges(bool isManager)
             {
-                this.allowedActions = new List<string>();
-                this.isManager = isManager;
+                AllowedActions = new List<string>();
+                _isManager = isManager;
             }
 
             public bool AddAction(string action)
             {
-                bool exsits = allowedActions.Contains(action);
+                bool exsits = AllowedActions.Contains(action);
                 if(!exsits)
                 {
-                    allowedActions.Add(action);              
+                    AllowedActions.Add(action);              
                 }
                 return !exsits;
             }
 
             public bool RemoveAction(string action)
             {
-                bool exsits = allowedActions.Contains(action);
+                bool exsits = AllowedActions.Contains(action);
                 if (exsits)
                 {
-                    allowedActions.Remove(action);
+                    AllowedActions.Remove(action);
                 }
                 return exsits;
             }
 
             public bool HasPrivilege(string action)
             {
-                return !isManager || allowedActions.Contains(action);
+                return !_isManager || AllowedActions.Contains(action);
             }
         }
 
@@ -200,8 +212,10 @@ namespace DomainLayer
                 }
                 else
                 {
-                    List<ShopOwner> userShops = new List<ShopOwner>();
-                    userShops.Add(newshopOwner);
+                    List<ShopOwner> userShops = new List<ShopOwner>
+                    {
+                        newshopOwner
+                    };
                     shopOwners.Add(username, userShops);
                 }
             }
@@ -210,9 +224,14 @@ namespace DomainLayer
             {
                 return shopOwners[username];
             }
-            public bool hasUser(string username)
+            public bool HasUser(string username)
             {
                 return shopOwners.ContainsKey(username);
+            }
+
+            public void CleanDict() // a method for cleaning the dictionary
+            {
+                shopOwners = new Dictionary<string, List<ShopOwner>>();
             }
         }
     }

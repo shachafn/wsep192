@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Text;
 using DomainLayer;
+using ServiceLayer.Services;
 
 namespace ATBridge
 {
@@ -20,111 +21,89 @@ namespace ATBridge
                 _real = impl;
         }
 
-        public bool AddProduct()
+        public User Register(string username, string password)
         {
-            return false;
-        }
-
-        public bool AddProduct(ShopProduct product)
-        {
-            return false;
-        }
-
-        public bool AddReview(User user, string text)
-        {
-            return false;
-        }
-
-        public bool EditProduct(Product product, double price, int quantity)
-        {
-            return false;
-        }
-
-        public void EditProfile()
-        {
-        }
-
-        public void GetAllProducts()
-        {
-        }
-
-        public List<ShoppingBag> GetPurchaseHistory()
-        {
-            return null;
+            return _real?.Register(username, password);
         }
 
         public bool Login(string username, string password)
         {
-            return false;
+            return _real == null ? false : _real.Login(username, password);
         }
 
-        public bool Logout()
+        public bool Logout(string username)
         {
-            return false;
+            return _real == null ? false : _real.Logout(username);
         }
 
-        public bool OpenShop()
+        public Guid OpenShop(string username)
         {
-            return false;
+            return _real == null ? Guid.Empty : _real.OpenShop(username);
         }
 
-        public void RateProduct(User user, int rate)
+        public bool PurchaseBag(string username)
         {
+            return _real == null ? false : _real.PurchaseBag(username);
         }
 
-        public void RateStore(User user, int rate)
+        public Guid AddProductToShop(string name, string category, double price, int quantity, Guid shopGuid)
         {
-
+            return _real == null ? Guid.Empty : _real.AddProductToShop(name, category, price, quantity, shopGuid);
         }
 
-        public User Register(string username, string password)
+        public bool RemoveProductFromShop(Guid productGuid, Guid shopGuid)
         {
-            return null;
+            return _real == null ? false : _real.RemoveProductFromShop(productGuid, shopGuid);
         }
 
-        public bool RemoveProduct()
+        public bool EditProduct(Guid shopGuid, Guid productGuid, double newPrice, int newQuantity)
         {
-            return false;
+            return _real == null ? false : _real.EditProduct(shopGuid, productGuid, newPrice, newQuantity);
         }
 
-        public bool RemoveProduct(ShopProduct product)
+        public IEnumerable<Product> SearchProduct(Guid shopGuid, string productName)
         {
-            return false;
+            return _real?.SearchProduct(shopGuid, productName);
         }
 
-        public void Report()
+        public bool AddShopOwner(Guid shopGuid, string ownerUsername, string managerToAddUsername)
         {
+            return _real == null ? false : _real.AddShopOwner(shopGuid, ownerUsername, managerToAddUsername);
         }
 
-        public List<Product> Search(string searchString, List<ProductFilter> filters = null)
+        public bool CascadeRemoveShopOwner(Guid shopGuid, string ownerUsername)
         {
-            return null;
+            return _real == null ? false : _real.CascadeRemoveShopOwner(shopGuid, ownerUsername);
         }
 
-        public Product SearchProduct(string searchString)
+        public bool AddShopManager(Guid shopGuid, string ownerUsername, string managerToAddUsername, List<string> priviliges)
         {
-            return null;
+            return _real == null ? false : _real.AddShopManager(shopGuid, ownerUsername, managerToAddUsername, priviliges);
         }
 
-        public void SendMessage(User user, string message)
+        public bool RemoveShopManager(Guid shopGuid, string ownerUsername)
         {
+            return _real == null ? false : _real.RemoveShopManager(shopGuid, ownerUsername);
         }
 
-        public void ShutdownShop(Shop shop)
+        public bool AddProductToShoppingCart(Guid productGuid, Guid shopOfCartGuid, string username)
         {
+            return _real == null ? false : _real.AddProductToShoppingCart(productGuid, shopOfCartGuid, username);
         }
 
-        public List<ShoppingBag> ViewHistory(User user)
+        public IEnumerable<Guid> GetAllProducts(string username, Guid shopOfCartGuid)
         {
-            return null;
+            return _real?.GetAllProducts(username, shopOfCartGuid);
         }
 
-        public void ViewHistory(Shop shop)
+        public bool RemoveProduct(Guid productGuid, Guid shopOfCartGuid, string username)
         {
+            return _real == null ? false : _real.RemoveProduct(productGuid, shopOfCartGuid, username);
         }
 
-        public void WatchHistory()
+        public bool ChangePurchasedProductAmount(string username, Guid shopOfCartGuid, Guid productGuid, int newAmount)
         {
+            return _real == null ? false : _real.ChangePurchasedProductAmount(username, shopOfCartGuid, productGuid, newAmount);
         }
     }
 }

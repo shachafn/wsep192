@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 
 namespace DomainLayer
 {
@@ -7,7 +8,14 @@ namespace DomainLayer
     public class Shop
     {
         public static Dictionary<Guid, Shop> _shops = new Dictionary<Guid, Shop>();
+
+        public static Shop GetShopByGuid(Guid guid) => _shops[guid];
+
+        private Guid _guid;
+        private ShopOwner _owner;
+
         private List<User> _owners;
+
         private List<Tuple<User, string>> _messages;
         private List<ShopProduct> _shopProducts;
         private List<Tuple<User, ShoppingCart>> _purchaseHistory;
@@ -18,13 +26,20 @@ namespace DomainLayer
 
         public Shop()
         {
+
+            _guid = Guid.NewGuid();
+
+            _owner = shopOwner;
+
             _owners = new List<User>();
+
             _messages = new List<Tuple<User, string>>();
             _shopProducts = new List<ShopProduct>();
             _purchaseHistory = new List<Tuple<User, ShoppingCart>>();
             _rate = 0;
             _sumOfRates = 0;
             _numberOfRates = 0;
+            _shops.Add(_guid, this);
         }
 
         public void addOwner(User owner)
@@ -73,6 +88,12 @@ namespace DomainLayer
             if (toRemove != null)
                 _shopProducts.Remove(toRemove);
         }
+        public void RemoveProduct(Guid productGuid)
+        {
+            ShopProduct toRemove = _shopProducts.FirstOrDefault(prod => prod.Product.Guid.Equals(productGuid));
+            if (toRemove != null)
+                _shopProducts.Remove(toRemove);
+        }
         private ShopProduct SearchProduct(Product product)
         {
             foreach (ShopProduct sp in _shopProducts)
@@ -88,7 +109,14 @@ namespace DomainLayer
             if (toEdit == null) return;
             toEdit.Price = price;
             toEdit.Quantity = quantity;
+        }
 
+        public void EditProduct(Guid productGuid, double price, int quantity)
+        {
+            var toEdit = _shopProducts.FirstOrDefault(prod => prod.Product.Guid.Equals(productGuid));
+            if (toEdit == null) return;
+            toEdit.Price = price;
+            toEdit.Quantity = quantity;
         }
 
         public void SendMessage(User user, string message)
@@ -107,7 +135,7 @@ namespace DomainLayer
             return toReturn;
 
         }
-        public List<Product> SearchProduct(string searchString)
+        public IEnumerable<Product> SearchProducts(string searchString)
         {
             List<Product> toReturn = new List<Product>();
             foreach (ShopProduct sp in _shopProducts)

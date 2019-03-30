@@ -6,7 +6,7 @@ using System.Text;
 
 namespace ServiceLayer.Services
 {
-    class UserService : IUserService
+    public class UserService : IUserService
     {
         public bool Register(string username, string password, out string ErrorMessage)
         {

@@ -15,7 +15,7 @@ namespace UnitTests
         {
             ShopOwner.CleanDict();
             User.users = new Dictionary<string, User>();
-            meni = new User("meni", "123456");
+            meni = new User("meni", "123456", false);
             meni.Login("meni", "123456");
             menisShop = new Shop();
             ShopOwner.NewShopOwner(meni, menisShop);
@@ -30,7 +30,7 @@ namespace UnitTests
         public void TestAddManager()
         {
             ShopOwner meniOwner = ShopOwner.GetShopOwner(meni, menisShop);
-            User beni = new User("beni","123456");
+            User beni = new User("beni","123456", false);
             //add a new manager with an adding privelage
             List<string> actionsAllowed = new List<string>
             {

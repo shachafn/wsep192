@@ -8,30 +8,31 @@ using DomainLayer;
 namespace Tests
 {
     [TestFixture]
+    private Guid g = new Guid();
     class UserAT
     {
         private ProxyBridge _proxy;
-        private User _aUser;
+        /*private User _aUser;
         private User _gusetUser;
         private Product _IPhone;
         private Product _Carrot;
         private UserInfo _info;
         private ShoppingCart _cart;
         private ShopOwner _owner;
-        private Shop _shop;
+        private Shop _shop;*/
         [SetUp]
         public void Setup()
         {
             _proxy = new ProxyBridge();
             _proxy.SetRealBridge(new BridgeImpl());
-             _proxy.Register("groisman", "150298");
-            _aUser = new User("groisman", "150298");
-            _gusetUser = new User();
-            _IPhone = new Product("IPhone", "Cellphones");
-            _Carrot = new Product("Carrot", "Vegtables");
-            _owner = new ShopOwner(_aUser, _shop, true);
-            _shop = new Shop(_owner);
-            _cart = new ShoppingCart(_shop); //I saw liron's branch.
+             //_proxy.Register("groisman", "150298");
+            //_aUser = new User("groisman", "150298");
+            //_gusetUser = new User();
+            //_IPhone = new Product("IPhone", "Cellphones");
+           // _Carrot = new Product("Carrot", "Vegtables");
+            //_owner = new ShopOwner(_aUser, _shop, true);
+            //_shop = new Shop(_owner);
+            //_cart = new ShoppingCart(_shop); //I saw liron's branch.
             //_cart.addProduct(_IPhone);
         }
 
@@ -92,19 +93,11 @@ namespace Tests
         [Test]
         public void KeepingProductsInCartAT1()
         {
-            Setup(); //Create a username "groismanGuest" with pswd "150298"
-            //TODO: 1.Save user changes should be public and return some info.
-            //TODO: 2.Change Pass to some missing method operation in ProxyBridge
-
             Assert.Pass();
         }
         [Test]
         public void KeepingProductsInCartAT2()
         {
-            //TODO: Add something to cart
-            //_aUser.saveUserChanges(); 
-            //TODO: 1.Save user changes should be public and return some info.
-            //TODO: 2.Change Pass to some missing method operation in ProxyBridge
             Assert.Pass();
         }
 

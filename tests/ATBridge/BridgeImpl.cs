@@ -28,6 +28,11 @@ namespace ATBridge
             return _shopService.AddProductToShop(name, category, price, quantity,shopGuid);
         }
 
+        public bool AddProductToShoppingCart(Guid productGuid, Guid shopOfCartGuid, string username)
+        {
+            return _shoppingCartService.AddProductToShoppingCart(productGuid, productGuid, username);
+        }
+
         public bool AddShopManager(Guid shopGuid, string ownerUsername, string managerToAddUsername, List<string> priviliges)
         {
             return _shopService.AddShopManager(shopGuid, ownerUsername, managerToAddUsername, priviliges);
@@ -43,9 +48,19 @@ namespace ATBridge
             return _shopService.CascadeRemoveShopOwner(shopGuid, ownerUsername);
         }
 
+        public bool ChangePurchasedProductAmount(string username, Guid shopOfCartGuid, Guid productGuid, int newAmount)
+        {
+            return _shoppingCartService.ChangePurchasedProductAmount(username, shopOfCartGuid, productGuid, newAmount);
+        }
+
         public bool EditProduct(Guid shopGuid, Guid productGuid, double newPrice, int newQuantity)
         {
             return _shopService.EditProduct(shopGuid, productGuid, newPrice, newQuantity);
+        }
+
+        public IEnumerable<Guid> GetAllProducts(string username, Guid shopOfCartGuid)
+        {
+            return _shoppingCartService.GetAllProducts(username, shopOfCartGuid);
         }
 
         public bool Login(string username, string password)
@@ -71,6 +86,11 @@ namespace ATBridge
         public User Register(string username, string password)
         {
             return _userService.Register(username, password, out _errorStr);
+        }
+
+        public bool RemoveProduct(Guid productGuid, Guid shopOfCartGuid, string username)
+        {
+            return _shoppingCartService.RemoveProduct(productGuid, shopOfCartGuid, username);
         }
 
         public bool RemoveProductFromShop(Guid productGuid, Guid shopGuid)

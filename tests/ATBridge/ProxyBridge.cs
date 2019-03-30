@@ -85,5 +85,25 @@ namespace ATBridge
         {
             return _real == null ? false : _real.RemoveShopManager(shopGuid, ownerUsername);
         }
+
+        public bool AddProductToShoppingCart(Guid productGuid, Guid shopOfCartGuid, string username)
+        {
+            return _real == null ? false : _real.AddProductToShoppingCart(productGuid, shopOfCartGuid, username);
+        }
+
+        public IEnumerable<Guid> GetAllProducts(string username, Guid shopOfCartGuid)
+        {
+            return _real?.GetAllProducts(username, shopOfCartGuid);
+        }
+
+        public bool RemoveProduct(Guid productGuid, Guid shopOfCartGuid, string username)
+        {
+            return _real == null ? false : _real.RemoveProduct(productGuid, shopOfCartGuid, username);
+        }
+
+        public bool ChangePurchasedProductAmount(string username, Guid shopOfCartGuid, Guid productGuid, int newAmount)
+        {
+            return _real == null ? false : _real.ChangePurchasedProductAmount(username, shopOfCartGuid, productGuid, newAmount);
+        }
     }
 }

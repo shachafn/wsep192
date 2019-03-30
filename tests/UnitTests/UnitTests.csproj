@@ -13,7 +13,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\..\src\ServiceLayer\ServiceLayer.csproj" />
+    <ProjectReference Include="..\..\src\DomainLayer\DomainLayer.csproj" />
   </ItemGroup>
 
 </Project>

@@ -5,7 +5,7 @@ using DomainLayer;
 
 namespace ATBridge
 {
-    class ProxyBridge : IBridge
+    public class ProxyBridge : IBridge
     {
         private IBridge _real;
 

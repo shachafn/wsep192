@@ -5,7 +5,7 @@ using DomainLayer;
 
 namespace ATBridge
 {
-    class BridgeImpl : IBridge
+    public class BridgeImpl : IBridge
     {
         public bool AddProduct()
         {

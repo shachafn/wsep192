@@ -23,7 +23,7 @@ namespace Tests
         public void LogoutAT()
         {
             SetUp();
-            Assert.AreEqual(false, _proxy.Logout()); //TODO: Change default expected value if needed.
+            Assert.AreEqual(true, _proxy.Logout());
         }
 
         //GR 3.2 - Registered user can open new store.
@@ -31,7 +31,8 @@ namespace Tests
         public void CreationOfNewStoreByRegisteredUserAT()
         {
             SetUp();
-            Assert.AreEqual(false,_proxy.OpenShop()); //TODO: Change expected value when imp will be available.
+            Assert.AreEqual(false,_proxy.OpenShop(_aUser));
+            //Assume proxyBridge will operate open shop with user.
         }
 
         public void RunRegisteredUserAT()

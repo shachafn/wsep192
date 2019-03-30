@@ -3,7 +3,7 @@ using System.Text;
 
 namespace DomainLayer
 {
-    class ProductFilter
+    public class ProductFilter
     {
     }
 }

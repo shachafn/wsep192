@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Text;
 using NUnit.Framework;
 using DomainLayer;
+using ATBridge;
 
 namespace Tests
 {
@@ -10,16 +11,26 @@ namespace Tests
     class StoreOwnerAT
     {
         private User _user;
+        private User _unRegisteredUser;
         private ShopOwner _owner;
+        private ShopOwner _fakeOwner;
         private Shop _shop;
-        // private ShopProduct _product; 
+        private ProxyBridge _proxy;
+        private Product _productToAdd;
+        private ShopProduct _product; 
         [SetUp]
         public void Setup()
         {
-            //Those fields are initalized for the moment we will have final implemenentaiton.
-            _user = new User();
-            _owner = new ShopOwner();
-            _shop = new Shop();
+            _proxy = new ProxyBridge();
+            _proxy.SetRealBridge(new BridgeImpl());
+            _user = _proxy.Register("groisman", "150298");
+            _unRegisteredUser = new User("tommarz", "311297");
+            _proxy.Login("groisman", "king98");
+            _owner = new ShopOwner(_user,_shop,true);
+            _fakeOwner = new ShopOwner(_fakeOwner)
+            _shop = new Shop(_owner);
+            _productToAdd = new Product("IPhone", "Cellphones");
+            _product = new ShopProduct(_productToAdd, 1000, 1);
         }
         public void RunStoreOwnerAT()
         {
@@ -50,14 +61,13 @@ namespace Tests
         [Test]
         public void AddingProductAT1()
         {
-            //TODO: Make class of ShopProduct in order to be able to test it.
-            Assert.Pass();
+            Assert.AreEqual(true, _proxy.AddProduct(_product));
         }
 
         [Test]
         public void AddingProductAT2()
         {
-            //TODO: Make class of ShopProduct in order to be able to test it.
+            
             Assert.Pass();
         }
 

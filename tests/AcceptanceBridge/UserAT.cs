@@ -13,8 +13,11 @@ namespace Tests
         private ProxyBridge _proxy;
         private User _aUser;
         private User _gusetUser;
-        //private Product _IPhone;
-        
+        private Product _IPhone;
+        private UserInfo _info;
+        private ShoppingCart _cart;
+        private ShopOwner _owner;
+        private Shop _shop;
         [SetUp]
         public void Setup()
         {
@@ -22,7 +25,11 @@ namespace Tests
             _proxy.SetRealBridge(new BridgeImpl());
             _aUser = User.Register("groisman","150298");
             _gusetUser = new User();
-            //_IPhone = new Product();
+            _IPhone = new Product("IPhone", "Cellphones");
+            _owner = new ShopOwner(_aUser, _shop, true);
+            _shop = new Shop(_owner);
+            _cart = new ShoppingCart(_shop); //I saw liron's branch.
+            _cart.addProduct(_IPhone);
         }
 
         //GR 2.3-login of guest with identifiers.
@@ -59,14 +66,18 @@ namespace Tests
         [Test]
         public void SearchProductsAT1()
         {
-            Assert.AreEqual(null, _proxy.SearchProduct("product name : IPhone"));
+            Setup();
+            List<Product> acceptedList = new List<Product>();
+            acceptedList.Add(_IPhone);
+            Assert.AreEqual(acceptedList, _proxy.SearchProduct("IPhone));
             //TODO: Change null to some Product when I'll know how to add product to some store.
         }
         [Test]
         public void SearchProductsAT2()
         {
-            Assert.Pass();
-            //TODO: Complete when we have filter and make search public!
+            Setup();
+            List<Product> acceptedList = new List<Product>();
+            Assert.AreEqual(acceptedList, _proxy.SearchProduct("Galaxy S9));
         }
 
         //GR 2.6 - keeping products in user's cart
@@ -104,28 +115,22 @@ namespace Tests
         [Test]
         public void WatchingAndEditingOfCartAT1()
         {
-            //TODO: 1.Can not test it - WatchHistory returns nothing in ProxyBridge.
-            Assert.Pass();
+            Setup();
+            ShoppingCart emptyCart = new ShoppingCart();
+            //List<Product> em = new List<Product>();
+            Assert.AreEqual(emptyCart, _proxy.GetAllProducts(emptyCart)); //Assume proxy gets the cart.
         }
         [Test]
         public void WatchingAndEditingOfCartAT2()
         {
-            //TODO: 1.Can not test it - WatchHistory returns nothing in ProxyBridge.
-            //TODO: 2.Proxy Bridge's editor : you have to clarify yourself what is the
-            //meaning of "Add product" - add to store or add to cart?
-            //according to the doc of roles partition "Version 1 decisions" it belongs to "shop"
-            //so assume that we can not test it.
-            Assert.Pass();
+            ShoppingCart oneItemCart = new ShoppingCart();
+            Assert.AreEqual(true,_proxy.AddProduct(_IPhone,oneItemCart); //Assume proxy gets the cart.
         }
         [Test]
         public void WatchingAndEditingOfCartAT3()
         {
-            //TODO: 1.Can not test it - WatchHistory returns nothing in ProxyBridge.
-            //TODO: 2.Proxy Bridge's editor : you have to clarify yourself what is the
-            //meaning of "Remove product" - add to store or add to cart?
-            //according to the doc of roles partition "Version 1 decisions" it belongs to "shop"
-            //so assume that we can not test it.
-            Assert.Pass();
+            //_cart = cart with one IPhone.
+            Assert.AreEqual(true, _proxy.RemoveProduct(_IPhone,_cart)); //Assume it gets product and shopping cart.
         }
 
         //GR 2.8 - purchase of products

@@ -14,6 +14,7 @@ public class Product
     // Method that overrides the base class (System.Object) implementation.
     public override string ToString()
     {
+
     }
 }
 

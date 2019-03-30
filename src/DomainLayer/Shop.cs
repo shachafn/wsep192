@@ -1,31 +1,50 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 
 namespace DomainLayer
 {
-
+    enum shopState { open, closed, permanentlyClosed };
     public class Shop
     {
         public static Dictionary<Guid, Shop> _shops = new Dictionary<Guid, Shop>();
 
+        public static Shop GetShopByGuid(Guid guid) => _shops[guid];
+
+        private Guid _guid;
         private ShopOwner _owner;
+
+        private List<User> _owners;
+
         private List<Tuple<User, string>> _messages;
         private List<ShopProduct> _shopProducts;
         private List<Tuple<User, ShoppingCart>> _purchaseHistory;
         private double _rate;
         private int _sumOfRates;
         private int _numberOfRates;
+        private shopState _state;
 
-
-        public Shop(ShopOwner shopOwner)
+        public Shop()
         {
+
+            _guid = Guid.NewGuid();
+
             _owner = shopOwner;
+
+            _owners = new List<User>();
+
             _messages = new List<Tuple<User, string>>();
             _shopProducts = new List<ShopProduct>();
             _purchaseHistory = new List<Tuple<User, ShoppingCart>>();
             _rate = 0;
             _sumOfRates = 0;
             _numberOfRates = 0;
+            _shops.Add(_guid, this);
+        }
+
+        public void addOwner(User owner)
+        {
+            _owners.Add(owner);
         }
 
         public ShopOwner Owner { get; }
@@ -41,6 +60,14 @@ namespace DomainLayer
                 rate = _sumOfRates / _numberOfRates;
             }
 
+        }
+        public void close()
+        {
+            _state = shopState.closed;
+        }
+        public void Adminclose()
+        {
+            _state = shopState.permanentlyClosed;
         }
         private bool CanRateShop(User user)
         {
@@ -61,6 +88,12 @@ namespace DomainLayer
             if (toRemove != null)
                 _shopProducts.Remove(toRemove);
         }
+        public void RemoveProduct(Guid productGuid)
+        {
+            ShopProduct toRemove = _shopProducts.FirstOrDefault(prod => prod.Product.Guid.Equals(productGuid));
+            if (toRemove != null)
+                _shopProducts.Remove(toRemove);
+        }
         private ShopProduct SearchProduct(Product product)
         {
             foreach (ShopProduct sp in _shopProducts)
@@ -76,7 +109,14 @@ namespace DomainLayer
             if (toEdit == null) return;
             toEdit.Price = price;
             toEdit.Quantity = quantity;
+        }
 
+        public void EditProduct(Guid productGuid, double price, int quantity)
+        {
+            var toEdit = _shopProducts.FirstOrDefault(prod => prod.Product.Guid.Equals(productGuid));
+            if (toEdit == null) return;
+            toEdit.Price = price;
+            toEdit.Quantity = quantity;
         }
 
         public void SendMessage(User user, string message)
@@ -95,7 +135,7 @@ namespace DomainLayer
             return toReturn;
 
         }
-        public List<Product> SearchProduct(string searchString)
+        public IEnumerable<Product> SearchProducts(string searchString)
         {
             List<Product> toReturn = new List<Product>();
             foreach (ShopProduct sp in _shopProducts)
@@ -108,7 +148,12 @@ namespace DomainLayer
         // Method that overrides the base class (System.Object) implementation.
         public override string ToString()
         {
-            return "Owner: " + _owner + "\nRate: " + _rate + "\nProducts: " + _shopProducts.ToString();
+            return "Owner: " + _owners.ToString() + "\nRate: " + _rate + "\nProducts: " + _shopProducts.ToString();
+        }
+
+        internal void removeOwner(User owner)
+        {
+           _owners.Remove(owner);
         }
     }
 }

@@ -4,7 +4,7 @@ using System.Text;
 
 namespace ServiceLayer.Public_Interfaces
 {
-    interface IAdminService
+    public interface IAdminService
     {
         /// <summary>
         /// Initializes the system.

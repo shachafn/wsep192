@@ -116,7 +116,7 @@ namespace DomainLayer
             List<Product> productsFound = new List<Product>();
             foreach (Shop shop in shopsOwned)
             {
-                productsFound.AddRange(shop.SearchProduct(searchString));
+                productsFound.AddRange(shop.SearchProducts(searchString));
             }
             foreach (ProductFilter filter in filters)
             {

@@ -136,7 +136,7 @@ namespace DomainLayer
         // Method that overrides the base class (System.Object) implementation.
         public override string ToString()
         {
-            return "";
+            return "Owner: "+owner.ToString()+"\n Shop: "+shop.ToString();
         }
 
         public class ManagingPrivileges

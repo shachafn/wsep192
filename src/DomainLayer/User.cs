@@ -45,6 +45,10 @@ namespace DomainLayer
             return logged;
         }
 
+        internal List<ShoppingBag> getShoppingHistory()
+        {
+           return this.purchaseHistory;
+        }
         /// <summary>
         /// logs the user in , changes its logged field to true , and retrieves all it's stored information
         /// </summary>

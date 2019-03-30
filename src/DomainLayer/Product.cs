@@ -27,13 +27,13 @@ public class Product
 
     public void AddReview(User user, string review)
     {
-        if (canRateProduct(user) && review.Length <= MaxReviewLength)
+        if (CanRateProduct(user) && review.Length <= MaxReviewLength)
             _reviews.Add(user, review);
     }
 
     public void RateProduct(User user, int rate)
     {
-        if (canRateProduct(user) && rate >= 1 && rate <= 5)
+        if (CanRateProduct(user) && rate >= 1 && rate <= 5)
         {
             _sumOfRates += rate;
             _numberOfRates++;
@@ -41,7 +41,7 @@ public class Product
         }
     }
 
-    private bool canRateProduct(User user)
+    private bool CanRateProduct(User user)
     {
         return user.IsLogged() && user.HasPurchasedProduct(this);
     }

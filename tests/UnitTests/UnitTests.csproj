@@ -14,7 +14,6 @@
 
   <ItemGroup>
     <ProjectReference Include="..\..\src\ServiceLayer\ServiceLayer.csproj" />
-    <ProjectReference Include="..\..\TestMechanism\TestingMechanism.csproj" />
   </ItemGroup>
 
 </Project>

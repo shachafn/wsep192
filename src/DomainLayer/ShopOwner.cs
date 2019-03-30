@@ -19,6 +19,7 @@ namespace DomainLayer
             this.shop = shop;
             ownersAssigned = new List<ShopOwner>();
             this.privileges = new ManagingPrivileges(manager);
+            this.shop.addOwner(owner);
         }
         /// <summary>
         /// get a shopOwner instance from the current shopOwners in the system
@@ -26,7 +27,7 @@ namespace DomainLayer
         /// <param name="user"></param>
         /// <param name="shop"></param>
         /// <returns> a relvant shopOwner if one exists , null otherwise</returns>
-        public ShopOwner GetShopOwner(User user, Shop shop)
+        public static ShopOwner GetShopOwner(User user, Shop shop)
         {
             bool exists = user.IsLogged() && shopOwners.hasUser(user.username);
             if(!exists)
@@ -55,7 +56,6 @@ namespace DomainLayer
             {
                 return false;
             }
-            this.shop.addOwner(newManager);
             ShopOwner newShopOwner = new ShopOwner(newManager,this.shop,true);
             newShopOwner.privileges = privileges;
             ownersAssigned.Add(newShopOwner);
@@ -74,13 +74,17 @@ namespace DomainLayer
             {
                 return false;
             }
-            this.shop.addOwner(newManager);
             ShopOwner newShopOwner = new ShopOwner(newManager, this.shop, false);
             ownersAssigned.Add(newShopOwner);
             shopOwners.OwnersDictAdd(newManager.username, newShopOwner);
             return true;
         }
-
+    
+        public static void NewShopOwner(User owner , Shop shop)
+        {
+            ShopOwner newShopOwner = new ShopOwner(owner, shop, false);
+            shopOwners.OwnersDictAdd(owner.username,newShopOwner);
+        }
         /// <summary>
         /// removes a manger or a owner you assigned
         /// </summary>
@@ -88,7 +92,7 @@ namespace DomainLayer
         /// <returns>a boolean value according to the wether this <"toRemove"> is assigned by this owner, and is not already removed </returns>
         public bool RemoveOwner(ShopOwner toRemove)
         {
-            if (!this.privileges.HasPrivilege("addOwner")|| !ownersAssigned.Contains(toRemove))
+            if (!this.privileges.HasPrivilege("RemoveOwner") || !ownersAssigned.Contains(toRemove))
             {
                 return false;
             }
@@ -108,11 +112,11 @@ namespace DomainLayer
         /// closes the shop owned by this shop owner 
         /// removing all owners , and also this shop owner . and invoking shop.close
         /// </summary>
-        public void CloseShop()
+        public bool CloseShop()
         {
-            if (!this.privileges.HasPrivilege("addOwner"))
+            if (!this.privileges.HasPrivilege("CloseShop"))
             {
-
+                return false;
             }
             foreach(ShopOwner owner in ownersAssigned)
             {
@@ -122,6 +126,12 @@ namespace DomainLayer
             this.shop.close();
             shopOwners.OwnersDictRemove(this.owner.username, this); // remove yourself from the list
             this.owner.RemoveShop(this.shop);
+            return true;
+        }
+
+        public static void cleanDict() // a method for cleaning the dictionary, used for testing
+        {
+            shopOwners.cleanDict();
         }
         // Method that overrides the base class (System.Object) implementation.
         public override string ToString()
@@ -213,6 +223,11 @@ namespace DomainLayer
             public bool hasUser(string username)
             {
                 return shopOwners.ContainsKey(username);
+            }
+
+            public void cleanDict() // a method for cleaning the dictionary
+            {
+                shopOwners = new Dictionary<string, List<ShopOwner>>();
             }
         }
     }

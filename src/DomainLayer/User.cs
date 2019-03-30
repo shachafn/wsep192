@@ -116,9 +116,15 @@ namespace DomainLayer
             }
             return productsFound;
         }
-        void openShop()
+        public bool openShop()
         {
-
+            if(!logged)
+            {
+                return false;
+            }
+            Shop shop = new Shop();
+            this.shopsOwned.Add(shop);
+            return true;
         }
 
         private bool CheckPass(string password)

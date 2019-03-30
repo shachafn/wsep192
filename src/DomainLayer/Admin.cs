@@ -51,7 +51,7 @@ namespace DomainLayer
         // Method that overrides the base class (System.Object) implementation.
         public override string ToString()
         {
-            return "";
+            return admin.ToString();
         }
 
         private class UserReport

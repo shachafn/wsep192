@@ -28,7 +28,7 @@ namespace Tests
         {
             User user = User.Register("meni", "123456");
             Assert.Null(user);
-            User otherUser = new User("beni", "1234");
+            User otherUser = new User("beni", "1234", false);
             Assert.Null(otherUser);
             Assert.Equals(1, User.users.Count);
         }

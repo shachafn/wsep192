@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Linq;
 
 namespace DomainLayer
 {
@@ -30,7 +31,7 @@ namespace DomainLayer
             IsAdmin = false;
         }
 
-        public User(string username, string password)
+        public User(string username, string password, bool isAdmin)
         {
             Username = username;
             _passHash = GetStringSha256Hash(password);
@@ -39,7 +40,7 @@ namespace DomainLayer
             _purchaseHistory = new List<ShoppingBag>();
             _userInfo = new UserInfo();
             _shopsOwned = new List<Shop>();
-            IsAdmin = false;
+            IsAdmin = isAdmin;
         }
 
         public bool IsLogged()
@@ -101,7 +102,7 @@ namespace DomainLayer
             {
                 return null;
             }
-            User newUser = new User(username, password);
+            User newUser = new User(username, password, false);
             users.Add(username, newUser);
             return newUser;
         }
@@ -220,6 +221,24 @@ namespace DomainLayer
 
         public void PurchaseBag() { }
 
+        public bool RemoveUser(string username)
+        {
+            var user = users[username];
+            if (user == null) return false;
+            if (UserIsTheOnlyOwnerOfAnActiveShop(username))
+                return false;
+
+            return false;
+        }
+
+        private bool UserIsTheOnlyOwnerOfAnActiveShop(string username)
+        {
+            return Shop._shops.Any(shop =>
+            {
+                var isOwner = shop.Value.Owners.Any(owner => owner.Username.Equals(Username));
+                return isOwner && shop.Value.Owners.Count > 1;
+            });
+        }
     }
 }
 

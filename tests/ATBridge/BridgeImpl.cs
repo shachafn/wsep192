@@ -8,10 +8,10 @@ namespace ATBridge
 {
     public class BridgeImpl : IBridge
     {
-        private UserService _userService;
-        private ShopService _shopService;
-        private ShoppingCartService _shoppingCartService;
-        private AdminService _adminService;
+        private readonly UserService _userService;
+        private readonly ShopService _shopService;
+        private readonly ShoppingCartService _shoppingCartService;
+        private readonly AdminService _adminService;
         private string _errorStr;
 
         public BridgeImpl()

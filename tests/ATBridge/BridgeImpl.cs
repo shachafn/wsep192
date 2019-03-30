@@ -37,7 +37,7 @@ namespace ATBridge
             throw new NotImplementedException();
         }
 
-        public void GetPurchaseHistory()
+        public List<ShoppingBag> GetPurchaseHistory()
         {
             throw new NotImplementedException();
         }
@@ -107,7 +107,7 @@ namespace ATBridge
             throw new NotImplementedException();
         }
 
-        public void ViewHistory(User user)
+        public List<ShoppingBag> ViewHistory(User user)
         {
             throw new NotImplementedException();
         }

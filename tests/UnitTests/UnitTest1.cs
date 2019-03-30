@@ -1,9 +1,11 @@
 using NUnit.Framework;
+using TestingMechanism;
 
 namespace Tests
 {
     public class Tests
     {
+
         [SetUp]
         public void Setup()
         {

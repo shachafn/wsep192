@@ -29,12 +29,12 @@ namespace DomainLayer
         /// <returns> a relvant shopOwner if one exists , null otherwise</returns>
         public static ShopOwner GetShopOwner(User user, Shop shop)
         {
-            bool exists = user.IsLogged() && shopOwners.hasUser(user.username);
+            bool exists = user.IsLogged() && shopOwners.hasUser(user.Username);
             if(!exists)
             {
                 return null;
             }
-            foreach(ShopOwner shopOnwer in shopOwners.ShopsByUsername(user.username))
+            foreach(ShopOwner shopOnwer in shopOwners.ShopsByUsername(user.Username))
             {
                 if(shopOnwer.shop.Equals(shop))
                 {
@@ -59,7 +59,7 @@ namespace DomainLayer
             ShopOwner newShopOwner = new ShopOwner(newManager,this.shop,true);
             newShopOwner.privileges = privileges;
             ownersAssigned.Add(newShopOwner);
-            shopOwners.OwnersDictAdd(newManager.username,newShopOwner);
+            shopOwners.OwnersDictAdd(newManager.Username,newShopOwner);
             return true;
         }
 
@@ -76,14 +76,14 @@ namespace DomainLayer
             }
             ShopOwner newShopOwner = new ShopOwner(newManager, this.shop, false);
             ownersAssigned.Add(newShopOwner);
-            shopOwners.OwnersDictAdd(newManager.username, newShopOwner);
+            shopOwners.OwnersDictAdd(newManager.Username, newShopOwner);
             return true;
         }
     
         public static void NewShopOwner(User owner , Shop shop)
         {
             ShopOwner newShopOwner = new ShopOwner(owner, shop, false);
-            shopOwners.OwnersDictAdd(owner.username,newShopOwner);
+            shopOwners.OwnersDictAdd(owner.Username,newShopOwner);
         }
         /// <summary>
         /// removes a manger or a owner you assigned
@@ -102,7 +102,7 @@ namespace DomainLayer
                 RemoveOwner(assigned);
             }
             ownersAssigned.Remove(toRemove);
-            shopOwners.OwnersDictRemove(toRemove.owner.username, toRemove);
+            shopOwners.OwnersDictRemove(toRemove.owner.Username, toRemove);
             this.shop.removeOwner(toRemove.owner);
             toRemove.owner.RemoveShop(toRemove.shop);
             return true;
@@ -124,7 +124,7 @@ namespace DomainLayer
             }
             this.shop.removeOwner(this.owner);
             this.shop.close();
-            shopOwners.OwnersDictRemove(this.owner.username, this); // remove yourself from the list
+            shopOwners.OwnersDictRemove(this.owner.Username, this); // remove yourself from the list
             this.owner.RemoveShop(this.shop);
             return true;
         }

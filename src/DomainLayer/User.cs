@@ -8,7 +8,9 @@ namespace DomainLayer
         public static Dictionary<string, User> users = new Dictionary<string, User>(); // a list of all registered users in the current session
 
         private bool logged;
-        public string username { get => username; private set => username=value; }
+        public string Username { get => Username; private set => Username=value; }
+        public bool IsAdmin { get => isAdmin; private set => isAdmin = value; }
+
         private string passHash;
         private ShoppingBag currentBag;
         private List<ShoppingBag> purchaseHistory;
@@ -19,25 +21,25 @@ namespace DomainLayer
         public User()
         {
             logged = false;
-            username = "";
+            Username = "";
             passHash = "";
             currentBag = new ShoppingBag();
             purchaseHistory = new List<ShoppingBag>();
             userInfo = new UserInfo();
             shopsOwned = new List<Shop>();
-            isAdmin = false;
+            IsAdmin = false;
         }
 
         public User(string username, string password)
         {
-            this.username = username;
+            this.Username = username;
             this.passHash = GetStringSha256Hash(password);
             logged = false;
             currentBag = new ShoppingBag();
             purchaseHistory = new List<ShoppingBag>();
             userInfo = new UserInfo();
             shopsOwned = new List<Shop>();
-            isAdmin = false;
+            IsAdmin = false;
         }
 
         public bool IsLogged()
@@ -110,9 +112,9 @@ namespace DomainLayer
         List<Product> Search(string searchString, List<ProductFilter> filters = null)
         {
             List<Product> productsFound = new List<Product>();
-            foreach (Shop shop in shops)
+            foreach (Shop shop in shopsOwned)
             {
-                productsFound.AddRange(shop.search(searchString));
+                productsFound.AddRange(shop.SearchProduct(searchString));
             }
             foreach (ProductFilter filter in filters)
             {
@@ -146,7 +148,7 @@ namespace DomainLayer
          */
         private void CopyUserData(User user)
         {
-            this.username = user.username;
+            this.Username = user.Username;
             this.passHash = user.passHash;
             this.currentBag = user.currentBag;
             this.purchaseHistory = user.purchaseHistory;
@@ -162,7 +164,7 @@ namespace DomainLayer
         {
             foreach(ShoppingBag  bag in purchaseHistory)
             {
-                if(bag.hasShop(shop))
+                if(bag.HasShop(shop))
                 {
                     return true;
                 }
@@ -179,7 +181,7 @@ namespace DomainLayer
         {
             foreach (ShoppingBag bag in purchaseHistory)
             {
-                if (bag.hasProduct(product))
+                if (bag.HasProduct(product))
                 {
                     return true;
                 }
@@ -188,7 +190,7 @@ namespace DomainLayer
         }
         private void SaveUserChanges()
         {
-            User savedUser = users[username];
+            User savedUser = users[Username];
             savedUser.currentBag = this.currentBag;
             savedUser.purchaseHistory = this.purchaseHistory;
             savedUser.userInfo = this.userInfo;
@@ -210,8 +212,8 @@ namespace DomainLayer
         // Method that overrides the base class (System.Object) implementation.
         public override string ToString()
         {
-            return "User:\n username: "+this.username+"\n"+this.userInfo.ToString()+"\n"+"logged: "+this.logged
-                + "\ncurrent shopping bag:"+this.currentBag.ToString()+"\n is admin: "+this.isAdmin;
+            return "User:\n username: "+this.Username+"\n"+this.userInfo.ToString()+"\n"+"logged: "+this.logged
+                + "\ncurrent shopping bag:"+this.currentBag.ToString()+"\n is admin: "+this.IsAdmin;
         }
 
     }

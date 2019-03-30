@@ -9,7 +9,7 @@ namespace DomainLayer
         List<UserReport> reports;
         public Admin(User admin)
         {
-            if(!admin.isAdmin())
+            if(!admin.IsAdmin)
             {
                 throw new System.Exception("the user is not an admin");
             }
@@ -29,9 +29,14 @@ namespace DomainLayer
             reports.Add(new UserReport(reporter, report));
         }
 
-        public bool removeUser(User toRemove)//depends on the user component
+        public bool removeUser(string username)//depends on the user component
         {
-
+            if(User.users.ContainsKey(username))
+            {
+                return false;
+            }
+            User.users.Remove(username);
+            return true;
         }
         public void viewShopHistory()//depends on shop implementation
         {
@@ -45,7 +50,7 @@ namespace DomainLayer
 
         public void closeShopPermanently(Shop shop)
         {
-            shop.close();
+            shop.Adminclose();
             //curently now way how to inform users on the changes
         }
         // Method that overrides the base class (System.Object) implementation.

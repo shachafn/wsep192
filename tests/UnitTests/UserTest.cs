@@ -19,7 +19,7 @@ namespace Tests
         {
             User user = User.Register("meni","123456");
             Assert.NotNull(user);
-            Assert.Equals("meni", user.username);
+            Assert.Equals("meni", user.Username);
             Assert.Equals(1, User.users.Count);
         }
 
@@ -56,16 +56,16 @@ namespace Tests
         [Test,Description("test login")]
         public void Test1()
         {
-            Assert.True(meni.Login(meni.username, meniPass));
+            Assert.True(meni.Login(meni.Username, meniPass));
             Assert.True(meni.IsLogged());
-            Assert.False(meni.Login(meni.username,meniPass));
-            Assert.False(beni.Login(beni.username,"21314454"));
+            Assert.False(meni.Login(meni.Username,meniPass));
+            Assert.False(beni.Login(beni.Username,"21314454"));
         }
 
         [Test, Description("test logout")]
         public void Test2()
         {
-            meni.Login(meni.username, meniPass);
+            meni.Login(meni.Username, meniPass);
             Assert.True(meni.Logout());
             Assert.False(meni.Logout());
             Assert.False(beni.Logout());

@@ -10,36 +10,37 @@ namespace ServiceLayer.Public_Interfaces
         /// <summary>
         /// Adds the product to the shopping cart.
         /// </summary>
-        /// <param name="product"></param>
-        /// <param name="shoppingCart"></param>
-        /// <param name="errorMessage"></param>
-        /// <returns>True if added successfully. False otherwise, with an error message as an out parameter.</returns>
-        bool AddProductToShoppingCart(Product product, ShoppingCart shoppingCart, out string errorMessage);
+        /// <param name="productGuid"></param>
+        /// <param name="shopOfCartGuid"></param>
+        /// <param name="username"></param>
+        /// <returns>True if added successfully. False otherwise.</returns>
+        bool AddProductToShoppingCart(Guid productGuid, Guid shopOfCartGuid, string username);
 
         /// <summary>
         /// Gets all the products on the user's cart.
         /// </summary>
-        /// <param name="shoppingCart"></param>
-        /// <returns>A enumerable collection of the products.</returns>
-        IEnumerable<Product> GetAllProducts(ShoppingCart shoppingCart);
+        /// <param name="username"></param>
+        /// <param name="shopOfCartGuid"></param>
+        /// <returns>An enumerable collection of the products.</returns>
+        IEnumerable<Guid> GetAllProducts(string username, Guid shopOfCartGuid);
 
         /// <summary>
         /// Removes the product from the user's cart.
         /// </summary>
-        /// <param name="product"></param>
-        /// <param name="shoppingCart"></param>
-        /// <param name="errorMessage"></param>
-        /// <returns>True if removed successfully. False otherwise, with an error message as an out parameter.</returns>
-        bool RemoveProduct(Product product, ShoppingCart shoppingCart, out string errorMessage);
+        /// <param name="productGuid"></param>
+        /// <param name="shopOfCartGuid"></param>
+        /// <param name="username"></param>
+        /// <returns>True if removed successfully. False otherwise.</returns>
+        bool RemoveProduct(Guid productGuid, Guid shopOfCartGuid, string username);
 
         /// <summary>
-        /// Set the amount of the product in the cart to the new amount.
+        /// Sets the amount of the product in the cart to the new amount.
         /// </summary>
-        /// <param name="product"></param>
-        /// <param name="shoppingCart"></param>
+        /// <param name="username"></param>
+        /// <param name="shopOfCartGuid"></param>
+        /// <param name="productGuid"></param>
         /// <param name="newAmount"></param>
-        /// <param name="errorMessage"></param>
-        /// <returns>True if removed successfully. False otherwise, with an error message as an out parameter.</returns>
-        bool ChangePurchasedProductAmount(Product product, ShoppingCart shoppingCart, int newAmount, out string errorMessage);
+        /// <returns>True if removed successfully. False otherwise.</returns>
+        bool ChangePurchasedProductAmount(string username, Guid shopOfCartGuid, Guid productGuid, int newAmount)
     }
 }

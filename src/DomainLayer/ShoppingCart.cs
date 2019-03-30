@@ -1,5 +1,6 @@
+using System;
 using System.Collections.Generic;
-
+using System.Linq;
 
 namespace DomainLayer
 {
@@ -49,6 +50,17 @@ namespace DomainLayer
                     break;
                 }
             }
+        }
+        public void RemoveProduct(Guid productGuid)
+        {
+            var product = _shopProducts.FirstOrDefault(prod => prod.Product.Guid.Equals(productGuid));
+            if (product != null)
+                _shopProducts.Remove(product);
+        }
+        public void EditProduct(Guid productGuid, int newQuantity)
+        {
+            var product = _shopProducts.FirstOrDefault(prod => prod.Product.Guid.Equals(productGuid));
+            product.Quantity = newQuantity;
         }
         public bool HasProduct(Product p)
         {

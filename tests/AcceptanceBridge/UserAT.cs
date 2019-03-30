@@ -14,6 +14,7 @@ namespace Tests
         private User _aUser;
         private User _gusetUser;
         private Product _IPhone;
+        private Product _Carrot;
         private UserInfo _info;
         private ShoppingCart _cart;
         private ShopOwner _owner;
@@ -23,13 +24,14 @@ namespace Tests
         {
             _proxy = new ProxyBridge();
             _proxy.SetRealBridge(new BridgeImpl());
-            _aUser = User.Register("groisman","150298");
+            _aUser = _proxy.Register("groisman", "150298");
             _gusetUser = new User();
             _IPhone = new Product("IPhone", "Cellphones");
+            _Carrot = new Product("Carrot", "Vegtables");
             _owner = new ShopOwner(_aUser, _shop, true);
             _shop = new Shop(_owner);
             _cart = new ShoppingCart(_shop); //I saw liron's branch.
-            _cart.addProduct(_IPhone);
+            //_cart.addProduct(_IPhone);
         }
 
         //GR 2.3-login of guest with identifiers.
@@ -44,8 +46,8 @@ namespace Tests
             Setup();
             string exist_username = "groisman";
             string exist_password = "150298";
-            Assert.AreEqual(false,_proxy.Login(exist_username, exist_password));
-            //TODO: Change expected value to true!
+            Assert.AreEqual(true,_proxy.Login(exist_username, exist_password));
+            _proxy.Logout();
         }
 
         [Test]
@@ -66,18 +68,18 @@ namespace Tests
         [Test]
         public void SearchProductsAT1()
         {
-            Setup();
+            //Setup();
             List<Product> acceptedList = new List<Product>();
             acceptedList.Add(_IPhone);
-            Assert.AreEqual(acceptedList, _proxy.SearchProduct("IPhone));
+            Assert.AreEqual(acceptedList, _proxy.SearchProduct("IPhone"));
             //TODO: Change null to some Product when I'll know how to add product to some store.
         }
         [Test]
         public void SearchProductsAT2()
         {
-            Setup();
+            //Setup();
             List<Product> acceptedList = new List<Product>();
-            Assert.AreEqual(acceptedList, _proxy.SearchProduct("Galaxy S9));
+            Assert.AreEqual(acceptedList, _proxy.SearchProduct("Galaxy S9"));
         }
 
         //GR 2.6 - keeping products in user's cart
@@ -124,7 +126,7 @@ namespace Tests
         public void WatchingAndEditingOfCartAT2()
         {
             ShoppingCart oneItemCart = new ShoppingCart();
-            Assert.AreEqual(true,_proxy.AddProduct(_IPhone,oneItemCart); //Assume proxy gets the cart.
+            Assert.AreEqual(true,_proxy.AddProduct(_IPhone,oneItemCart)); //Assume proxy gets the cart.
         }
         [Test]
         public void WatchingAndEditingOfCartAT3()

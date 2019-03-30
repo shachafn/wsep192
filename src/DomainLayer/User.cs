@@ -120,7 +120,7 @@ namespace DomainLayer
             }
             foreach (ProductFilter filter in filters)
             {
-                filter.apply(productsFound);
+                filter.ApplyFilter(productsFound);
             }
             return productsFound;
         }

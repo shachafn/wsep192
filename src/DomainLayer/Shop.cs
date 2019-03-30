@@ -6,6 +6,7 @@ namespace DomainLayer
     enum shopState { open, closed, permanentlyClosed };
     public class Shop
     {
+        public static Dictionary<Guid, Shop> _shops = new Dictionary<Guid, Shop>();
         private List<User> _owners;
         private List<Tuple<User, string>> _messages;
         private List<ShopProduct> _shopProducts;

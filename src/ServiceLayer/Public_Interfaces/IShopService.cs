@@ -10,20 +10,22 @@ namespace ServiceLayer.Public_Interfaces
         /// <summary>
         /// Adds the product to the shop.
         /// </summary>
-        /// <param name="product"></param>
-        /// <param name="shop"></param>
-        /// <param name="errorMessage"></param>
-        /// <returns>True if added successfully. False otherwise, with an error message as an out parameter.</returns>
-        bool AddProductToShop(Product product, DomainLayer.Shop shop, out string errorMessage);
+        /// <param name="name"></param>
+        /// <param name="category"></param>
+        /// <param name="price"></param>
+        /// <param name="quantity"></param>
+        /// <param name="shopGuid"></param>
+        /// <returns>True if added successfully. False otherwise.</returns>
+        Guid AddProductToShop(string name, string category, double price, int quantity, Guid shopGuid);
 
         /// <summary>
         /// Removes the product from the shop.
         /// </summary>
-        /// <param name="product"></param>
-        /// <param name="shop"></param>
-        /// <param name="errorMessage"></param>
-        /// <returns>True if added successfully. False otherwise, with an error message as an out parameter.</returns>
-        bool RemoveProductFromShop(Product product, DomainLayer.Shop shop, out string errorMessage);
+        /// <param name="productGuid"></param>
+        /// <param name="shopGuid"></param>
+        /// <returns>True if added successfully. False otherwise.</returns>
+        bool RemoveProductFromShop(Guid productGuid, Guid shopGuid);
+
 
         /// <summary>
         /// Set the price and quantity fields of the product to the new parameters.
@@ -31,50 +33,49 @@ namespace ServiceLayer.Public_Interfaces
         /// <param name="product"></param>
         /// <param name="price"></param>
         /// <param name="quantity"></param>
-        /// <param name="errorMessage"></param>
-        /// <returns>True if added successfully. False otherwise, with an error message as an out parameter.</returns>
-        bool EditProduct(Product product, double newPrice, int newQuantity, out string errorMessage);
+        /// <returns>True if added successfully. False otherwise.</returns>
+        bool EditProduct(Guid shopGuid, Guid productGuid, double newPrice, int newQuantity);
 
         /// <summary>
         /// Returns a list of products with a name which contains the product name.
         /// </summary>
         /// <param name="productName"></param>
         /// <returns>A list of products.</returns>
-        IEnumerable<Product> SearchProduct(string productName);
+        IEnumerable<Product> SearchProduct(Guid shopGuid, string productName);
 
         /// <summary>
         /// Adds the user as a shop owner.
         /// </summary>
-        /// <param name="username"></param>
-        /// <param name="errorMessage"></param>
-        /// <returns>True if added successfully. False otherwise, with an error message as an out parameter.</returns>
-        bool AddShopOwner(string username, out string errorMessage);
+        /// <param name="shopGuid"></param>
+        /// <param name="ownerUsername"></param>
+        /// <param name="managerToAddUsername"></param>
+        /// <returns>True if added successfully. False otherwise.</returns>
+        bool AddShopOwner(Guid shopGuid, string ownerUsername, string managerToAddUsername);
 
         /// <summary>
         /// Removes the shop owner from owning the shop and cascade delete all owners appointed by him.
         /// </summary>
-        /// <param name="username"></param>
-        /// <param name="shop"></param>
-        /// <param name="errorMessage"></param>
-        /// <returns>True if the operation was done successfully. False otherwise, with an error message as an out parameter.</returns>
-        bool CascadeRemoveShopOwner(string username, Shop shop, out string errorMessage);
+        /// <param name="shopGuid"></param>
+        /// <param name="ownerUsername"></param>
+        /// <returns>True if the operation was done successfully.</returns>
+        bool CascadeRemoveShopOwner(Guid shopGuid, string ownerUsername);
 
         /// <summary>
         /// Appoints the user as a shop manager of the shop.
         /// </summary>
-        /// <param name="username"></param>
-        /// <param name="errorMessage"></param>
-        /// <param name="shop"></param>
-        /// <returns>True if the operation was done successfully. False otherwise, with an error message as an out parameter.</returns>
-        bool AddShopManager(string username, Shop shop, out string errorMessage);
+        /// <param name="shopGuid"></param>
+        /// <param name="ownerUsername"></param>
+        /// <param name="managerToAddUsername"></param>
+        /// <param name="priviliges"></param>
+        /// <returns>True if the operation was done successfully.</returns>
+        bool AddShopManager(Guid shopGuid, string ownerUsername, string managerToAddUsername, List<string> priviliges);
 
         /// <summary>
         /// Removes the user from managing the shop.
         /// </summary>
-        /// <param name="username"></param>
-        /// <param name="errorMessage"></param>
-        /// <param name="shop"></param>
+        /// <param name="shopGuid"></param>
+        /// <param name="ownerUsername"></param>
         /// <returns></returns>
-        bool RemoveShopManager(string username, Shop shop, out string errorMessage);
+        bool RemoveShopManager(Guid shopGuid, string ownerUsername);
     }
 }

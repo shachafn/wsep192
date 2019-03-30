@@ -107,7 +107,7 @@ namespace ATBridge
             throw new NotImplementedException();
         }
 
-        public void ViewHistory(User user)
+        public List<ShoppingBag> ViewHistory(User user)
         {
             throw new NotImplementedException();
         }

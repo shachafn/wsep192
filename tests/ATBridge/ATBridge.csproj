@@ -5,7 +5,7 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\src\DomainLayer\DomainLayer.csproj" />
+    <ProjectReference Include="..\..\src\DomainLayer\DomainLayer.csproj" />
   </ItemGroup>
 
 </Project>

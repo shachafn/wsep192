@@ -114,8 +114,9 @@ namespace ATBridge
         {
         }
 
-        public void ViewHistory(User user)
+        public List<ShoppingBag> ViewHistory(User user)
         {
+            return null;
         }
 
         public void ViewHistory(Shop shop)

@@ -33,7 +33,7 @@ namespace ATBridge
 
         // Admin
         void Report();
-        void ViewHistory(User user);
+        List<ShoppingBag> ViewHistory(User user);
         void ViewHistory(Shop shop);
         void ShutdownShop(Shop shop);
 

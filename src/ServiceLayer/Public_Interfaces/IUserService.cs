@@ -26,14 +26,14 @@ namespace ServiceLayer.Public_Interfaces
         /// Logs out the user.
         /// </summary>
         /// <param name="username"></param>
-        void Logout(string username);
+        bool Logout(string username);
 
         /// <summary>
         /// Opens a store for the user.
         /// </summary>
         /// <param name="errorMessage"></param>
         /// <returns>True if opened successfully. False otherwise, with an error message as out parameter.</returns>
-        bool OpenStore(out string errorMessage);
+        bool OpenShop(string username, out string errorMessage);
 
         /// <summary>
         /// Pay for the list of the products of the shop for the user.
@@ -42,6 +42,6 @@ namespace ServiceLayer.Public_Interfaces
         /// <param name="userInfo"></param>
         /// <param name="sellingShop"></param>
         /// <returns>True if payed successfully. False otherwise with an error message as an out parameter.</returns>
-        bool PayForProducts(IEnumerable<Product> products, UserInfo userInfo, Shop sellingShop);
+        bool PurchaseBag(string username);
     }
 }

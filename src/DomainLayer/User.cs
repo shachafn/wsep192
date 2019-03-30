@@ -49,6 +49,9 @@ namespace DomainLayer
         {
            return this.purchaseHistory;
         }
+
+        public static User GetUserByUsername(string username) => users[username];
+
         /// <summary>
         /// logs the user in , changes its logged field to true , and retrieves all it's stored information
         /// </summary>
@@ -56,7 +59,7 @@ namespace DomainLayer
         /// <param name="password"></param>
         /// <returns>true if the login was sucseesful, false if one or more of the parameters were wrong 
         /// or if the user is already connected</returns>
-         public bool Login(string username, string password)
+        public bool Login(string username, string password)
         {
             // check if the user exist and the password is correct 
             if (!users.ContainsKey(username) || users[username].CheckPass(password) || users[username].logged)
@@ -82,7 +85,6 @@ namespace DomainLayer
             SaveUserChanges();
             return true;
         }
-
 
         /// <summary>
         ///  if the username is not taken already ,
@@ -213,6 +215,8 @@ namespace DomainLayer
             return "User:\n username: "+this.username+"\n"+this.userInfo.ToString()+"\n"+"logged: "+this.logged
                 + "\ncurrent shopping bag:"+this.currentBag.ToString()+"\n is admin: "+this.isAdmin;
         }
+
+        public void PurchaseBag() { }
 
     }
 }

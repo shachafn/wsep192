@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 
 namespace DomainLayer
@@ -33,6 +34,16 @@ namespace DomainLayer
                 result += "\n" + cart.ToString();
             }
             return result;
+        }
+
+        internal bool HasShop(Shop shop)
+        {
+            foreach (ShoppingCart cart in Carts)
+            {
+                if (cart.Shop.Equals(shop))
+                    return true;
+            }
+            return false;
         }
     }
 

@@ -7,6 +7,9 @@ namespace DomainLayer
 
     public class Product
     {
+        private Guid _guid;
+        public Guid Guid { get => _guid; set => _guid = value; }
+
         private const int MaxReviewLength = 250;
         private string _name;
         private string _category;
@@ -18,6 +21,8 @@ namespace DomainLayer
 
         public Product(string name, string category)
         {
+            _guid = Guid.NewGuid();
+
             this._name = name;
             this._category = category;
             _reviews = new Dictionary<User, string>();

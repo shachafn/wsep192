@@ -6,46 +6,93 @@ using System.Text;
 
 namespace ServiceLayer.Services
 {
-    class ShopService : IShopService
+    public class ShopService : IShopService
     {
-        public bool AddProductToShop(Product product, DomainLayer.Shop shop, out string errorMessage)
+        public Guid AddProductToShop(string name, string category, double price, int quantity, Guid shopGuid)
         {
-            throw new NotImplementedException();
+            var shop = Shop.GetShopByGuid(shopGuid);
+            if (shop == null) return Guid.Empty;
+            var product = new Product(name, category);
+            shop.AddProduct(product, price, quantity);
+            return product.Guid;
         }
 
-        public bool AddShopManager(string username, Shop shop, out string errorMessage)
+        public bool RemoveProductFromShop(Guid productGuid, Guid shopGuid)
         {
-            throw new NotImplementedException();
+            var shop = Shop.GetShopByGuid(shopGuid);
+            if (shop == null) return false;
+            shop.RemoveProduct(productGuid);
+            return true;
         }
 
-        public bool AddShopOwner(string username, out string errorMessage)
+        public bool AddShopManager(Guid shopGuid, string ownerUsername, string managerToAddUsername, List<string> priviliges)
         {
-            throw new NotImplementedException();
+            var managerToAdd = User.GetUserByUsername(ownerUsername);
+            if (managerToAdd == null) return false;
+
+            var owner = User.GetUserByUsername(ownerUsername);
+            if (owner == null) return false;
+
+            var shop = Shop.GetShopByGuid(shopGuid);
+            if (shop == null) return false;
+
+            var shopOwner = ShopOwner.GetShopOwner(owner, shop);
+            if (shopOwner == null) return false;
+
+            return shopOwner.AddManager(managerToAdd, new ShopOwner.ManagingPrivileges(priviliges));
         }
 
-        public bool CascadeRemoveShopOwner(string username, Shop shop, out string errorMessage)
+        public bool AddShopOwner(Guid shopGuid, string ownerUsername, string managerToAddUsername)
         {
-            throw new NotImplementedException();
+            var managerToAdd = User.GetUserByUsername(ownerUsername);
+            if (managerToAdd == null) return false;
+
+            var owner = User.GetUserByUsername(ownerUsername);
+            if (owner == null) return false;
+
+            var shop = Shop.GetShopByGuid(shopGuid);
+            if (shop == null) return false;
+
+            var shopOwner = ShopOwner.GetShopOwner(owner, shop);
+            if (shopOwner == null) return false;
+
+            return shopOwner.AddOwner(managerToAdd);
         }
 
-        public bool EditProduct(Product product, double newPrice, int newQuantity, out string errorMessage)
+        public bool CascadeRemoveShopOwner(Guid shopGuid, string ownerUsername)
         {
-            throw new NotImplementedException();
+            var owner = User.GetUserByUsername(ownerUsername);
+            if (owner == null) return false;
+
+            var shop = Shop.GetShopByGuid(shopGuid);
+            if (shop == null) return false;
+
+            var shopOwner = ShopOwner.GetShopOwner(owner, shop);
+            if (shopOwner == null) return false;
+
+            return shopOwner.RemoveOwner(shopOwner);
         }
 
-        public bool RemoveProductFromShop(Product product, DomainLayer.Shop shop, out string errorMessage)
+        public bool EditProduct(Guid shopGuid, Guid productGuid, double newPrice, int newQuantity)
         {
-            throw new NotImplementedException();
+            var shop = Shop.GetShopByGuid(shopGuid);
+            if (shop == null) return false;
+            shop.EditProduct(productGuid, newPrice, newQuantity);
+            return true;
         }
 
-        public bool RemoveShopManager(string username, Shop shop, out string errorMessage)
+        public bool RemoveShopManager(Guid shopGuid, string ownerUsername)
         {
-            throw new NotImplementedException();
+            return CascadeRemoveShopOwner(shopGuid, ownerUsername);
         }
 
-        public IEnumerable<Product> SearchProduct(string productName)
+        public IEnumerable<Product> SearchProduct(Guid shopGuid, string productName)
         {
-            throw new NotImplementedException();
+            var output = new List<Product>();
+            var shop = Shop.GetShopByGuid(shopGuid);
+            if (shop != null)
+                return shop.SearchProducts(productName);
+            return output;
         }
     }
 }

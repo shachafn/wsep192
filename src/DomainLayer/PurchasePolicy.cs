@@ -1,14 +1,18 @@
-public class PurchasePolicy
+namespace DomainLayer
 {
-    // Constructor that takes no arguments:
-    public PurchasePolicy()
+    public class PurchasePolicy
     {
-    }
+        // Constructor that takes no arguments:
+        public PurchasePolicy()
+        {
+        }
 
 
-    // Method that overrides the base class (System.Object) implementation.
-    public override string ToString()
-    {
+        // Method that overrides the base class (System.Object) implementation.
+        public override string ToString()
+        {
+            return "";
+        }
     }
 }
 

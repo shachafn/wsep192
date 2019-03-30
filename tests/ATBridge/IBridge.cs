@@ -6,36 +6,45 @@ namespace ATBridge
 {
     public interface IBridge
     {
-        // User
+        #region User Services
+        /// <summary>
+        /// Registers a user using the registration info.
+        /// </summary>
+        /// <param name="info">Info of the user to register</param>
+        /// <returns>True if registered successfully. False otherwise, with an error message as out parameter.</returns>
+        bool Register(string username, string password);
+
+        /// <summary>
+        /// Logins a user using the username and password.
+        /// </summary>
+        /// <param name="username"></param>
+        /// <param name="password"></param>
+        /// <returns>True if it could login successfully. False otherwise.</returns>
         bool Login(string username, string password);
-        bool Logout();
-        User Register(string username, string password);
-        List<Product> Search(string searchString, List<ProductFilter> filters = null);
-        bool OpenShop();
-        void WatchHistory();
-        void EditProfile();
 
-        // Shopping Cart
-        bool AddProduct();
-        bool RemoveProduct();
-        void GetAllProducts();
+        /// <summary>
+        /// Logs out the user.
+        /// </summary>
+        /// <param name="username"></param>
+        bool Logout(string username);
 
-        // Shop
-        void RateStore(User user, int rate);
-        bool AddProduct(ShopProduct product);
-        bool RemoveProduct(ShopProduct product);
-        void SendMessage(User user, string message);
-        bool EditProduct(Product product, double price, int quantity);
-        List<ShoppingBag> GetPurchaseHistory();
-        Product SearchProduct(string searchString);
-        bool AddReview(User user, string text);
-        void RateProduct(User user, int rate);
+        /// <summary>
+        /// Opens a store for the user.
+        /// </summary>
+        /// <param name="errorMessage"></param>
+        /// <returns>True if opened successfully. False otherwise, with an error message as out parameter.</returns>
+        bool OpenShop(string username);
 
-        // Admin
-        void Report();
-        List<ShoppingBag> ViewHistory(User user);
-        void ViewHistory(Shop shop);
-        void ShutdownShop(Shop shop);
+        /// <summary>
+        /// Pay for the list of the products of the shop for the user.
+        /// </summary>
+        /// <param name="products"></param>
+        /// <param name="userInfo"></param>
+        /// <param name="sellingShop"></param>
+        /// <returns>True if payed successfully. False otherwise with an error message as an out parameter.</returns>
+        bool PurchaseBag(string username);
+        #endregion
+
 
     }
 }

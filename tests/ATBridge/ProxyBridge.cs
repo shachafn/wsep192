@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Text;
-using DomainLayer;
+using ServiceLayer.Services;
 
 namespace ATBridge
 {
@@ -20,111 +20,56 @@ namespace ATBridge
                 _real = impl;
         }
 
-        public bool AddProduct()
+        /// <summary>
+        /// Registers a user using the registration info.
+        /// </summary>
+        /// <param name="info">Info of the user to register</param>
+        /// <returns>True if registered successfully. False otherwise, with an error message as out parameter.</returns>
+        public bool Register(string username, string password)
         {
-            return false;
+            return _real == null ? false : _real.Register(username, password);
         }
 
-        public bool AddProduct(ShopProduct product)
-        {
-            return false;
-        }
-
-        public bool AddReview(User user, string text)
-        {
-            return false;
-        }
-
-        public bool EditProduct(Product product, double price, int quantity)
-        {
-            return false;
-        }
-
-        public void EditProfile()
-        {
-        }
-
-        public void GetAllProducts()
-        {
-        }
-
-        public List<ShoppingBag> GetPurchaseHistory()
-        {
-            return null;
-        }
-
+        /// <summary>
+        /// Logins a user using the username and password.
+        /// </summary>
+        /// <param name="username"></param>
+        /// <param name="password"></param>
+        /// <returns>True if it could login successfully. False otherwise.</returns>
         public bool Login(string username, string password)
         {
-            return false;
+            return _real == null ? false : _real.Login(username, password);
         }
 
-        public bool Logout()
+        /// <summary>
+        /// Logs out the user.
+        /// </summary>
+        /// <param name="username"></param>
+        public bool Logout(string username)
         {
-            return false;
+            return _real == null ? false : _real.Logout(username);
         }
 
-        public bool OpenShop()
+        /// <summary>
+        /// Opens a store for the user.
+        /// </summary>
+        /// <param name="errorMessage"></param>
+        /// <returns>True if opened successfully. False otherwise, with an error message as out parameter.</returns>
+        public bool OpenShop(string username)
         {
-            return false;
+            return _real == null ? false : _real.OpenShop(username);
         }
 
-        public void RateProduct(User user, int rate)
+        /// <summary>
+        /// Pay for the list of the products of the shop for the user.
+        /// </summary>
+        /// <param name="products"></param>
+        /// <param name="userInfo"></param>
+        /// <param name="sellingShop"></param>
+        /// <returns>True if payed successfully. False otherwise with an error message as an out parameter.</returns>
+        public bool PurchaseBag(string username)
         {
-        }
-
-        public void RateStore(User user, int rate)
-        {
-
-        }
-
-        public User Register(string username, string password)
-        {
-            return null;
-        }
-
-        public bool RemoveProduct()
-        {
-            return false;
-        }
-
-        public bool RemoveProduct(ShopProduct product)
-        {
-            return false;
-        }
-
-        public void Report()
-        {
-        }
-
-        public List<Product> Search(string searchString, List<ProductFilter> filters = null)
-        {
-            return null;
-        }
-
-        public Product SearchProduct(string searchString)
-        {
-            return null;
-        }
-
-        public void SendMessage(User user, string message)
-        {
-        }
-
-        public void ShutdownShop(Shop shop)
-        {
-        }
-
-        public List<ShoppingBag> ViewHistory(User user)
-        {
-            return null;
-        }
-
-        public void ViewHistory(Shop shop)
-        {
-        }
-
-        public void WatchHistory()
-        {
+            return _real == null ? false : _real.PurchaseBag(username);
         }
     }
 }

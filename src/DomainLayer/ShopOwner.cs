@@ -5,7 +5,7 @@ namespace DomainLayer
 {
     public class ShopOwner
     {
-        private static OwnersDictionary shopOwners;
+        private static OwnersDictionary shopOwners = new OwnersDictionary();
         private User owner; // may be  a list of owners is needed
         private Shop shop;
         private List<ShopOwner> ownersAssigned;
@@ -19,7 +19,7 @@ namespace DomainLayer
             this.shop = shop;
             ownersAssigned = new List<ShopOwner>();
             this.privileges = new ManagingPrivileges(manager);
-            this.shop.addOwner(owner);
+            this.shop.AddOwner(owner);
         }
         /// <summary>
         /// get a shopOwner instance from the current shopOwners in the system
@@ -29,7 +29,7 @@ namespace DomainLayer
         /// <returns> a relvant shopOwner if one exists , null otherwise</returns>
         public static ShopOwner GetShopOwner(User user, Shop shop)
         {
-            bool exists = user.IsLogged() && shopOwners.hasUser(user.Username);
+            bool exists = user.IsLogged() && shopOwners.HasUser(user.Username);
             if(!exists)
             {
                 return null;
@@ -56,8 +56,10 @@ namespace DomainLayer
             {
                 return false;
             }
-            ShopOwner newShopOwner = new ShopOwner(newManager,this.shop,true);
-            newShopOwner.privileges = privileges;
+            ShopOwner newShopOwner = new ShopOwner(newManager, shop, true)
+            {
+                privileges = privileges
+            };
             ownersAssigned.Add(newShopOwner);
             shopOwners.OwnersDictAdd(newManager.Username,newShopOwner);
             return true;
@@ -103,7 +105,7 @@ namespace DomainLayer
             }
             ownersAssigned.Remove(toRemove);
             shopOwners.OwnersDictRemove(toRemove.owner.Username, toRemove);
-            this.shop.removeOwner(toRemove.owner);
+            this.shop.RemoveOwner(toRemove.owner);
             toRemove.owner.RemoveShop(toRemove.shop);
             return true;
         }
@@ -122,16 +124,16 @@ namespace DomainLayer
             {
                 RemoveOwner(owner);
             }
-            this.shop.removeOwner(this.owner);
-            this.shop.close();
+            this.shop.RemoveOwner(this.owner);
+            this.shop.Close();
             shopOwners.OwnersDictRemove(this.owner.Username, this); // remove yourself from the list
             this.owner.RemoveShop(this.shop);
             return true;
         }
 
-        public static void cleanDict() // a method for cleaning the dictionary, used for testing
+        public static void CleanDict() // a method for cleaning the dictionary, used for testing
         {
-            shopOwners.cleanDict();
+            shopOwners.CleanDict();
         }
         // Method that overrides the base class (System.Object) implementation.
         public override string ToString()
@@ -141,42 +143,42 @@ namespace DomainLayer
 
         public class ManagingPrivileges
         {
-            List<string> allowedActions { get => allowedActions; set => allowedActions = value; }
-            bool isManager; // if not a manager it is an owner , an owner has all the actions available 
+            private List<string> AllowedActions { get => AllowedActions; set => AllowedActions = value; }
+            private bool _isManager; // if not a manager it is an owner , an owner has all the actions available 
             public ManagingPrivileges(List<string> allowedActions)
             {
-                this.allowedActions = allowedActions;
-                this.isManager = true;
+                AllowedActions = allowedActions;
+                _isManager = true;
             }
             public ManagingPrivileges(bool isManager)
             {
-                this.allowedActions = new List<string>();
-                this.isManager = isManager;
+                AllowedActions = new List<string>();
+                _isManager = isManager;
             }
 
             public bool AddAction(string action)
             {
-                bool exsits = allowedActions.Contains(action);
+                bool exsits = AllowedActions.Contains(action);
                 if(!exsits)
                 {
-                    allowedActions.Add(action);              
+                    AllowedActions.Add(action);              
                 }
                 return !exsits;
             }
 
             public bool RemoveAction(string action)
             {
-                bool exsits = allowedActions.Contains(action);
+                bool exsits = AllowedActions.Contains(action);
                 if (exsits)
                 {
-                    allowedActions.Remove(action);
+                    AllowedActions.Remove(action);
                 }
                 return exsits;
             }
 
             public bool HasPrivilege(string action)
             {
-                return !isManager || allowedActions.Contains(action);
+                return !_isManager || AllowedActions.Contains(action);
             }
         }
 
@@ -210,8 +212,10 @@ namespace DomainLayer
                 }
                 else
                 {
-                    List<ShopOwner> userShops = new List<ShopOwner>();
-                    userShops.Add(newshopOwner);
+                    List<ShopOwner> userShops = new List<ShopOwner>
+                    {
+                        newshopOwner
+                    };
                     shopOwners.Add(username, userShops);
                 }
             }
@@ -220,12 +224,12 @@ namespace DomainLayer
             {
                 return shopOwners[username];
             }
-            public bool hasUser(string username)
+            public bool HasUser(string username)
             {
                 return shopOwners.ContainsKey(username);
             }
 
-            public void cleanDict() // a method for cleaning the dictionary
+            public void CleanDict() // a method for cleaning the dictionary
             {
                 shopOwners = new Dictionary<string, List<ShopOwner>>();
             }

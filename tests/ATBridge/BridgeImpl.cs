@@ -58,7 +58,7 @@ namespace ATBridge
             return _userService.Logout(username);
         }
 
-        public bool OpenShop(string username)
+        public Guid OpenShop(string username)
         {
             return _userService.OpenShop(username, out _errorStr);
         }
@@ -68,7 +68,7 @@ namespace ATBridge
             return _userService.PurchaseBag(username);
         }
 
-        public bool Register(string username, string password)
+        public User Register(string username, string password)
         {
             return _userService.Register(username, password, out _errorStr);
         }

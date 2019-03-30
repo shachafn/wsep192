@@ -14,7 +14,7 @@ namespace ServiceLayer.Services
             if (shop == null) return Guid.Empty;
             var product = new Product(name, category);
             shop.AddProduct(product, price, quantity);
-            return product.Guid;
+            return product.ProductGuid;
         }
 
         public bool RemoveProductFromShop(Guid productGuid, Guid shopGuid)

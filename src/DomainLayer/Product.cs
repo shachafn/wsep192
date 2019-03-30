@@ -63,5 +63,9 @@ public class Product
         return false;
     }
 
+    public override int GetHashCode()
+    {
+        return HashCode.Combine(Name, Category);
+    }
 }
 

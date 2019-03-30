@@ -12,7 +12,6 @@ namespace DomainLayer
         public static Shop GetShopByGuid(Guid guid) => _shops[guid];
 
         private Guid _guid;
-        private ShopOwner _owner;
 
         private List<User> _owners;
 
@@ -28,8 +27,6 @@ namespace DomainLayer
         {
 
             _guid = Guid.NewGuid();
-
-            _owner = shopOwner;
 
             _owners = new List<User>();
 

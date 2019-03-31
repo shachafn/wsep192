@@ -14,6 +14,7 @@
 
   <ItemGroup>
     <ProjectReference Include="..\..\src\DomainLayer\DomainLayer.csproj" />
+    <ProjectReference Include="..\..\src\ServiceLayer\ServiceLayer.csproj" />
   </ItemGroup>
 
 </Project>

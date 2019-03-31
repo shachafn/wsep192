@@ -34,6 +34,7 @@ namespace DomainLayer
             _rate = 0;
             _sumOfRates = 0;
             _numberOfRates = 0;
+            _state = ShopState.open;
             _shops.Add(ShopGuid, this);
         }
 
@@ -45,24 +46,34 @@ namespace DomainLayer
         public ShopOwner Owner { get; }
         public List<ShopProduct> ShopProducts { get; }
         public double Rate { get; }
-
-        public void RateShop(User user, int rate)
+        public List<Tuple<User, string>> Messages { get; }
+        public int State { get; }
+        public bool RateShop(User user, int rate)
         {
             if (CanRateShop(user) && IsValidRate(rate))
             {
                 _sumOfRates += rate;
                 _numberOfRates++;
                 rate = _sumOfRates / _numberOfRates;
+                return true;
             }
-
+            return false;
         }
         public void Close()
         {
-            _state = ShopState.closed;
+            if(_state!= ShopState.permanentlyClosed)
+                _state = ShopState.closed;
         }
         public void Adminclose()
         {
             _state = ShopState.permanentlyClosed;
+        }
+        public void Open() //Could be bool for message granting
+        {
+            if (_state != ShopState.permanentlyClosed)
+            {
+                _state = ShopState.open;
+            }
         }
         private bool CanRateShop(User user)
         {
@@ -89,7 +100,7 @@ namespace DomainLayer
             if (toRemove != null)
                 _shopProducts.Remove(toRemove);
         }
-        private ShopProduct SearchProduct(Product product)
+        public ShopProduct SearchProduct(Product product)
         {
             foreach (ShopProduct sp in _shopProducts)
             {
@@ -129,6 +140,10 @@ namespace DomainLayer
             }
             return toReturn;
 
+        }
+        public void AddToPurchaseHistory(User user, ShoppingCart shoppingCart)
+        {
+            _purchaseHistory.Add(Tuple.Create(user, shoppingCart));
         }
         public IEnumerable<Product> SearchProducts(string searchString)
         {

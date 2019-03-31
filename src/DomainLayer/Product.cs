@@ -35,14 +35,16 @@ namespace DomainLayer
                 _reviews.Add(user, review);
         }
 
-        public void RateProduct(User user, int rate)
+        public bool RateProduct(User user, int rate)
         {
             if (CanRateProduct(user) && rate >= 1 && rate <= 5)
             {
                 _sumOfRates += rate;
                 _numberOfRates++;
                 rate = _sumOfRates / _numberOfRates;
+                return true;
             }
+            return false;
         }
 
         private bool CanRateProduct(User user)

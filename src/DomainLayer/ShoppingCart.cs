@@ -87,6 +87,32 @@ namespace DomainLayer
             }
             return total;
         }
+        public bool PurchaseCart(User user)
+        {
+            //TODO: Send to external payment method
+            for (int i = 0; i < ShopProducts.Count; i++)
+            {
+                ShopProduct sp = ShopProducts[i];
+                if (Shop.SearchProduct(sp.Product).Quantity < sp.Quantity)
+                {
+                    //Cant purchase,the selected amount is unavailable
+                    //return the items to the shop
+                    for (int j = 0; j < i; j++)
+                    {
+                        ShopProduct sp1 = ShopProducts[j];
+                        Shop.EditProduct(sp1.Product, sp1.Price, Shop.SearchProduct(sp1.Product).Quantity + sp1.Quantity);
+                    }
+                    return false;
+                }
+                Shop.EditProduct(sp.Product, sp.Price, Shop.SearchProduct(sp.Product).Quantity - sp.Quantity);
+
+            }
+            _shop.AddToPurchaseHistory(user, this);
+            ShoppingBag addToUserHistory = new ShoppingBag();
+            addToUserHistory.AddCart(this);
+            user.AddToPurchaseHistory(addToUserHistory);
+            return true;
+        }
 
 
         public override string ToString()

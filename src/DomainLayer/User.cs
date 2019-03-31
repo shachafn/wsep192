@@ -221,6 +221,11 @@ namespace DomainLayer
 
         public void PurchaseBag() { }
 
+        public void AddToPurchaseHistory(ShoppingBag shoppingBag)
+        {
+            _purchaseHistory.Add(shoppingBag);
+        }
+
         public bool RemoveUser(string username)
         {
             var user = users[username];

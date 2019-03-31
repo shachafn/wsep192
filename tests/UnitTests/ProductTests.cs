@@ -5,7 +5,7 @@ using System.Collections.Generic;
 namespace UnitTests
 {
     [TestFixture]
-    public class UserTest1
+    public class ProductTests
     {
         User loggedInUser;
         User notLoggedInUser;
@@ -18,7 +18,7 @@ namespace UnitTests
             loggedInUser = User.Register("meni", "123456");
             notLoggedInUser = User.Register("beni", "123456");
             string pass = "123456";
-            loggedInUser.Login(loggedInUser.username, pass);
+            loggedInUser.Login(loggedInUser.Username, pass);
             football = new Product("Football", "Sports");
         }
 
@@ -30,7 +30,7 @@ namespace UnitTests
             Assert.AreEqual(0, football.Rate);
 
         }
-
+        
         [Test, Description("Test RateProduct")]
         public void TestRateProduct()
         {
@@ -39,5 +39,6 @@ namespace UnitTests
             Assert.AreEqual(0, football.Rate);
 
         }
+        
     }
 }

@@ -1,43 +1,42 @@
 ﻿using DomainLayer;
 using NUnit.Framework;
-using System;
-using System.Collections.Generic;
-using System.Text;
 
 namespace UnitTests
 {
     [TestFixture]
     public class ShopTests
     {
-        User loggedInUser;
-        User notLoggedInUser;
-        Product football;
+        Shop shop;
+        Shop shop1;
 
         [SetUp]
         public void Setup()
         {
-            User.users = new Dictionary<string, User>();
-            loggedInUser = User.Register("meni", "123456");
-            notLoggedInUser = User.Register("beni", "123456");
-            ShopOwner owner = new ShopOwner(loggedInUser);
-            string pass = "123456";
-            loggedInUser.Login(loggedInUser.username, pass);
-            football = new Product("Football", "Sports");
+            shop = new Shop();
+            shop1 = new Shop();
         }
 
         [Test, Description("Test Shop Init")]
         public void TestShopInit()
         {
-           
+            Assert.NotNull(shop);
+            Assert.AreEqual(0, shop.Rate);
+            Assert.AreEqual(0, shop.State);
+            Assert.AreNotEqual(shop.ShopGuid, shop1.ShopGuid);
         }
-
-        [Test, Description("Test RateShop")]
-        public void TestRateProduct()
+        [Test, Description("Test Shop States")]
+        public void TestShopStates()
         {
-            Assert.False(football.RateProduct(notLoggedInUser, 5));
-            Assert.False(football.RateProduct(loggedInUser, 4));//Didn't buy the product
-            Assert.AreEqual(0, football.Rate);
-
+            shop.Close();
+            Assert.AreEqual(1, shop.State);
+            shop.Open();
+            Assert.AreEqual(0, shop.State);
+            shop.Adminclose();
+            Assert.AreEqual(2, shop.State);
+            shop.Open();
+            Assert.AreEqual(2, shop.State);
+            shop.Close();
+            Assert.AreEqual(2, shop.State);
         }
     }
 }

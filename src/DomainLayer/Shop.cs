@@ -131,6 +131,10 @@ namespace DomainLayer
             return toReturn;
 
         }
+        public void AddToPurchaseHistory(User user, ShoppingCart shoppingCart)
+        {
+            _purchaseHistory.Add(Tuple.Create(user, shoppingCart));
+        }
         public IEnumerable<Product> SearchProducts(string searchString)
         {
             List<Product> toReturn = new List<Product>();

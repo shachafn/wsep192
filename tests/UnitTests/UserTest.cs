@@ -28,7 +28,7 @@ namespace Tests
         {
             User user = User.Register("meni", "123456");
             Assert.Null(user);
-            User otherUser = new User("beni", "1234");
+            User otherUser = new User("beni", "1234", false);
             Assert.Null(otherUser);
             Assert.Equals(1, User.users.Count);
         }
@@ -47,8 +47,8 @@ namespace Tests
         public void Setup()
         {
             User.users = new Dictionary<string, User>();
-            User meni = User.Register("meni", "123456");
-            User beni = User.Register("beni", "123456");
+            meni = User.Register("meni", "123456");
+            beni = User.Register("beni", "123456");
             beniPass = "123456";
             meniPass = "123456";
         }

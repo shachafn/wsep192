@@ -12,7 +12,7 @@ namespace ServiceLayer.Public_Interfaces
         /// </summary>
         /// <param name="info">Info of the user to register</param>
         /// <returns>True if registered successfully. False otherwise, with an error message as out parameter.</returns>
-        bool Register(string username, string password, out string ErrorMessage);
+        User Register(string username, string password, out string ErrorMessage);
 
         /// <summary>
         /// Logins a user using the username and password.
@@ -33,7 +33,7 @@ namespace ServiceLayer.Public_Interfaces
         /// </summary>
         /// <param name="errorMessage"></param>
         /// <returns>True if opened successfully. False otherwise, with an error message as out parameter.</returns>
-        bool OpenShop(string username, out string errorMessage);
+        Guid OpenShop(string username, out string errorMessage);
 
         /// <summary>
         /// Pay for the list of the products of the shop for the user.

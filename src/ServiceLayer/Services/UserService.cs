@@ -8,10 +8,10 @@ namespace ServiceLayer.Services
 {
     public class UserService : IUserService
     {
-        public bool Register(string username, string password, out string ErrorMessage)
+        public User Register(string username, string password, out string ErrorMessage)
         {
             ErrorMessage = "";
-            return (User.Register(username, password) != null) ? true : false;
+            return User.Register(username, password);
         }
         public bool Login(string username, string password)
         {
@@ -26,16 +26,16 @@ namespace ServiceLayer.Services
             return user.Logout();
         }
 
-        public bool OpenShop(string username, out string errorMessage)
+        public Guid OpenShop(string username, out string errorMessage)
         {
             var user = User.GetUserByUsername(username);
             if (user == null)
             {
                 errorMessage = $"No such user with username {username}";
-                return false;
+                return Guid.Empty;
             }
             errorMessage = "";
-            return user.openShop();
+            return user.OpenShop();
         }
 
         public bool PurchaseBag(string username)

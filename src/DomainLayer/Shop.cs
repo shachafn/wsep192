@@ -4,16 +4,17 @@ using System.Linq;
 
 namespace DomainLayer
 {
-    enum shopState { open, closed, permanentlyClosed };
+    enum ShopState { open, closed, permanentlyClosed };
     public class Shop
     {
         public static Dictionary<Guid, Shop> _shops = new Dictionary<Guid, Shop>();
 
         public static Shop GetShopByGuid(Guid guid) => _shops[guid];
 
-        private Guid _guid;
+        public Guid ShopGuid { get => ShopGuid; private set => ShopGuid = value; }
 
-        private List<User> _owners;
+        public ICollection<User> _owners;
+        public ICollection<User> Owners { get => _owners; set => _owners = value; }
 
         private List<Tuple<User, string>> _messages;
         private List<ShopProduct> _shopProducts;
@@ -21,11 +22,11 @@ namespace DomainLayer
         private double _rate;
         private int _sumOfRates;
         private int _numberOfRates;
-        private shopState _state;
+        private ShopState _state;
 
         public Shop()
         {
-            _guid = Guid.NewGuid();
+            ShopGuid = Guid.NewGuid();
             _owners = new List<User>();
             _messages = new List<Tuple<User, string>>();
             _shopProducts = new List<ShopProduct>();
@@ -33,10 +34,10 @@ namespace DomainLayer
             _rate = 0;
             _sumOfRates = 0;
             _numberOfRates = 0;
-            _shops.Add(_guid, this);
+            _shops.Add(ShopGuid, this);
         }
 
-        public void addOwner(User owner)
+        public void AddOwner(User owner)
         {
             _owners.Add(owner);
         }
@@ -55,13 +56,13 @@ namespace DomainLayer
             }
 
         }
-        public void close()
+        public void Close()
         {
-            _state = shopState.closed;
+            _state = ShopState.closed;
         }
         public void Adminclose()
         {
-            _state = shopState.permanentlyClosed;
+            _state = ShopState.permanentlyClosed;
         }
         private bool CanRateShop(User user)
         {
@@ -84,7 +85,7 @@ namespace DomainLayer
         }
         public void RemoveProduct(Guid productGuid)
         {
-            ShopProduct toRemove = _shopProducts.FirstOrDefault(prod => prod.Product.Guid.Equals(productGuid));
+            ShopProduct toRemove = _shopProducts.FirstOrDefault(prod => prod.Product.ProductGuid.Equals(productGuid));
             if (toRemove != null)
                 _shopProducts.Remove(toRemove);
         }
@@ -107,7 +108,7 @@ namespace DomainLayer
 
         public void EditProduct(Guid productGuid, double price, int quantity)
         {
-            var toEdit = _shopProducts.FirstOrDefault(prod => prod.Product.Guid.Equals(productGuid));
+            var toEdit = _shopProducts.FirstOrDefault(prod => prod.Product.ProductGuid.Equals(productGuid));
             if (toEdit == null) return;
             toEdit.Price = price;
             toEdit.Quantity = quantity;
@@ -145,7 +146,7 @@ namespace DomainLayer
             return "Owner: " + _owners.ToString() + "\nRate: " + _rate + "\nProducts: " + _shopProducts.ToString();
         }
 
-        internal void removeOwner(User owner)
+        internal void RemoveOwner(User owner)
         {
             _owners.Remove(owner);
         }

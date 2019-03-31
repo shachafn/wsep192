@@ -21,9 +21,9 @@ namespace ATBridge
                 _real = impl;
         }
 
-        public bool Register(string username, string password)
+        public User Register(string username, string password)
         {
-            return _real == null ? false : _real.Register(username, password);
+            return _real?.Register(username, password);
         }
 
         public bool Login(string username, string password)
@@ -36,9 +36,9 @@ namespace ATBridge
             return _real == null ? false : _real.Logout(username);
         }
 
-        public bool OpenShop(string username)
+        public Guid OpenShop(string username)
         {
-            return _real == null ? false : _real.OpenShop(username);
+            return _real == null ? Guid.Empty : _real.OpenShop(username);
         }
 
         public bool PurchaseBag(string username)
@@ -84,6 +84,26 @@ namespace ATBridge
         public bool RemoveShopManager(Guid shopGuid, string ownerUsername)
         {
             return _real == null ? false : _real.RemoveShopManager(shopGuid, ownerUsername);
+        }
+
+        public bool AddProductToShoppingCart(Guid productGuid, Guid shopOfCartGuid, string username)
+        {
+            return _real == null ? false : _real.AddProductToShoppingCart(productGuid, shopOfCartGuid, username);
+        }
+
+        public IEnumerable<Guid> GetAllProducts(string username, Guid shopOfCartGuid)
+        {
+            return _real?.GetAllProducts(username, shopOfCartGuid);
+        }
+
+        public bool RemoveProduct(Guid productGuid, Guid shopOfCartGuid, string username)
+        {
+            return _real == null ? false : _real.RemoveProduct(productGuid, shopOfCartGuid, username);
+        }
+
+        public bool ChangePurchasedProductAmount(string username, Guid shopOfCartGuid, Guid productGuid, int newAmount)
+        {
+            return _real == null ? false : _real.ChangePurchasedProductAmount(username, shopOfCartGuid, productGuid, newAmount);
         }
     }
 }

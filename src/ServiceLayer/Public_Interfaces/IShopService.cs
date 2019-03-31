@@ -26,7 +26,6 @@ namespace ServiceLayer.Public_Interfaces
         /// <returns>True if added successfully. False otherwise.</returns>
         bool RemoveProductFromShop(Guid productGuid, Guid shopGuid);
 
-
         /// <summary>
         /// Set the price and quantity fields of the product to the new parameters.
         /// </summary>

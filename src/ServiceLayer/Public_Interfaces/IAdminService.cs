@@ -20,11 +20,11 @@ namespace ServiceLayer.Public_Interfaces
         /// Removes the user.
         /// </summary>
         ///     <constraints>
-        ///     1. User must not be the only owner of an active shop.
+        ///         1. User must not be the only owner of an active shop.
         ///     </constraints>
-        /// <param name="userInfo"></param>
-        /// <returns>True if the user was removed successfully. False otherwise.</returns>
-        bool RemoveUser(UserInfo userInfo);
+        /// <param name="username">True if the user was removed successfully. False otherwise.</param>
+        /// <returns></returns>
+        bool RemoveUser(string username);
 
         /// <summary>
         /// Checks if the system can connect to the payment system.

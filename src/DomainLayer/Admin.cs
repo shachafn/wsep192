@@ -14,13 +14,13 @@ namespace DomainLayer
             {
                 throw new System.Exception("the user is not an admin");
             }
-            this._admin = admin;
+            _admin = admin;
             _reports = new List<UserReport>();
         }
 
         public void Report(User reporter, string report)
         {
-            if (reporter != null && !report.Equals(""))
+            if (reporter != null && !report.Equals(string.Empty))
             {
                 _reports.Add(new UserReport(reporter, report));
             }
@@ -42,7 +42,7 @@ namespace DomainLayer
 
         public List<ShoppingBag> ViewUserHistory(User user)
         {
-            return user.getShoppingHistory();
+            return user.GetShoppingHistory();
         }
 
         public void CloseShopPermanently(Shop shop)
@@ -63,10 +63,9 @@ namespace DomainLayer
 
             public UserReport(User reporter, string reportText)
             {
-                this.Reporter = reporter;
-                this.ReportText = reportText;
+                Reporter = reporter;
+                ReportText = reportText;
             }
-
 
         }
     }

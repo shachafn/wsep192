@@ -4,11 +4,9 @@ using System.Collections.Generic;
 
 namespace DomainLayer
 {
-
     public class Product
     {
-        private Guid _guid;
-        public Guid Guid { get => _guid; set => _guid = value; }
+        public Guid ProductGuid { get => ProductGuid; set => ProductGuid = value; }
 
         private const int MaxReviewLength = 250;
         private string _name;
@@ -21,10 +19,9 @@ namespace DomainLayer
 
         public Product(string name, string category)
         {
-            _guid = Guid.NewGuid();
-
-            this._name = name;
-            this._category = category;
+            ProductGuid = Guid.NewGuid();
+            _name = name;
+            _category = category;
             _reviews = new Dictionary<User, string>();
             _rate = 0;
             _sumOfRates = 0;

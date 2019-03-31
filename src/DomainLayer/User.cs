@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Linq;
 
 namespace DomainLayer
 {
@@ -7,49 +8,49 @@ namespace DomainLayer
     {
         public static Dictionary<string, User> users = new Dictionary<string, User>(); // a list of all registered users in the current session
 
-        private bool logged;
+        private bool _logged;
         public string Username { get => Username; private set => Username=value; }
         public bool IsAdmin { get => isAdmin; private set => isAdmin = value; }
 
-        private string passHash;
-        private ShoppingBag currentBag;
-        private List<ShoppingBag> purchaseHistory;
-        private UserInfo userInfo;
-        private List<Shop> shopsOwned;
+        private string _passHash;
+        public ShoppingBag CurrentBag { get; set; }
+        private List<ShoppingBag> _purchaseHistory;
+        private UserInfo _userInfo;
+        private List<Shop> _shopsOwned;
         private bool isAdmin; 
         // Constructor that takes no arguments:
         public User()
         {
-            logged = false;
+            _logged = false;
             Username = "";
-            passHash = "";
-            currentBag = new ShoppingBag();
-            purchaseHistory = new List<ShoppingBag>();
-            userInfo = new UserInfo();
-            shopsOwned = new List<Shop>();
+            _passHash = "";
+            CurrentBag = new ShoppingBag();
+            _purchaseHistory = new List<ShoppingBag>();
+            _userInfo = new UserInfo();
+            _shopsOwned = new List<Shop>();
             IsAdmin = false;
         }
 
-        public User(string username, string password)
+        public User(string username, string password, bool isAdmin)
         {
-            this.Username = username;
-            this.passHash = GetStringSha256Hash(password);
-            logged = false;
-            currentBag = new ShoppingBag();
-            purchaseHistory = new List<ShoppingBag>();
-            userInfo = new UserInfo();
-            shopsOwned = new List<Shop>();
-            IsAdmin = false;
+            Username = username;
+            _passHash = GetStringSha256Hash(password);
+            _logged = false;
+            CurrentBag = new ShoppingBag();
+            _purchaseHistory = new List<ShoppingBag>();
+            _userInfo = new UserInfo();
+            _shopsOwned = new List<Shop>();
+            IsAdmin = isAdmin;
         }
 
         public bool IsLogged()
         {
-            return logged;
+            return _logged;
         }
 
-        internal List<ShoppingBag> getShoppingHistory()
+        internal List<ShoppingBag> GetShoppingHistory()
         {
-           return this.purchaseHistory;
+           return _purchaseHistory;
         }
 
         public static User GetUserByUsername(string username) => users[username];
@@ -64,12 +65,12 @@ namespace DomainLayer
         public bool Login(string username, string password)
         {
             // check if the user exist and the password is correct 
-            if (!users.ContainsKey(username) || users[username].CheckPass(password) || users[username].logged)
+            if (!users.ContainsKey(username) || users[username].CheckPass(password) || users[username]._logged)
             {
                 return false;
             }
 
-            logged = true;
+            _logged = true;
             CopyUserData(users[username]);// used to recive all of the data saved on the user
             return true;
         }
@@ -80,7 +81,7 @@ namespace DomainLayer
          */
         public bool Logout()
         {
-            if (!logged)
+            if (!_logged)
             {
                 return false;
             }
@@ -101,7 +102,7 @@ namespace DomainLayer
             {
                 return null;
             }
-            User newUser = new User(username, password);
+            User newUser = new User(username, password, false);
             users.Add(username, newUser);
             return newUser;
         }
@@ -114,7 +115,7 @@ namespace DomainLayer
         List<Product> Search(string searchString, List<ProductFilter> filters = null)
         {
             List<Product> productsFound = new List<Product>();
-            foreach (Shop shop in shopsOwned)
+            foreach (Shop shop in _shopsOwned)
             {
                 productsFound.AddRange(shop.SearchProducts(searchString));
             }
@@ -124,25 +125,25 @@ namespace DomainLayer
             }
             return productsFound;
         }
-        public bool openShop()
+        public Guid OpenShop()
         {
-            if(!logged)
+            if(!_logged)
             {
-                return false;
+                return Guid.Empty;
             }
             Shop shop = new Shop();
-            this.shopsOwned.Add(shop);
-            return true;
+            _shopsOwned.Add(shop);
+            return shop.ShopGuid;
         }
 
         private bool CheckPass(string password)
         {
-            return this.passHash.Equals(GetStringSha256Hash(password));
+            return _passHash.Equals(GetStringSha256Hash(password));
         }
 
         internal void RemoveShop(Shop shop)
         {
-            this.shopsOwned.Remove(shop);
+            _shopsOwned.Remove(shop);
         }
 
         /*
@@ -150,12 +151,12 @@ namespace DomainLayer
          */
         private void CopyUserData(User user)
         {
-            this.Username = user.Username;
-            this.passHash = user.passHash;
-            this.currentBag = user.currentBag;
-            this.purchaseHistory = user.purchaseHistory;
-            this.userInfo = user.userInfo;
-            this.shopsOwned = user.shopsOwned;
+            Username = user.Username;
+            _passHash = user._passHash;
+            CurrentBag = user.CurrentBag;
+            _purchaseHistory = user._purchaseHistory;
+            _userInfo = user._userInfo;
+            _shopsOwned = user._shopsOwned;
         }
         /// <summary>
         /// returns wether or not the use purchased a specific product 
@@ -164,7 +165,7 @@ namespace DomainLayer
         /// <returns>returns trueif the user has purschased once in this Store , false otherwise</returns>
         public bool HasPurchasedInShop(Shop shop)
         {
-            foreach(ShoppingBag  bag in purchaseHistory)
+            foreach(ShoppingBag  bag in _purchaseHistory)
             {
                 if(bag.HasShop(shop))
                 {
@@ -181,7 +182,7 @@ namespace DomainLayer
         /// <returns>true if purchased, flase othewrise</returns>
         public bool HasPurchasedProduct(Product product)
         {
-            foreach (ShoppingBag bag in purchaseHistory)
+            foreach (ShoppingBag bag in _purchaseHistory)
             {
                 if (bag.HasProduct(product))
                 {
@@ -193,33 +194,51 @@ namespace DomainLayer
         private void SaveUserChanges()
         {
             User savedUser = users[Username];
-            savedUser.currentBag = this.currentBag;
-            savedUser.purchaseHistory = this.purchaseHistory;
-            savedUser.userInfo = this.userInfo;
-            savedUser.shopsOwned = this.shopsOwned;
+            savedUser.CurrentBag = CurrentBag;
+            savedUser._purchaseHistory = _purchaseHistory;
+            savedUser._userInfo = _userInfo;
+            savedUser._shopsOwned = _shopsOwned;
         }
         //a method that is used to hash the password
         internal static string GetStringSha256Hash(string text)
         {
-            if (String.IsNullOrEmpty(text))
-                return String.Empty;
+            if (string.IsNullOrEmpty(text))
+                return string.Empty;
 
             using (var sha = new System.Security.Cryptography.SHA256Managed())
             {
                 byte[] textData = System.Text.Encoding.UTF8.GetBytes(text);
                 byte[] hash = sha.ComputeHash(textData);
-                return BitConverter.ToString(hash).Replace("-", String.Empty);
+                return BitConverter.ToString(hash).Replace("-", string.Empty);
             }
         }
         // Method that overrides the base class (System.Object) implementation.
         public override string ToString()
         {
-            return "User:\n username: "+this.Username+"\n"+this.userInfo.ToString()+"\n"+"logged: "+this.logged
-                + "\ncurrent shopping bag:"+this.currentBag.ToString()+"\n is admin: "+this.IsAdmin;
+            return "User:\n username: "+Username+"\n"+this._userInfo.ToString()+"\n"+"logged: "+_logged
+                + "\ncurrent shopping bag:"+CurrentBag.ToString()+"\n is admin: "+IsAdmin;
         }
 
         public void PurchaseBag() { }
 
+        public bool RemoveUser(string username)
+        {
+            var user = users[username];
+            if (user == null) return false;
+            if (UserIsTheOnlyOwnerOfAnActiveShop(username))
+                return false;
+
+            return false;
+        }
+
+        private bool UserIsTheOnlyOwnerOfAnActiveShop(string username)
+        {
+            return Shop._shops.Any(shop =>
+            {
+                var isOwner = shop.Value.Owners.Any(owner => owner.Username.Equals(Username));
+                return isOwner && shop.Value.Owners.Count > 1;
+            });
+        }
     }
 }
 

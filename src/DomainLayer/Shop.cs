@@ -34,6 +34,7 @@ namespace DomainLayer
             _rate = 0;
             _sumOfRates = 0;
             _numberOfRates = 0;
+            _state = ShopState.open;
             _shops.Add(ShopGuid, this);
         }
 
@@ -45,7 +46,8 @@ namespace DomainLayer
         public ShopOwner Owner { get; }
         public List<ShopProduct> ShopProducts { get; }
         public double Rate { get; }
-
+        public List<Tuple<User, string>> Messages { get; }
+        public int State { get; }
         public bool RateShop(User user, int rate)
         {
             if (CanRateShop(user) && IsValidRate(rate))
@@ -59,11 +61,19 @@ namespace DomainLayer
         }
         public void Close()
         {
-            _state = ShopState.closed;
+            if(_state!= ShopState.permanentlyClosed)
+                _state = ShopState.closed;
         }
         public void Adminclose()
         {
             _state = ShopState.permanentlyClosed;
+        }
+        public void Open() //Could be bool for message granting
+        {
+            if (_state != ShopState.permanentlyClosed)
+            {
+                _state = ShopState.open;
+            }
         }
         private bool CanRateShop(User user)
         {

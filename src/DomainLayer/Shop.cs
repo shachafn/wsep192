@@ -46,15 +46,16 @@ namespace DomainLayer
         public List<ShopProduct> ShopProducts { get; }
         public double Rate { get; }
 
-        public void RateShop(User user, int rate)
+        public bool RateShop(User user, int rate)
         {
             if (CanRateShop(user) && IsValidRate(rate))
             {
                 _sumOfRates += rate;
                 _numberOfRates++;
                 rate = _sumOfRates / _numberOfRates;
+                return true;
             }
-
+            return false;
         }
         public void Close()
         {
@@ -89,7 +90,7 @@ namespace DomainLayer
             if (toRemove != null)
                 _shopProducts.Remove(toRemove);
         }
-        private ShopProduct SearchProduct(Product product)
+        public ShopProduct SearchProduct(Product product)
         {
             foreach (ShopProduct sp in _shopProducts)
             {

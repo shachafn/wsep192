@@ -6,3 +6,5 @@ script:
   - dotnet restore
   - dotnet build
   - dotnet test tests/UnitTests/UnitTests.csproj
+  - dotnet test tests/IntegrationTests/IntegrationTests.csproj
+  - dotnet test tests/AcceptanceBridge/AcceptanceTests.csproj

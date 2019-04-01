@@ -11,10 +11,10 @@ namespace DomainLayer
 
         public static Shop GetShopByGuid(Guid guid) => _shops[guid];
 
-        public Guid ShopGuid { get => ShopGuid; private set => ShopGuid = value; }
+        public Guid ShopGuid { get; private set; }
 
         public ICollection<User> _owners;
-        public ICollection<User> Owners { get => _owners; set => _owners = value; }
+        public ICollection<User> Owners { get; set; }
 
         private List<Tuple<User, string>> _messages;
         private List<ShopProduct> _shopProducts;

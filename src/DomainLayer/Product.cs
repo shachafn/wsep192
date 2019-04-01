@@ -6,7 +6,7 @@ namespace DomainLayer
 {
     public class Product
     {
-        public Guid ProductGuid { get => ProductGuid; set => ProductGuid = value; }
+        public Guid ProductGuid { get; set; }
 
         private const int MaxReviewLength = 250;
         private string _name;

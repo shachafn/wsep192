@@ -10,17 +10,15 @@ public class UserInfo
 	}
     public UserInfo(string address,string fullName,string phoneNumber)
     {
-        if (IsDigitsOnly(phoneNumber))
-        {
-            this.phoneNumber = phoneNumber;
-        }
-        this.fullName = fullName;
-        this.address = address;
+        PhoneNumber = phoneNumber;
+        this.FullName = fullName;
+        this.Address = address;
     }
 
-    public string phoneNumber { get => phoneNumber; set => phoneNumber = IsDigitsOnly(phoneNumber)? phoneNumber :""; }
-    public string fullName { get => fullName; set => fullName = value; }
-    public string address { get => address; set => address = value; }
+    private string _phoneNumber;
+    public string PhoneNumber { get => _phoneNumber; set { _phoneNumber = IsDigitsOnly(value) ? value : ""; } }
+    public string FullName { get; set; }
+    public string Address { get; set; }
 
     private bool IsDigitsOnly(string str)
     {

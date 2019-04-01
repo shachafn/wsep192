@@ -143,7 +143,7 @@ namespace DomainLayer
 
         public class ManagingPrivileges
         {
-            private List<string> AllowedActions { get => AllowedActions; set => AllowedActions = value; }
+            private List<string> AllowedActions { get; set; }
             private bool _isManager; // if not a manager it is an owner , an owner has all the actions available 
             public ManagingPrivileges(List<string> allowedActions)
             {

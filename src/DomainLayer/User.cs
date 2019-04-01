@@ -9,8 +9,8 @@ namespace DomainLayer
         public static Dictionary<string, User> users = new Dictionary<string, User>(); // a list of all registered users in the current session
 
         private bool _logged;
-        public string Username { get => Username; private set => Username=value; }
-        public bool IsAdmin { get => isAdmin; private set => isAdmin = value; }
+        public string Username { get; private set; }
+        public bool IsAdmin { get; private set; }
 
         private string _passHash;
         public ShoppingBag CurrentBag { get; set; }

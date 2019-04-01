@@ -58,8 +58,8 @@ namespace DomainLayer
 
         private class UserReport
         {
-            public User Reporter { get => Reporter; set => Reporter = value; }
-            public string ReportText { get => ReportText; set => ReportText = value; }
+            public User Reporter { get; set; }
+            public string ReportText { get; set; }
 
             public UserReport(User reporter, string reportText)
             {

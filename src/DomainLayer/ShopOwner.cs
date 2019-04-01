@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using DomainLayer.Data.Entitites;
 
 namespace DomainLayer
 {
@@ -29,7 +30,7 @@ namespace DomainLayer
         /// <returns> a relvant shopOwner if one exists , null otherwise</returns>
         public static ShopOwner GetShopOwner(User user, Shop shop)
         {
-            bool exists = user.IsLogged() && shopOwners.HasUser(user.Username);
+            bool exists = user.IsLoggedIn && shopOwners.HasUser(user.Username);
             if(!exists)
             {
                 return null;
@@ -106,7 +107,7 @@ namespace DomainLayer
             ownersAssigned.Remove(toRemove);
             shopOwners.OwnersDictRemove(toRemove.owner.Username, toRemove);
             this.shop.RemoveOwner(toRemove.owner);
-            toRemove.owner.RemoveShop(toRemove.shop);
+            DomainLayer.Domains.UserDomain.RemoveShopOfUserByShopGuid(toRemove.shop.ShopGuid, toRemove.owner.Guid);
             return true;
         }
 
@@ -127,7 +128,7 @@ namespace DomainLayer
             this.shop.RemoveOwner(this.owner);
             this.shop.Close();
             shopOwners.OwnersDictRemove(this.owner.Username, this); // remove yourself from the list
-            this.owner.RemoveShop(this.shop);
+            DomainLayer.Domains.UserDomain.RemoveShopOfUserByShopGuid(this.shop.ShopGuid, this.owner.Guid);
             return true;
         }
 

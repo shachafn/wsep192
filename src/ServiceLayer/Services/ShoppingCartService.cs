@@ -4,6 +4,8 @@ using System;
 using System.Collections.Generic;
 using System.Text;
 using System.Linq;
+using DomainLayer.Data;
+using DomainLayer.Data.Entitites;
 
 namespace ServiceLayer.Services
 {
@@ -11,7 +13,7 @@ namespace ServiceLayer.Services
     {
         public bool AddProductToShoppingCart(Guid productGuid, Guid shopOfCartGuid, string username)
         {
-            var user = User.GetUserByUsername(username);
+            var user = DomainLayer.Domains.UserDomain.GetUserByUsername(username);
             if (user == null) return false;
             var cart = user.CurrentBag.Carts.FirstOrDefault(c => c.Shop.ShopGuid.Equals(shopOfCartGuid));
             if (cart == null) return false;
@@ -48,7 +50,7 @@ namespace ServiceLayer.Services
         #region Helper Functions
         private ShoppingCart GetUserShoppingCartOfByShopGuid(string username, Guid shopOfCartGuid)
         {
-            var user = User.GetUserByUsername(username);
+            var user = DomainLayer.Domains.UserDomain.GetUserByUsername(username);
             if (user == null) return null;
             var cart = user.CurrentBag.Carts.FirstOrDefault(c => c.Shop.ShopGuid.Equals(shopOfCartGuid));
             if (cart == null) return null;

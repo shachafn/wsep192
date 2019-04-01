@@ -27,18 +27,16 @@ namespace ServiceLayer.Services
             if (!ConnectToSupplySystem())
                 return false;
             if (!ExistsAdminUser() && username != null && password != null)
-                return User.Register(username, password) != null;
+                return DomainLayer.Domains.UserDomain.Register(username, password) != null;
             return true;
         }
 
-        private bool ExistsAdminUser() => User.users.Any(keyValue => keyValue.Value.IsAdmin);
+        private bool ExistsAdminUser() => DomainLayer.Domains.UserDomain.ExistsAdminUser();
 
 
         public bool RemoveUser(string username)
         {
-            var user = User.GetUserByUsername(username);
-            if (user == null) return false;
-            return user.RemoveUser(username);
+            return DomainLayer.Domains.UserDomain.RemoveUser(username);
         }
     }
 }

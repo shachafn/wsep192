@@ -1,6 +1,7 @@
 using DomainLayer;
 using System;
 using System.Collections.Generic;
+using DomainLayer.Data.Entitites;
 
 namespace DomainLayer
 {
@@ -49,7 +50,7 @@ namespace DomainLayer
 
         private bool CanRateProduct(User user)
         {
-            return user.IsLogged() && user.HasPurchasedProduct(this);
+            return user.IsLoggedIn && DomainLayer.Domains.UserDomain.HasPurchasedProduct(this,user.Guid);
         }
         // Method that overrides the base class (System.Object) implementation.
         public override string ToString()

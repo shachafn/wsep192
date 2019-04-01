@@ -2,6 +2,7 @@
 using System;
 using System.Collections.Generic;
 using System.Text;
+using DomainLayer.Data.Entitites;
 
 namespace ServiceLayer.Public_Interfaces
 {
@@ -12,7 +13,7 @@ namespace ServiceLayer.Public_Interfaces
         /// </summary>
         /// <param name="info">Info of the user to register</param>
         /// <returns>True if registered successfully. False otherwise, with an error message as out parameter.</returns>
-        User Register(string username, string password, out string ErrorMessage);
+        User Register(string username, string password);
 
         /// <summary>
         /// Logins a user using the username and password.
@@ -31,9 +32,8 @@ namespace ServiceLayer.Public_Interfaces
         /// <summary>
         /// Opens a store for the user.
         /// </summary>
-        /// <param name="errorMessage"></param>
-        /// <returns>True if opened successfully. False otherwise, with an error message as out parameter.</returns>
-        Guid OpenShop(string username, out string errorMessage);
+        /// <returns>True if opened successfully. False otherwise.</returns>
+        Guid OpenShop(string username);
 
         /// <summary>
         /// Pay for the list of the products of the shop for the user.
@@ -41,7 +41,7 @@ namespace ServiceLayer.Public_Interfaces
         /// <param name="products"></param>
         /// <param name="userInfo"></param>
         /// <param name="sellingShop"></param>
-        /// <returns>True if payed successfully. False otherwise with an error message as an out parameter.</returns>
+        /// <returns>True if payed successfully. False otherwise.</returns>
         bool PurchaseBag(string username);
     }
 }

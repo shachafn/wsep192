@@ -1,6 +1,8 @@
 ﻿using DomainLayer;
 using NUnit.Framework;
 using System.Collections.Generic;
+using DomainLayer.Data.Entitites;
+using DomainLayer.Domains;
 
 namespace UnitTests
 {
@@ -14,11 +16,10 @@ namespace UnitTests
         [SetUp]
         public void Setup()
         {
-            User.users = new Dictionary<string, User>();
-            loggedInUser = User.Register("meni", "123456");
-            notLoggedInUser = User.Register("beni", "123456");
+            UserDomain.Register("meni", "123456");
+            notLoggedInUser = UserDomain.Register("beni", "123456");
             string pass = "123456";
-            loggedInUser.Login(loggedInUser.Username, pass);
+            UserDomain.Login(loggedInUser.Username, pass);
             football = new Product("Football", "Sports");
         }
 

@@ -27,10 +27,10 @@ namespace ServiceLayer.Services
 
         public bool AddShopManager(Guid shopGuid, string ownerUsername, string managerToAddUsername, List<string> priviliges)
         {
-            var managerToAdd = User.GetUserByUsername(ownerUsername);
+            var managerToAdd = DomainLayer.Domains.UserDomain.GetUserByUsername(ownerUsername);
             if (managerToAdd == null) return false;
 
-            var owner = User.GetUserByUsername(ownerUsername);
+            var owner = DomainLayer.Domains.UserDomain.GetUserByUsername(ownerUsername);
             if (owner == null) return false;
 
             var shop = Shop.GetShopByGuid(shopGuid);
@@ -44,10 +44,10 @@ namespace ServiceLayer.Services
 
         public bool AddShopOwner(Guid shopGuid, string ownerUsername, string managerToAddUsername)
         {
-            var managerToAdd = User.GetUserByUsername(ownerUsername);
+            var managerToAdd = DomainLayer.Domains.UserDomain.GetUserByUsername(ownerUsername);
             if (managerToAdd == null) return false;
 
-            var owner = User.GetUserByUsername(ownerUsername);
+            var owner = DomainLayer.Domains.UserDomain.GetUserByUsername(ownerUsername);
             if (owner == null) return false;
 
             var shop = Shop.GetShopByGuid(shopGuid);
@@ -61,7 +61,7 @@ namespace ServiceLayer.Services
 
         public bool CascadeRemoveShopOwner(Guid shopGuid, string ownerUsername)
         {
-            var owner = User.GetUserByUsername(ownerUsername);
+            var owner = DomainLayer.Domains.UserDomain.GetUserByUsername(ownerUsername);
             if (owner == null) return false;
 
             var shop = Shop.GetShopByGuid(shopGuid);

@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using DomainLayer.Data.Entitites;
 
 namespace DomainLayer
 {
@@ -77,7 +78,7 @@ namespace DomainLayer
         }
         private bool CanRateShop(User user)
         {
-            return user.IsLogged() && user.HasPurchasedInShop(this);
+            return user.IsLoggedIn && DomainLayer.Domains.UserDomain.HasPurchasedInShop(this, user.Guid);
         }
         private bool IsValidRate(int rate)
         {
@@ -127,7 +128,7 @@ namespace DomainLayer
 
         public void SendMessage(User user, string message)
         {
-            if (!user.IsLogged()) return;
+            if (!user.IsLoggedIn) return;
             _messages.Add(Tuple.Create(user, message));
         }
         public List<ShoppingCart> GetPurchaseHistory(User user)

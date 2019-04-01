@@ -1,5 +1,6 @@
 ﻿
 using System.Collections.Generic;
+using DomainLayer.Data.Entitites;
 
 namespace DomainLayer
 {
@@ -28,11 +29,11 @@ namespace DomainLayer
 
         public bool RemoveUser(string username)//depends on the user component
         {
-            if (!User.users.ContainsKey(username))
+            if (!Domains.UserDomain.ExistsUser(username))
             {
                 return false;
             }
-            User.users.Remove(username);
+            Domains.UserDomain.RemoveUser(username);
             return true;
         }
         public void ViewShopHistory()//depends on shop implementation

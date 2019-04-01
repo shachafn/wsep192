@@ -1,6 +1,7 @@
 using DomainLayer;
 using NUnit.Framework;
 using System.Collections.Generic;
+using DomainLayer.Data.Entitites;
 
 namespace Tests
 {
@@ -12,25 +13,25 @@ namespace Tests
         public void TestGuest()
         {
             User user = new User();
-            Assert.False(user.IsLogged());
+            Assert.False(user.IsLoggedIn);
         }
         [Test,Description("testing succesfull register")]
         public void TestRegister()
         {
-            User user = User.Register("meni","123456");
+            var user = DomainLayer.Domains.UserDomain.Register("meni","123456");
             Assert.NotNull(user);
-            Assert.Equals("meni", user.Username);
-            Assert.Equals(1, User.users.Count);
+            Assert.AreEqual("meni", user.Username);
+            Assert.AreEqual(1, DomainLayer.Domains.UserDomain.GetUsersCount());
         }
 
         [Test, Description("testing register with the same user name and with short password")]
         public void TestRegisterTwice()
         {
-            User user = User.Register("meni", "123456");
+            User user = DomainLayer.Domains.UserDomain.Register("meni", "123456");
             Assert.Null(user);
             User otherUser = new User("beni", "1234", false);
             Assert.Null(otherUser);
-            Assert.Equals(1, User.users.Count);
+            Assert.AreEqual(1, DomainLayer.Domains.UserDomain.GetUsersCount());
         }
     }
 
@@ -46,9 +47,8 @@ namespace Tests
         [SetUp]
         public void Setup()
         {
-            User.users = new Dictionary<string, User>();
-            meni = User.Register("meni", "123456");
-            beni = User.Register("beni", "123456");
+            meni = DomainLayer.Domains.UserDomain.Register("meni", "123456");
+            beni = DomainLayer.Domains.UserDomain.Register("beni", "123456");
             beniPass = "123456";
             meniPass = "123456";
         }
@@ -56,19 +56,19 @@ namespace Tests
         [Test,Description("test login")]
         public void Test1()
         {
-            Assert.True(meni.Login(meni.Username, meniPass));
-            Assert.True(meni.IsLogged());
-            Assert.False(meni.Login(meni.Username,meniPass));
-            Assert.False(beni.Login(beni.Username,"21314454"));
+            Assert.True(DomainLayer.Domains.UserDomain.Login(meni.Username, meniPass));
+            Assert.True(meni.IsLoggedIn);
+            Assert.False(DomainLayer.Domains.UserDomain.Login(meni.Username,meniPass));
+            Assert.False(DomainLayer.Domains.UserDomain.Login(beni.Username,"21314454"));
         }
 
         [Test, Description("test logout")]
         public void Test2()
         {
-            meni.Login(meni.Username, meniPass);
-            Assert.True(meni.Logout());
-            Assert.False(meni.Logout());
-            Assert.False(beni.Logout());
+            DomainLayer.Domains.UserDomain.Login(meni.Username, meniPass);
+            Assert.True(DomainLayer.Domains.UserDomain.LogoutUser(meni.Username));
+            Assert.False(DomainLayer.Domains.UserDomain.LogoutUser(meni.Username));
+            Assert.False(DomainLayer.Domains.UserDomain.LogoutUser(beni.Username));
         }
 
     }

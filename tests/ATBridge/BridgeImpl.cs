@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Text;
 using DomainLayer;
 using ServiceLayer.Services;
+using DomainLayer.Data.Entitites;
 
 namespace ATBridge
 {
@@ -75,7 +76,7 @@ namespace ATBridge
 
         public Guid OpenShop(string username)
         {
-            return _userService.OpenShop(username, out _errorStr);
+            return _userService.OpenShop(username);
         }
 
         public bool PurchaseBag(string username)
@@ -85,7 +86,7 @@ namespace ATBridge
 
         public User Register(string username, string password)
         {
-            return _userService.Register(username, password, out _errorStr);
+            return _userService.Register(username, password);
         }
 
         public bool RemoveProduct(Guid productGuid, Guid shopOfCartGuid, string username)

@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using DomainLayer.Data.Entitites;
 
 namespace DomainLayer
 {
@@ -110,7 +111,7 @@ namespace DomainLayer
             _shop.AddToPurchaseHistory(user, this);
             ShoppingBag addToUserHistory = new ShoppingBag();
             addToUserHistory.AddCart(this);
-            user.AddToPurchaseHistory(addToUserHistory);
+            DomainLayer.Domains.UserDomain.AddToUsersPurchaseHistory(addToUserHistory, user.Guid);
             return true;
         }
 

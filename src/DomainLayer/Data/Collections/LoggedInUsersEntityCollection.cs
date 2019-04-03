@@ -1,12 +1,10 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Text;
 using System.Linq;
 using DomainLayer.Data.Entitites;
 
 namespace DomainLayer.Data.Collections
 {
-    public class UserEntityCollection : EntityCollection<User>
+    public class LoggedInUsersEntityCollection : EntityCollection<User>
     {
         public bool ExistsUserWithUsername(string username)
         {

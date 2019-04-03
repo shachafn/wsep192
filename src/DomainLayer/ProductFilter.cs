@@ -1,10 +1,13 @@
-﻿using System;
+﻿using DomainLayer.Data.Entitites;
+using System;
 using System.Collections.Generic;
-using System.Text;
 
 namespace DomainLayer
 {
-    class ProductFilter
+    /// <summary>
+    /// Used for filtering product search.
+    /// </summary>
+    public class ProductFilter
     {
         Func<Product, bool> predicate;
         public ProductFilter(Func<Product, bool> pred)

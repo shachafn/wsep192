@@ -3,232 +3,171 @@ using DomainLayer.Data.Collections;
 using DomainLayer.Data.Entitites;
 using System;
 using System.Collections.Generic;
-using System.Text;
 using System.Linq;
+using DomainLayer.Data.Entitites.Users.States;
+using DomainLayer.Exceptions;
+using DomainLayer.Data.Entitites.Users;
 
 namespace DomainLayer.Domains
 {
-    public static class UserDomain
+    /// <summary>
+    /// Singleton class to handle User logic.
+    /// </summary>
+    public class UserDomain
     {
-        private static UserEntityCollection Users = DomainData.UsersCollection;
+        private static LoggedInUsersEntityCollection LoggedInUsers = DomainData.LoggedInUsersEntityCollection;
+        private static ShopEntityCollection Shops = DomainData.ShopsCollection;
 
+        public Guid GuestGuid = new Guid("695D0341-3E62-4046-B337-2486443F311B");
 
-        /// <summary>
-        /// logs the user in , changes its logged field to true , and retrieves all it's stored information
-        /// </summary>
-        /// <param name="username"></param>
-        /// <param name="password"></param>
-        /// <returns>true if the login was sucseesful, false if one or more of the parameters were wrong 
-        /// or if the user is already connected</returns>
-        public static bool Login(string username, string password)
+        #region Singleton Implementation
+        private static UserDomain instance = null;
+        private static readonly object padlock = new object();
+        public static UserDomain Instance
         {
-            if (!ExistsUser(username,password))
-                return false;
-
-            var user = Users.GetUserByUsername(username);
-            if (user.IsLoggedIn)
-                return false;
-
-            user.IsLoggedIn = true;
-            return true;
-        }
-
-        public static bool ExistsUser(Guid guid) => Users[guid] != null;
-
-        public static bool ExistsUser(string username, string password)
-        {
-            var user = Users.GetUserByUsername(username);
-            if (user == null) return false;
-            return user.CheckPass(password);
-        }
-
-        public static bool ExistsUser(string username)
-        {
-            var user = Users.GetUserByUsername(username);
-            if (user == null) return false;
-            return true;
-        }
-
-        /// <summary>
-        /// This method logs the user out , and saves it's changed properties
-        /// </summary>
-        /// <returns>True if the user is logged-in, false otherwise.</returns>
-        public static bool LogoutUser(string username)
-        {
-            if (!ExistsUser(username))
-                return false;
-
-            Users.GetUserByUsername(username).IsLoggedIn = false;
-            return true;
-        }
-
-        /// <summary>
-        ///  if the username is not taken already ,
-        ///  the method creates a new user with this credentials and stores it in the users list
-        /// </summary>
-        /// <param name="username"></param>
-        /// <param name="password">a string for the password, should be at least 6 characters long</param>
-        /// <returns> returns the created user or null otherwise</returns>
-        public static User Register(string username, string password)
-        {
-            if (!ExistsUser(username) || password.Length < 6)
-                return null;
-
-            User newUser = new User(username, password, false);
-            Users.Add(newUser.Guid, newUser);
-            return newUser;
-        }
-
-        //Why we need that in this 'UserDomain' class?
-        /*
-        /// <summary>
-        /// searches products according to a user recived string and filters them if a filter is given
-        /// </summary>
-        /// <param name="searchString"></param>
-        /// <param name="filters"> an optional argument , the results of the search will be filtered using all of these</param>
-        /// <returns>returns the list of products found (an empty list if found none)</returns>
-        List<Product> Search(string searchString, List<ProductFilter> filters = null)
-        {
-            List<Product> productsFound = new List<Product>();
-            foreach (Shop shop in _shopsOwned)
+            get
             {
-                productsFound.AddRange(shop.SearchProducts(searchString));
+                lock (padlock)
+                {
+                    if (instance == null)
+                    {
+                        instance = new UserDomain();
+                    }
+                    return instance;
+                }
             }
-            foreach (ProductFilter filter in filters)
-            {
-                filter.ApplyFilter(productsFound);
-            }
-            return productsFound;
         }
-        */
+        #endregion
 
-        public static Guid OpenShopForUser(Guid guid)
+
+        /// <summary>
+        /// Registeres the user.
+        /// </summary>
+        /// <returns></returns>
+        public bool Register(string username, string password)
         {
-            if (!ExistsUser(guid))
-                return Guid.Empty;
-
-            var user = Users[guid];
-            if (user.IsLoggedIn)
-                return Guid.Empty;
-
-            var shop = new Shop();
-            user.ShopsOwned.Add(shop);
-            return shop.ShopGuid;
-        }
-
-        public static Guid OpenShopForUser(string username)
-        {
-            if (!ExistsUser(username))
-                return Guid.Empty;
-
-            var user = Users.GetUserByUsername(username);
-            if (user.IsLoggedIn)
-                return Guid.Empty;
-
-            var shop = new Shop();
-            user.ShopsOwned.Add(shop);
-            return shop.ShopGuid;
-        }
-
-        public static bool RemoveUser(string username)
-        {
-            var user = Users.GetUserByUsername(username);
-            if (user == null) return false;
-            if (UserIsTheOnlyOwnerOfAnActiveShop(username))
+            if (username == null || password == null || username.Equals(string.Empty) || password.Equals(string.Empty))
                 return false;
-            //TODO: ACTUALLY REMOVE USER
-            return false;
+
+            if (IsUsernameTaken(username))
+                return false;
+
+            var newUser = new BaseUser(username.ToLower(), password);
+            DomainData.AllUsersCollection.Add(newUser.Guid, newUser);
+            return true;
         }
 
-        private static bool UserIsTheOnlyOwnerOfAnActiveShop(string username)
+        private bool IsUsernameTaken(string username) => DomainData.AllUsersCollection.Any(bUser => bUser.Username.Equals(username));
+
+
+        /// <summary>
+        /// Loggs the user in. Changes its state to Buyer (default).
+        /// </summary>
+        /// <param name="userGuid">Expected to be the const GuestGuid.</param>
+        /// <returns></returns>
+        public Guid Login(Guid userGuid, string username, string password)
         {
-            return Shop._shops.Any(shop =>
+            if (!userGuid.Equals(GuestGuid))
+                return Guid.Empty;
+
+            if (!IsUserRegistered(username, password))
+                return Guid.Empty;
+
+            var user = new User(username, password);
+            user.SetState(new BuyerUserState(username, password));
+            LoggedInUsers.Add(user.Guid, user);
+            return user.Guid;
+        }
+
+        private bool IsUserRegistered(string username, string password) => 
+            DomainData.AllUsersCollection.Any(bUser => bUser.Username.Equals(username.ToLower()) && bUser.CheckPass(password));
+
+        /// <summary>
+        /// Loggs the user out.
+        /// </summary>
+        /// <param name="userGuid"></param>
+        /// <returns></returns>
+        public bool LogoutUser(Guid userGuid)
+        {
+            if (userGuid.Equals(GuestGuid)) //Cant logout a guest
+                return false;
+
+            if (!LoggedInUsers.ContainsKey(userGuid))
+                throw new UserNotFoundException($"Could not find a logged in user with guid {userGuid}");
+
+            LoggedInUsers.Remove(userGuid);
+            return true;
+        }
+
+        public Guid OpenShopForUser(Guid userGuid)
+        {
+            if (!LoggedInUsers.ContainsKey(userGuid))
+                throw new UserNotFoundException($"Could not find a logged in user with guid {userGuid}");
+
+            return LoggedInUsers[userGuid].OpenShop();
+        }
+
+        public bool RemoveUser(Guid userGuid, Guid userToRemoveGuid)
+        {
+            if (!LoggedInUsers.ContainsKey(userGuid))
+                throw new UserNotFoundException($"Could not find a logged in user with guid {userGuid}");
+
+            return LoggedInUsers[userGuid].RemoveUser(userToRemoveGuid);
+        }
+    }
+
+        private bool UserIsTheOnlyOwnerOfAnActiveShop(Guid userGuid)
+        {
+            return Shops.Any(shop =>
             {
-                var isOwner = shop.Value.Owners.Any(owner => owner.Username.Equals(username));
-                return isOwner && shop.Value.Owners.Count > 1;
+                var isOwner = shop.Owners.Any(owner => owner.Guid.Equals(userGuid));
+                return isOwner && shop.Owners.Count > 1;
             });
         }
 
-        public static void RemoveShopOfUserByShopGuid(Guid shopGuid, string username)
+        public void RemoveShopOfUserByShopGuid(Guid shopGuid, string username)
         {
-            var user = Users.GetUserByUsername(username);
+            var user = LoggedInUsers.GetUserByUsername(username);
             if (user == null) return;
-            var shop = user.ShopsOwned.FirstOrDefault(lShop => lShop.ShopGuid.Equals(shopGuid));
+            var shop = user.ShopsOwned.FirstOrDefault(lShop => lShop.Guid.Equals(shopGuid));
             if (shop != null)
                 user.ShopsOwned.Remove(shop);
         }
-        public static void RemoveShopOfUserByShopGuid(Guid shopGuid, Guid userGuid)
+        public void RemoveShopOfUserByShopGuid(Guid shopGuid, Guid userGuid)
         {
-            var user = Users[userGuid];
+            var user = LoggedInUsers[userGuid];
             if (user == null) return;
-            var shop = user.ShopsOwned.FirstOrDefault(lShop => lShop.ShopGuid.Equals(shopGuid));
+            var shop = user.ShopsOwned.FirstOrDefault(lShop => lShop.Guid.Equals(shopGuid));
             if (shop != null)
                 user.ShopsOwned.Remove(shop);
         }
 
-        public static int GetUsersCount()
+        public int GetUsersCount()
         {
-            return Users.Count;
+            return LoggedInUsers.Count;
         }
 
-        public static void AddToUsersPurchaseHistory(ShoppingBag shoppingBag, Guid userGuid)
+        public void AddToUsersPurchaseHistory(ShoppingBag shoppingBag, Guid userGuid)
         {
-            var user = Users[userGuid];
+            var user = LoggedInUsers[userGuid];
             if (user == null) return;
             user.PurchaseHistory.Add(shoppingBag);
         }
 
-        /// <summary>
-        /// returns wether or not the use purchased a specific product 
-        /// </summary>
-        /// <param name="shop"></param>
-        /// <returns>returns trueif the user has purschased once in this Store , false otherwise</returns>
-        public static bool HasPurchasedInShop(Shop shop, Guid userGuid)
+        public bool PurchaseCart(Guid userGuid, Guid shopGuid)
         {
-            var user = Users[userGuid];
-            if (user == null) return false;
-            foreach (ShoppingBag bag in user.PurchaseHistory)
-            {
-                if (bag.HasShop(shop))
-                {
-                    return true;
-                }
-            }
-            return false;
+            throw new NotImplementedException();
         }
 
-        /// <summary>
-        /// returns wether or not the user purchased a specific product 
-        /// </summary>
-        /// <param name="product"></param>
-        /// <returns>true if purchased, flase othewrise</returns>
-        public static bool HasPurchasedProduct(Product product, Guid userGuid)
+        public bool IsAdminUser(Guid guid) => LoggedInUsers.Any(user => user.Username.Equals(guid) && user.IsAdmin);
+        public bool ExistsAdminUser() => LoggedInUsers.Any(user => user.IsAdmin);
+
+        public bool AddProductToShop(Guid userGuid, string productName, string productCategory,
+    double price, int quantity)
         {
-            var user = Users[userGuid];
-            if (user == null) return false;
-            foreach (ShoppingBag bag in user.PurchaseHistory)
-            {
-                if (bag.HasProduct(product))
-                {
-                    return true;
-                }
-            }
-            return false;
+            if (!IsUserExists(userGuid)) throw new UserNotFo
+
+
         }
-
-        public static bool PurchaseBag(string username)
-        {
-            return true;
-        }
-
-        //TODO : REMOVE THIS, SHOULD NOT EXPOSE INTERNAL OBJECTS
-        public static User GetUserByUsername(string username)
-        {
-            return Users.GetUserByUsername(username);
-        }
-
-        public static bool IsAdminUser(string username) => Users.Any(user => user.Username.Equals(username) && user.IsAdmin);
-        public static bool ExistsAdminUser() => Users.Any(user => user.IsAdmin);
-
     }
 }

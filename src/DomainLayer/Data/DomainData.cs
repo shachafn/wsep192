@@ -1,12 +1,12 @@
 ﻿using DomainLayer.Data.Collections;
-using System;
-using System.Collections.Generic;
-using System.Text;
 
 namespace DomainLayer.Data
 {
     public static class DomainData
     {
-        public static UserEntityCollection UsersCollection = new UserEntityCollection();
+        public static LoggedInUsersEntityCollection LoggedInUsersEntityCollection = new LoggedInUsersEntityCollection();
+        public static ShopEntityCollection ShopsCollection = new ShopEntityCollection();
+        public static AllUsersEntityCollection AllUsersCollection = new AllUsersEntityCollection();
+        public static ShopOwnerEntityCollection ShopOwnersCollection = new ShopOwnerEntityCollection();
     }
 }

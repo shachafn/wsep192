@@ -1,6 +1,4 @@
-﻿using DomainLayer;
-using NUnit.Framework;
-using System.Collections.Generic;
+﻿using NUnit.Framework;
 using DomainLayer.Data.Entitites;
 
 namespace IntegrationTests

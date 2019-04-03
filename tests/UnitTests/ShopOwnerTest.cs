@@ -1,7 +1,5 @@
-﻿using DomainLayer;
-using NUnit.Framework;
+﻿using NUnit.Framework;
 using System.Collections.Generic;
-using static DomainLayer.ShopOwner;
 using DomainLayer.Data.Entitites;
 
 namespace UnitTests

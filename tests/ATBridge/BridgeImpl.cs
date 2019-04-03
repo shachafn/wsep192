@@ -1,7 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Text;
-using DomainLayer;
 using ServiceLayer.Services;
 using DomainLayer.Data.Entitites;
 
@@ -81,7 +79,7 @@ namespace ATBridge
 
         public bool PurchaseBag(string username)
         {
-            return _userService.PurchaseBag(username);
+            return _userService.PurchaseCart(username);
         }
 
         public User Register(string username, string password)

@@ -1,14 +1,12 @@
 ﻿using System;
 using System.Collections;
 using System.Collections.Generic;
-using System.Text;
 
 namespace DomainLayer.Data.Collections
 {
     public class EntityCollection<T> : IEnumerable<T>
     {
         protected Dictionary<Guid, T> _entitiesCollection = new Dictionary<Guid, T>();
-
 
         public T this[Guid key] { get => _entitiesCollection[key]; set => _entitiesCollection[key] = value; }
 

@@ -1,8 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Text;
-using DomainLayer;
-using ServiceLayer.Services;
 using DomainLayer.Data.Entitites;
 
 namespace ATBridge

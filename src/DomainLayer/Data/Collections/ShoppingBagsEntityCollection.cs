@@ -5,7 +5,7 @@ using System.Text;
 
 namespace DomainLayer.Data.Collections
 {
-    public class ShopOwnerEntityCollection : EntityCollection<ShopOwner>
+    public class ShoppingBagsEntityCollection : EntityCollection<ShoppingBag>
     {
     }
 }

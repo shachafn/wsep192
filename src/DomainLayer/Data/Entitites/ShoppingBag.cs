@@ -8,5 +8,11 @@ namespace DomainLayer.Data.Entitites
         public Guid UserGuid { get; set; }
 
         public ICollection<ShoppingCart> ShoppingCarts { get; set; }
+
+        public ShoppingBag(Guid userGuid)
+        {
+            UserGuid = userGuid;
+            ShoppingCarts = new List<ShoppingCart>();
+        }
     }
 }

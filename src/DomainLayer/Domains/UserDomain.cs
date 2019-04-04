@@ -18,7 +18,6 @@ namespace DomainLayer.Domains
         private static LoggedInUsersEntityCollection LoggedInUsers = DomainData.LoggedInUsersEntityCollection;
         private static ShopEntityCollection Shops = DomainData.ShopsCollection;
 
-        public Guid GuestGuid = new Guid("695D0341-3E62-4046-B337-2486443F311B");
 
         #region Singleton Implementation
         private static UserDomain instance = null;
@@ -46,9 +45,6 @@ namespace DomainLayer.Domains
         /// <returns></returns>
         public bool Register(string username, string password)
         {
-            if (username == null || password == null || username.Equals(string.Empty) || password.Equals(string.Empty))
-                return false;
-
             if (IsUsernameTaken(username))
                 return false;
 
@@ -67,9 +63,6 @@ namespace DomainLayer.Domains
         /// <returns></returns>
         public Guid Login(Guid userGuid, string username, string password)
         {
-            if (!userGuid.Equals(GuestGuid))
-                return Guid.Empty;
-
             if (!IsUserRegistered(username, password))
                 return Guid.Empty;
 
@@ -89,8 +82,6 @@ namespace DomainLayer.Domains
         /// <returns></returns>
         public bool LogoutUser(Guid userGuid)
         {
-            if (userGuid.Equals(GuestGuid)) //Cant logout a guest
-                return false;
 
             if (!LoggedInUsers.ContainsKey(userGuid))
                 throw new UserNotFoundException($"Could not find a logged in user with guid {userGuid}");
@@ -99,75 +90,5 @@ namespace DomainLayer.Domains
             return true;
         }
 
-        public Guid OpenShopForUser(Guid userGuid)
-        {
-            if (!LoggedInUsers.ContainsKey(userGuid))
-                throw new UserNotFoundException($"Could not find a logged in user with guid {userGuid}");
-
-            return LoggedInUsers[userGuid].OpenShop();
-        }
-
-        public bool RemoveUser(Guid userGuid, Guid userToRemoveGuid)
-        {
-            if (!LoggedInUsers.ContainsKey(userGuid))
-                throw new UserNotFoundException($"Could not find a logged in user with guid {userGuid}");
-
-            return LoggedInUsers[userGuid].RemoveUser(userToRemoveGuid);
-        }
-    }
-
-        private bool UserIsTheOnlyOwnerOfAnActiveShop(Guid userGuid)
-        {
-            return Shops.Any(shop =>
-            {
-                var isOwner = shop.Owners.Any(owner => owner.Guid.Equals(userGuid));
-                return isOwner && shop.Owners.Count > 1;
-            });
-        }
-
-        public void RemoveShopOfUserByShopGuid(Guid shopGuid, string username)
-        {
-            var user = LoggedInUsers.GetUserByUsername(username);
-            if (user == null) return;
-            var shop = user.ShopsOwned.FirstOrDefault(lShop => lShop.Guid.Equals(shopGuid));
-            if (shop != null)
-                user.ShopsOwned.Remove(shop);
-        }
-        public void RemoveShopOfUserByShopGuid(Guid shopGuid, Guid userGuid)
-        {
-            var user = LoggedInUsers[userGuid];
-            if (user == null) return;
-            var shop = user.ShopsOwned.FirstOrDefault(lShop => lShop.Guid.Equals(shopGuid));
-            if (shop != null)
-                user.ShopsOwned.Remove(shop);
-        }
-
-        public int GetUsersCount()
-        {
-            return LoggedInUsers.Count;
-        }
-
-        public void AddToUsersPurchaseHistory(ShoppingBag shoppingBag, Guid userGuid)
-        {
-            var user = LoggedInUsers[userGuid];
-            if (user == null) return;
-            user.PurchaseHistory.Add(shoppingBag);
-        }
-
-        public bool PurchaseCart(Guid userGuid, Guid shopGuid)
-        {
-            throw new NotImplementedException();
-        }
-
-        public bool IsAdminUser(Guid guid) => LoggedInUsers.Any(user => user.Username.Equals(guid) && user.IsAdmin);
-        public bool ExistsAdminUser() => LoggedInUsers.Any(user => user.IsAdmin);
-
-        public bool AddProductToShop(Guid userGuid, string productName, string productCategory,
-    double price, int quantity)
-        {
-            if (!IsUserExists(userGuid)) throw new UserNotFo
-
-
-        }
     }
 }

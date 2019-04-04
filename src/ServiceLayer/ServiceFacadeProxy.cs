@@ -45,10 +45,10 @@ namespace ServiceLayer
             return _serviceFacade.AddShopProduct(userGuid, shopGuid, name, category, price, quantity);
         }
 
-        public bool AddProductToShoppingCart(Guid cookie, Guid productGuid, Guid shopOfCartGuid)
+        public bool AddProductToShoppingCart(Guid cookie, Guid shopGuid, Guid shopProductGuid, int quantity)
         {
             var userGuid = _sessionManager.ResolveCookie(cookie);
-            return _serviceFacade.AddProductToShoppingCart(userGuid, productGuid, shopOfCartGuid);
+            return _serviceFacade.AddProductToShoppingCart(userGuid, shopGuid, shopProductGuid, quantity);
 
         }
 
@@ -82,10 +82,10 @@ namespace ServiceLayer
             return _serviceFacade.ConnectToSupplySystem(userGuid);
         }
 
-        public bool EditProductInCart(Guid cookie, Guid shopOfCartGuid, Guid shopProductGuid, int newAmount)
+        public bool EditProductInCart(Guid cookie, Guid shopGuid, Guid shopProductGuid, int newAmount)
         {
             var userGuid = _sessionManager.ResolveCookie(cookie);
-            return _serviceFacade.EditProductInCart(userGuid, shopOfCartGuid, shopProductGuid, newAmount);
+            return _serviceFacade.EditProductInCart(userGuid, shopGuid, shopProductGuid, newAmount);
         }
 
         public bool EditShopProduct(Guid cookie, Guid shopGuid, Guid productGuid, double newPrice, int newQuantity)
@@ -94,13 +94,13 @@ namespace ServiceLayer
             return _serviceFacade.EditShopProduct(userGuid, shopGuid, productGuid, newPrice, newQuantity);
         }
 
-        public IEnumerable<Guid> GetAllProductsInCart(Guid cookie, Guid shopOfCartGuid)
+        public ICollection<Guid> GetAllProductsInCart(Guid cookie, Guid shopGuid)
         {
             var userGuid = _sessionManager.ResolveCookie(cookie);
-            return _serviceFacade.GetAllProductsInCart(userGuid, shopOfCartGuid);
+            return _serviceFacade.GetAllProductsInCart(userGuid, shopGuid);
         }
 
-        public bool Initialize(Guid cookie, string username = null, string password = null)
+        public bool Initialize(Guid cookie, string username, string password)
         {
             var userGuid = _sessionManager.ResolveCookie(cookie);
             return _serviceFacade.Initialize(userGuid, username, password);
@@ -124,16 +124,16 @@ namespace ServiceLayer
             return _serviceFacade.Register(userGuid, username, password);
         }
 
-        public bool RemoveProductFromCart(Guid cookie, Guid shopProductGuid, Guid shopOfCartGuid)
+        public bool RemoveProductFromCart(Guid cookie, Guid shopGuid, Guid shopProductGuid)
         {
             var userGuid = _sessionManager.ResolveCookie(cookie);
-            return _serviceFacade.RemoveProductFromCart(userGuid, shopProductGuid, shopOfCartGuid);
+            return _serviceFacade.RemoveProductFromCart(userGuid, shopGuid, shopProductGuid);
         }
 
-        public bool RemoveProductFromShop(Guid cookie, Guid shopProductGuid, Guid shopGuid)
+        public bool RemoveProductFromShop(Guid cookie, Guid shopGuid, Guid shopProductGuid)
         {
             var userGuid = _sessionManager.ResolveCookie(cookie);
-            return _serviceFacade.RemoveShopProduct(userGuid, shopProductGuid, shopGuid);
+            return _serviceFacade.RemoveShopProduct(userGuid, shopGuid, shopProductGuid);
         }
 
         public bool RemoveShopManager(Guid cookie, Guid shopGuid, Guid managerToRemoveGuid)

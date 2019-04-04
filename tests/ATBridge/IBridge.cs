@@ -122,37 +122,37 @@ namespace ATBridge
         /// Adds the product to the shopping cart.
         /// </summary>
         /// <param name="productGuid"></param>
-        /// <param name="shopOfCartGuid"></param>
+        /// <param name="shopGuid"></param>
         /// <param name="username"></param>
         /// <returns>True if added successfully. False otherwise.</returns>
-        bool AddProductToShoppingCart(Guid productGuid, Guid shopOfCartGuid, string username);
+        bool AddProductToShoppingCart(Guid productGuid, Guid shopGuid, string username);
 
         /// <summary>
         /// Gets all the products on the user's cart.
         /// </summary>
         /// <param name="username"></param>
-        /// <param name="shopOfCartGuid"></param>
+        /// <param name="shopGuid"></param>
         /// <returns>An enumerable collection of the products.</returns>
-        IEnumerable<Guid> GetAllProducts(string username, Guid shopOfCartGuid);
+        IEnumerable<Guid> GetAllProducts(string username, Guid shopGuid);
 
         /// <summary>
         /// Removes the product from the user's cart.
         /// </summary>
         /// <param name="productGuid"></param>
-        /// <param name="shopOfCartGuid"></param>
+        /// <param name="shopGuid"></param>
         /// <param name="username"></param>
         /// <returns>True if removed successfully. False otherwise.</returns>
-        bool RemoveProduct(Guid productGuid, Guid shopOfCartGuid, string username);
+        bool RemoveProduct(Guid productGuid, Guid shopGuid, string username);
 
         /// <summary>
         /// Sets the amount of the product in the cart to the new amount.
         /// </summary>
         /// <param name="username"></param>
-        /// <param name="shopOfCartGuid"></param>
+        /// <param name="shopGuid"></param>
         /// <param name="productGuid"></param>
         /// <param name="newAmount"></param>
         /// <returns>True if removed successfully. False otherwise.</returns>
-        bool ChangePurchasedProductAmount(string username, Guid shopOfCartGuid, Guid productGuid, int newAmount);
+        bool ChangePurchasedProductAmount(string username, Guid shopGuid, Guid productGuid, int newAmount);
         #endregion
     }
 }

@@ -1,4 +1,5 @@
 ﻿using DomainLayer.Exceptions;
+using DomainLayer.Properties;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -9,14 +10,6 @@ namespace DomainLayer.Data.Entitites.Users.States
     {
         public SellerUserState(string username, string password) : base (username, password) { }
         public ICollection<Shop> ShopsOwned { get; set; }
-
-        public override bool AddShopOwner(Guid shopGuid, Guid userGuid)
-        {
-            var shop = ShopsOwned.FirstOrDefault(s => s.Guid.Equals(shopGuid));
-            if (shop == null) throw new ShopNotFoundException($"No shop found with Guid");
-            var owner = shop.GetOwner(userGuid);
-            return owner.AddOwner(userGuid);
-        }
 
         public override ICollection<ShoppingBag> GetShoppingHistory()
         {
@@ -50,22 +43,63 @@ namespace DomainLayer.Data.Entitites.Users.States
             throw new BadStateException($"Tried to invoke ConnectToSupplySystem in Seller State");
         }
 
-        public override void AddShopProduct(Guid shopGuid, string name, string category, double price, int quantity)
+        public override Guid AddShopProduct(Guid shopGuid, string name, string category, double price, int quantity)
         {
-            if (!DomainData.ShopsCollection.ContainsKey(shopGuid))
-                throw new ShopNotFoundException($"No shop found with Guid {shopGuid}.");
-
-            var shop = DomainData.ShopsCollection[shopGuid];
-            shop.AddProduct(Guid, new Product(name, category), price, quantity);
+            return DomainData.ShopsCollection[shopGuid].AddProduct(Guid, new Product(name, category), price, quantity);
         }
 
         public override void EditShopProduct(Guid shopGuid, Guid productGuid, double newPrice, int newQuantity)
         {
-            if (!DomainData.ShopsCollection.ContainsKey(shopGuid))
-                throw new ShopNotFoundException($"No shop found with Guid {shopGuid}.");
+            DomainData.ShopsCollection[shopGuid].EditProduct(Guid, productGuid, newPrice, newQuantity);
+        }
 
-            var shop = DomainData.ShopsCollection[shopGuid];
-            shop.EditProduct(Guid, productGuid, newPrice, newQuantity);
+        public override bool RemoveShopProduct(Guid shopGuid, Guid shopProductGuid)
+        {
+            DomainData.ShopsCollection[shopGuid].RemoveProduct(Guid, shopProductGuid);
+            return true;
+        }
+
+        public override bool AddProductToShoppingCart(Guid shopGuid, Guid shopProductGuid, int quantity)
+        {
+            throw new BadStateException($"Tried to invoke AddProductToShoppingCart in Seller State");
+        }
+
+        public override bool AddShopManager(Guid shopGuid, Guid newManagaerGuid, List<string> priviliges)
+        {
+            DomainData.ShopsCollection[shopGuid].AddShopManager(Guid, newManagaerGuid, priviliges);
+            return true;
+        }
+
+
+        public override bool CascadeRemoveShopOwner(Guid shopGuid, Guid ownerToRemoveGuid)
+        {
+            return DomainData.ShopsCollection[shopGuid].CascadeRemoveShopOwner(Guid, ownerToRemoveGuid);
+        }
+
+        public override bool EditProductInCart(Guid shopGuid, Guid shopProductGuid, int newAmount)
+        {
+            throw new BadStateException($"Tried to invoke EditProductInCart in Seller State");
+        }
+
+        public override bool RemoveProductFromCart(Guid shopGuid, Guid shopProductGuid)
+        {
+            throw new BadStateException($"Tried to invoke RemoveProductFromCart in Seller State");
+        }
+
+        public override ICollection<Guid> GetAllProductsInCart(Guid shopGuid)
+        {
+            throw new BadStateException($"Tried to invoke GetAllProductsInCart in Seller State");
+        }
+
+        public override bool RemoveShopManager(Guid shopGuid, Guid managerToRemoveGuid)
+        {
+            return DomainData.ShopsCollection[shopGuid].RemoveShopManager(Guid, managerToRemoveGuid);
+        }
+
+        public override bool AddShopOwner(Guid shopGuid, Guid newManagaerGuid)
+        {
+            DomainData.ShopsCollection[shopGuid].AddShopOwner(Guid, newManagaerGuid);
+            return true;
         }
     }
 }

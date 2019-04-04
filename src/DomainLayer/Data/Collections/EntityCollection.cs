@@ -8,7 +8,21 @@ namespace DomainLayer.Data.Collections
     {
         protected Dictionary<Guid, T> _entitiesCollection = new Dictionary<Guid, T>();
 
-        public T this[Guid key] { get => _entitiesCollection[key]; set => _entitiesCollection[key] = value; }
+        public T this[Guid key]
+        {
+            get
+            {
+                try
+                {
+                    return _entitiesCollection[key];
+                }
+                catch
+                {
+                    return default(T);
+                }
+            }
+            set => _entitiesCollection[key] = value;
+        }
 
         public ICollection<Guid> Keys => _entitiesCollection.Keys;
 

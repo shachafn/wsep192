@@ -34,10 +34,7 @@ namespace DomainLayer.Data.Entitites
             State.PurchaseBag();
         }
 
-        public Guid OpenShop() => State.OpenShop();
-
-        public bool AddShopOwner(Guid shopGuid, Guid userGuid) => State.AddShopOwner(shopGuid, userGuid);
-        
+        public Guid OpenShop() => State.OpenShop();        
 
         public bool CheckPass(string password) => State.CheckPass(password);
 
@@ -55,14 +52,59 @@ namespace DomainLayer.Data.Entitites
             return State.ConnectToSupplySystem();
         }
 
-        public void AddShopProduct(Guid shopGuid, string name, string category, double price, int quantity)
+        public Guid AddShopProduct(Guid shopGuid, string name, string category, double price, int quantity)
         {
-            State.AddShopProduct(shopGuid, name, category, price, quantity);
+            return State.AddShopProduct(shopGuid, name, category, price, quantity);
         }
 
         public void EditShopProduct(Guid shopGuid, Guid productGuid, double newPrice, int newQuantity)
         {
             State.EditShopProduct(shopGuid, productGuid, newPrice, newQuantity);
+        }
+
+        public bool RemoveShopProduct(Guid shopGuid, Guid shopProductGuid)
+        {
+            return State.RemoveShopProduct(shopGuid, shopProductGuid);
+        }
+
+        public bool AddProductToShoppingCart(Guid shopGuid, Guid shopProductGuid, int quantity)
+        {
+            return State.AddProductToShoppingCart(shopGuid, shopProductGuid, quantity);
+        }
+
+        public bool AddShopOwner(Guid shopGuid, Guid newManagaerGuid)
+        {
+            return State.AddShopOwner(shopGuid, newManagaerGuid);
+        }
+
+        public bool AddShopManager(Guid shopGuid, Guid newManagaerGuid, List<string> priviliges)
+        {
+            return State.AddShopManager(shopGuid, newManagaerGuid, priviliges);
+        }
+
+        public bool CascadeRemoveShopOwner(Guid shopGuid, Guid ownerToRemoveGuid)
+        {
+            return State.CascadeRemoveShopOwner(shopGuid, ownerToRemoveGuid);
+        }
+
+        public bool EditProductInCart(Guid shopGuid, Guid shopProductGuid, int newAmount)
+        {
+            return State.EditProductInCart(shopGuid, shopProductGuid, newAmount);
+        }
+
+        public bool RemoveProductFromCart(Guid shopGuid, Guid shopProductGuid)
+        {
+            return State.RemoveProductFromCart(shopGuid, shopProductGuid);
+        }
+
+        public ICollection<Guid> GetAllProductsInCart(Guid shopGuid)
+        {
+            return State.GetAllProductsInCart(shopGuid);
+        }
+
+        public bool RemoveShopManager(Guid shopGuid, Guid managerToRemoveGuid)
+        {
+            return State.RemoveShopManager(shopGuid, managerToRemoveGuid);
         }
     }
 }

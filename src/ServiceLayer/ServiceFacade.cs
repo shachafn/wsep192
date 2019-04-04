@@ -29,6 +29,12 @@ namespace ServiceLayer
         }
         #endregion
 
+        #region Users
+        public bool Register(Guid userGuid, string username, string password)
+        {
+            return _domainLayerFacade.Register(userGuid, username, password);
+        }
+
         public Guid Login(Guid userGuid, string username, string password)
         {
             return _domainLayerFacade.Login(userGuid, username, password);
@@ -38,13 +44,10 @@ namespace ServiceLayer
         {
             return _domainLayerFacade.Logout(userGuid);
         }
+        #endregion
 
-        public bool Register(Guid userGuid, string username, string password)
-        {
-            return _domainLayerFacade.Register(username, password);
-        }
-
-        public bool Initialize(Guid userGuid, string username = null, string password = null)
+        #region Admin
+        public bool Initialize(Guid userGuid, string username, string password)
         {
             return _domainLayerFacade.Initialize(userGuid, username, password);
         }
@@ -57,6 +60,9 @@ namespace ServiceLayer
         {
             return _domainLayerFacade.ConnectToSupplySystem(userGuid);
         }
+        #endregion
+
+        #region Shop Products
 
         public Guid AddShopProduct(Guid userGuid, Guid shopGuid, string name, string category, double price, int quantity)
         {
@@ -68,70 +74,76 @@ namespace ServiceLayer
             return _domainLayerFacade.EditShopProduct(userGuid, shopGuid, productGuid, newPrice, newQuantity);
         }
 
-        public bool RemoveShopProduct(Guid userGuid, Guid shopProductGuid, Guid shopGuid)
+        public bool RemoveShopProduct(Guid userGuid, Guid shopGuid, Guid shopProductGuid)
         {
-            throw new NotImplementedException();
+            return _domainLayerFacade.RemoveShopProduct(userGuid, shopGuid, shopProductGuid);
         }
+        #endregion
 
-        public bool AddProductToShoppingCart(Guid userGuid, Guid productGuid, Guid shopOfCartGuid)
-        {
-            throw new NotImplementedException();
-        }
-
+        #region Shop Owners and Managers
         public bool AddShopManager(Guid userGuid, Guid shopGuid, Guid newManagaerGuid, List<string> priviliges)
         {
-            throw new NotImplementedException();
+            return _domainLayerFacade.AddShopManager(userGuid, shopGuid, newManagaerGuid, priviliges);
+        }
+
+        public bool RemoveShopManager(Guid userGuid, Guid shopGuid, Guid managerToRemoveGuid)
+        {
+            return _domainLayerFacade.RemoveShopManager(userGuid, shopGuid, managerToRemoveGuid);
         }
 
         public bool AddShopOwner(Guid userGuid, Guid shopGuid, Guid newShopOwnerGuid)
         {
-            throw new NotImplementedException();
+            //Creating an owner with null priviliges is an owner (An manager is actually an owner with restricted priviliges)
+            return _domainLayerFacade.AddShopManager(userGuid, shopGuid, newShopOwnerGuid, null);
         }
 
         public bool CascadeRemoveShopOwner(Guid userGuid, Guid shopGuid, Guid ownerToRemoveGuid)
         {
-            throw new NotImplementedException();
+            return _domainLayerFacade.CascadeRemoveShopOwner(userGuid, shopGuid, ownerToRemoveGuid);
+        }
+        #endregion
+
+        #region Shopping Cart
+        public bool AddProductToShoppingCart(Guid userGuid, Guid shopGuid, Guid shopProductGuid, int quantity)
+        {
+            return _domainLayerFacade.AddProductToShoppingCart(userGuid, shopGuid, shopProductGuid, quantity);
         }
 
-        public bool EditProductInCart(Guid userGuid, Guid shopOfCartGuid, Guid shopProductGuid, int newAmount)
+
+        public bool RemoveProductFromCart(Guid userGuid, Guid shopGuid, Guid shopProductGuid)
         {
-            throw new NotImplementedException();
+            return _domainLayerFacade.RemoveProductFromCart(userGuid, shopGuid, shopProductGuid);
         }
 
-        public IEnumerable<Guid> GetAllProductsInCart(Guid userGuid, Guid shopOfCartGuid)
+        public bool EditProductInCart(Guid userGuid, Guid shopGuid, Guid shopProductGuid, int newAmount)
         {
-            throw new NotImplementedException();
+            return _domainLayerFacade.EditProductInCart(userGuid, shopGuid, shopProductGuid, newAmount);
         }
+
+        public ICollection<Guid> GetAllProductsInCart(Guid userGuid, Guid shopGuid)
+        {
+            return _domainLayerFacade.GetAllProductsInCart(userGuid, shopGuid);
+        }
+        #endregion
 
         public Guid OpenShop(Guid userGuid)
         {
-            throw new NotImplementedException();
+            return _domainLayerFacade.OpenShop(userGuid);
         }
 
         public bool PurchaseCart(Guid userGuid, Guid shopGuid)
         {
-            throw new NotImplementedException();
-        }
-
-        public bool RemoveProductFromCart(Guid userGuid, Guid shopProductGuid, Guid shopOfCartGuid)
-        {
-            throw new NotImplementedException();
-        }
-
-
-        public bool RemoveShopManager(Guid userGuid, Guid shopGuid, Guid managerToRemoveGuid)
-        {
-            throw new NotImplementedException();
+            return _domainLayerFacade.PurchaseCart(userGuid, shopGuid);
         }
 
         public bool RemoveUser(Guid userGuid, Guid userToRemoveGuid)
         {
-            throw new NotImplementedException();
+            return _domainLayerFacade.RemoveUser(userGuid, userToRemoveGuid);
         }
 
         public ICollection<Guid> SearchProduct(Guid userGuid, Guid shopGuid, string productName)
         {
-            throw new NotImplementedException();
+            return _domainLayerFacade.SearchProduct(userGuid, shopGuid, productName);
         }
     }
 }

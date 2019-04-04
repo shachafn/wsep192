@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 
 namespace DomainLayer.Facade
 {
@@ -11,10 +12,8 @@ namespace DomainLayer.Facade
         /// <summary>
         /// Registers a user with the given parameters.
         /// </summary>
-        /// <param name="username"></param>
-        /// <param name="password"></param>
         /// <returns>Guid of the user. Guid.Empty on error.</returns>
-        bool Register(string username, string password);
+        bool Register(Guid userGuid, string username, string password);
 
         /// <summary>
         /// Logging in the user.
@@ -48,7 +47,7 @@ namespace DomainLayer.Facade
         /// Initializes the system and creates an admin user if provided.
         /// </summary>
         /// <returns>True if operation succeeded. False otherwise. </returns>
-        bool Initialize(Guid userGuid, string username = null, string password = null);
+        bool Initialize(Guid userGuid, string username, string password);
 
 
         bool ConnectToPaymentSystem(Guid userGuid);
@@ -56,5 +55,15 @@ namespace DomainLayer.Facade
 
         Guid AddShopProduct(Guid userGuid, Guid shopGuid, string name, string category, double price, int quantity);
         bool EditShopProduct(Guid userGuid, Guid shopGuid, Guid productGuid, double newPrice, int newQuantity);
+        bool RemoveShopProduct(Guid userGuid, Guid shopGuid, Guid shopProductGuid);
+        bool AddProductToShoppingCart(Guid userGuid, Guid shopGuid, Guid shopProductGuid, int quantity);
+        bool AddShopManager(Guid userGuid, Guid shopGuid, Guid newManagaerGuid, List<string> priviliges);
+        bool CascadeRemoveShopOwner(Guid userGuid, Guid shopGuid, Guid ownerToRemoveGuid);
+        bool EditProductInCart(Guid userGuid, Guid shopGuid, Guid shopProductGuid, int newAmount);
+        bool RemoveProductFromCart(Guid userGuid, Guid shopGuid, Guid shopProductGuid);
+        ICollection<Guid> GetAllProductsInCart(Guid userGuid, Guid shopGuid);
+        bool RemoveUser(Guid userGuid, Guid userToRemoveGuid);
+        ICollection<Guid> SearchProduct(Guid userGuid, Guid shopGuid, string productName);
+        bool RemoveShopManager(Guid userGuid, Guid shopGuid, Guid managerToRemoveGuid);
     }
 }

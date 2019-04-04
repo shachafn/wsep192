@@ -10,17 +10,11 @@ namespace ServiceLayer
         /// <summary>
         /// Registers a user. Info should be valid, username should be unique.
         /// </summary>
-        /// <PositiveTests>
-        /// Valid string - non-null, more than 1 character long.
-        /// 1. username is unique, is a Valid String, password is a Valid String
-        /// 2. different username is unique, is a Valid String, same password
-        /// </PositiveTests>
-        /// <NegativeTests>
-        /// 1. username and password is not Valid String (null, or empty)
-        /// 2. username is Valid String, password is not.
-        /// 3. username is not Vaid String, password is.
-        /// 4. username is Valid String, password is Valid String, username is not unique
-        /// </NegativeTests>
+        /// <constraints>
+        /// 1. userGuid must be GuestGuid.
+        /// 2. username and password must not be string.IsNullOrWhitespace
+        /// 3. if username is taken - return false;
+        /// </constraints>
         /// <returns>True if registered successfully. False otherwise.</returns>
         bool Register(Guid userGuid, string username, string password);
 
@@ -28,14 +22,11 @@ namespace ServiceLayer
         /// <summary>
         /// Logins a user using the username and password.
         /// </summary>
-        /// <PositiveTests>
-        /// 1. There is a registered user with these username and password, this user is not yet logged in.
-        /// </PositiveTests>
-        /// <NegativeTests>
-        /// 1. There is a user with this username, but not with the same password
-        /// 2. There is (at least) one user with this password, but with different username
-        /// 3. There is a user with these username and password, but is already logged in.
-        /// </NegativeTests>
+        /// <constraints>
+        /// 1. userGuid must be GuestGuid.
+        /// 2. username and password must not be string.IsNullOrWhitespace
+        /// 3. if username and password doesnt match nay user - return false
+        /// </constraints>
         /// <returns>True if could login successfully. False otherwise.</returns>
         Guid Login(Guid userGuid, string username, string password);
 
@@ -43,25 +34,21 @@ namespace ServiceLayer
         /// <summary>
         /// Logs out the user.
         /// </summary>
-        /// <PositiveTests>
-        /// 1. There is a logged in user with this Guid.
-        /// </PositiveTests>
-        /// <NegativeTests>
-        /// 1. There is no logged-in user with this guid
-        /// </NegativeTests>
+        /// <constraints>
+        /// 1. User must exist
+        /// 2. User must be logged in.
+        /// </constraints>
         bool Logout(Guid userGuid);
 
         /////Implements General Requirement 3.2
         /// <summary>
         /// Opens a shop for the (logged-in) user.
         /// </summary>
-        /// <PositiveTests>
-        /// 1. Open a shop.
-        /// 2. Open another shop.
-        /// </PositiveTests>
-        /// <NegativeTests>
-        /// 1. Open a shop with a userGuid of no user.
-        /// </NegativeTests>
+        /// <constraints>
+        /// 1. User must exist
+        /// 2. User must be logged in.
+        /// 3. User must be in seller state.
+        /// </constraints>
         /// <returns>True if opened successfully. False otherwise.</returns>
         Guid OpenShop(Guid userGuid);
 
@@ -70,25 +57,30 @@ namespace ServiceLayer
         /// Purchase the user's shopping cart of the specific shop.
         /// </summary>
         /// <constraints>
-        /// 1. Must be a valid Guid of an existing user.
+        /// 1. User must exist
         /// 2. User must be logged in.
-        /// 3. Must be a valid Guid of an existing shop.
-        /// 4. Shop must be Active.
-        /// 5. User must have at least one product bought from the shop.
+        /// 3. User must be in buyer state.
+        /// 4. Shop must exist
+        /// 5. Shop must be active. 
+        /// 6. User must have at least one item in cart.
         /// </constraints>
         /// <returns>True if purchased successfully. False otherwise.</returns>
         bool PurchaseCart(Guid userGuid, Guid shopGuid);
 
         /////Implements General Requirement 1.1
         /// <summary>
-        /// Initializes the system.
+        /// Initializes the system. If there is already an admin user - username and password must match it.
+        /// If there is no admin user yet, one is created using these username and password.
         /// </summary>
-        ///     <constraints>
-        ///     1. All external services should be connectable.
-        ///     2. Admin registration info should be provided and be valid if no Admin is registered.
-        ///     </constraints>
+        /// <constraints>
+        /// 1. userGuid must be GuestGuid (cant login if system not initialized)
+        /// 2. If an admin user exists - username and password must match it.
+        /// 3. If no admin user exists - username and password will be used to create one.
+        /// 4. username and password must not be string.NullOrWhitespace
+        /// 5. if any external service is unavailable - return false
+        /// </constraints>
         /// <returns>True if the system initialized successfully. False otherwise.</returns>
-        bool Initialize(Guid userGuid, string username = null, string password = null);
+        bool Initialize(Guid userGuid, string username, string password);
 
         /////Implements General Requirement 6.2
         /// <summary>
@@ -100,7 +92,6 @@ namespace ServiceLayer
         /// 3. User must be in admin state.
         /// 4. UserToRemove must not be the only owner of an active shop.
         /// </constraints>
-        /// <param name="username">True if the user was removed successfully. False otherwise.</param>
         /// <returns></returns>
         bool RemoveUser(Guid userGuid, Guid userToRemoveGuid);
 
@@ -140,9 +131,10 @@ namespace ServiceLayer
         /// 5. Shop must exist.
         /// 6. Shop must be active.
         /// 7. Product must exist in the shop.
+        /// 8. quantity must be greater than 0
         /// </constraints>
         /// <returns>True if added successfully. False otherwise.</returns>
-        bool AddProductToShoppingCart(Guid userGuid, Guid productGuid, Guid shopOfCartGuid);
+        bool AddProductToShoppingCart(Guid userGuid, Guid productGuid, Guid shopGuid, int quantity);
 
         /////Implements General Requirement 2.7
         /// <summary>
@@ -156,7 +148,7 @@ namespace ServiceLayer
         /// 6. Shop must be active.
         /// </constraints>
         /// <returns>An enumerable collection of the products.</returns>
-        IEnumerable<Guid> GetAllProductsInCart(Guid userGuid, Guid shopOfCartGuid);
+        ICollection<Guid> GetAllProductsInCart(Guid userGuid, Guid shopGuid);
 
         /////Implements General Requirement 2.7
         /// <summary>
@@ -171,7 +163,7 @@ namespace ServiceLayer
         /// 7. Product must exist in cart.
         /// </constraints>
         /// <returns>True if removed successfully. False otherwise.</returns>
-        bool RemoveProductFromCart(Guid userGuid, Guid shopProductGuid, Guid shopOfCartGuid);
+        bool RemoveProductFromCart(Guid userGuid, Guid shopGuid, Guid shopProductGuid);
 
         /////Implements General Requirement 2.7
         /// <summary>
@@ -187,7 +179,7 @@ namespace ServiceLayer
         /// 8. newAmount must be equal or greater than 1 (For Remove - user RemoveProductFromCart)
         /// </constraints>
         /// <returns>True if editted successfully. False otherwise.</returns>
-        bool EditProductInCart(Guid userGuid, Guid shopOfCartGuid, Guid shopProductGuid, int newAmount);
+        bool EditProductInCart(Guid userGuid, Guid shopGuid, Guid shopProductGuid, int newAmount);
 
         /////Implements General Requirement 4.1
         /// <summary>
@@ -197,12 +189,12 @@ namespace ServiceLayer
         /// 1. Must be called by an existing user.
         /// 2. User must be logged in.
         /// 3. User must be in seller state.
-        /// 4. User must be an owner (or a manager with priviliges for this operation) of the shop.
+        /// 4. User must be creator, or an owner (or a manager with priviliges for this operation) of the shop.
         /// 5. Shop must exist.
         /// 6. Shop must be active.
-        /// 7. name must not be null or string.Empty
-        /// 8. category must not be null or string.Empty
-        /// 9. price must be above 0
+        /// 7. name must not be string.IsNullOrWhitespace
+        /// 8. category must not be string.IsNullOrWhitespace
+        /// 9. price must be grater than 0
         /// 10. quantity must be equal or greater than 0 (May not have any to sell at the moment).
         /// </constraints>
         /// <returns>True if added successfully. False otherwise.</returns>
@@ -216,7 +208,7 @@ namespace ServiceLayer
         /// 1. Must be called by an existing user.
         /// 2. User must be logged in.
         /// 3. User must be in seller state.
-        /// 4. User must be an owner (or a manager with priviliges for this operation) of the shop.
+        /// 4. User must be creator, an owner (or a manager with priviliges for this operation) of the shop.
         /// 5. Shop must exist.
         /// 6. Shop must be active.
         /// 7. Product must exist in shop.
@@ -232,7 +224,7 @@ namespace ServiceLayer
         /// 1. Must be called by an existing user.
         /// 2. User must be logged in.
         /// 3. User must be in seller state.
-        /// 4. User must be an owner (or a manager with priviliges for this operation) of the shop.
+        /// 4. User must be creator, an owner (or a manager with priviliges for this operation) of the shop.
         /// 5. Shop must exist.
         /// 6. Shop must be active.
         /// 7. Product must exist in shop.

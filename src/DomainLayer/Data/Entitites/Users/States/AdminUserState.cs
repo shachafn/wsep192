@@ -11,11 +11,6 @@ namespace DomainLayer.Data.Entitites.Users.States
         public AdminUserState(string username, string password) : base(username, password) { }
 
 
-        public override bool AddShopOwner(Guid shopGuid, Guid userGuid)
-        {
-            throw new BadStateException($"Tried to invoke AddShopOwner in Admin State");
-        }
-
         public override ICollection<ShoppingBag> GetShoppingHistory()
         {
             throw new BadStateException($"Tried to invoke GetShoppingHistory in Admin State");
@@ -36,15 +31,9 @@ namespace DomainLayer.Data.Entitites.Users.States
         /// </constraints>
         public override bool RemoveUser(Guid userToRemoveGuid)
         {
-            var shopsOwned = GetShopsOwnedByUser(userToRemoveGuid);
-            var IsOnlyOwnerByCreator = shopsOwned.Any(shop => shop.Creator.Guid.Equals(userToRemoveGuid) && shop.Owners.Count == 0);
-            var IsOnlyOwnerByOtherOwner = shopsOwned.Any(shop => shop.Creator.Guid.Equals(Guid.Empty) && shop.Owners.Count == 1);
-
-            if (IsOnlyOwnerByCreator || IsOnlyOwnerByOtherOwner)
-                throw new BrokenConstraintException($"Can't remove user. User with Guid - {Guid}," +
-                    $" username - {Username}, is the only owner of an active shop.");
 
             throw new NotImplementedException();
+            //Clear shops from owners or managers appointed by this user -- must be checked, might brake constarint every shop must have 1 owner
             //Clear shops from the user as creator or other owner
             //Clear all user's carts in these shops
             //Clear shop products
@@ -71,7 +60,7 @@ namespace DomainLayer.Data.Entitites.Users.States
             return External_Services.ExternalServicesManager._supplySystem.IsAvailable();
         }
 
-        public override void AddShopProduct(Guid shopGuid, string name, string category, double price, int quantity)
+        public override Guid AddShopProduct(Guid shopGuid, string name, string category, double price, int quantity)
         {
             throw new BadStateException($"Tried to invoke AddProductToShop in Admin State");
         }
@@ -79,6 +68,51 @@ namespace DomainLayer.Data.Entitites.Users.States
         public override void EditShopProduct(Guid shopGuid, Guid productGuid, double newPrice, int newQuantity)
         {
             throw new BadStateException($"Tried to invoke EditShopProduct in Admin State");
+        }
+
+        public override bool RemoveShopProduct(Guid shopGuid, Guid shopProductGuid)
+        {
+            throw new BadStateException($"Tried to invoke RemoveShopProduct in Admin State");
+        }
+
+        public override bool AddProductToShoppingCart(Guid shopGuid, Guid shopProductGuid, int quantity)
+        {
+            throw new BadStateException($"Tried to invoke AddProductToShoppingCart in Admin State");
+        }
+
+        public override bool AddShopManager(Guid shopGuid, Guid newManagaerGuid, List<string> priviliges)
+        {
+            throw new BadStateException($"Tried to invoke AddShopManager in Admin State");
+        }
+
+        public override bool CascadeRemoveShopOwner(Guid shopGuid, Guid ownerToRemoveGuid)
+        {
+            throw new BadStateException($"Tried to invoke CascadeRemoveShopOwner in Admin State");
+        }
+
+        public override bool EditProductInCart(Guid shopGuid, Guid shopProductGuid, int newAmount)
+        {
+            throw new BadStateException($"Tried to invoke EditProductInCart in Admin State");
+        }
+
+        public override bool RemoveProductFromCart(Guid shopGuid, Guid shopProductGuid)
+        {
+            throw new BadStateException($"Tried to invoke RemoveProductFromCart in Admin State");
+        }
+
+        public override ICollection<Guid> GetAllProductsInCart(Guid shopGuid)
+        {
+            throw new BadStateException($"Tried to invoke GetAllProductsInCart in Admin State");
+        }
+
+        public override bool RemoveShopManager(Guid shopGuid, Guid managerToRemoveGuid)
+        {
+            throw new BadStateException($"Tried to invoke RemoveShopManager in Admin State");
+        }
+
+        public override bool AddShopOwner(Guid shopGuid, Guid newManagaerGuid)
+        {
+            throw new BadStateException($"Tried to invoke AddShopOwner in Admin State");
         }
     }
 }

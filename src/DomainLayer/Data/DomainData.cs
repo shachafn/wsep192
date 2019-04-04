@@ -7,6 +7,7 @@ namespace DomainLayer.Data
         public static LoggedInUsersEntityCollection LoggedInUsersEntityCollection = new LoggedInUsersEntityCollection();
         public static ShopEntityCollection ShopsCollection = new ShopEntityCollection();
         public static AllUsersEntityCollection AllUsersCollection = new AllUsersEntityCollection();
-        public static ShopOwnerEntityCollection ShopOwnersCollection = new ShopOwnerEntityCollection();
+        public static ShoppingBagsEntityCollection ShoppingBagsCollection = new ShoppingBagsEntityCollection();
+
     }
 }

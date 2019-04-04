@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 
 namespace DomainLayer.Data.Entitites
 {
@@ -8,30 +9,24 @@ namespace DomainLayer.Data.Entitites
 
         public Guid AppointerGuid { get; set; } // Guid.Empty for the creator of the shop.
 
-        public Shop Shop { get; set; }
+        public Guid ShopGuid { get; set; }
 
-        public ShopOwner(Guid ownerGuid, Guid appointerGuid, Shop shop)
+        public ICollection<string> Priviliges { get; set; }
+
+        public ShopOwner(Guid ownerGuid, Guid appointerGuid, Guid shopGuid, ICollection<string> priviliges = null)
         {
             OwnerGuid = ownerGuid;
             AppointerGuid = appointerGuid;
-            Shop = shop;
+            ShopGuid = shopGuid;
+            Priviliges = priviliges ?? new List<string>();
         }
 
-        public ShopOwner(Guid ownerGuid, Shop shop)
+        public ShopOwner(Guid ownerGuid, Guid shopGuid, ICollection<string> priviliges = null)
         {
             OwnerGuid = ownerGuid;
             AppointerGuid = Guid.Empty;
-            Shop = shop;
-        }
-
-        public bool AddOwner(Guid userGuid)
-        {
-            return Shop.AddOwner(this, userGuid);
-        }
-
-        public bool RemoveOwner(Guid ownerGuid)
-        {
-            return Shop.RemoveOwner(this, OwnerGuid);
+            ShopGuid = shopGuid;
+            Priviliges = priviliges ?? new List<string>();
         }
     }
 }

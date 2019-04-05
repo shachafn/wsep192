@@ -1,28 +1,27 @@
 using NUnit.Framework;
+using System;
 
 namespace Tests
 {
 
-    public class Tester
+    public static class Tester
     {
-        private AdminAT _adminAT;
-        private RegisteredBuyerAT _registerAT;
-        private ShopManagerAT _shopManagerAT;
-        private StoreOwnerAT _storeOwnerAT;
-        private UserAT _userAT;
-        [SetUp]
-        public void Setup()
+        public static bool _groismanConnected = false;
+        public static Guid _groismanShop = Guid.Empty;
+        public static Guid galaxyGuid = Guid.Empty;
+
+        public static void ExecuteAcceptanceTests()
         {
+            AdminAT _adminAT;
+            RegisteredBuyerAT _registerAT;
+            ShopManagerAT _shopManagerAT;
+            StoreOwnerAT _storeOwnerAT;
+            UserAT _userAT;
             _adminAT = new AdminAT();
             _registerAT = new RegisteredBuyerAT();
             _shopManagerAT = new ShopManagerAT();
             _storeOwnerAT = new StoreOwnerAT();
             _userAT = new UserAT();
-        }
-
-        
-        public void ExecuteAcceptanceTests()
-        {
             _adminAT.RunAdminAT();
             _registerAT.RunRegisteredUserAT();
             _shopManagerAT.RunShopManagerAT();

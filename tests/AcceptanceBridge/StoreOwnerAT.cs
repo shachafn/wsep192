@@ -10,27 +10,14 @@ namespace Tests
     [TestFixture]
     class StoreOwnerAT
     {
-        private User _user;
-        private User _unRegisteredUser;
-        private ShopOwner _owner;
-        private ShopOwner _fakeOwner;
-        private Shop _shop;
+
         private ProxyBridge _proxy;
-        private Product _productToAdd;
-        private ShopProduct _product; 
+
         [SetUp]
         public void Setup()
         {
             _proxy = new ProxyBridge();
             _proxy.SetRealBridge(new BridgeImpl());
-            _user = _proxy.Register("groisman", "150298");
-            _unRegisteredUser = new User("tommarz", "311297");
-            _proxy.Login("groisman", "king98");
-            _owner = new ShopOwner(_user,_shop,true);
-            _fakeOwner = new ShopOwner(_fakeOwner)
-            _shop = new Shop(_owner);
-            _productToAdd = new Product("IPhone", "Cellphones");
-            _product = new ShopProduct(_productToAdd, 1000, 1);
         }
         public void RunStoreOwnerAT()
         {
@@ -61,34 +48,58 @@ namespace Tests
         [Test]
         public void AddingProductAT1()
         {
-            Assert.AreEqual(true, _proxy.AddProduct(_product));
+            //Register+login to groisman's account
+            UserAT userAT = new UserAT();
+            userAT.RegisterAT1();
+            userAT.LoginAT1();
+            //Open shop
+            RegisteredBuyerAT registeredBuyerAT = new RegisteredBuyerAT();
+            if (Tester._groismanShop == null)
+                registeredBuyerAT.CreationOfNewStoreByRegisteredUserAT();
+            //Add products to shop
+            Tester.galaxyGuid = _proxy.AddProductToShop("Galaxy S9", "Cellphones", 2000, 10, Tester._groismanShop);
+            Assert.NotZero(Guid.Empty.CompareTo(Tester.galaxyGuid));
         }
 
         [Test]
         public void AddingProductAT2()
         {
-            
-            Assert.Pass();
+            //No check of permissions - can not test.
+            Assert.Fail();
         }
 
         [Test]
         public void AddingProductAT3()
         {
-            //TODO: Make class of ShopProduct in order to be able to test it.
-            Assert.Pass();
+            //Register+login to groisman's account
+            UserAT userAT = new UserAT();
+            userAT.RegisterAT1();
+            userAT.LoginAT1();
+            //Open shop
+            RegisteredBuyerAT registeredBuyerAT = new RegisteredBuyerAT();
+            if (Tester._groismanShop == null)
+                registeredBuyerAT.CreationOfNewStoreByRegisteredUserAT();
+            Assert.Zero(Guid.Empty.CompareTo(_proxy.AddProductToShop("Galaxy S9", "Cellphones", 2000, 10, Tester._groismanShop)));
         }
 
         [Test]
         public void AddingProductAT4()
         {
-            //TODO: Make class of ShopProduct in order to be able to test it.
-            Assert.Pass();
+            //Expected to get the empty guid because we try to type negative quantity.
+            //Register+login to groisman's account
+            UserAT userAT = new UserAT();
+            userAT.RegisterAT1();
+            userAT.LoginAT1();
+            //Open shop
+            RegisteredBuyerAT registeredBuyerAT = new RegisteredBuyerAT();
+            if (Tester._groismanShop == null)
+                registeredBuyerAT.CreationOfNewStoreByRegisteredUserAT();
+            Assert.Zero(Guid.Empty.CompareTo(_proxy.AddProductToShop("IPhone", "Cellphones", 1000, -1, Tester._groismanShop)));
         }
 
         //GR 4.1.2
         public void RemovingProductAT()
         {
-            //TDDO: Fix add product in proxy in order to make this test possible.
             RemovingProductAT1();
             RemovingProductAT2();
             RemovingProductAT3();
@@ -98,58 +109,96 @@ namespace Tests
         [Test]
         public void RemovingProductAT1()
         {
-            Assert.Pass();
+            if (Tester._groismanShop.CompareTo(Guid.Empty) == 0 || Tester.galaxyGuid.CompareTo(Guid.Empty) == 0)
+            {
+                AddingProductAT1();
+            }
+            //After setting the pre-conditions.
+            bool result = _proxy.RemoveProductFromShop(Tester.galaxyGuid, Tester._groismanShop);
+            Assert.True(result);
+            if (result)
+            {
+                Tester.galaxyGuid = Guid.Empty;
+            }
         }
 
         [Test]
         public void RemovingProductAT2()
         {
-            Assert.Pass();
+            //Can not test it - there is no dependency in user's permissions and identity.
+            Assert.Fail();
         }
 
         [Test]
         public void RemovingProductAT3()
         {
-            Assert.Pass();
+            if (Tester._groismanShop.CompareTo(Guid.Empty) == 0 || Tester.galaxyGuid.CompareTo(Guid.Empty) == 0)
+            {
+                AddingProductAT1();
+            }
+            bool result = _proxy.RemoveProductFromShop(Guid.Empty, Tester._groismanShop); //The empty guid doesn't exist in the shop.
+            Assert.False(result);
         }
 
         [Test]
         public void RemovingProductAT4()
         {
-            Assert.Pass();
+            //Can not test it. Reasons:
+            //1. Removing unexisted product is tested in RemovingProductAT3
+            //2. Can not send details of product.
+            //My advice : Removing the requirement from the doucument and removing this test. This test may be irelevant.
+            Assert.Fail();
         }
 
         //GR 4.1.3 
         public void EditingProductAT()
         {
-            //TDDO: Fix add product in proxy in order to make this test possible. 
             EditingProductAT1();
             EditingProductAT2();
             EditingProductAT3();
+            EditingProductAT4();
         }
 
         [Test]
         public void EditingProductAT1()
         {
-            Assert.Pass();
+            if (Tester._groismanShop.CompareTo(Guid.Empty) == 0 || Tester.galaxyGuid.CompareTo(Guid.Empty) == 0)
+            {
+                AddingProductAT1();
+            }
+            bool result = _proxy.EditProduct(Tester._groismanShop, Tester.galaxyGuid, 1500, 20);
+            Assert.True(result);
         }
 
         [Test]
         public void EditingProductAT2()
         {
-            Assert.Pass();
+            //Can not test it - there is no dependency in user's permissions and identity.
+            Assert.Fail();
         }
 
         [Test]
         public void EditingProductAT3()
         {
-            Assert.Pass();
+            bool result = _proxy.EditProduct(Tester._groismanShop, Guid.Empty, 1500, -20); //The empty guid doesn't exist in the shop.
+            Assert.False(result);
+        }
+
+        [Test]
+        public void EditingProductAT4()
+        {
+            if (Tester._groismanShop.CompareTo(Guid.Empty) == 0 || Tester.galaxyGuid.CompareTo(Guid.Empty) == 0)
+            {
+                AddingProductAT1();
+            }
+            bool result = _proxy.EditProduct(Tester._groismanShop, Tester.galaxyGuid, 1500, -20);
+            Assert.False(result);
+
         }
 
         //GR 4.3 - Store's owner can appoint new owner to his store.
         public void AppointmentOfNewOwnerAT()
         {
-            //TODO: Add to proxy bridge implemention of adding/appointment of new owner
             AppointmentOfNewOwnerAT1();
             AppointmentOfNewOwnerAT2();
             AppointmentOfNewOwnerAT3();

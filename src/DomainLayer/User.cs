@@ -9,9 +9,10 @@ namespace DomainLayer
         public static Dictionary<string, User> users = new Dictionary<string, User>(); // a list of all registered users in the current session
 
         private bool _logged;
-        public string Username { get => Username; private set => Username=value; }
+        public string Username { get => _username; private set => _username=value; }
         public bool IsAdmin { get => isAdmin; private set => isAdmin = value; }
 
+        private string _username;
         private string _passHash;
         public ShoppingBag CurrentBag { get; set; }
         private List<ShoppingBag> _purchaseHistory;
@@ -22,7 +23,7 @@ namespace DomainLayer
         public User()
         {
             _logged = false;
-            Username = "";
+            _username = "";
             _passHash = "";
             CurrentBag = new ShoppingBag();
             _purchaseHistory = new List<ShoppingBag>();
@@ -33,7 +34,7 @@ namespace DomainLayer
 
         public User(string username, string password, bool isAdmin)
         {
-            Username = username;
+            _username = username;
             _passHash = GetStringSha256Hash(password);
             _logged = false;
             CurrentBag = new ShoppingBag();
@@ -65,7 +66,7 @@ namespace DomainLayer
         public bool Login(string username, string password)
         {
             // check if the user exist and the password is correct 
-            if (!users.ContainsKey(username) || users[username].CheckPass(password) || users[username]._logged)
+            if (!users.ContainsKey(username) || !users[username].CheckPass(password) || users[username]._logged)
             {
                 return false;
             }
@@ -85,6 +86,7 @@ namespace DomainLayer
             {
                 return false;
             }
+            _logged = false;
             SaveUserChanges();
             return true;
         }
@@ -98,7 +100,7 @@ namespace DomainLayer
         /// <returns> returns the created user or null otherwise</returns>
         public static User Register(string username, string password)
         {
-            if (users.ContainsKey(username) && password.Length > 5)
+            if (users.ContainsKey(username) || password.Length < 5)
             {
                 return null;
             }
@@ -151,7 +153,7 @@ namespace DomainLayer
          */
         private void CopyUserData(User user)
         {
-            Username = user.Username;
+            _username = user.Username;
             _passHash = user._passHash;
             CurrentBag = user.CurrentBag;
             _purchaseHistory = user._purchaseHistory;

@@ -42,9 +42,8 @@ namespace ServiceLayer.Services
         {
             var user = User.GetUserByUsername(username);
             if (user == null)
-            {
                 return false;
-            }
+            
             user.PurchaseBag();
             return true;
         }

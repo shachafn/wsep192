@@ -7,6 +7,8 @@ namespace DomainLayer
         static void Main(string[] args)
         {
             Console.WriteLine("Hello World!");
+            Shop shop = new Shop();
+            Console.ReadLine();
         }
     }
 }

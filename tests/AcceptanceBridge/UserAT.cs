@@ -7,60 +7,73 @@ using DomainLayer;
 
 namespace Tests
 {
-    [TestFixture]
-    private Guid g = new Guid();
-    class UserAT
+    //[TestFixture]
+    //private Guid g = new Guid();
+    public class UserAT
     {
         private ProxyBridge _proxy;
-        /*private User _aUser;
-        private User _gusetUser;
-        private Product _IPhone;
-        private Product _Carrot;
-        private UserInfo _info;
-        private ShoppingCart _cart;
-        private ShopOwner _owner;
-        private Shop _shop;*/
+        private StoreOwnerAT _ownerAT;
+
+        public UserAT()
+        {
+            _proxy = new ProxyBridge();
+            _ownerAT = new StoreOwnerAT();
+
+        }
         [SetUp]
         public void Setup()
         {
-            _proxy = new ProxyBridge();
             _proxy.SetRealBridge(new BridgeImpl());
-             //_proxy.Register("groisman", "150298");
-            //_aUser = new User("groisman", "150298");
-            //_gusetUser = new User();
-            //_IPhone = new Product("IPhone", "Cellphones");
-           // _Carrot = new Product("Carrot", "Vegtables");
-            //_owner = new ShopOwner(_aUser, _shop, true);
-            //_shop = new Shop(_owner);
-            //_cart = new ShoppingCart(_shop); //I saw liron's branch.
-            //_cart.addProduct(_IPhone);
+            _proxy.SetRealBridge(new BridgeImpl());
         }
 
+        //GR 2.2 - User's registration
+        public void RegisterAT()
+        {
+            RegisterAT1();
+            RegisterAT2();
+        }
+        [Test]
+        public void RegisterAT1()
+        {
+            Assert.NotNull(_proxy.Register("groisman", "150298"));
+        }
+        [Test]
+        public void RegisterAT2()
+        {
+            Assert.Null(_proxy.Register("groisman", "1111")); //invalid Failword. 
+        }
         //GR 2.3-login of guest with identifiers.
         public void LoginAT()
         {
             LoginAT1();
             LoginAT2();
         }
+
         [Test]
         public void LoginAT1()
         {
             Setup();
             string exist_username = "groisman";
             string exist_password = "150298";
-            Assert.AreEqual(true,_proxy.Login(exist_username, exist_password));
-            _proxy.Logout();
+            this.RegisterAT1();
+            if (!Tester._groismanConnected)
+            {
+                Assert.IsTrue(_proxy.Login(exist_username, exist_password));
+            }
+            Assert.Pass();
+            
         }
 
         [Test]
         public void LoginAT2()
         {
             Setup();
-            string username = "notExist";
-            string password = "notExist";
-            Assert.AreEqual(false, _proxy.Login(username, password));
+            string username = "idoGroiser";
+            string password = "090902";
+            Assert.IsFalse(_proxy.Login(username, password));
         }
-        
+
         //GR 2.5 - search products in the catalog
         public void SearchProductsAT()
         {
@@ -70,33 +83,28 @@ namespace Tests
         [Test]
         public void SearchProductsAT1()
         {
-            //Setup();
-            List<Product> acceptedList = new List<Product>();
-            acceptedList.Add(_IPhone);
-            Assert.AreEqual(acceptedList, _proxy.SearchProduct("IPhone"));
-            //TODO: Change null to some Product when I'll know how to add product to some store.
+            Assert.Fail();
         }
         [Test]
         public void SearchProductsAT2()
         {
-            //Setup();
-            List<Product> acceptedList = new List<Product>();
-            Assert.AreEqual(acceptedList, _proxy.SearchProduct("Galaxy S9"));
+            Assert.Fail();
         }
 
-        //GR 2.6 - keeping products in user's cart
-        public void KeepingProductsInCartAT()
+        //GR 2.6 - Saving products in user's cart
+        public void SavingProductsInCartAT()
         {
-            KeepingProductsInCartAT1();
-            KeepingProductsInCartAT2();
+            //TODO
+            SavingProductsInCartAT1();
+            SavingProductsInCartAT2();
         }
         [Test]
-        public void KeepingProductsInCartAT1()
+        public void SavingProductsInCartAT1()
         {
             Assert.Pass();
         }
         [Test]
-        public void KeepingProductsInCartAT2()
+        public void SavingProductsInCartAT2()
         {
             Assert.Pass();
         }
@@ -111,28 +119,24 @@ namespace Tests
         [Test]
         public void WatchingAndEditingOfCartAT1()
         {
-            Setup();
-            ShoppingCart emptyCart = new ShoppingCart();
-            //List<Product> em = new List<Product>();
-            Assert.AreEqual(emptyCart, _proxy.GetAllProducts(emptyCart)); //Assume proxy gets the cart.
+
         }
         [Test]
         public void WatchingAndEditingOfCartAT2()
         {
-            ShoppingCart oneItemCart = new ShoppingCart();
-            Assert.AreEqual(true,_proxy.AddProduct(_IPhone,oneItemCart)); //Assume proxy gets the cart.
+
         }
         [Test]
         public void WatchingAndEditingOfCartAT3()
         {
-            //_cart = cart with one IPhone.
-            Assert.AreEqual(true, _proxy.RemoveProduct(_IPhone,_cart)); //Assume it gets product and shopping cart.
+
         }
 
         //GR 2.8 - purchase of products
 
         public void PurchaseAT()
         {
+            //TODO
             PurchaseAT1();
             PurchaseAT2();
             PurchaseAT3();
@@ -146,66 +150,64 @@ namespace Tests
         [Test]
         public void PurchaseAT1()
         {
-            //TODO: Complete when I'll know how to purchase a product.
-            Setup();
-
-            Assert.Pass();
+            Assert.Fail();
         }
 
         [Test]
         public void PurchaseAT2()
         {
             //TODO: Complete when I'll know how to purchase a product.
-            Assert.Pass();
+            Assert.Fail();
         }
 
         [Test]
         public void PurchaseAT3()
         {
             //TODO: Complete when I'll know how to purchase a product.
-            Assert.Pass();
+            Assert.Fail();
         }
 
         [Test]
         public void PurchaseAT4()
         {
             //TODO: Complete when I'll know how to purchase a product.
-            Assert.Pass();
+            Assert.Fail();
         }
 
         [Test]
         public void PurchaseAT5()
         {
             //TODO: Complete when I'll know how to purchase a product.
-            Assert.Pass();
+            Assert.Fail();
         }
 
         [Test]
         public void PurchaseAT6()
         {
             //TODO: Complete when I'll know how to purchase a product.
-            Assert.Pass();
+            Assert.Fail();
         }
 
         [Test]
         public void PurchaseAT7()
         {
             //TODO: Complete when I'll know how to purchase a product.
-            Assert.Pass();
+            Assert.Fail();
         }
 
         [Test]
         public void PurchaseAT8()
         {
             //TODO: Complete when I'll know how to purchase a product.
-            Assert.Pass();
+            Assert.Fail();
         }
 
         public void RunUserAT()
         {
+            RegisterAT();
             LoginAT(); //GR 2.3
             SearchProductsAT(); //GR 2.5
-            KeepingProductsInCartAT();//GR 2.6
+            SavingProductsInCartAT();//GR 2.6
             WatchingAndEditingOfCartAT(); // GR 2.7
             PurchaseAT(); //GR 2.8
         }

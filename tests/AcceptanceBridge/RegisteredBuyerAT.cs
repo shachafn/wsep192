@@ -11,34 +11,42 @@ namespace Tests
     class RegisteredBuyerAT
     {
         ProxyBridge _proxy = new ProxyBridge();
-        private User _aUser;
+        private UserAT _userAT = new UserAT();
+        Guid _guid = Guid.NewGuid();
+
         //GR 3.1 - Registered user can commit logout.
+
         [SetUp]
         public void SetUp()
         {
-            _aUser =_proxy.Register("groisman","king98");
+            //_proxy = new ProxyBridge();
+            _proxy.SetRealBridge(new BridgeImpl());
             
         }
+
         [Test]
         public void LogoutAT()
         {
-            SetUp();
-            Assert.AreEqual(true, _proxy.Logout("groisman"));
+            if (Tester._groismanConnected)
+            {
+                Assert.IsTrue(_proxy.Logout("groisman"));
+                Tester._groismanConnected = false;
+            }
         }
 
         //GR 3.2 - Registered user can open new store.
         [Test]
         public void CreationOfNewStoreByRegisteredUserAT()
         {
-            SetUp();
-            Assert.AreEqual(false,_proxy.OpenShop("groisman"));
-            //Assume proxyBridge will operate open shop with user.
+            _userAT.LoginAT();
+            Assert.NotNull((Tester._groismanShop = _proxy.OpenShop("groisman")));
         }
 
         public void RunRegisteredUserAT()
         {
-            LogoutAT();
             CreationOfNewStoreByRegisteredUserAT();
+            LogoutAT();
+            
         }
     }
 }

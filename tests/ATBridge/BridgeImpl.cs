@@ -1,8 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Text;
-using DomainLayer;
 using ServiceLayer.Services;
+using DomainLayer.Data.Entitites;
 
 namespace ATBridge
 {
@@ -28,7 +27,7 @@ namespace ATBridge
             return _shopService.AddProductToShop(name, category, price, quantity,shopGuid);
         }
 
-        public bool AddProductToShoppingCart(Guid productGuid, Guid shopOfCartGuid, string username)
+        public bool AddProductToShoppingCart(Guid productGuid, Guid shopGuid, string username)
         {
             return _shoppingCartService.AddProductToShoppingCart(productGuid, productGuid, username);
         }
@@ -48,9 +47,9 @@ namespace ATBridge
             return _shopService.CascadeRemoveShopOwner(shopGuid, ownerUsername);
         }
 
-        public bool ChangePurchasedProductAmount(string username, Guid shopOfCartGuid, Guid productGuid, int newAmount)
+        public bool ChangePurchasedProductAmount(string username, Guid shopGuid, Guid productGuid, int newAmount)
         {
-            return _shoppingCartService.ChangePurchasedProductAmount(username, shopOfCartGuid, productGuid, newAmount);
+            return _shoppingCartService.ChangePurchasedProductAmount(username, shopGuid, productGuid, newAmount);
         }
 
         public bool EditProduct(Guid shopGuid, Guid productGuid, double newPrice, int newQuantity)
@@ -58,9 +57,9 @@ namespace ATBridge
             return _shopService.EditProduct(shopGuid, productGuid, newPrice, newQuantity);
         }
 
-        public IEnumerable<Guid> GetAllProducts(string username, Guid shopOfCartGuid)
+        public IEnumerable<Guid> GetAllProducts(string username, Guid shopGuid)
         {
-            return _shoppingCartService.GetAllProducts(username, shopOfCartGuid);
+            return _shoppingCartService.GetAllProducts(username, shopGuid);
         }
 
         public bool Login(string username, string password)
@@ -75,22 +74,22 @@ namespace ATBridge
 
         public Guid OpenShop(string username)
         {
-            return _userService.OpenShop(username, out _errorStr);
+            return _userService.OpenShop(username);
         }
 
         public bool PurchaseBag(string username)
         {
-            return _userService.PurchaseBag(username);
+            return _userService.PurchaseCart(username);
         }
 
         public User Register(string username, string password)
         {
-            return _userService.Register(username, password, out _errorStr);
+            return _userService.Register(username, password);
         }
 
-        public bool RemoveProduct(Guid productGuid, Guid shopOfCartGuid, string username)
+        public bool RemoveProduct(Guid productGuid, Guid shopGuid, string username)
         {
-            return _shoppingCartService.RemoveProduct(productGuid, shopOfCartGuid, username);
+            return _shoppingCartService.RemoveProduct(productGuid, shopGuid, username);
         }
 
         public bool RemoveProductFromShop(Guid productGuid, Guid shopGuid)

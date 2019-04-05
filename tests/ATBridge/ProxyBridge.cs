@@ -1,8 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Text;
-using DomainLayer;
-using ServiceLayer.Services;
+using DomainLayer.Data.Entitites;
 
 namespace ATBridge
 {
@@ -86,24 +84,24 @@ namespace ATBridge
             return _real == null ? false : _real.RemoveShopManager(shopGuid, ownerUsername);
         }
 
-        public bool AddProductToShoppingCart(Guid productGuid, Guid shopOfCartGuid, string username)
+        public bool AddProductToShoppingCart(Guid productGuid, Guid shopGuid, string username)
         {
-            return _real == null ? false : _real.AddProductToShoppingCart(productGuid, shopOfCartGuid, username);
+            return _real == null ? false : _real.AddProductToShoppingCart(productGuid, shopGuid, username);
         }
 
-        public IEnumerable<Guid> GetAllProducts(string username, Guid shopOfCartGuid)
+        public IEnumerable<Guid> GetAllProducts(string username, Guid shopGuid)
         {
-            return _real?.GetAllProducts(username, shopOfCartGuid);
+            return _real?.GetAllProducts(username, shopGuid);
         }
 
-        public bool RemoveProduct(Guid productGuid, Guid shopOfCartGuid, string username)
+        public bool RemoveProduct(Guid productGuid, Guid shopGuid, string username)
         {
-            return _real == null ? false : _real.RemoveProduct(productGuid, shopOfCartGuid, username);
+            return _real == null ? false : _real.RemoveProduct(productGuid, shopGuid, username);
         }
 
-        public bool ChangePurchasedProductAmount(string username, Guid shopOfCartGuid, Guid productGuid, int newAmount)
+        public bool ChangePurchasedProductAmount(string username, Guid shopGuid, Guid productGuid, int newAmount)
         {
-            return _real == null ? false : _real.ChangePurchasedProductAmount(username, shopOfCartGuid, productGuid, newAmount);
+            return _real == null ? false : _real.ChangePurchasedProductAmount(username, shopGuid, productGuid, newAmount);
         }
     }
 }

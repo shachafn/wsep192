@@ -1,7 +1,6 @@
-﻿using DomainLayer;
-using NUnit.Framework;
+﻿using NUnit.Framework;
 using System.Collections.Generic;
-using static DomainLayer.ShopOwner;
+using DomainLayer.Data.Entitites;
 
 namespace UnitTests
 {
@@ -14,9 +13,8 @@ namespace UnitTests
         public void Setup()
         {
             ShopOwner.CleanDict();
-            User.users = new Dictionary<string, User>();
             meni = new User("meni", "123456", false);
-            meni.Login("meni", "123456");
+            DomainLayer.Domains.UserDomain.Login("meni", "123456");
             menisShop = new Shop();
             ShopOwner.NewShopOwner(meni, menisShop);
         }

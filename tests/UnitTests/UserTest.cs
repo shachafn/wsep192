@@ -1,36 +1,44 @@
-using DomainLayer;
 using NUnit.Framework;
-using System.Collections.Generic;
+using DomainLayer.Facade;
+using System;
 
 namespace Tests
 {
     [TestFixture]
     public class UserTest1
     {
+        IDomainLayerFacade facade = DomainLayerFacade.Instance;
 
-        [Test]
-        public void TestGuest()
-        {
-            User user = new User();
-            Assert.False(user.IsLogged());
-        }
         [Test,Description("testing succesfull register")]
         public void TestRegister()
         {
-            User user = User.Register("meni","123456");
-            Assert.NotNull(user);
-            Assert.Equals("meni", user.Username);
-            Assert.Equals(1, User.users.Count);
+            var userGuid = facade.Register("meni","123456");
+            Assert.False(userGuid.Equals(Guid.Empty)); 
         }
 
-        [Test, Description("testing register with the same user name and with short password")]
+        [Test, Description("testing register with the same user name.")]
         public void TestRegisterTwice()
         {
-            User user = User.Register("meni", "123456");
-            Assert.Null(user);
-            User otherUser = new User("beni", "1234", false);
-            Assert.Null(otherUser);
-            Assert.Equals(1, User.users.Count);
+            var userGuid = facade.Register("meni", "123456");
+            Assert.True(userGuid.Equals(Guid.Empty));
+        }
+
+        [Test, Description("testing register with null values")]
+        public void TestRegisterNull()
+        {
+            var userGuid = facade.Register(null, "123456");
+            Assert.True(userGuid.Equals(Guid.Empty));
+            userGuid = facade.Register("beni", null);
+            Assert.True(userGuid.Equals(Guid.Empty));
+        }
+
+        [Test, Description("testing register with empty strings")]
+        public void TestRegisterEmpty()
+        {
+            var userGuid = facade.Register("", "123456");
+            Assert.True(userGuid.Equals(Guid.Empty));
+            userGuid = facade.Register("ceni", "");
+            Assert.True(userGuid.Equals(Guid.Empty));
         }
     }
 
@@ -39,36 +47,42 @@ namespace Tests
     [TestFixture]
     public class UserTest2
     {
-        User meni;
-        string meniPass;
-        User beni;
-        string beniPass;
-        [SetUp]
+        IDomainLayerFacade facade = DomainLayerFacade.Instance;
+
+        Guid meniGuid;
+        const string meniUsername = "meni";
+        const string meniPassword = "123456";
+
+        Guid beniGuid;
+        const string beniUsername = "beni";
+        const string beniPassword = "123456";
+
+        [OneTimeSetUp]
         public void Setup()
         {
-            User.users = new Dictionary<string, User>();
-            meni = User.Register("meni", "123456");
-            beni = User.Register("beni", "123456");
-            beniPass = "123456";
-            meniPass = "123456";
+            meniGuid = facade.Register("meni", "123456");
+            beniGuid = facade.Register("beni", "123456");
         }
 
-        [Test,Description("test login")]
+        [Test,Description("Test Login")]
         public void Test1()
         {
-            Assert.True(meni.Login(meni.Username, meniPass));
-            Assert.True(meni.IsLogged());
-            Assert.False(meni.Login(meni.Username,meniPass));
-            Assert.False(beni.Login(beni.Username,"21314454"));
+            meniGuid = facade.Login(meniUsername, meniPassword);
+            Assert.False(meniGuid.Equals(Guid.Empty)); // First login success
+
+            meniGuid = facade.Login(meniUsername, meniPassword);
+            Assert.True(meniGuid.Equals(Guid.Empty)); // Second login fail
+
+            beniGuid = facade.Login(beniUsername, beniPassword);
+            Assert.False(beniGuid.Equals(Guid.Empty)); // First login success
         }
 
-        [Test, Description("test logout")]
+        [Test, Description("Test Logout")]
         public void Test2()
         {
-            meni.Login(meni.Username, meniPass);
-            Assert.True(meni.Logout());
-            Assert.False(meni.Logout());
-            Assert.False(beni.Logout());
+            Assert.True(facade.Logout(meniGuid)); // First logout success
+            Assert.False(facade.Logout(meniGuid)); // Second logout fail
+            Assert.True(facade.Logout(beniGuid)); // First logout success
         }
 
     }

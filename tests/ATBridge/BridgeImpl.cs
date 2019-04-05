@@ -1,110 +1,122 @@
 ﻿using System;
 using System.Collections.Generic;
-using ServiceLayer.Services;
+using ServiceLayer;
 using DomainLayer.Data.Entitites;
 
 namespace ATBridge
 {
     public class BridgeImpl : IBridge
     {
-        private readonly UserService _userService;
-        private readonly ShopService _shopService;
-        private readonly ShoppingCartService _shoppingCartService;
-        private readonly AdminService _adminService;
-        private string _errorStr;
+        private readonly ServiceFacadeProxy _serviceFacade;
 
         public BridgeImpl()
         {
-            _userService = new UserService();
-            _shopService = new ShopService();
-            _shoppingCartService = new ShoppingCartService();
-            _adminService = new AdminService();
-            _errorStr = "";
+            _serviceFacade = new ServiceFacadeProxy();
         }
 
-        public Guid AddProductToShop(string name, string category, double price, int quantity, Guid shopGuid)
+        public bool AddProductToShoppingCart(Guid userGuid, Guid productGuid, Guid shopGuid, int quantity)
         {
-            return _shopService.AddProductToShop(name, category, price, quantity,shopGuid);
+            throw new NotImplementedException();
         }
 
-        public bool AddProductToShoppingCart(Guid productGuid, Guid shopGuid, string username)
+        public bool AddShopManager(Guid userGuid, Guid shopGuid, Guid newManagaerGuid, List<string> priviliges)
         {
-            return _shoppingCartService.AddProductToShoppingCart(productGuid, productGuid, username);
+            throw new NotImplementedException();
         }
 
-        public bool AddShopManager(Guid shopGuid, string ownerUsername, string managerToAddUsername, List<string> priviliges)
+        public bool AddShopOwner(Guid userGuid, Guid shopGuid, Guid newShopOwnerGuid)
         {
-            return _shopService.AddShopManager(shopGuid, ownerUsername, managerToAddUsername, priviliges);
+            throw new NotImplementedException();
         }
 
-        public bool AddShopOwner(Guid shopGuid, string ownerUsername, string managerToAddUsername)
+        public Guid AddShopProduct(Guid userGuid, Guid shopGuid, string name, string category, double price, int quantity)
         {
-            return _shopService.AddShopOwner(shopGuid, ownerUsername, managerToAddUsername);
+            throw new NotImplementedException();
         }
 
-        public bool CascadeRemoveShopOwner(Guid shopGuid, string ownerUsername)
+        public bool CascadeRemoveShopOwner(Guid userGuid, Guid shopGuid, Guid ownerToRemoveGuid)
         {
-            return _shopService.CascadeRemoveShopOwner(shopGuid, ownerUsername);
+            throw new NotImplementedException();
         }
 
-        public bool ChangePurchasedProductAmount(string username, Guid shopGuid, Guid productGuid, int newAmount)
+        public bool ConnectToPaymentSystem(Guid userGuid)
         {
-            return _shoppingCartService.ChangePurchasedProductAmount(username, shopGuid, productGuid, newAmount);
+            throw new NotImplementedException();
         }
 
-        public bool EditProduct(Guid shopGuid, Guid productGuid, double newPrice, int newQuantity)
+        public bool ConnectToSupplySystem(Guid userGuid)
         {
-            return _shopService.EditProduct(shopGuid, productGuid, newPrice, newQuantity);
+            throw new NotImplementedException();
         }
 
-        public IEnumerable<Guid> GetAllProducts(string username, Guid shopGuid)
+        public bool EditProductInCart(Guid userGuid, Guid shopGuid, Guid shopProductGuid, int newAmount)
         {
-            return _shoppingCartService.GetAllProducts(username, shopGuid);
+            throw new NotImplementedException();
         }
 
-        public bool Login(string username, string password)
+        public bool EditShopProduct(Guid userGuid, Guid shopGuid, Guid productGuid, double newPrice, int newQuantity)
         {
-            return _userService.Login(username, password);
+            throw new NotImplementedException();
         }
 
-        public bool Logout(string username)
+        public ICollection<Guid> GetAllProductsInCart(Guid userGuid, Guid shopGuid)
         {
-            return _userService.Logout(username);
+            throw new NotImplementedException();
         }
 
-        public Guid OpenShop(string username)
+        public bool Initialize(Guid userGuid, string username, string password)
         {
-            return _userService.OpenShop(username);
+            throw new NotImplementedException();
         }
 
-        public bool PurchaseBag(string username)
+        public Guid Login(Guid userGuid, string username, string password)
         {
-            return _userService.PurchaseCart(username);
+            throw new NotImplementedException();
         }
 
-        public User Register(string username, string password)
+        public bool Logout(Guid userGuid)
         {
-            return _userService.Register(username, password);
+            throw new NotImplementedException();
         }
 
-        public bool RemoveProduct(Guid productGuid, Guid shopGuid, string username)
+        public Guid OpenShop(Guid userGuid)
         {
-            return _shoppingCartService.RemoveProduct(productGuid, shopGuid, username);
+            throw new NotImplementedException();
         }
 
-        public bool RemoveProductFromShop(Guid productGuid, Guid shopGuid)
+        public bool PurchaseCart(Guid userGuid, Guid shopGuid)
         {
-            return _shopService.RemoveProductFromShop(productGuid, shopGuid);
+            throw new NotImplementedException();
         }
 
-        public bool RemoveShopManager(Guid shopGuid, string ownerUsername)
+        public bool Register(Guid userGuid, string username, string password)
         {
-            return _shopService.RemoveShopManager(shopGuid, ownerUsername);
+            throw new NotImplementedException();
         }
 
-        public IEnumerable<Product> SearchProduct(Guid shopGuid, string productName)
+        public bool RemoveProductFromCart(Guid userGuid, Guid shopGuid, Guid shopProductGuid)
         {
-            return _shopService.SearchProduct(shopGuid, productName);
+            throw new NotImplementedException();
+        }
+
+        public bool RemoveShopManager(Guid userGuid, Guid shopGuid, Guid managerToRemoveGuid)
+        {
+            throw new NotImplementedException();
+        }
+
+        public bool RemoveShopProduct(Guid userGuid, Guid shopProductGuid, Guid shopGuid)
+        {
+            throw new NotImplementedException();
+        }
+
+        public bool RemoveUser(Guid userGuid, Guid userToRemoveGuid)
+        {
+            throw new NotImplementedException();
+        }
+
+        public ICollection<Guid> SearchProduct(Guid userGuid, Guid shopGuid, string productName)
+        {
+            throw new NotImplementedException();
         }
     }
 }

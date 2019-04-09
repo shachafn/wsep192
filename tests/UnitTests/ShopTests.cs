@@ -1,5 +1,4 @@
-﻿using DomainLayer;
-using NUnit.Framework;
+﻿using NUnit.Framework;
 
 namespace UnitTests
 {

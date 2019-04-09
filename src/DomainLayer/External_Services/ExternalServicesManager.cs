@@ -1,7 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
-using DomainLayer.External_Services.Adapters;
+﻿using DomainLayer.External_Services.Adapters;
 using DomainLayer.External_Services.Interfaces;
 
 namespace DomainLayer.External_Services

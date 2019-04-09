@@ -8,6 +8,7 @@ namespace ServiceLayer
 {
     public class ServiceFacade : IServiceFacade
     {
+        //For easier access
         IDomainLayerFacade _domainLayerFacade = DomainLayerFacade.Instance;
 
         #region Singleton Implementation

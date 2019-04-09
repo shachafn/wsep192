@@ -7,9 +7,12 @@ namespace ServiceLayer
 {
     /// <summary>
     /// Singleton class responsible for handling cookies (defining a Session).
+    /// The class maps between the system-user's cookie to the actual user object if the system-user
+    /// logged in, or to the GuestGuid if he hasn't logged in.
     /// </summary>
     public class SessionManager
     {
+        private Dictionary<Guid, Guid> _sessionToUserDictionary = new Dictionary<Guid, Guid>();
         public Guid GuestGuid = new Guid("695D0341-3E62-4046-B337-2486443F311B");
 
         #region Singleton Implementation
@@ -30,24 +33,24 @@ namespace ServiceLayer
             }
         }
         #endregion
-        public Dictionary<Guid, Guid> SessionToUserDictionary = new Dictionary<Guid, Guid>();
-        public Guid ResolveCookie(Guid cookie) => SessionToUserDictionary.ContainsKey(cookie) ? SessionToUserDictionary[cookie] : GuestGuid;
+
+        public Guid ResolveCookie(Guid cookie) => _sessionToUserDictionary.ContainsKey(cookie) ? _sessionToUserDictionary[cookie] : GuestGuid;
         public Guid GetNewCookie() => Guid.NewGuid();
 
         public void SetLoggedIn(Guid cookie, Guid newUserGuid)
         {
-            if (!SessionToUserDictionary.ContainsKey(cookie))
+            if (!_sessionToUserDictionary.ContainsKey(cookie))
                 throw new CookieNotFoundException($"No Session with cookie {cookie} exists in the dictionary.");
 
-            SessionToUserDictionary[cookie] = newUserGuid;
+            _sessionToUserDictionary[cookie] = newUserGuid;
         }
 
         public void SetLoggedOut(Guid cookie)
         {
-            if (!SessionToUserDictionary.ContainsKey(cookie))
+            if (!_sessionToUserDictionary.ContainsKey(cookie))
                 throw new CookieNotFoundException($"No Session with cookie {cookie} exists in the dictionary.");
 
-            SessionToUserDictionary[cookie] = GuestGuid;
+            _sessionToUserDictionary[cookie] = GuestGuid;
         }
     }
 }

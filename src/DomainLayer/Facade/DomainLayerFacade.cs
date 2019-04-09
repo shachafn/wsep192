@@ -13,7 +13,8 @@ namespace DomainLayer.Facade
 {
     public class DomainLayerFacade : IDomainLayerFacade
     {
-        UserDomain UserDomain = UserDomain.Instance;
+        //For easierAccess
+        UserDomain _userDomain = UserDomain.Instance;
 
         #region Singleton Implementation
         private static IDomainLayerFacade instance = null;
@@ -47,7 +48,7 @@ namespace DomainLayer.Facade
             VerifyGuestUser(userGuid);
             VerifyString(username);
             VerifyString(password);
-            return UserDomain.Register(username, password);
+            return _userDomain.Register(username, password);
         }
 
         /// <constraints>
@@ -60,7 +61,7 @@ namespace DomainLayer.Facade
             VerifyGuestUser(userGuid);
             VerifyString(username);
             VerifyString(password);
-            return UserDomain.Login(userGuid, username, password);
+            return _userDomain.Login(userGuid, username, password);
         }
 
         /// <constraints>
@@ -70,7 +71,7 @@ namespace DomainLayer.Facade
         public bool Logout(Guid userGuid)
         {
             VerifyLoggedInUser(userGuid);
-            return UserDomain.LogoutUser(userGuid);
+            return _userDomain.LogoutUser(userGuid);
         }
 
         /// <constraints>

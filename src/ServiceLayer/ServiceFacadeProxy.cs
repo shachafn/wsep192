@@ -10,8 +10,9 @@ namespace ServiceLayer
     /// </summary>
     public class ServiceFacadeProxy
     {
-        public IServiceFacade _serviceFacade = ServiceFacade.Instance;
-        public SessionManager _sessionManager = SessionManager.Instance;
+        //For easier access.
+        private IServiceFacade _serviceFacade = ServiceFacade.Instance;
+        private SessionManager _sessionManager = SessionManager.Instance;
 
         // Login and Logout functions will act quite different becuase we
         // need them to maintain the Sessions mapping from cookie to user guid

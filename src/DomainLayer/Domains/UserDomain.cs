@@ -15,8 +15,9 @@ namespace DomainLayer.Domains
     /// </summary>
     public class UserDomain
     {
-        private static LoggedInUsersEntityCollection LoggedInUsers = DomainData.LoggedInUsersEntityCollection;
-        private static ShopEntityCollection Shops = DomainData.ShopsCollection;
+        //For easier access.
+        private static LoggedInUsersEntityCollection _loggedInUsers = DomainData.LoggedInUsersEntityCollection;
+        private static ShopEntityCollection _shops = DomainData.ShopsCollection;
 
 
         #region Singleton Implementation
@@ -68,7 +69,7 @@ namespace DomainLayer.Domains
 
             var user = new User(username, password);
             user.SetState(new BuyerUserState(username, password));
-            LoggedInUsers.Add(user.Guid, user);
+            _loggedInUsers.Add(user.Guid, user);
             return user.Guid;
         }
 
@@ -83,10 +84,10 @@ namespace DomainLayer.Domains
         public bool LogoutUser(Guid userGuid)
         {
 
-            if (!LoggedInUsers.ContainsKey(userGuid))
+            if (!_loggedInUsers.ContainsKey(userGuid))
                 throw new UserNotFoundException($"Could not find a logged in user with guid {userGuid}");
 
-            LoggedInUsers.Remove(userGuid);
+            _loggedInUsers.Remove(userGuid);
             return true;
         }
 

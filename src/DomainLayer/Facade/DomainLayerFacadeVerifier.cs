@@ -113,7 +113,6 @@ namespace DomainLayer.Facade
             VerifyCartExistsAndCreateIfNeeded(userGuid, shopGuid);
         }
 
-
         /// <constraints>
         /// 1. checked
         /// 2. NOT IMPLEMENTED - SHOULD BE CHECKED HERE ----- If an admin user exists - username and password must match it.
@@ -126,6 +125,19 @@ namespace DomainLayer.Facade
             VerifyGuestUser(userGuid);
             VerifyString(username); 
             VerifyString(password);
+        }
+
+        /// <constraints>
+        /// 1. checked
+        /// 2. checked
+        /// 3. checked by design by state pattern
+        /// 4. checked.
+        /// </constraints>
+        public static void RemoveUser(Guid userGuid, Guid userToRemoveGuid)
+        {
+            var user = VerifyLoggedInUser(userGuid);
+            VerifyRegisteredUser(userToRemoveGuid);
+            VerifyNotOnlyOwnerOfAnActiveShop(userToRemoveGuid);
         }
 
         /// <constraints>
@@ -146,6 +158,76 @@ namespace DomainLayer.Facade
         public static void ConnectToSupplySystem(Guid userGuid)
         {
             VerifyLoggedInUser(userGuid);
+        }
+
+        /// <constraints>
+        /// 1. checked
+        /// 2. checked
+        /// 3. checked by design by state pattern
+        /// 4. User must not have the item in the cart. (For edit - use EditProductInCart)
+        /// 5. checked
+        /// 6. checked
+        /// 7. checked
+        /// 8. quantity must be greater than 0
+        /// </constraints>
+        public static void AddProductToShoppingCart(Guid userGuid, Guid shopGuid, Guid shopProductGuid, int quantity)
+        {
+            var user = VerifyLoggedInUser(userGuid);
+            var shop = VerifyShopExists(shopGuid);
+            shop.VerifyShopIsActive();
+            shop.VerifyShopProductExists(shopProductGuid);
+            VerifyIntGreaterThan0(quantity);
+        }
+
+        /// <constraints>
+        /// 1. checked
+        /// 2. checked
+        /// 3. checked by design by state pattern
+        /// 5. checked
+        /// 6. checked
+        /// </constraints>
+        public static void GetAllProductsInCart(Guid userGuid, Guid shopGuid)
+        {
+            var user = VerifyLoggedInUser(userGuid);
+            var shop = VerifyShopExists(shopGuid);
+            shop.VerifyShopIsActive();
+            VerifyCartExistsAndCreateIfNeeded(userGuid, shopGuid);
+        }
+
+        /// <constraints>
+        /// 1. checked
+        /// 2. checked
+        /// 3. checked by design by state pattern
+        /// 5. checked
+        /// 6. checked
+        /// 7. checked
+        /// </constraints>
+        public static void RemoveProductFromCart(Guid userGuid, Guid shopGuid, Guid shopProductGuid)
+        {
+            var user = VerifyLoggedInUser(userGuid);
+            var shop = VerifyShopExists(shopGuid);
+            shop.VerifyShopIsActive();
+            var cart = VerifyCartExistsAndCreateIfNeeded(userGuid, shopGuid);
+            cart.VerifyShopProductExists(shopProductGuid);
+        }
+
+        /// <constraints>
+        /// 1. checked
+        /// 2. checked
+        /// 3. checked by design by state pattern
+        /// 5. checked
+        /// 6. checked
+        /// 7. checked
+        /// 8. checked
+        /// </constraints>
+        public static void EditProductInCart(Guid userGuid, Guid shopGuid, Guid shopProductGuid, int newAmount)
+        {
+            var user = VerifyLoggedInUser(userGuid);
+            var shop = VerifyShopExists(shopGuid);
+            shop.VerifyShopIsActive();
+            VerifyIntGreaterThan0(newAmount);
+            var cart = VerifyCartExistsAndCreateIfNeeded(userGuid, shopGuid);
+            cart.VerifyShopProductExists(shopProductGuid);
         }
 
         /// <constraints>
@@ -175,6 +257,23 @@ namespace DomainLayer.Facade
         /// 1. checked
         /// 2. checked
         /// 3. checked by design by state pattern
+        /// 4. will be checked in Shop class - User must be creator, an owner (or a manager with priviliges for this operation) of the shop.
+        /// 5. checked
+        /// 6. checked
+        /// 7. checked
+        /// </constraints>
+        public static void RemoveShopProduct(Guid userGuid, Guid shopGuid, Guid shopProductGuid)
+        {
+            var user = VerifyLoggedInUser(userGuid);
+            var shop = VerifyShopExists(shopGuid);
+            shop.VerifyShopIsActive();
+            shop.VerifyShopProductExists(shopProductGuid);
+        }
+
+        /// <constraints>
+        /// 1. checked
+        /// 2. checked
+        /// 3. checked by design by state pattern
         /// 4. Will be checked in Shop class - User must be creator, an owner (or a manager with priviliges for this operation) of the shop.
         /// 5. checked
         /// 6. checked
@@ -196,37 +295,17 @@ namespace DomainLayer.Facade
         /// <constraints>
         /// 1. checked
         /// 2. checked
-        /// 3. checked by design by state pattern
-        /// 4. will be checked in Shop class - User must be creator, an owner (or a manager with priviliges for this operation) of the shop.
+        /// 3. GUEST NOT IMPLEMENTED ------checked by design by state pattern - User must be in buyer/guest state.
         /// 5. checked
         /// 6. checked
         /// 7. checked
         /// </constraints>
-        public static void RemoveShopProduct(Guid userGuid, Guid shopGuid, Guid shopProductGuid)
+        public static void SearchProduct(Guid userGuid, Guid shopGuid, string productName)
         {
-            var user = VerifyLoggedInUser(userGuid);
+            VerifyLoggedInUser(userGuid);
             var shop = VerifyShopExists(shopGuid);
             shop.VerifyShopIsActive();
-            shop.VerifyShopProductExists(shopProductGuid);
-        }
-
-        /// <constraints>
-        /// 1. checked
-        /// 2. checked
-        /// 3. checked by design by state pattern
-        /// 4. User must not have the item in the cart. (For edit - use EditProductInCart)
-        /// 5. checked
-        /// 6. checked
-        /// 7. checked
-        /// 8. quantity must be greater than 0
-        /// </constraints>
-        public static void AddProductToShoppingCart(Guid userGuid, Guid shopGuid, Guid shopProductGuid, int quantity)
-        {
-            var user = VerifyLoggedInUser(userGuid);
-            var shop = VerifyShopExists(shopGuid);
-            shop.VerifyShopIsActive();
-            shop.VerifyShopProductExists(shopProductGuid);
-            VerifyIntGreaterThan0(quantity);
+            VerifyString(productName);
         }
 
         /// <constraints>
@@ -264,86 +343,6 @@ namespace DomainLayer.Facade
             VerifyRegisteredUser(ownerToRemoveGuid);
             var shop = VerifyShopExists(shopGuid);
             shop.VerifyShopIsActive();
-        }
-
-        /// <constraints>
-        /// 1. checked
-        /// 2. checked
-        /// 3. checked by design by state pattern
-        /// 5. checked
-        /// 6. checked
-        /// 7. checked
-        /// 8. checked
-        /// </constraints>
-        public static void EditProductInCart(Guid userGuid, Guid shopGuid, Guid shopProductGuid, int newAmount)
-        {
-            var user = VerifyLoggedInUser(userGuid);
-            var shop = VerifyShopExists(shopGuid);
-            shop.VerifyShopIsActive();
-            VerifyIntGreaterThan0(newAmount);
-            var cart = VerifyCartExistsAndCreateIfNeeded(userGuid, shopGuid);
-            cart.VerifyShopProductExists(shopProductGuid);
-        }
-
-        /// <constraints>
-        /// 1. checked
-        /// 2. checked
-        /// 3. checked by design by state pattern
-        /// 5. checked
-        /// 6. checked
-        /// 7. checked
-        /// </constraints>
-        public static void RemoveProductFromCart(Guid userGuid, Guid shopGuid, Guid shopProductGuid)
-        {
-            var user = VerifyLoggedInUser(userGuid);
-            var shop = VerifyShopExists(shopGuid);
-            shop.VerifyShopIsActive();
-            var cart = VerifyCartExistsAndCreateIfNeeded(userGuid, shopGuid);
-            cart.VerifyShopProductExists(shopProductGuid);
-        }
-
-        /// <constraints>
-        /// 1. checked
-        /// 2. checked
-        /// 3. checked by design by state pattern
-        /// 5. checked
-        /// 6. checked
-        /// </constraints>
-        public static void GetAllProductsInCart(Guid userGuid, Guid shopGuid)
-        {
-            var user = VerifyLoggedInUser(userGuid);
-            var shop = VerifyShopExists(shopGuid);
-            shop.VerifyShopIsActive();
-            VerifyCartExistsAndCreateIfNeeded(userGuid, shopGuid);
-        }
-
-        /// <constraints>
-        /// 1. checked
-        /// 2. checked
-        /// 3. checked by design by state pattern
-        /// 4. checked.
-        /// </constraints>
-        public static void RemoveUser(Guid userGuid, Guid userToRemoveGuid)
-        {
-            var user = VerifyLoggedInUser(userGuid);
-            VerifyRegisteredUser(userToRemoveGuid);
-            VerifyNotOnlyOwnerOfAnActiveShop(userToRemoveGuid); 
-        }
-
-        /// <constraints>
-        /// 1. checked
-        /// 2. checked
-        /// 3. GUEST NOT IMPLEMENTED ------checked by design by state pattern - User must be in buyer/guest state.
-        /// 5. checked
-        /// 6. checked
-        /// 7. checked
-        /// </constraints>
-        public static void SearchProduct(Guid userGuid, Guid shopGuid, string productName)
-        {
-            VerifyLoggedInUser(userGuid);
-            var shop = VerifyShopExists(shopGuid);
-            shop.VerifyShopIsActive();
-            VerifyString(productName);
         }
 
         /// <constraints>

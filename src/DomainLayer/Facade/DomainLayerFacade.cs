@@ -59,7 +59,7 @@ namespace DomainLayer.Facade
         public Guid OpenShop(Guid userGuid)
         {
             DomainLayerFacadeVerifier.VerifyMe(MethodBase.GetCurrentMethod(), userGuid);
-            return DomainData.LoggedInUsersEntityCollection[userGuid].OpenShop();
+            return GetLoggedInUser(userGuid).OpenShop();
         }
 
         public bool PurchaseCart(Guid userGuid, Guid shopGuid)
@@ -68,7 +68,7 @@ namespace DomainLayer.Facade
             // Need to actually pay for products
             // if success clear cart
             return DomainData.ShoppingBagsCollection[userGuid].ShoppingCarts.First(c => c.ShopGuid.Equals(shopGuid)).
-                PurchaseCart(DomainData.LoggedInUsersEntityCollection[userGuid]); //Not implemented
+                PurchaseCart(GetLoggedInUser(userGuid)); //Not implemented
         }
 
         public bool Initialize(Guid userGuid, string username, string password)
@@ -88,87 +88,90 @@ namespace DomainLayer.Facade
         public bool ConnectToPaymentSystem(Guid userGuid)
         {
             DomainLayerFacadeVerifier.VerifyMe(MethodBase.GetCurrentMethod(), userGuid);
-            return DomainData.LoggedInUsersEntityCollection[userGuid].ConnectToPaymentSystem();
+            return GetLoggedInUser(userGuid).ConnectToPaymentSystem();
         }
 
         public bool ConnectToSupplySystem(Guid userGuid)
         {
             DomainLayerFacadeVerifier.VerifyMe(MethodBase.GetCurrentMethod(), userGuid);
-            return DomainData.LoggedInUsersEntityCollection[userGuid].ConnectToSupplySystem();
+            return GetLoggedInUser(userGuid).ConnectToSupplySystem();
         }
 
         public Guid AddShopProduct(Guid userGuid, Guid shopGuid, string name, string category, double price, int quantity)
         {
             DomainLayerFacadeVerifier.VerifyMe(MethodBase.GetCurrentMethod(), userGuid, shopGuid, name, category, price, quantity);
-            return DomainData.LoggedInUsersEntityCollection[userGuid].AddShopProduct(shopGuid, name, category, price, quantity);
+            return GetLoggedInUser(userGuid).AddShopProduct(shopGuid, name, category, price, quantity);
         }
 
         public bool EditShopProduct(Guid userGuid, Guid shopGuid, Guid productGuid, double newPrice, int newQuantity)
         {
             DomainLayerFacadeVerifier.VerifyMe(MethodBase.GetCurrentMethod(), userGuid, shopGuid, productGuid, newPrice, newQuantity);
-            DomainData.LoggedInUsersEntityCollection[userGuid].EditShopProduct(shopGuid, productGuid, newPrice, newQuantity);
+            GetLoggedInUser(userGuid).EditShopProduct(shopGuid, productGuid, newPrice, newQuantity);
             return true;
         }
 
         public bool RemoveShopProduct(Guid userGuid, Guid shopGuid, Guid shopProductGuid)
         {
             DomainLayerFacadeVerifier.VerifyMe(MethodBase.GetCurrentMethod(), userGuid, shopGuid, shopProductGuid);
-            return DomainData.LoggedInUsersEntityCollection[userGuid].RemoveShopProduct(shopGuid, shopProductGuid);
+            return GetLoggedInUser(userGuid).RemoveShopProduct(shopGuid, shopProductGuid);
         }
 
         public bool AddProductToShoppingCart(Guid userGuid, Guid shopGuid, Guid shopProductGuid, int quantity)
         {
             DomainLayerFacadeVerifier.VerifyMe(MethodBase.GetCurrentMethod(), userGuid, shopProductGuid, quantity);
-            return DomainData.LoggedInUsersEntityCollection[userGuid].AddProductToShoppingCart(shopGuid, shopProductGuid, quantity);
+            return GetLoggedInUser(userGuid).AddProductToShoppingCart(shopGuid, shopProductGuid, quantity);
         }
 
         public bool AddShopManager(Guid userGuid, Guid shopGuid, Guid newManagaerGuid, List<string> priviliges)
         {
             DomainLayerFacadeVerifier.VerifyMe(MethodBase.GetCurrentMethod(), userGuid, shopGuid, newManagaerGuid, priviliges);
-            return DomainData.LoggedInUsersEntityCollection[userGuid].AddShopManager(shopGuid, newManagaerGuid, priviliges);
+            return GetLoggedInUser(userGuid).AddShopManager(shopGuid, newManagaerGuid, priviliges);
         }
 
         public bool CascadeRemoveShopOwner(Guid userGuid, Guid shopGuid, Guid ownerToRemoveGuid)
         {
             DomainLayerFacadeVerifier.VerifyMe(MethodBase.GetCurrentMethod(), userGuid, shopGuid, ownerToRemoveGuid);
-            return DomainData.LoggedInUsersEntityCollection[userGuid].CascadeRemoveShopOwner(shopGuid, ownerToRemoveGuid);
+            return GetLoggedInUser(userGuid).CascadeRemoveShopOwner(shopGuid, ownerToRemoveGuid);
         }
 
         public bool EditProductInCart(Guid userGuid, Guid shopGuid, Guid shopProductGuid, int newAmount)
         {
             DomainLayerFacadeVerifier.VerifyMe(MethodBase.GetCurrentMethod(), userGuid, shopGuid, shopProductGuid, newAmount);
-            return DomainData.LoggedInUsersEntityCollection[userGuid].EditProductInCart(shopGuid, shopProductGuid, newAmount);
+            return GetLoggedInUser(userGuid).EditProductInCart(shopGuid, shopProductGuid, newAmount);
         }
 
         public bool RemoveProductFromCart(Guid userGuid, Guid shopGuid, Guid shopProductGuid)
         {
             DomainLayerFacadeVerifier.VerifyMe(MethodBase.GetCurrentMethod(), userGuid, shopGuid, shopProductGuid);
-            return DomainData.LoggedInUsersEntityCollection[userGuid].RemoveProductFromCart(shopGuid, shopProductGuid);
+            return GetLoggedInUser(userGuid).RemoveProductFromCart(shopGuid, shopProductGuid);
         }
 
         public ICollection<Guid> GetAllProductsInCart(Guid userGuid, Guid shopGuid)
         {
             DomainLayerFacadeVerifier.VerifyMe(MethodBase.GetCurrentMethod(), userGuid, shopGuid);
-            return DomainData.LoggedInUsersEntityCollection[userGuid].GetAllProductsInCart(shopGuid);
+            return GetLoggedInUser(userGuid).GetAllProductsInCart(shopGuid);
         }
 
         public bool RemoveUser(Guid userGuid, Guid userToRemoveGuid)
         {
             DomainLayerFacadeVerifier.VerifyMe(MethodBase.GetCurrentMethod(), userGuid, userToRemoveGuid);
-            //return user.RemoveUser(userToRemoveGuid); // not implemented
-            throw new NotImplementedException();
+            return GetLoggedInUser(userGuid).RemoveUser(userToRemoveGuid);
         }
 
         public ICollection<Guid> SearchProduct(Guid userGuid, Guid shopGuid, string productName)
         {
             DomainLayerFacadeVerifier.VerifyMe(MethodBase.GetCurrentMethod(), userGuid, shopGuid, productName);
-            return DomainData.ShopsCollection[shopGuid].SearchProduct(productName);
+            return GetShop(shopGuid).SearchProduct(productName);
         }
 
         public bool RemoveShopManager(Guid userGuid, Guid shopGuid, Guid managerToRemoveGuid)
         {
             DomainLayerFacadeVerifier.VerifyMe(MethodBase.GetCurrentMethod(), userGuid, shopGuid, managerToRemoveGuid);
-            return DomainData.LoggedInUsersEntityCollection[userGuid].RemoveShopManager(shopGuid, managerToRemoveGuid);
+            return GetLoggedInUser(userGuid).RemoveShopManager(shopGuid, managerToRemoveGuid);
         }
+
+        private User GetLoggedInUser(Guid userGuid) => DomainData.LoggedInUsersEntityCollection[userGuid];
+        private Shop GetShop(Guid shopGuid) => DomainData.ShopsCollection[shopGuid];
+
     }
 }

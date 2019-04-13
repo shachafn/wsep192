@@ -65,5 +65,6 @@ namespace DomainLayer.Facade
         bool RemoveUser(Guid userGuid, Guid userToRemoveGuid);
         ICollection<Guid> SearchProduct(Guid userGuid, Guid shopGuid, string productName);
         bool RemoveShopManager(Guid userGuid, Guid shopGuid, Guid managerToRemoveGuid);
+        bool ChangeUserState(Guid userGuid, string newState);
     }
 }

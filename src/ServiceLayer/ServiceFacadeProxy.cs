@@ -153,5 +153,11 @@ namespace ServiceLayer
             var userGuid = _sessionManager.ResolveCookie(cookie);
             return _serviceFacade.SearchProduct(userGuid, shopGuid, productName);
         }
+
+        public bool ChangeUserState(Guid cookie, string newState)
+        {
+            var userGuid = _sessionManager.ResolveCookie(cookie);
+            return _serviceFacade.ChangeUserState(userGuid, newState);
+        }
     }
 }

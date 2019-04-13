@@ -388,6 +388,19 @@ namespace DomainLayer.Facade
             return user.RemoveShopManager(shopGuid, managerToRemoveGuid);
         }
 
+        /// <constraints>
+        /// 1. Must be called by an existing user.
+        /// 2. User must be logged in.
+        /// 3. newState must not be string.IsNullOrWhitespace
+        /// </constraints>
+        public bool ChangeUserState(Guid userGuid, string newState)
+        {
+            var user = VerifyLoggedInUser(userGuid);
+            VerifyString(newState);
+            VerifyStateString(newState);
+            return UserDomain.ChangeUserState(userGuid, newState);
+        }
+
         #region Verifiers
         /// <summary>
         /// Verifies that the user is logged in.
@@ -435,7 +448,7 @@ namespace DomainLayer.Facade
 
         private void VerifyRegisteredUser(Guid userGuid)
         {
-            if (!DomainData.AllUsersCollection.ContainsKey(userGuid))
+            if (!DomainData.RegisteredUsersCollection.ContainsKey(userGuid))
             {
                 StackTrace stackTrace = new StackTrace();
                 throw new UserNotFoundException(string.Format(Resources.EntityNotFound, "registered user", userGuid) +
@@ -500,6 +513,16 @@ namespace DomainLayer.Facade
             {
                 StackTrace stackTrace = new StackTrace();
                 throw new BrokenConstraintException($"User with Guid - {userGuid} is the only owner of an active shop." +
+        $"Cant complete {stackTrace.GetFrame(1).GetMethod().Name}");
+            }
+        }
+
+        private void VerifyStateString(string newState)
+        {
+            if ((!string.Equals(newState,"AdminUserState"))&&(!string.Equals(newState, "BuyerUserState")) &&(!string.Equals(newState, "SellerUserState")))
+            {
+                StackTrace stackTrace = new StackTrace();
+                throw new Exception($"State string doesnt not match any state." +
         $"Cant complete {stackTrace.GetFrame(1).GetMethod().Name}");
             }
         }

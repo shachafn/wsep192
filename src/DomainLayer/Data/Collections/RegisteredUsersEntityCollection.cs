@@ -5,7 +5,7 @@ using System.Text;
 
 namespace DomainLayer.Data.Collections
 {
-    public class AllUsersEntityCollection : EntityCollection<BaseUser>
+    public class RegisteredUsersEntityCollection : EntityCollection<BaseUser>
     {
     }
 }

@@ -145,5 +145,10 @@ namespace ServiceLayer
         {
             return _domainLayerFacade.SearchProduct(userGuid, shopGuid, productName);
         }
+
+        public bool ChangeUserState(Guid userGuid, string newState)
+        {
+            return _domainLayerFacade.ChangeUserState(userGuid, newState);
+        }
     }
 }

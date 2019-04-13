@@ -315,5 +315,16 @@ namespace ServiceLayer
         /// </constraints>
         /// <returns></returns>
         bool RemoveShopManager(Guid userGuid, Guid shopGuid, Guid managerToRemoveGuid);
+
+        /// <summary>
+        /// Changes the user's state to the new state.
+        /// </summary>
+        /// <constraints>
+        /// 1. Must be called by an existing user.
+        /// 2. User must be logged in.
+        /// 3. newState must not be string.IsNullOrWhitespace
+        /// </constraints>
+        /// <returns></returns>
+        bool ChangeUserState(Guid userGuid, string newState);
     }
 }

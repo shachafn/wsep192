@@ -1,5 +1,4 @@
 ﻿using DomainLayer.Exceptions;
-using DomainLayer.Properties;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -14,12 +13,18 @@ namespace DomainLayer.Data.Entitites.Users.States
 
         public override ICollection<ShoppingBag> GetShoppingHistory()
         {
-            throw new NotImplementedException();
+            return PurchaseHistory;
         }
 
-        public override void PurchaseBag()
+        public override bool PurchaseBag()
         {
-            throw new NotImplementedException();
+            if (!CurrentBag.Empty())
+            {
+                CurrentBag.Purchase(this);//sending the user itself as the buyer
+                PurchaseHistory.Add(CurrentBag);
+                return true;
+            }
+            return false;
         }
 
         public override Guid OpenShop(BaseUser baseUser)

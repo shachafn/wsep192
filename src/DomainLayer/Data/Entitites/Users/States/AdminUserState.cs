@@ -18,23 +18,33 @@ namespace DomainLayer.Data.Entitites.Users.States
             throw new BadStateException($"Tried to invoke OpenShop in Admin State");
         }
 
-        public override void PurchaseBag()
+        public override bool PurchaseBag()
         {
             throw new BadStateException($"Tried to invoke PurchaseBag in Admin State");
         }
 
         /// <constraints>
-        /// 4. UserToRemove must not be the only owner of an active shop.
+        /// 4. UserToRemove must not be the only owner of an active shop. verfied by facade
+        /// 
         /// </constraints>
         public override bool RemoveUser(Guid userToRemoveGuid)
         {
-            throw new NotImplementedException();
-            //Clear shops from owners or managers appointed by this user -- must be checked, might brake constarint every shop must have 1 owner
-            //Clear shops from the user as creator or other owner
-            //Clear all user's carts in these shops
-            //Clear shop products
+
+            //if the user is an shop owner\manager Clear shops from the user as creator or other owner
+            // and Clear shops from owners or managers appointed by this user 
+            ICollection<Shop> shopsOwned = GetShopsOwnedByUser(userToRemoveGuid);
+            foreach(Shop shop in shopsOwned)
+            {
+                shop.RemoveOwner(userToRemoveGuid);
+            }
+            //Clear user's bag if exsits from the list 
+            DomainData.ShoppingBagsCollection.Remove(userToRemoveGuid);
+            //Clear shop products--->>???
             //Clear user registration
+            DomainData.RegisteredUsersCollection.Remove(userToRemoveGuid);
             //Clear user from logged in - Maybe block this operation if the user is logged in, or its a real pain to cut him off.
+            DomainData.LoggedInUsersEntityCollection.Remove(userToRemoveGuid);
+            return true;
         }
 
         private ICollection<Shop> GetShopsOwnedByUser(Guid userToRemoveGuid)

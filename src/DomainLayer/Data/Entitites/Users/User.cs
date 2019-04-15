@@ -29,9 +29,9 @@ namespace DomainLayer.Data.Entitites
 
         public ICollection<ShoppingBag> GetShoppingHistory() => State.GetShoppingHistory();
 
-        public void PurchaseBag()
+        public bool PurchaseBag()//may need to retur a value
         {
-            State.PurchaseBag();
+            return State.PurchaseBag();
         }
 
         public Guid OpenShop() => State.OpenShop(_baseUser);        

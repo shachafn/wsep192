@@ -92,15 +92,12 @@ namespace DomainLayer.Facade
         /// 5. checked. 
         /// 6. User must have at least one item in cart.
         /// </constraints>
-        public bool PurchaseCart(Guid userGuid, Guid shopGuid)
+        public bool PurchaseBag(Guid userGuid)
         {
             var user = VerifyLoggedInUser(userGuid);
-            var shop = VerifyShopExists(shopGuid);
-            shop.VerifyShopIsActive();
-            var cart = VerifyCartExistsAndCreateIfNeeded(userGuid, shopGuid);
             // Need to actually pay for products
             // if success clear cart
-            return cart.PurchaseCart(user); //Not implemented
+            return user.PurchaseBag(); //Not implemented
         }
 
         private ShoppingCart VerifyCartExistsAndCreateIfNeeded(Guid userGuid, Guid shopGuid)
@@ -349,8 +346,7 @@ namespace DomainLayer.Facade
             var user = VerifyLoggedInUser(userGuid);
             VerifyRegisteredUser(userToRemoveGuid);
             VerifyNotOnlyOwnerOfAnActiveShop(userToRemoveGuid);
-            //return user.RemoveUser(userToRemoveGuid); // not implemented
-            throw new NotImplementedException();
+            return user.RemoveUser(userToRemoveGuid); // not implemented
         }
 
         /// <constraints>

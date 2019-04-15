@@ -1,12 +1,13 @@
 ﻿using DomainLayer.Exceptions;
 using System;
 using System.Collections.Generic;
+using System.Linq;
 
 namespace DomainLayer.Data.Entitites.Users.States
 {
     public class GuestUserState : AbstractUserState
     {
-
+        public ShoppingBag CurrentBag { get; set; }
         public override ICollection<ShoppingBag> GetShoppingHistory()
         {
             throw new BadStateException($"Tried to invoke GetShoppingHistory in Guest State");
@@ -17,9 +18,14 @@ namespace DomainLayer.Data.Entitites.Users.States
             throw new BadStateException($"Tried to invoke OpenShop in Guest State");
         }
 
-        public override void PurchaseBag()
+        public override bool PurchaseBag()
         {
-            throw new BadStateException($"Tried to invoke PurchaseBag in Guest State");
+            if (!CurrentBag.Empty())
+            {
+                CurrentBag.Purchase(this);//sending the user itself as the buyer
+                return true;
+            }
+            return false;
         }
 
         public override bool RemoveUser(Guid userToRemoveGuid)
@@ -54,7 +60,9 @@ namespace DomainLayer.Data.Entitites.Users.States
 
         public override bool AddProductToShoppingCart(BaseUser baseUser, Guid shopGuid, Guid shopProductGuid, int quantity)
         {
-            throw new BadStateException($"Tried to invoke AddProductToShoppingCart in Guest State");
+            var cart = GetCartAndCreateIfNeeded(baseUser, shopGuid);
+            cart.AddProductToShoppingCart(shopProductGuid, quantity);
+            return true;
         }
 
         public override bool AddShopManager(BaseUser baseUser, Guid shopGuid, Guid newManagaerGuid, List<string> priviliges)
@@ -69,17 +77,20 @@ namespace DomainLayer.Data.Entitites.Users.States
 
         public override bool EditProductInCart(BaseUser baseUser, Guid shopGuid, Guid shopProductGuid, int newAmount)
         {
-            throw new BadStateException($"Tried to invoke EditProductInCart in Guest State");
+            var cart = GetCartAndCreateIfNeeded(baseUser, shopGuid);
+            return cart.EditProductInCart(shopProductGuid, newAmount);
         }
 
         public override bool RemoveProductFromCart(BaseUser baseUser, Guid shopGuid, Guid shopProductGuid)
         {
-            throw new BadStateException($"Tried to invoke RemoveProductFromCart in Guest State");
+            var cart = GetCartAndCreateIfNeeded(baseUser, shopGuid);
+            return cart.RemoveProductFromCart(shopProductGuid);
         }
 
         public override ICollection<Guid> GetAllProductsInCart(BaseUser baseUser, Guid shopGuid)
         {
-            throw new BadStateException($"Tried to invoke GetAllProductsInCart in Guest State");
+            var cart = GetCartAndCreateIfNeeded(baseUser, shopGuid);
+            return cart.GetAllProductsInCart();
         }
 
         public override bool RemoveShopManager(BaseUser baseUser, Guid shopGuid, Guid managerToRemoveGuid)
@@ -90,6 +101,17 @@ namespace DomainLayer.Data.Entitites.Users.States
         public override bool AddShopOwner(BaseUser baseUser, Guid shopGuid, Guid newManagaerGuid)
         {
             throw new BadStateException($"Tried to invoke AddShopOwner in Guest State");
+        }
+
+        private ShoppingCart GetCartAndCreateIfNeeded(BaseUser baseUser, Guid shopGuid)
+        {
+            var userCart = CurrentBag.ShoppingCarts.FirstOrDefault(cart => cart.ShopGuid.Equals(shopGuid));
+            if (userCart == null)
+            {
+                userCart = new ShoppingCart(baseUser.Guid, shopGuid);
+                CurrentBag.ShoppingCarts.Add(userCart);
+            }
+            return userCart;
         }
     }
 }

@@ -7,7 +7,7 @@ namespace DomainLayer.Data.Entitites.Users.States
 	{
         public abstract ICollection<ShoppingBag> GetShoppingHistory();
         public abstract Guid OpenShop(BaseUser baseUser);
-        public abstract void PurchaseBag();
+        public abstract bool PurchaseBag();
         public abstract bool RemoveUser(Guid userToRemoveGuid);
         public abstract bool ConnectToPaymentSystem();
         public abstract bool ConnectToSupplySystem();

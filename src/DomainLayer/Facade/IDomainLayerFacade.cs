@@ -41,7 +41,7 @@ namespace DomainLayer.Facade
         /// <param name="userGuid"></param>
         /// <param name="shopGuid"></param>
         /// <returns>True if purchased successfully. False otherwise.</returns>
-        bool PurchaseCart(Guid userGuid, Guid shopGuid);
+        bool PurchaseBag(Guid shopGuid);
 
         /// <summary>
         /// Initializes the system and creates an admin user if provided.

@@ -8,11 +8,13 @@ namespace DomainLayer.Data.Entitites.Users
         // We only keep the password's hash, you can check if a password is
         // this user's password using the CheckPass function
         private string _passHash;
+        public bool IsAdmin { get; private set; }
 
         public BaseUser(string username, string password)
         {
             Username = username;
             _passHash = GetStringSha256Hash(password);
+            IsAdmin = false;
         }
 
         /// <summary>

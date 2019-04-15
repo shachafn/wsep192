@@ -8,6 +8,7 @@ namespace DomainLayer.Data.Entitites.Users.States
 {
     public class SellerUserState : AbstractUserState
     {
+        
         public ICollection<Shop> ShopsOwned { get; set; }
 
         public override ICollection<ShoppingBag> GetShoppingHistory()
@@ -22,7 +23,7 @@ namespace DomainLayer.Data.Entitites.Users.States
             return shop.Guid;
         }
 
-        public override void PurchaseBag()
+        public override bool PurchaseBag()
         {
             throw new BadStateException($"Tried to invoke PurchaseBag in Seller State");
         }

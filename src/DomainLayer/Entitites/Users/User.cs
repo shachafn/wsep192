@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using DomainLayer.Data.Entitites.Users;
 using DomainLayer.Data.Entitites.Users.States;
+using DomainLayer.Exceptions;
 
 namespace DomainLayer.Data.Entitites
 {
@@ -22,7 +23,9 @@ namespace DomainLayer.Data.Entitites
 
         public bool SetState(AbstractUserState newState)
         {
-            //if (newState is AdminUserState && !BaseUser.IsAdmin) CHECK ADMIN
+            if (newState is AdminUserState && !_baseUser.IsAdmin)
+                throw new DomainLayer.Exceptions.BadStateException($"Can't set user with Guid - {_baseUser.Guid}" +
+                    $"to admin state. User is not an admin.");
             State = newState;
             return true;
         }

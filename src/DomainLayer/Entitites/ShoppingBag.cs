@@ -1,4 +1,5 @@
-﻿using System;
+﻿using DomainLayer.Data.Entitites.Users.States;
+using System;
 using System.Collections.Generic;
 
 namespace DomainLayer.Data.Entitites
@@ -13,6 +14,20 @@ namespace DomainLayer.Data.Entitites
         {
             UserGuid = userGuid;
             ShoppingCarts = new List<ShoppingCart>();
+        }
+
+        
+        public void Purchase(AbstractUserState user)
+        {
+            foreach(ShoppingCart cart in ShoppingCarts)
+            {
+                cart.PurchaseCart(user);
+            }
+        }
+
+        public bool Empty()
+        {
+            return ShoppingCarts.Count==0;
         }
     }
 }

@@ -1,4 +1,5 @@
-﻿using DomainLayer.Exceptions;
+﻿using DomainLayer.Data.Entitites.Users.States;
+using DomainLayer.Exceptions;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
@@ -42,7 +43,7 @@ namespace DomainLayer.Data.Entitites
         {
             throw new NotImplementedException();
         }
-        public bool PurchaseCart(User user)
+        public bool PurchaseCart(AbstractUserState user)
         {
             throw new NotImplementedException();
         }

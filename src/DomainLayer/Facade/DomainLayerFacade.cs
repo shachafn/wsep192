@@ -62,13 +62,13 @@ namespace DomainLayer.Facade
             return GetLoggedInUser(userGuid).OpenShop();
         }
 
-        public bool PurchaseCart(Guid userGuid, Guid shopGuid)
+
+        public bool PurchaseBag(Guid userGuid)
         {
-            DomainLayerFacadeVerifier.VerifyMe(MethodBase.GetCurrentMethod(), userGuid, shopGuid);
+            DomainLayerFacadeVerifier.VerifyMe(MethodBase.GetCurrentMethod(), userGuid);
             // Need to actually pay for products
-            // if success clear cart
-            return DomainData.ShoppingBagsCollection[userGuid].ShoppingCarts.First(c => c.ShopGuid.Equals(shopGuid)).
-                PurchaseCart(GetLoggedInUser(userGuid)); //Not implemented
+            // if success clear all carts
+            return GetLoggedInUser(userGuid).PurchaseBag();
         }
 
         public bool Initialize(Guid userGuid, string username, string password)
@@ -170,8 +170,13 @@ namespace DomainLayer.Facade
             return GetLoggedInUser(userGuid).RemoveShopManager(shopGuid, managerToRemoveGuid);
         }
 
+        public bool ChangeUserState(Guid userGuid, string newState)
+        {
+            DomainLayerFacadeVerifier.VerifyMe(MethodBase.GetCurrentMethod(), newState);
+            return UserDomain.ChangeUserState(userGuid, newState);
+        }
+
         private User GetLoggedInUser(Guid userGuid) => DomainData.LoggedInUsersEntityCollection[userGuid];
         private Shop GetShop(Guid shopGuid) => DomainData.ShopsCollection[shopGuid];
-
     }
 }

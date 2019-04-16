@@ -164,7 +164,7 @@ namespace DomainLayer.Data.Entitites
             return true;
         }
 
-        public bool RemoveOwner(ShopOwner oppointer, Guid toRemoveOwnerGuid)
+        public bool RemoveOwner(Guid toRemoveOwnerGuid)
         {
             var ownerToRemove = GetOwner(toRemoveOwnerGuid);
             if (ownerToRemove.Guid.Equals(Creator.Guid))
@@ -172,8 +172,9 @@ namespace DomainLayer.Data.Entitites
             foreach(var otherOwner in Owners)
             {
                 if (otherOwner.AppointerGuid.Equals(toRemoveOwnerGuid))
-                    RemoveOwner(ownerToRemove, otherOwner.Guid);
+                    RemoveOwner(otherOwner.Guid);
             }
+            Owners.Remove(ownerToRemove);// remove the owner from the owners list
             return true;
         }
 

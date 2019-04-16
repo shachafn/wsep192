@@ -2,41 +2,42 @@
 using System.Collections.Generic;
 using DomainLayer.Data.Entitites.Users;
 using DomainLayer.Data.Entitites.Users.States;
+using DomainLayer.Exceptions;
 
 namespace DomainLayer.Data.Entitites
 {
-    public class User : IUser
+    public class User
     {
+        public Guid Guid { get => _baseUser.Guid; }
+        private BaseUser _baseUser { get; set; }
         private AbstractUserState State { get; set; }
-
-        public Guid Guid { get => State.Guid; }
-        public string Username { get => State.Username; }
 
         /// <summary>
         /// Default constructor, creates the user with a default Guest state.
         /// </summary>
-        /// <param name="username"></param>
-        /// <param name="password"></param>
-        public User(string username, string password)
+        public User(BaseUser baseUser)
         {
-            State = new GuestUserState(username, password);
+            var builder = new StateBuilder();
+            State = builder.BuildState("BuyerUserState", this);
         }
 
-        public void SetState(AbstractUserState newState)
+        public bool SetState(AbstractUserState newState)
         {
+            if (newState is AdminUserState && !_baseUser.IsAdmin)
+                throw new DomainLayer.Exceptions.BadStateException($"Can't set user with Guid - {_baseUser.Guid}" +
+                    $"to admin state. User is not an admin.");
             State = newState;
+            return true;
         }
 
         public ICollection<ShoppingBag> GetShoppingHistory() => State.GetShoppingHistory();
 
-        public void PurchaseBag()
+        public bool PurchaseBag()//may need to retur a value
         {
-            State.PurchaseBag();
+            return State.PurchaseBag();
         }
 
-        public Guid OpenShop() => State.OpenShop();        
-
-        public bool CheckPass(string password) => State.CheckPass(password);
+        public Guid OpenShop() => State.OpenShop(_baseUser);        
 
         public bool RemoveUser(Guid userToRemoveGuid)
         {
@@ -54,57 +55,57 @@ namespace DomainLayer.Data.Entitites
 
         public Guid AddShopProduct(Guid shopGuid, string name, string category, double price, int quantity)
         {
-            return State.AddShopProduct(shopGuid, name, category, price, quantity);
+            return State.AddShopProduct(_baseUser, shopGuid, name, category, price, quantity);
         }
 
         public void EditShopProduct(Guid shopGuid, Guid productGuid, double newPrice, int newQuantity)
         {
-            State.EditShopProduct(shopGuid, productGuid, newPrice, newQuantity);
+            State.EditShopProduct(_baseUser, shopGuid, productGuid, newPrice, newQuantity);
         }
 
         public bool RemoveShopProduct(Guid shopGuid, Guid shopProductGuid)
         {
-            return State.RemoveShopProduct(shopGuid, shopProductGuid);
+            return State.RemoveShopProduct(_baseUser, shopGuid, shopProductGuid);
         }
 
         public bool AddProductToShoppingCart(Guid shopGuid, Guid shopProductGuid, int quantity)
         {
-            return State.AddProductToShoppingCart(shopGuid, shopProductGuid, quantity);
+            return State.AddProductToShoppingCart(_baseUser, shopGuid, shopProductGuid, quantity);
         }
 
         public bool AddShopOwner(Guid shopGuid, Guid newManagaerGuid)
         {
-            return State.AddShopOwner(shopGuid, newManagaerGuid);
+            return State.AddShopOwner(_baseUser, shopGuid, newManagaerGuid);
         }
 
         public bool AddShopManager(Guid shopGuid, Guid newManagaerGuid, List<string> priviliges)
         {
-            return State.AddShopManager(shopGuid, newManagaerGuid, priviliges);
+            return State.AddShopManager(_baseUser, shopGuid, newManagaerGuid, priviliges);
         }
 
         public bool CascadeRemoveShopOwner(Guid shopGuid, Guid ownerToRemoveGuid)
         {
-            return State.CascadeRemoveShopOwner(shopGuid, ownerToRemoveGuid);
+            return State.CascadeRemoveShopOwner(_baseUser, shopGuid, ownerToRemoveGuid);
         }
 
         public bool EditProductInCart(Guid shopGuid, Guid shopProductGuid, int newAmount)
         {
-            return State.EditProductInCart(shopGuid, shopProductGuid, newAmount);
+            return State.EditProductInCart(_baseUser, shopGuid, shopProductGuid, newAmount);
         }
 
         public bool RemoveProductFromCart(Guid shopGuid, Guid shopProductGuid)
         {
-            return State.RemoveProductFromCart(shopGuid, shopProductGuid);
+            return State.RemoveProductFromCart(_baseUser, shopGuid, shopProductGuid);
         }
 
         public ICollection<Guid> GetAllProductsInCart(Guid shopGuid)
         {
-            return State.GetAllProductsInCart(shopGuid);
+            return State.GetAllProductsInCart(_baseUser, shopGuid);
         }
 
         public bool RemoveShopManager(Guid shopGuid, Guid managerToRemoveGuid)
         {
-            return State.RemoveShopManager(shopGuid, managerToRemoveGuid);
+            return State.RemoveShopManager(_baseUser, shopGuid, managerToRemoveGuid);
         }
     }
 }

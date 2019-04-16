@@ -13,7 +13,7 @@ namespace DomainLayer.Facade
         Guid Login(Guid userGuid, string username, string password);
         bool Logout(Guid userGuid);
         Guid OpenShop(Guid userGuid);
-        bool PurchaseCart(Guid userGuid, Guid shopGuid);
+        bool PurchaseBag(Guid userGuid);
         bool Initialize(Guid userGuid, string username, string password);
         bool ConnectToPaymentSystem(Guid userGuid);
         bool ConnectToSupplySystem(Guid userGuid);
@@ -29,5 +29,6 @@ namespace DomainLayer.Facade
         bool RemoveUser(Guid userGuid, Guid userToRemoveGuid);
         ICollection<Guid> SearchProduct(Guid userGuid, Guid shopGuid, string productName);
         bool RemoveShopManager(Guid userGuid, Guid shopGuid, Guid managerToRemoveGuid);
+        bool ChangeUserState(Guid userGuid, string newState);
     }
 }

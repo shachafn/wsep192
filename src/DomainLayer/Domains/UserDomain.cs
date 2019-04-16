@@ -7,6 +7,7 @@ using System.Linq;
 using DomainLayer.Data.Entitites.Users.States;
 using DomainLayer.Exceptions;
 using DomainLayer.Data.Entitites.Users;
+using System.Diagnostics;
 
 namespace DomainLayer.Domains
 {
@@ -49,11 +50,11 @@ namespace DomainLayer.Domains
                 return false;
 
             var newUser = new BaseUser(username.ToLower(), password);
-            DomainData.AllUsersCollection.Add(newUser.Guid, newUser);
+            DomainData.RegisteredUsersCollection.Add(newUser.Guid, newUser);
             return true;
         }
 
-        private bool IsUsernameTaken(string username) => DomainData.AllUsersCollection.Any(bUser => bUser.Username.Equals(username));
+        private bool IsUsernameTaken(string username) => DomainData.RegisteredUsersCollection.Any(bUser => bUser.Username.Equals(username));
 
 
         /// <summary>
@@ -63,17 +64,11 @@ namespace DomainLayer.Domains
         /// <returns></returns>
         public Guid Login(Guid userGuid, string username, string password)
         {
-            if (!IsUserRegistered(username, password))
-                return Guid.Empty;
-
-            var user = new User(username, password);
-            user.SetState(new BuyerUserState(username, password));
+            BaseUser baseUser = VerifyRegisteredUser(username, password);
+            var user = new User(baseUser);
             LoggedInUsers.Add(user.Guid, user);
             return user.Guid;
         }
-
-        private bool IsUserRegistered(string username, string password) => 
-            DomainData.AllUsersCollection.Any(bUser => bUser.Username.Equals(username.ToLower()) && bUser.CheckPass(password));
 
         /// <summary>
         /// Loggs the user out.
@@ -90,5 +85,28 @@ namespace DomainLayer.Domains
             return true;
         }
 
+        public bool ChangeUserState(Guid userGuid, string newStateString)
+        {
+            var user = DomainData.LoggedInUsersEntityCollection[userGuid];
+            var builder = new StateBuilder();
+            var newState = builder.BuildState(newStateString, user);
+            return user.SetState(newState);
+        }
+
+        #region Verifiers
+        private BaseUser VerifyRegisteredUser(string username, string password)
+        {
+            var user = DomainData.RegisteredUsersCollection.
+                FirstOrDefault(bUser => bUser.Username.Equals(username.ToLower()) && bUser.CheckPass(password));
+            if (user == null)
+            {
+                StackTrace stackTrace = new StackTrace();
+                throw new Exception($"No registered user with username - {username.ToLower()}, password = {password}" +
+        $"Cant complete {stackTrace.GetFrame(1).GetMethod().Name}");
+            }
+            return user;
+        }
+
+        #endregion
     }
 }

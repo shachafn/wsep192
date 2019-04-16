@@ -97,20 +97,10 @@ namespace DomainLayer.Facade
             VerifyLoggedInUser(userGuid);
         }
 
-        /// <constraints>
-        /// 1. checked
-        /// 2. checked
-        /// 3. checked by design by state pattern
-        /// 4. checked
-        /// 5. checked. 
-        /// 6. User must have at least one item in cart.
-        /// </constraints>
-        public static void PurchaseCart(Guid userGuid, Guid shopGuid)
+        /////////// REDO CONSTRAINTS, CHANGED FROM CART TO BAG ////////////////
+        public static void PurchaseBag(Guid userGuid)
         {
             var user = VerifyLoggedInUser(userGuid);
-            var shop = VerifyShopExists(shopGuid);
-            shop.VerifyShopIsActive();
-            VerifyCartExistsAndCreateIfNeeded(userGuid, shopGuid);
         }
 
         /// <constraints>
@@ -362,6 +352,19 @@ namespace DomainLayer.Facade
             shop.VerifyShopIsActive();
         }
 
+        /// <constraints>
+        /// 1. checked
+        /// 2. checked
+        /// 3. checked
+        /// 4. checked
+        /// </constraints>
+        public void ChangeUserState(Guid userGuid, string newState)
+        {
+            var user = VerifyLoggedInUser(userGuid);
+            VerifyString(newState);
+            VerifyStateString(newState);
+        }
+
         #endregion
 
         #region Private Verifiers
@@ -403,7 +406,7 @@ namespace DomainLayer.Facade
 
         private static void VerifyRegisteredUser(Guid userGuid)
         {
-            if (!DomainData.AllUsersCollection.ContainsKey(userGuid))
+            if (!DomainData.RegisteredUsersCollection.ContainsKey(userGuid))
             {
                 StackTrace stackTrace = new StackTrace();
                 throw new UserNotFoundException(string.Format(Resources.EntityNotFound, "registered user", userGuid) +
@@ -482,6 +485,16 @@ namespace DomainLayer.Facade
                 userBag.ShoppingCarts.Add(userCart);
             }
             return userCart;
+        }
+
+        private void VerifyStateString(string newState)
+        {
+            if ((!string.Equals(newState, "AdminUserState")) && (!string.Equals(newState, "BuyerUserState")) && (!string.Equals(newState, "SellerUserState")))
+            {
+                StackTrace stackTrace = new StackTrace();
+                throw new Exception($"State string doesnt not match any state." +
+        $"Cant complete {stackTrace.GetFrame(1).GetMethod().Name}");
+            }
         }
         #endregion
     }

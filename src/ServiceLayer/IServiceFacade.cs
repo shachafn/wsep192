@@ -53,19 +53,8 @@ namespace ServiceLayer
         Guid OpenShop(Guid userGuid);
 
         /////Implements General Requirement 2.8. Not entirely, only purchase of a cart and not single items.
-        /// <summary>
-        /// Purchase the user's shopping cart of the specific shop.
-        /// </summary>
-        /// <constraints>
-        /// 1. User must exist
-        /// 2. User must be logged in.
-        /// 3. User must be in buyer state.
-        /// 4. Shop must exist
-        /// 5. Shop must be active. 
-        /// 6. User must have at least one item in cart.
-        /// </constraints>
-        /// <returns>True if purchased successfully. False otherwise.</returns>
-        bool PurchaseCart(Guid userGuid, Guid shopGuid);
+        /////////////// REDO CONSTRAINTS, CHANGED FROM CART TO BAG ////////////////////////
+        bool PurchaseBag(Guid userGuid);
 
         /////Implements General Requirement 1.1
         /// <summary>
@@ -323,6 +312,7 @@ namespace ServiceLayer
         /// 1. Must be called by an existing user.
         /// 2. User must be logged in.
         /// 3. newState must not be string.IsNullOrWhitespace
+        /// 4. newState must be a valid state (see implementation)
         /// </constraints>
         /// <returns></returns>
         bool ChangeUserState(Guid userGuid, string newState);

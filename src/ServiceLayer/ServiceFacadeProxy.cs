@@ -112,10 +112,10 @@ namespace ServiceLayer
             return _serviceFacade.OpenShop(userGuid);
         }
 
-        public bool PurchaseCart(Guid cookie, Guid shopGuid)
+        public bool PurchaseBag(Guid cookie)
         {
             var userGuid = _sessionManager.ResolveCookie(cookie);
-            return _serviceFacade.PurchaseCart(userGuid, shopGuid);
+            return _serviceFacade.PurchaseBag(userGuid);
         }
 
         public bool Register(Guid cookie, string username, string password)

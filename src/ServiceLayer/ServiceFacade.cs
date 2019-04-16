@@ -131,9 +131,9 @@ namespace ServiceLayer
             return _domainLayerFacade.OpenShop(userGuid);
         }
 
-        public bool PurchaseCart(Guid userGuid, Guid shopGuid)
+        public bool PurchaseBag(Guid userGuid)
         {
-            return _domainLayerFacade.PurchaseCart(userGuid, shopGuid);
+            return _domainLayerFacade.PurchaseBag(userGuid);
         }
 
         public bool RemoveUser(Guid userGuid, Guid userToRemoveGuid)

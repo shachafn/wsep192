@@ -29,7 +29,7 @@ namespace ATBridge
             throw new NotImplementedException();
         }
 
-        public Guid AddShopProduct(Guid userGuid, Guid shopGuid, string name, string category, double price, int quantity)
+        public Guid AddProductToShop(Guid userGuid, Guid shopGuid, string name, string category, double price, int quantity)
         {
             throw new NotImplementedException();
         }

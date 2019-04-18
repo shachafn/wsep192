@@ -4,8 +4,15 @@ using System.Text;
 
 namespace DomainLayer.Exceptions
 {
-    public class NoPriviligesException : Exception
+    public class NoPriviligesException : Exception, ICloneableException<Exception>
     {
-        public NoPriviligesException(string message) : base(message) { }
+        public NoPriviligesException() { }
+
+        public NoPriviligesException(string msg) : base(msg) { }
+
+        Exception ICloneableException<Exception>.Clone(string msg)
+        {
+            return new NoPriviligesException(msg);
+        }
     }
 }

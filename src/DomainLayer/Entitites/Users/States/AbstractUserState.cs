@@ -11,7 +11,7 @@ namespace DomainLayer.Data.Entitites.Users.States
         public abstract bool RemoveUser(Guid userToRemoveGuid);
         public abstract bool ConnectToPaymentSystem();
         public abstract bool ConnectToSupplySystem();
-        public abstract Guid AddShopProduct(BaseUser baseUser, Guid shopGuid, string name, string category, double price, int quantity);
+        public abstract Guid AddProductToShop(BaseUser baseUser, Guid shopGuid, string name, string category, double price, int quantity);
         public abstract void EditShopProduct(BaseUser baseUser, Guid shopGuid, Guid productGuid, double newPrice, int newQuantity);
         public abstract bool RemoveShopProduct(BaseUser baseUser, Guid shopGuid, Guid shopProductGuid);
         public abstract bool AddShopManager(BaseUser baseUser, Guid shopGuid, Guid newManagaerGuid, List<string> priviliges);

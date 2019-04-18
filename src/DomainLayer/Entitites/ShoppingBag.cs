@@ -17,7 +17,7 @@ namespace DomainLayer.Data.Entitites
         }
 
         
-        public void Purchase(AbstractUserState user)
+        public void PurchaseBag(AbstractUserState user)
         {
             foreach(ShoppingCart cart in ShoppingCarts)
             {

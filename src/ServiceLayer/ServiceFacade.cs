@@ -64,9 +64,9 @@ namespace ServiceLayer
 
         #region Shop Products
 
-        public Guid AddShopProduct(Guid userGuid, Guid shopGuid, string name, string category, double price, int quantity)
+        public Guid AddProductToShop(Guid userGuid, Guid shopGuid, string name, string category, double price, int quantity)
         {
-            return _domainLayerFacade.AddShopProduct(userGuid, shopGuid, name, category, price, quantity);
+            return _domainLayerFacade.AddProductToShop(userGuid, shopGuid, name, category, price, quantity);
         }
 
         public bool EditShopProduct(Guid userGuid, Guid shopGuid, Guid productGuid, double newPrice, int newQuantity)

@@ -9,6 +9,7 @@ namespace DomainLayer.Data.Entitites
     public class User
     {
         public Guid Guid { get => _baseUser.Guid; }
+        public bool IsAdmin { get => _baseUser.IsAdmin; }
         private BaseUser _baseUser { get; set; }
         private AbstractUserState State { get; set; }
 
@@ -18,14 +19,11 @@ namespace DomainLayer.Data.Entitites
         public User(BaseUser baseUser)
         {
             var builder = new StateBuilder();
-            State = builder.BuildState("BuyerUserState", this);
+            State = builder.BuildState(BuyerUserState.BuyerUserStateString, this);
         }
 
         public bool SetState(AbstractUserState newState)
         {
-            if (newState is AdminUserState && !_baseUser.IsAdmin)
-                throw new DomainLayer.Exceptions.BadStateException($"Can't set user with Guid - {_baseUser.Guid}" +
-                    $"to admin state. User is not an admin.");
             State = newState;
             return true;
         }
@@ -53,9 +51,9 @@ namespace DomainLayer.Data.Entitites
             return State.ConnectToSupplySystem();
         }
 
-        public Guid AddShopProduct(Guid shopGuid, string name, string category, double price, int quantity)
+        public Guid AddProductToShop(Guid shopGuid, string name, string category, double price, int quantity)
         {
-            return State.AddShopProduct(_baseUser, shopGuid, name, category, price, quantity);
+            return State.AddProductToShop(_baseUser, shopGuid, name, category, price, quantity);
         }
 
         public void EditShopProduct(Guid shopGuid, Guid productGuid, double newPrice, int newQuantity)

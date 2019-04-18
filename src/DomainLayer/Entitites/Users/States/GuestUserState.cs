@@ -22,7 +22,7 @@ namespace DomainLayer.Data.Entitites.Users.States
         {
             if (!CurrentBag.Empty())
             {
-                CurrentBag.Purchase(this);//sending the user itself as the buyer
+                CurrentBag.PurchaseBag(this);//sending the user itself as the buyer
                 return true;
             }
             return false;
@@ -43,9 +43,9 @@ namespace DomainLayer.Data.Entitites.Users.States
             throw new BadStateException($"Tried to invoke ConnectToSupplySystem in Guest State");
         }
 
-        public override Guid AddShopProduct(BaseUser baseUser, Guid shopGuid, string name, string category, double price, int quantity)
+        public override Guid AddProductToShop(BaseUser baseUser, Guid shopGuid, string name, string category, double price, int quantity)
         {
-            throw new BadStateException($"Tried to invoke AddShopProduct in Guest State");
+            throw new BadStateException($"Tried to invoke AddProductToShop in Guest State");
         }
 
         public override void EditShopProduct(BaseUser baseUser, Guid shopGuid, Guid productGuid, double newPrice, int newQuantity)

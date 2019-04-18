@@ -2,8 +2,15 @@
 
 namespace DomainLayer.Exceptions
 {
-    public class ShopNotFoundException : Exception
+    public class ShopNotFoundException : Exception, ICloneableException<Exception>
     {
-        public ShopNotFoundException(string message) : base(message) { }
+        public ShopNotFoundException() { }
+
+        public ShopNotFoundException(string msg) : base(msg) { }
+
+        Exception ICloneableException<Exception>.Clone(string msg)
+        {
+            return new ShopNotFoundException(msg);
+        }
     }
 }

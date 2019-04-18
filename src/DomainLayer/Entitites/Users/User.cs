@@ -18,6 +18,7 @@ namespace DomainLayer.Data.Entitites
         /// </summary>
         public User(BaseUser baseUser)
         {
+            _baseUser = baseUser;
             var builder = new StateBuilder();
             State = builder.BuildState(BuyerUserState.BuyerUserStateString, this);
         }

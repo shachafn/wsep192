@@ -7,116 +7,133 @@ namespace ATBridge
 {
     public class BridgeImpl : IBridge
     {
-        private readonly ServiceFacadeProxy _serviceFacade;
+        private readonly ServiceFacade _serviceFacade;
 
         public BridgeImpl()
         {
-            _serviceFacade = new ServiceFacadeProxy();
+            _serviceFacade = new ServiceFacade();
         }
 
         public bool AddProductToShoppingCart(Guid userGuid, Guid productGuid, Guid shopGuid, int quantity)
         {
-            throw new NotImplementedException();
+            return _serviceFacade.AddProductToShoppingCart(userGuid, productGuid, shopGuid, quantity);
         }
 
         public bool AddShopManager(Guid userGuid, Guid shopGuid, Guid newManagaerGuid, List<string> priviliges)
         {
-            throw new NotImplementedException();
+            return _serviceFacade.AddShopManager(userGuid, shopGuid, newManagaerGuid, priviliges);
+            //throw new NotImplementedException();
         }
 
         public bool AddShopOwner(Guid userGuid, Guid shopGuid, Guid newShopOwnerGuid)
         {
-            throw new NotImplementedException();
+            return _serviceFacade.AddShopOwner(userGuid, shopGuid, newShopOwnerGuid);
+            //throw new NotImplementedException();
         }
 
         public Guid AddShopProduct(Guid userGuid, Guid shopGuid, string name, string category, double price, int quantity)
         {
-            throw new NotImplementedException();
+            return _serviceFacade.AddShopProduct(userGuid, shopGuid, name, category, price, quantity);
+            //throw new NotImplementedException();
         }
 
         public bool CascadeRemoveShopOwner(Guid userGuid, Guid shopGuid, Guid ownerToRemoveGuid)
         {
-            throw new NotImplementedException();
+            return _serviceFacade.CascadeRemoveShopOwner(userGuid, shopGuid, ownerToRemoveGuid);
+            //throw new NotImplementedException();
         }
 
         public bool ConnectToPaymentSystem(Guid userGuid)
         {
-            throw new NotImplementedException();
+            return _serviceFacade.ConnectToSupplySystem(userGuid);
+           // throw new NotImplementedException();
         }
 
         public bool ConnectToSupplySystem(Guid userGuid)
         {
-            throw new NotImplementedException();
+            return _serviceFacade.ConnectToSupplySystem(userGuid);
+            //throw new NotImplementedException();
         }
 
         public bool EditProductInCart(Guid userGuid, Guid shopGuid, Guid shopProductGuid, int newAmount)
         {
-            throw new NotImplementedException();
+            return _serviceFacade.EditProductInCart(userGuid, shopGuid, shopProductGuid, newAmount);
+            //throw new NotImplementedException();
         }
 
         public bool EditShopProduct(Guid userGuid, Guid shopGuid, Guid productGuid, double newPrice, int newQuantity)
         {
+            //return _serviceFacade.EditProductInCart(userGuid, shopGuid, productGuid, newPrice, newQuantity);
             throw new NotImplementedException();
         }
 
         public ICollection<Guid> GetAllProductsInCart(Guid userGuid, Guid shopGuid)
         {
-            throw new NotImplementedException();
+            return _serviceFacade.GetAllProductsInCart(userGuid, shopGuid);
+            //throw new NotImplementedException();
         }
 
         public bool Initialize(Guid userGuid, string username, string password)
         {
-            throw new NotImplementedException();
+            return _serviceFacade.Initialize(userGuid, username, password);
         }
 
         public Guid Login(Guid userGuid, string username, string password)
         {
-            throw new NotImplementedException();
+            return _serviceFacade.Login(userGuid, username, password);
         }
 
         public bool Logout(Guid userGuid)
         {
-            throw new NotImplementedException();
+            return _serviceFacade.Logout(userGuid);
+            //throw new NotImplementedException();
         }
 
         public Guid OpenShop(Guid userGuid)
         {
-            throw new NotImplementedException();
+            return _serviceFacade.OpenShop(userGuid);
+            //throw new NotImplementedException();
         }
 
         public bool PurchaseCart(Guid userGuid, Guid shopGuid)
         {
+            //return _serviceFacade.PurchaseBag(userGuid, shopGuid);
             throw new NotImplementedException();
         }
 
         public bool Register(Guid userGuid, string username, string password)
         {
-            throw new NotImplementedException();
+            return _serviceFacade.Register(userGuid, username, password);
         }
 
         public bool RemoveProductFromCart(Guid userGuid, Guid shopGuid, Guid shopProductGuid)
         {
-            throw new NotImplementedException();
+            return _serviceFacade.RemoveProductFromCart(userGuid, shopGuid, shopProductGuid);
+            //throw new NotImplementedException();
         }
 
         public bool RemoveShopManager(Guid userGuid, Guid shopGuid, Guid managerToRemoveGuid)
         {
-            throw new NotImplementedException();
+            return _serviceFacade.RemoveShopManager(userGuid, shopGuid, managerToRemoveGuid);
+            //throw new NotImplementedException();
         }
 
         public bool RemoveShopProduct(Guid userGuid, Guid shopProductGuid, Guid shopGuid)
         {
+            //return _serviceFacade.RemoveShopProduct(userGuid, shopProductGuid, shopGuid);
             throw new NotImplementedException();
         }
 
         public bool RemoveUser(Guid userGuid, Guid userToRemoveGuid)
         {
-            throw new NotImplementedException();
+            return _serviceFacade.RemoveUser(userGuid, userToRemoveGuid);
+            //throw new NotImplementedException();
         }
 
         public ICollection<Guid> SearchProduct(Guid userGuid, Guid shopGuid, string productName)
         {
-            throw new NotImplementedException();
+            return _serviceFacade.SearchProduct(userGuid, shopGuid, productName);
+            //throw new NotImplementedException();
         }
     }
 }

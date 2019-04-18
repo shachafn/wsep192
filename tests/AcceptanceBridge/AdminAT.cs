@@ -6,36 +6,41 @@ using ATBridge;
 
 namespace Tests
 {
-    class AdminAT
+    public static class AdminAT
     {
-        ProxyBridge _proxy = new ProxyBridge();
         [SetUp]
-        public void Setup()
+        public static void Setup()
         {
-            _proxy.SetRealBridge(new BridgeImpl());
+            Tester.PBridge.SetRealBridge(new BridgeImpl());
         }
-
+        //GR 1 - Initialization of the system
+        [Test]
+        public static void InitializationAT()
+        {
+            Assert.IsTrue(Tester.PBridge.Initialize(Tester.GuestGuid, "admin", "000000"));
+        }
         //GR 6.2 - Removing of registered user
 
-        public void RemoveOfRegisteredUserAT()
+        public static void RemoveOfRegisteredUserAT()
         {
             RemoveOfRegisteredUserAT1();
             RemoveOfRegisteredUserAT2();
         }
 
         [Test]
-        public void RemoveOfRegisteredUserAT1()
+        public static void RemoveOfRegisteredUserAT1()
         {
             Assert.Pass();
         }
 
         [Test]
-        public void RemoveOfRegisteredUserAT2()
+        public static void RemoveOfRegisteredUserAT2()
         {
             Assert.Pass();
         }
-        public void RunAdminAT()
+        public static void RunAdminAT()
         {
+            InitializationAT();
             RemoveOfRegisteredUserAT();
         }
     }

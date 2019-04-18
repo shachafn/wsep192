@@ -97,10 +97,10 @@ namespace DomainLayer.Facade
             return GetLoggedInUser(userGuid).ConnectToSupplySystem();
         }
 
-        public Guid AddShopProduct(Guid userGuid, Guid shopGuid, string name, string category, double price, int quantity)
+        public Guid AddProductToShop(Guid userGuid, Guid shopGuid, string name, string category, double price, int quantity)
         {
             DomainLayerFacadeVerifier.VerifyMe(MethodBase.GetCurrentMethod(), userGuid, shopGuid, name, category, price, quantity);
-            return GetLoggedInUser(userGuid).AddShopProduct(shopGuid, name, category, price, quantity);
+            return GetLoggedInUser(userGuid).AddProductToShop(shopGuid, name, category, price, quantity);
         }
 
         public bool EditShopProduct(Guid userGuid, Guid shopGuid, Guid productGuid, double newPrice, int newQuantity)

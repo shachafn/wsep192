@@ -2,8 +2,15 @@
 
 namespace DomainLayer.Exceptions
 {
-    public class BadStateException : Exception
+    public class BadStateException : Exception, ICloneableException<Exception>
     {
-        public BadStateException(string message) : base(message) { }
+        public BadStateException() { }
+
+        public BadStateException(string msg) : base(msg) { }
+
+        Exception ICloneableException<Exception>.Clone(string msg)
+        {
+            return new BadStateException(msg);
+        }
     }
 }

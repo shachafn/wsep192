@@ -7,6 +7,8 @@ namespace DomainLayer.Data.Entitites.Users.States
 {
     public class BuyerUserState : AbstractUserState
     {
+        public const string BuyerUserStateString = "BuyerUserState";
+
         public ICollection<ShoppingBag> PurchaseHistory { get; set; }
         public ShoppingBag CurrentBag { get; set; }
 
@@ -20,7 +22,7 @@ namespace DomainLayer.Data.Entitites.Users.States
         {
             if (!CurrentBag.Empty())
             {
-                CurrentBag.Purchase(this);//sending the user itself as the buyer
+                CurrentBag.PurchaseBag(this);//sending the user itself as the buyer
                 PurchaseHistory.Add(CurrentBag);
                 return true;
             }
@@ -47,9 +49,9 @@ namespace DomainLayer.Data.Entitites.Users.States
             throw new BadStateException($"Tried to invoke ConnectToSupplySystem in Buyer State");
         }
 
-        public override Guid AddShopProduct(BaseUser baseUser, Guid shopGuid, string name, string category, double price, int quantity)
+        public override Guid AddProductToShop(BaseUser baseUser, Guid shopGuid, string name, string category, double price, int quantity)
         {
-            throw new BadStateException($"Tried to invoke AddShopProduct in Buyer State");
+            throw new BadStateException($"Tried to invoke AddProductToShop in Buyer State");
         }
 
         public override void EditShopProduct(BaseUser baseUser, Guid shopGuid, Guid productGuid, double newPrice, int newQuantity)

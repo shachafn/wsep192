@@ -17,7 +17,7 @@ namespace DomainLayer.Facade
         bool Initialize(Guid userGuid, string username, string password);
         bool ConnectToPaymentSystem(Guid userGuid);
         bool ConnectToSupplySystem(Guid userGuid);
-        Guid AddShopProduct(Guid userGuid, Guid shopGuid, string name, string category, double price, int quantity);
+        Guid AddProductToShop(Guid userGuid, Guid shopGuid, string name, string category, double price, int quantity);
         bool EditShopProduct(Guid userGuid, Guid shopGuid, Guid productGuid, double newPrice, int newQuantity);
         bool RemoveShopProduct(Guid userGuid, Guid shopGuid, Guid shopProductGuid);
         bool AddProductToShoppingCart(Guid userGuid, Guid shopGuid, Guid shopProductGuid, int quantity);

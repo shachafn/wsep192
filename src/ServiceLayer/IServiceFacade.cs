@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Text;
+using DomainLayer.Exceptions;
 
 namespace ServiceLayer
 {
@@ -15,7 +16,9 @@ namespace ServiceLayer
         /// 2. username and password must not be string.IsNullOrWhitespace
         /// 3. if username is taken - return false;
         /// </constraints>
-        /// <returns>True if registered successfully. False otherwise.</returns>
+        /// <exception cref="IllegalOperationException">When the userGuid is not a GuestGuid.</exception>
+        /// <exception cref="IllegalArgumentException">When the username/password are null, empty or whitespace</exception>
+        /// <returns>True if registered successfully. False if username is taken.</returns>
         bool Register(Guid userGuid, string username, string password);
 
         /////Implements General Requirement 2.3
@@ -27,10 +30,12 @@ namespace ServiceLayer
         /// 2. username and password must not be string.IsNullOrWhitespace
         /// 3. if username and password doesnt match nay user - return false
         /// </constraints>
-        /// <returns>True if could login successfully. False otherwise.</returns>
+        /// <exception cref="IllegalOperationException">When the userGuid is not a GuestGuid.</exception>
+        /// <exception cref="IllegalArgumentException">When the username/password are null, empty or whitespace</exception>
+        /// <exception cref="CredentialsMismatchException">When the username and password does not match any registered user's credentials</exception>
+        /// <returns>The user's Guid.</returns>
         Guid Login(Guid userGuid, string username, string password);
 
-        /////Implements General Requirement 3.1
         /// <summary>
         /// Logs out the user.
         /// </summary>
@@ -38,6 +43,8 @@ namespace ServiceLayer
         /// 1. User must exist
         /// 2. User must be logged in.
         /// </constraints>
+        /// <exception cref="IllegalOperationException">When userGuid does not match any logged-in user's guid.</exception>
+        /// <returns>True.</returns>
         bool Logout(Guid userGuid);
 
         /////Implements General Requirement 3.2
@@ -49,10 +56,12 @@ namespace ServiceLayer
         /// 2. User must be logged in.
         /// 3. User must be in seller state.
         /// </constraints>
-        /// <returns>True if opened successfully. False otherwise.</returns>
+        /// <exception cref="UserNotFoundException">When userGuid does not match any logged-in user's guid.</exception>
+        /// <exception cref="BadStateException">When the user is not in seller state</exception>
+        /// <returns>Guid of the created shop.</returns>
         Guid OpenShop(Guid userGuid);
 
-        /////Implements General Requirement 2.8. Not entirely, only purchase of a cart and not single items.
+        /////Implements General Requirement 2.8. Not entirely, only purchase of the entier bag.
         /////////////// REDO CONSTRAINTS, CHANGED FROM CART TO BAG ////////////////////////
         bool PurchaseBag(Guid userGuid);
 
@@ -68,6 +77,8 @@ namespace ServiceLayer
         /// 4. username and password must not be string.NullOrWhitespace
         /// 5. if any external service is unavailable - return false
         /// </constraints>
+        /// <exception cref="BrokenConstraintException">When the userGuid is not a GuestGuid.</exception>
+        /// <exception cref="IllegalArgumentException">When the username/password are null, empty or whitespace</exception>
         /// <returns>True if the system initialized successfully. False otherwise.</returns>
         bool Initialize(Guid userGuid, string username, string password);
 
@@ -76,12 +87,15 @@ namespace ServiceLayer
         /// Removes the user.
         /// </summary>
         /// <constraints>
-        /// 1. User must be exist.
+        /// 1. User must exist.
         /// 2. User must be logged in.
         /// 3. User must be in admin state.
         /// 4. UserToRemove must not be the only owner of an active shop.
         /// </constraints>
-        /// <returns></returns>
+        /// <exception cref="UserNotFoundException">When userGuid does not match any logged-in user's guid.</exception>
+        /// <exception cref="BadStateException">When the user is not in AdminUserState</exception>
+        /// <exception cref="BrokenConstraintException">When the user is the only owner of an active shop</exception>
+        /// <returns>True.</returns>
         bool RemoveUser(Guid userGuid, Guid userToRemoveGuid);
 
         /////Implements General Requirement 7
@@ -93,6 +107,8 @@ namespace ServiceLayer
         /// 2. User must be logged in.
         /// 3. User must be admin.
         /// </constraints>
+        /// <exception cref="UserNotFoundException">When userGuid does not match any logged-in user's guid.</exception>
+        /// <exception cref="BadStateException">When the user is not in AdminUserState</exception>
         /// <returns>True if can connect, false otherwise.</returns>
         bool ConnectToPaymentSystem(Guid userGuid);
 
@@ -105,6 +121,8 @@ namespace ServiceLayer
         /// 2. User must be logged in.
         /// 3. User must be admin.
         /// </constraints>
+        /// <exception cref="UserNotFoundException">When userGuid does not match any logged-in user's guid.</exception>
+        /// <exception cref="BadStateException">When the user is not in AdminUserState</exception>
         /// <returns>True if can connect, false otherwise.</returns>
         bool ConnectToSupplySystem(Guid userGuid);
 
@@ -122,7 +140,14 @@ namespace ServiceLayer
         /// 7. Product must exist in the shop.
         /// 8. quantity must be greater than 0
         /// </constraints>
-        /// <returns>True if added successfully. False otherwise.</returns>
+        /// <exception cref="UserNotFoundException">When userGuid does not match any logged-in user's guid.</exception>
+        /// <exception cref="BadStateException">When the user is not in BuyerUserState</exception>
+        /// <exception cref="ShopNotFoundException">When shopGuid does not match any existing shop guid.</exception>
+        /// <exception cref="ShopStateException">When the shop is not active.</exception>
+        /// <exception cref="IllegalArgumentException">When the quantity is not greter than 0</exception>
+        /// <exception cref="ProductNotFoundException">When the productGuid does not match any product in the shop.</exception>
+        /// <exception cref="BrokenConstraintException">When the product already exists in the user's cart.</exception>
+        /// <returns>True.</returns>
         bool AddProductToShoppingCart(Guid userGuid, Guid productGuid, Guid shopGuid, int quantity);
 
         /////Implements General Requirement 2.7
@@ -136,6 +161,10 @@ namespace ServiceLayer
         /// 5. Shop must exist.
         /// 6. Shop must be active.
         /// </constraints>
+        /// <exception cref="UserNotFoundException">When userGuid does not match any logged-in user's guid.</exception>
+        /// <exception cref="BadStateException">When the user is not in BuyerUserState</exception>
+        /// <exception cref="ShopNotFoundException">When shopGuid does not match any existing shop guid.</exception>
+        /// <exception cref="ShopStateException">When the shop is not active.</exception>
         /// <returns>An enumerable collection of the products.</returns>
         ICollection<Guid> GetAllProductsInCart(Guid userGuid, Guid shopGuid);
 
@@ -151,7 +180,12 @@ namespace ServiceLayer
         /// 6. Shop must be active.
         /// 7. Product must exist in cart.
         /// </constraints>
-        /// <returns>True if removed successfully. False otherwise.</returns>
+        /// <exception cref="UserNotFoundException">When userGuid does not match any logged-in user's guid.</exception>
+        /// <exception cref="BadStateException">When the user is not in BuyerUserState</exception>
+        /// <exception cref="ShopNotFoundException">When shopGuid does not match any existing shop guid.</exception>
+        /// <exception cref="ShopStateException">When the shop is not active.</exception>
+        /// <exception cref="BrokenConstraintException">When shopProductGuid does not match in product in the cart.</exception>
+        /// <returns>True.</returns>
         bool RemoveProductFromCart(Guid userGuid, Guid shopGuid, Guid shopProductGuid);
 
         /////Implements General Requirement 2.7
@@ -167,7 +201,12 @@ namespace ServiceLayer
         /// 7. Product must exist in cart.
         /// 8. newAmount must be equal or greater than 1 (For Remove - user RemoveProductFromCart)
         /// </constraints>
-        /// <returns>True if editted successfully. False otherwise.</returns>
+        /// <exception cref="UserNotFoundException">When userGuid does not match any logged-in user's guid.</exception>
+        /// <exception cref="BadStateException">When the user is not in BuyerUserState</exception>
+        /// <exception cref="ShopNotFoundException">When shopGuid does not match any existing shop guid.</exception>
+        /// <exception cref="ShopStateException">When the shop is not active.</exception>
+        /// <exception cref="BrokenConstraintException">When shopProductGuid does not match in product in the cart.</exception>
+        /// <returns>True.</returns>
         bool EditProductInCart(Guid userGuid, Guid shopGuid, Guid shopProductGuid, int newAmount);
 
         /////Implements General Requirement 4.1
@@ -186,8 +225,16 @@ namespace ServiceLayer
         /// 9. price must be grater than 0
         /// 10. quantity must be equal or greater than 0 (May not have any to sell at the moment).
         /// </constraints>
+        /// <exception cref="UserNotFoundException">When userGuid does not match any logged-in user's guid.</exception>
+        /// <exception cref="BadStateException">When the user is not in SellerUserState</exception>
+        /// <exception cref="NoPriviligesException">When the user is not a creator,owner or manager with priviliges.</exception>
+        /// <exception cref="ShopNotFoundException">When shopGuid does not match any existing shop guid.</exception>
+        /// <exception cref="ShopStateException">When the shop is not active.</exception>
+        /// <exception cref="IllegalArgumentException">When the name/category is null,empty or whitespace</exception>
+        /// <exception cref="IllegalArgumentException">When price is not greater than 0.</exception>
+        /// <exception cref="IllegalArgumentException">When the quantity is not equal or greater than 0.</exception>
         /// <returns>True if added successfully. False otherwise.</returns>
-        Guid AddShopProduct(Guid userGuid, Guid shopGuid, string name, string category, double price, int quantity);
+        Guid AddProductToShop(Guid userGuid, Guid shopGuid, string name, string category, double price, int quantity);
 
         /////Implements General Requirement 4.1
         /// <summary>
@@ -202,6 +249,12 @@ namespace ServiceLayer
         /// 6. Shop must be active.
         /// 7. Product must exist in shop.
         /// </constraints>
+        /// <exception cref="UserNotFoundException">When userGuid does not match any logged-in user's guid.</exception>
+        /// <exception cref="BadStateException">When the user is not in SellerUserState</exception>
+        /// <exception cref="NoPriviligesException">When the user is not a creator,owner or manager with priviliges.</exception>
+        /// <exception cref="ShopNotFoundException">When shopGuid does not match any existing shop guid.</exception>
+        /// <exception cref="ShopStateException">When the shop is not active.</exception>
+        /// <exception cref="ProductNotFoundException">When shopProductGuid does not match any product in the shop.</exception>
         /// <returns>True if removed successfully. False otherwise.</returns>
         bool RemoveShopProduct(Guid userGuid, Guid shopProductGuid, Guid shopGuid);
 
@@ -220,6 +273,14 @@ namespace ServiceLayer
         /// 8. newPrice must be greater than 0.
         /// 9. newQuantity must be equal or greater than 0 (May not have any to sell at the moment).
         /// </constraints>
+        /// <exception cref="UserNotFoundException">When userGuid does not match any logged-in user's guid.</exception>
+        /// <exception cref="BadStateException">When the user is not in SellerUserState</exception>
+        /// <exception cref="NoPriviligesException">When the user is not a creator,owner or manager with priviliges.</exception>
+        /// <exception cref="ShopNotFoundException">When shopGuid does not match any existing shop guid.</exception>
+        /// <exception cref="ShopStateException">When the shop is not active.</exception>
+        /// <exception cref="ProductNotFoundException">When shopProductGuid does not match any product in the shop.</exception>
+        /// <exception cref="IllegalArgumentException">When newPrice is not greater than 0.</exception>
+        /// <exception cref="IllegalArgumentException">When newQuantity is not equal or greater than 0</exception>
         /// <returns>True if editted successfully. False otherwise.</returns>
         bool EditShopProduct(Guid userGuid, Guid shopGuid, Guid productGuid, double newPrice, int newQuantity);
 
@@ -235,6 +296,11 @@ namespace ServiceLayer
         /// 6. Shop must be active.
         /// 7. productName must not be null or string.Empty
         /// </constraints>
+        /// <exception cref="UserNotFoundException">When userGuid does not match any logged-in user's guid.</exception>
+        /// <exception cref="BadStateException">When the user is not in BuyerUserState/GuestUserState</exception>
+        /// <exception cref="ShopNotFoundException">When shopGuid does not match any existing shop guid.</exception>
+        /// <exception cref="ShopStateException">When the shop is not active.</exception>
+        /// <exception cref="IllegalArgumentException">When productName is null,empty or whitespace</exception>
         /// <returns>A list of products.</returns>
         ICollection<Guid> SearchProduct(Guid userGuid, Guid shopGuid, string productName);
 
@@ -251,6 +317,13 @@ namespace ServiceLayer
         /// 6. Shop must be active.
         /// 7. new shop manager must be an existing user.
         /// </constraints>
+        /// <exception cref="UserNotFoundException">When userGuid does not match any logged-in user's guid.</exception>
+        /// <exception cref="BadStateException">When the user is not in SellerUserState</exception>
+        /// <exception cref="NoPriviligesException">When the user is not an owner of the shop.</exception>
+        /// <exception cref="ShopNotFoundException">When shopGuid does not match any existing shop guid.</exception>
+        /// <exception cref="ShopStateException">When the shop is not active.</exception>
+        /// <exception cref="UserNotFoundException">When the newShopOwnerGuid does not match any registered user's guid</exception>
+        /// <exception cref="BrokenConstraintException">When the newShopOwner is already an owner</exception>
         /// <returns>True if added successfully. False otherwise.</returns>
         bool AddShopOwner(Guid userGuid, Guid shopGuid, Guid newShopOwnerGuid);
 
@@ -265,10 +338,16 @@ namespace ServiceLayer
         /// 4. User must be an owner of the shop.
         /// 5. Shop must exist.
         /// 6. Shop must be active.
-        /// 7. ownerToRemove must not be the creator of the shop.
-        /// 8. ownerToRemove must be an existing user.
-        /// 9. ownerToRemove must have been appointed by the user with guid=userGuid
+        /// 7. ownerToRemove must be an owner of the shop.
+        /// 8. ownerToRemove must have been appointed by the user with guid=userGuid
         /// </constraints>
+        /// <exception cref="UserNotFoundException">When userGuid does not match any logged-in user's guid.</exception>
+        /// <exception cref="BadStateException">When the user is not in SellerUserState</exception>
+        /// <exception cref="NoPriviligesException">When the user is not an owner of the shop.</exception>
+        /// <exception cref="ShopNotFoundException">When shopGuid does not match any existing shop guid.</exception>
+        /// <exception cref="ShopStateException">When the shop is not active.</exception>
+        /// <exception cref="UserNotFoundException">When the newShopOwnerGuid does not match any registered user's guid</exception>
+        /// <exception cref="BrokenConstraintException">When the newShopOwner is already an owner</exception>
         /// <returns>True if the operation was done successfully.</returns>
         bool CascadeRemoveShopOwner(Guid userGuid, Guid shopGuid, Guid ownerToRemoveGuid);
 
@@ -286,6 +365,13 @@ namespace ServiceLayer
         /// 7. newManagaerGuid must be an existing user.
         /// 8. newManagaerGuid must not be the creator of the shop, or one of the owners/managers.
         /// </constraints>
+        /// <exception cref="UserNotFoundException">When userGuid does not match any logged-in user's guid.</exception>
+        /// <exception cref="BadStateException">When the user is not in SellerUserState</exception>
+        /// <exception cref="NoPriviligesException">When the user is not an owner of the shop.</exception>
+        /// <exception cref="ShopNotFoundException">When shopGuid does not match any existing shop guid.</exception>
+        /// <exception cref="ShopStateException">When the shop is not active.</exception>
+        /// <exception cref="UserNotFoundException">When the newManagaerGuid does not match any registered user's guid</exception>
+        /// <exception cref="BrokenConstraintException">When the newShopOwner is already a creator/owner/manager</exception>
         /// <returns>True if the operation was done successfully.</returns>
         bool AddShopManager(Guid userGuid, Guid shopGuid, Guid newManagaerGuid, List<string> priviliges);
 
@@ -297,11 +383,19 @@ namespace ServiceLayer
         /// 1. Must be called by an existing user.
         /// 2. User must be logged in.
         /// 3. User must be in seller state.
+        /// 4. User must be owner
         /// 5. Shop must exist.
         /// 6. Shop must be active.
         /// 7. newManagaerGuid must be an existing user.
         /// 8. newManagaerGuid must not be the creator of the shop, or one of the owners/managers.
         /// </constraints>
+        /// <exception cref="UserNotFoundException">When userGuid does not match any logged-in user's guid.</exception>
+        /// <exception cref="BadStateException">When the user is not in SellerUserState</exception>
+        /// <exception cref="NoPriviligesException">When the user is not an owner of the shop.</exception>
+        /// <exception cref="ShopNotFoundException">When shopGuid does not match any existing shop guid.</exception>
+        /// <exception cref="ShopStateException">When the shop is not active.</exception>
+        /// <exception cref="UserNotFoundException">When the newManagaerGuid does not match any registered user's guid</exception>
+        /// <exception cref="BrokenConstraintException">When the newShopOwner is already a creator/owner/manager</exception>
         /// <returns></returns>
         bool RemoveShopManager(Guid userGuid, Guid shopGuid, Guid managerToRemoveGuid);
 
@@ -314,6 +408,9 @@ namespace ServiceLayer
         /// 3. newState must not be string.IsNullOrWhitespace
         /// 4. newState must be a valid state (see implementation)
         /// </constraints>
+        /// <exception cref="UserNotFoundException">When userGuid does not match any logged-in user's guid.</exception>
+        /// <exception cref="IllegalArgumentException">When the newState is not one of "AdminUserState","BuyerUserState","SellerUserState"</exception>
+        /// <exception cref="IllegalOperationException">When user tries to change state to admin, but is not an admin"</exception>
         /// <returns></returns>
         bool ChangeUserState(Guid userGuid, string newState);
     }

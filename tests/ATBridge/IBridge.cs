@@ -198,7 +198,7 @@ namespace ATBridge
         /// 10. quantity must be equal or greater than 0 (May not have any to sell at the moment).
         /// </constraints>
         /// <returns>True if added successfully. False otherwise.</returns>
-        Guid AddShopProduct(Guid userGuid, Guid shopGuid, string name, string category, double price, int quantity);
+        Guid AddProductToShop(Guid userGuid, Guid shopGuid, string name, string category, double price, int quantity);
 
         /////Implements General Requirement 4.1
         /// <summary>

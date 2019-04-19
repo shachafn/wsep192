@@ -10,15 +10,11 @@ namespace DomainLayer.Data.Entitites
     public class Shop : BaseEntity
     {
         public ShopOwner Creator { get; }
-
         public ICollection<ShopOwner> Owners { get; set; }
         public ICollection<ShopOwner> Managers { get; set; }
-
         public ICollection<ShopProduct> ShopProducts { get; set; }
-
         public enum ShopStateEnum { Active, Closed, PermanentlyClosed };
         public ShopStateEnum ShopState { get; set; }
-
         public ICollection<Tuple<Guid,ShopProduct>> UsersPurchaseHistory { get; set; }
 
         public Shop(Guid ownerGuid)
@@ -32,45 +28,39 @@ namespace DomainLayer.Data.Entitites
 
         public void Close()
         {
-            VerifyShopIsActive();
+            throw new NotImplementedException();
+            VerifyShopIsActive(); ////MOVE TO DOMAINLAYERFACADEVERIFIER WHEN A USE-CASE TO CHANGE SHOP STATUS IS IMPLEMENTED
             ShopState = ShopStateEnum.Closed;
         }
-        public void Adminclose()
+        public void AdminClose()
         {
-            VerifyShopIsActiveOrClosed();
+            throw new NotImplementedException();
+            VerifyShopIsActiveOrClosed();////MOVE TO DOMAINLAYERFACADEVERIFIER WHEN A USE-CASE TO CHANGE SHOP STATUS IS IMPLEMENTED
             ShopState = ShopStateEnum.PermanentlyClosed;
         }
         public void Open()
         {
-            VerifyShopIsClosed();
+            throw new NotImplementedException();
+            VerifyShopIsClosed();////MOVE TO DOMAINLAYERFACADEVERIFIER WHEN A USE-CASE TO CHANGE SHOP STATUS IS IMPLEMENTED
             ShopState = ShopStateEnum.Active;
         }
 
-        public Guid AddProduct(Guid userGuid, Product product, double price, int quantity)
+        public Guid AddProductToShop(Guid userGuid, Product product, double price, int quantity)
         {
-            VerifyNotCreatorOrOwnerOrManager(userGuid);
-
             var newShopProduct = new ShopProduct(product, price, quantity);
             ShopProducts.Add(newShopProduct);
             return newShopProduct.Guid;
         }
-        public void EditProduct(Guid userGuid, Guid shopProductGuid, double newPrice, int newQuantity)
+        public void EditProductInShop(Guid userGuid, Guid shopProductGuid, double newPrice, int newQuantity)
         {
-            VerifyCreatorOrOwnerOrManager(userGuid);
-
             var toEdit = ShopProducts.FirstOrDefault(p => p.Guid.Equals(shopProductGuid));
-            if (toEdit == null) throw new ProductNotFoundException($"No product with guid - {shopProductGuid} found in shop with guid {Guid}");
             toEdit.Price = newPrice;
             toEdit.Quantity = newQuantity;
         }
 
-        public void RemoveProduct(Guid userGuid, Guid shopProductGuid)
+        public void RemoveProductFromShop(Guid userGuid, Guid shopProductGuid)
         {
-            VerifyCreatorOrOwner(userGuid);
-
             var toRemove = ShopProducts.FirstOrDefault(p => p.Guid.Equals(shopProductGuid));
-            if (toRemove == null) throw new ProductNotFoundException($"No product with guid - {shopProductGuid} found in shop with guid {Guid}");
-
             //Need to remove from all users' cart in this shop first, to not break constraint
             ShopProducts.Remove(toRemove);
         }
@@ -88,10 +78,6 @@ namespace DomainLayer.Data.Entitites
 
         public bool CascadeRemoveShopOwner(Guid userGuid, Guid ownerToRemoveGuid)
         {
-            VerifyCreatorOrOwner(userGuid);
-            VerifyNotCreator(ownerToRemoveGuid);
-            VerifyOwner(ownerToRemoveGuid);
-            VerifyAppointedBy(ownerToRemoveGuid, userGuid);
             foreach(var owner in Owners)
             {
                 if (owner.AppointerGuid.Equals(ownerToRemoveGuid)) 
@@ -103,26 +89,18 @@ namespace DomainLayer.Data.Entitites
 
         public void AddShopOwner(Guid userGuid, Guid newOwnerGuid)
         {
-            VerifyCreatorOrOwner(userGuid);
-            VerifyNotCreatorOrOwnerOrManager(newOwnerGuid);
-
             var newOwner = new ShopOwner(newOwnerGuid, userGuid, Guid);
             Managers.Add(newOwner);
         }
 
         public bool RemoveShopManager(Guid userGuid, Guid managerToRemoveGuid)
         {
-            VerifyCreatorOrOwner(userGuid);
-            VerifyAppointedBy(managerToRemoveGuid, userGuid);
             Managers.Remove(Owners.FirstOrDefault(o => o.OwnerGuid.Equals(managerToRemoveGuid)));
             return true;
         }
 
         public void AddShopManager(Guid userGuid, Guid newManagaerGuid, List<string> priviliges)
         {
-            VerifyCreatorOrOwner(userGuid);
-            VerifyNotCreatorOrOwnerOrManager(newManagaerGuid);
-
             var newOwner = new ShopOwner(newManagaerGuid, userGuid, Guid, priviliges);
             Managers.Add(newOwner);
         }
@@ -141,17 +119,17 @@ namespace DomainLayer.Data.Entitites
 
         public ShopOwner GetOwner(Guid userGuid)
         {
-            if (Creator.Guid.Equals(userGuid))
+            if (Creator.OwnerGuid.Equals(userGuid))
                 return Creator;
-            var otherOwner = Owners.FirstOrDefault(o => o.Guid.Equals(userGuid));
+            var otherOwner = Owners.FirstOrDefault(o => o.OwnerGuid.Equals(userGuid));
             if (otherOwner == null) throw new OwnerNotFoundException($"There is no owner with guid {userGuid} of shop with {Guid}.");
             return otherOwner;
         }
         public bool IsOwner(Guid userGuid)
         {
-            if (Creator.Guid.Equals(userGuid))
+            if (Creator.OwnerGuid.Equals(userGuid))
                 return true;
-            return Owners.FirstOrDefault(o => o.Guid.Equals(userGuid)) != null;
+            return Owners.FirstOrDefault(o => o.OwnerGuid.Equals(userGuid)) != null;
         }
 
         public bool AddOwner(ShopOwner oppointer, Guid newOwnerGuid)
@@ -167,12 +145,12 @@ namespace DomainLayer.Data.Entitites
         public bool RemoveOwner(Guid toRemoveOwnerGuid)
         {
             var ownerToRemove = GetOwner(toRemoveOwnerGuid);
-            if (ownerToRemove.Guid.Equals(Creator.Guid))
+            if (ownerToRemove.OwnerGuid.Equals(Creator.OwnerGuid))
                 return false;
             foreach(var otherOwner in Owners)
             {
                 if (otherOwner.AppointerGuid.Equals(toRemoveOwnerGuid))
-                    RemoveOwner(otherOwner.Guid);
+                    RemoveOwner(otherOwner.OwnerGuid);
             }
             Owners.Remove(ownerToRemove);// remove the owner from the owners list
             return true;
@@ -189,66 +167,89 @@ namespace DomainLayer.Data.Entitites
 
         #region Creator/Owner/Manager Verifiers
 
-        private void VerifyCreatorOrOwner(Guid userGuid)
+        public void VerifyCreatorOrOwner(Guid userGuid, ICloneableException<Exception> e)
         {
             if (!IsCreatorOrOwner(userGuid))
             {
                 StackTrace stackTrace = new StackTrace();
-                throw new NoPriviligesException($"User with guid - {userGuid} Is not a creator " +
-                    $"or an owner of the shop with guid - {Guid}, cant complete {stackTrace.GetFrame(1).GetMethod().Name}");
+                var msg = $"User with guid - {userGuid} Is not a creator " +
+                    $"or an owner of the shop with guid - {Guid}, cant complete {stackTrace.GetFrame(1).GetMethod().Name}";
+                throw e.Clone(msg);
             }
         }
 
-        private void VerifyNotCreator(Guid userGuid)
+        public void VerifyNotCreator(Guid userGuid, ICloneableException<Exception> e)
         {
             if (!userGuid.Equals(Creator.OwnerGuid))
             {
                 StackTrace stackTrace = new StackTrace();
-                throw new BrokenConstraintException($"User with guid - {userGuid} Is a creator " +
-                    $" cant complete {stackTrace.GetFrame(1).GetMethod().Name}");
+                var msg = $"User with guid - {userGuid} Is a creator " +
+                    $" cant complete {stackTrace.GetFrame(1).GetMethod().Name}";
+                throw e.Clone(msg);
             }
         }
-        private void VerifyNotCreatorOrOwnerOrManager(Guid newManagaerGuid)
+        public void VerifyNotCreatorOrOwnerOrManager(Guid newManagaerGuid, ICloneableException<Exception> e)
         {
             if (IsCreatorOrOwnerOrManager(newManagaerGuid))
             {
                 StackTrace stackTrace = new StackTrace();
-                throw new BrokenConstraintException($"User with Guid - {newManagaerGuid} is already an owner or a creator or a manager" +
-                    $" cant complete {stackTrace.GetFrame(1).GetMethod().Name}");
+                var msg = $"User with Guid - {newManagaerGuid} is already an owner or a creator or a manager" +
+                    $" cant complete {stackTrace.GetFrame(1).GetMethod().Name}";
+                throw e.Clone(msg);
             }
         }
-        private void VerifyCreatorOrOwnerOrManager(Guid newManagaerGuid)
+        public void VerifyCreatorOrOwnerOrManager(Guid newManagaerGuid, ICloneableException<Exception> e)
         {
             if (!IsCreatorOrOwnerOrManager(newManagaerGuid))
             {
                 StackTrace stackTrace = new StackTrace();
-                throw new BrokenConstraintException($"User with Guid - {newManagaerGuid} is not an owner or a creator or a manager" +
-                    $" cant complete {stackTrace.GetFrame(1).GetMethod().Name}");
+                var msg = $"User with Guid - {newManagaerGuid} is not an owner or a creator or a manager" +
+                    $" cant complete {stackTrace.GetFrame(1).GetMethod().Name}";
+                throw e.Clone(msg);
             }
         }
-        private void VerifyOwner(Guid ownerToRemoveGuid)
+        public void VerifyOwnerOrManager(Guid newManagaerGuid, ICloneableException<Exception> e)
         {
-            if (!Owners.Any(owner => owner.OwnerGuid.Equals(ownerToRemoveGuid)))
+            if (!IsOwnerOrManager(newManagaerGuid))
             {
                 StackTrace stackTrace = new StackTrace();
-                throw new BrokenConstraintException($"User with Guid - {ownerToRemoveGuid} is not an owner" +
-                    $" cant complete {stackTrace.GetFrame(1).GetMethod().Name}");
+                var msg = $"User with Guid - {newManagaerGuid} is not an owner or a creator or a manager" +
+                    $" cant complete {stackTrace.GetFrame(1).GetMethod().Name}";
+                throw e.Clone(msg);
             }
         }
-        private void VerifyAppointedBy(Guid wasAppointed, Guid appointer)
+
+        public void VerifyOwnerOrCreator(Guid ownerToRemoveGuid, ICloneableException<Exception> e)
+        {
+            if (!Owners.Any(owner => owner.OwnerGuid.Equals(ownerToRemoveGuid)) && !Creator.Equals(ownerToRemoveGuid))
+            {
+                StackTrace stackTrace = new StackTrace();
+                var msg = $"User with Guid - {ownerToRemoveGuid} is not an owner" +
+                    $" cant complete {stackTrace.GetFrame(1).GetMethod().Name}";
+                throw e.Clone(msg);
+            }
+        }
+        public void VerifyAppointedBy(Guid wasAppointed, Guid appointer, ICloneableException<Exception> e)
         {
             if (!Owners.FirstOrDefault(o => o.OwnerGuid.Equals(wasAppointed)).AppointerGuid.Equals(appointer))
             {
                 StackTrace stackTrace = new StackTrace();
-                throw new BrokenConstraintException($"User with Guid - {wasAppointed} was not appointed by {appointer}" +
-                    $" cant complete {stackTrace.GetFrame(1).GetMethod().Name}");
+                var msg = $"User with Guid - {wasAppointed} was not appointed by {appointer}" +
+    $" cant complete {stackTrace.GetFrame(1).GetMethod().Name}";
+                throw e.Clone(msg);
             }
         }
+        private bool IsOwnerOrManager(Guid userGuid)
+        {
+            var isOwner = Owners.Any(owner => owner.OwnerGuid.Equals(userGuid));
+            var isManager = Managers.Any(manager => manager.OwnerGuid.Equals(userGuid));
 
+            return (isOwner || isManager);
+        }
         private bool IsCreatorOrOwner(Guid userGuid)
         {
             var isCreator = Creator.OwnerGuid.Equals(userGuid);
-            var isOwner = Owners.Any(owner => owner.Guid.Equals(userGuid));
+            var isOwner = Owners.Any(owner => owner.OwnerGuid.Equals(userGuid));
             return (isCreator || isOwner);
         }
         private bool IsCreatorOrOwnerOrManager(Guid userGuid)
@@ -289,14 +290,15 @@ namespace DomainLayer.Data.Entitites
         #endregion
 
         #region Products Verifiers 
-        public void VerifyShopProductExists(Guid shopProductGuid)
+        public void VerifyShopProductExists(Guid shopProductGuid, ICloneableException<Exception> e)
         {
             var product = ShopProducts.FirstOrDefault(prod => prod.Guid.Equals(shopProductGuid));
             if (product == null)
             {
                 StackTrace stackTrace = new StackTrace();
-                throw new ProductNotFoundException(string.Format(Resources.EntityNotFound, "product", shopProductGuid) +
-                    "In shop with Guid - {Guid}" + $" cant complete {stackTrace.GetFrame(1).GetMethod().Name}");
+                var msg = string.Format(Resources.EntityNotFound, "product", shopProductGuid) +
+                    "In shop with Guid - {Guid}" + $" cant complete {stackTrace.GetFrame(1).GetMethod().Name}";
+                throw e.Clone(msg);
             }
         }
         #endregion

@@ -26,27 +26,6 @@ namespace DomainLayer.Data.Entitites
         {
             throw new NotImplementedException();
         }
-        public void RemoveProduct(Guid productGuid)
-        {
-            throw new NotImplementedException();
-        }
-        public void EditProduct(Guid productGuid, int newQuantity)
-        {
-            throw new NotImplementedException();
-        }
-
-        public ICollection<ShopProduct> GetAllProducts()
-        {
-            throw new NotImplementedException();
-        }
-        public double CalculateTotalPrice()
-        {
-            throw new NotImplementedException();
-        }
-        public bool PurchaseCart(AbstractUserState user)
-        {
-            throw new NotImplementedException();
-        }
 
         public bool EditProductInCart(Guid shopProductGuid, int newAmount)
         {
@@ -68,30 +47,9 @@ namespace DomainLayer.Data.Entitites
             return PurchasedProducts.Select(tuple => tuple.Item1).ToList();
         }
 
-        #region Verifiers
-        public void VerifyShopProductDoesNotExist(Guid shopProductGuid)
+        public void PurchaseCart(AbstractUserState state)
         {
-            var product = PurchasedProducts.FirstOrDefault(prod => prod.Item1.Equals(shopProductGuid));
-            if (product != null)
-            {
-                StackTrace stackTrace = new StackTrace();
-                throw new BrokenConstraintException($"Cannot add the same product with Guid - {shopProductGuid} to the cart of user" +
-                    $" with Guid - {UserGuid}. Cant complete {stackTrace.GetFrame(1).GetMethod().Name}");
-            }
+            throw new NotImplementedException();
         }
-
-        public void VerifyShopProductExists(Guid shopProductGuid)
-        {
-            var product = PurchasedProducts.FirstOrDefault(prod => prod.Item1.Equals(shopProductGuid));
-            if (product == null)
-            {
-                StackTrace stackTrace = new StackTrace();
-                throw new BrokenConstraintException($"ShopProduct with Guid - {shopProductGuid} diesnt exist in the cart." +
-                    $" Cant complete {stackTrace.GetFrame(1).GetMethod().Name}");
-            }
-        }
-
-
-        #endregion
     }
 }

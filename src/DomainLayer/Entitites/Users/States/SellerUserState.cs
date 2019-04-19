@@ -8,7 +8,9 @@ namespace DomainLayer.Data.Entitites.Users.States
 {
     public class SellerUserState : AbstractUserState
     {
-        
+        public const string SellerUserStateString = "SellerUserState";
+
+
         public ICollection<Shop> ShopsOwned { get; set; }
 
         public override ICollection<ShoppingBag> GetShoppingHistory()
@@ -43,20 +45,20 @@ namespace DomainLayer.Data.Entitites.Users.States
             throw new BadStateException($"Tried to invoke ConnectToSupplySystem in Seller State");
         }
 
-        public override Guid AddShopProduct(BaseUser baseUser, Guid shopGuid, 
+        public override Guid AddProductToShop(BaseUser baseUser, Guid shopGuid, 
             string name, string category, double price, int quantity)
         {
-            return DomainData.ShopsCollection[shopGuid].AddProduct(baseUser.Guid, new Product(name, category), price, quantity);
+            return DomainData.ShopsCollection[shopGuid].AddProductToShop(baseUser.Guid, new Product(name, category), price, quantity);
         }
 
         public override void EditShopProduct(BaseUser baseUser,Guid shopGuid, Guid productGuid, double newPrice, int newQuantity)
         {
-            DomainData.ShopsCollection[shopGuid].EditProduct(baseUser.Guid, productGuid, newPrice, newQuantity);
+            DomainData.ShopsCollection[shopGuid].EditProductInShop(baseUser.Guid, productGuid, newPrice, newQuantity);
         }
 
         public override bool RemoveShopProduct(BaseUser baseUser, Guid shopGuid, Guid shopProductGuid)
         {
-            DomainData.ShopsCollection[shopGuid].RemoveProduct(baseUser.Guid, shopProductGuid);
+            DomainData.ShopsCollection[shopGuid].RemoveProductFromShop(baseUser.Guid, shopProductGuid);
             return true;
         }
 

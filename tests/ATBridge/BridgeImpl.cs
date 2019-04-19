@@ -31,7 +31,7 @@ namespace ATBridge
             //throw new NotImplementedException();
         }
 
-        public Guid AddShopProduct(Guid userGuid, Guid shopGuid, string name, string category, double price, int quantity)
+        public Guid AddProductToShop(Guid userGuid, Guid shopGuid, string name, string category, double price, int quantity)
         {
             return _serviceFacade.AddShopProduct(userGuid, shopGuid, name, category, price, quantity);
             //throw new NotImplementedException();

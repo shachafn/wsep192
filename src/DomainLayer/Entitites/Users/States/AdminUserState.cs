@@ -8,6 +8,7 @@ namespace DomainLayer.Data.Entitites.Users.States
 {
     public class AdminUserState : AbstractUserState
     {
+        public const string AdminUserStateString = "AdminUserState";
         public override ICollection<ShoppingBag> GetShoppingHistory()
         {
             throw new BadStateException($"Tried to invoke GetShoppingHistory in Admin State");
@@ -53,7 +54,7 @@ namespace DomainLayer.Data.Entitites.Users.States
                 (shop => shop.ShopState.Equals(ShopStateEnum.Active) &&
                     (shop.Owners.Any(sOwner => sOwner.OwnerGuid.Equals(userToRemoveGuid))
                     ||
-                    (shop.Creator.Guid.Equals(userToRemoveGuid)))).ToList();
+                    (shop.Creator.OwnerGuid.Equals(userToRemoveGuid)))).ToList();
         }
 
         public override bool ConnectToPaymentSystem()
@@ -66,7 +67,7 @@ namespace DomainLayer.Data.Entitites.Users.States
             return External_Services.ExternalServicesManager._supplySystem.IsAvailable();
         }
 
-        public override Guid AddShopProduct(BaseUser baseUser, Guid shopGuid, string name, string category, double price, int quantity)
+        public override Guid AddProductToShop(BaseUser baseUser, Guid shopGuid, string name, string category, double price, int quantity)
         {
             throw new BadStateException($"Tried to invoke AddProductToShop in Admin State");
         }

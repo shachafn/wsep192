@@ -28,9 +28,9 @@ namespace ATBridge
             return _real == null ? false : _real.AddShopOwner(userGuid, shopGuid, newShopOwnerGuid);
         }
 
-        public Guid AddShopProduct(Guid userGuid, Guid shopGuid, string name, string category, double price, int quantity)
+        public Guid AddProductToShop(Guid userGuid, Guid shopGuid, string name, string category, double price, int quantity)
         {
-            return _real == null ? Guid.Empty : _real.AddShopProduct(userGuid, shopGuid, name, category, price, quantity);
+            return _real == null ? Guid.Empty : _real.AddProductToShop(userGuid, shopGuid, name, category, price, quantity);
         }
 
         public bool CascadeRemoveShopOwner(Guid userGuid, Guid shopGuid, Guid ownerToRemoveGuid)

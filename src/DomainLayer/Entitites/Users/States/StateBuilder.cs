@@ -11,11 +11,11 @@ namespace DomainLayer.Data.Entitites.Users.States
         {
             switch(newState)
             {
-                case "AdminUserState":
+                case AdminUserState.AdminUserStateString:
                     return BuildAdminState(user);
-                case "BuyerUserState":
+                case BuyerUserState.BuyerUserStateString:
                     return BuildBuyerState(user);
-                case "SellerUserState":
+                case SellerUserState.SellerUserStateString:
                     return BuildSellerState(user);
                 default:
                     throw new ArgumentException($"newState parameter does not match any state.");

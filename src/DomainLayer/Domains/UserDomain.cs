@@ -44,12 +44,12 @@ namespace DomainLayer.Domains
         /// Registeres the user.
         /// </summary>
         /// <returns></returns>
-        public bool Register(string username, string password)
+        public bool Register(string username, string password, bool isAdmin)
         {
             if (IsUsernameTaken(username))
                 return false;
 
-            var newUser = new BaseUser(username.ToLower(), password);
+            var newUser = new BaseUser(username.ToLower(), password, isAdmin);
             DomainData.RegisteredUsersCollection.Add(newUser.Guid, newUser);
             return true;
         }
@@ -64,10 +64,15 @@ namespace DomainLayer.Domains
         /// <returns></returns>
         public Guid Login(Guid userGuid, string username, string password)
         {
-            BaseUser baseUser = VerifyRegisteredUser(username, password);
+            BaseUser baseUser = GetRegisteredUserByUsername(username);
             var user = new User(baseUser);
             LoggedInUsers.Add(user.Guid, user);
             return user.Guid;
+        }
+
+        private BaseUser GetRegisteredUserByUsername(string username)
+        {
+            return DomainData.RegisteredUsersCollection.First(r => string.Equals(r.Username.ToLower(), username.ToLower()));
         }
 
         /// <summary>
@@ -77,10 +82,6 @@ namespace DomainLayer.Domains
         /// <returns></returns>
         public bool LogoutUser(Guid userGuid)
         {
-
-            if (!LoggedInUsers.ContainsKey(userGuid))
-                throw new UserNotFoundException($"Could not find a logged in user with guid {userGuid}");
-
             LoggedInUsers.Remove(userGuid);
             return true;
         }
@@ -93,20 +94,7 @@ namespace DomainLayer.Domains
             return user.SetState(newState);
         }
 
-        #region Verifiers
-        private BaseUser VerifyRegisteredUser(string username, string password)
-        {
-            var user = DomainData.RegisteredUsersCollection.
-                FirstOrDefault(bUser => bUser.Username.Equals(username.ToLower()) && bUser.CheckPass(password));
-            if (user == null)
-            {
-                StackTrace stackTrace = new StackTrace();
-                throw new Exception($"No registered user with username - {username.ToLower()}, password = {password}" +
-        $"Cant complete {stackTrace.GetFrame(1).GetMethod().Name}");
-            }
-            return user;
-        }
+        public bool IsAdminExists() => DomainData.RegisteredUsersCollection.Any(u => u.IsAdmin);
 
-        #endregion
     }
 }

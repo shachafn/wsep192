@@ -10,11 +10,11 @@ namespace DomainLayer.Data.Entitites.Users
         private string _passHash;
         public bool IsAdmin { get; private set; }
 
-        public BaseUser(string username, string password)
+        public BaseUser(string username, string password, bool isAdmin)
         {
             Username = username;
             _passHash = GetStringSha256Hash(password);
-            IsAdmin = false;
+            IsAdmin = isAdmin;
         }
 
         /// <summary>

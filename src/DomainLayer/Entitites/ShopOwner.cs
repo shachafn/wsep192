@@ -3,7 +3,7 @@ using System.Collections.Generic;
 
 namespace DomainLayer.Data.Entitites
 {
-    public class ShopOwner : BaseEntity // May not need
+    public class ShopOwner
     {
         public Guid OwnerGuid { get; set; }
 

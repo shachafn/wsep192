@@ -12,6 +12,7 @@ namespace ServiceLayer
         /// Registers a user. Info should be valid, username should be unique.
         /// </summary>
         /// <constraints>
+        /// 0. System must be Initialized.
         /// 1. userGuid must be GuestGuid.
         /// 2. username and password must not be string.IsNullOrWhitespace
         /// 3. if username is taken - return false;
@@ -26,6 +27,7 @@ namespace ServiceLayer
         /// Logins a user using the username and password.
         /// </summary>
         /// <constraints>
+        /// 0. System must be Initialized.
         /// 1. userGuid must be GuestGuid.
         /// 2. username and password must not be string.IsNullOrWhitespace
         /// 3. if username and password doesnt match nay user - return false
@@ -40,6 +42,7 @@ namespace ServiceLayer
         /// Logs out the user.
         /// </summary>
         /// <constraints>
+        /// 0. System must be Initialized.
         /// 1. User must exist
         /// 2. User must be logged in.
         /// </constraints>
@@ -52,6 +55,7 @@ namespace ServiceLayer
         /// Opens a shop for the (logged-in) user.
         /// </summary>
         /// <constraints>
+        /// 0. System must be Initialized.
         /// 1. User must exist
         /// 2. User must be logged in.
         /// 3. User must be in seller state.
@@ -69,24 +73,28 @@ namespace ServiceLayer
         /// <summary>
         /// Initializes the system. If there is already an admin user - username and password must match it.
         /// If there is no admin user yet, one is created using these username and password.
+        /// This function also loggs the admin user into the system, and changes its state to admin state.
         /// </summary>
         /// <constraints>
         /// 1. userGuid must be GuestGuid (cant login if system not initialized)
         /// 2. If an admin user exists - username and password must match it.
         /// 3. If no admin user exists - username and password will be used to create one.
         /// 4. username and password must not be string.NullOrWhitespace
-        /// 5. if any external service is unavailable - return false
+        /// 5. if any external service is unavailable - an exception is thrown
         /// </constraints>
         /// <exception cref="BrokenConstraintException">When the userGuid is not a GuestGuid.</exception>
         /// <exception cref="IllegalArgumentException">When the username/password are null, empty or whitespace</exception>
-        /// <returns>True if the system initialized successfully. False otherwise.</returns>
-        bool Initialize(Guid userGuid, string username, string password);
+        /// <exception cref="CredentialsMismatchException">When the username/password does not match the admin user's credentials</exception>
+        /// <exception cref="ServiceUnReachableException">When an external service is unreachable.</exception>
+        /// <returns>Guid of the admin user.</returns>
+        Guid Initialize(Guid userGuid, string username, string password);
 
         /////Implements General Requirement 6.2
         /// <summary>
         /// Removes the user.
         /// </summary>
         /// <constraints>
+        /// 0. System must be Initialized.
         /// 1. User must exist.
         /// 2. User must be logged in.
         /// 3. User must be in admin state.
@@ -103,6 +111,7 @@ namespace ServiceLayer
         /// Checks if the system can connect to the payment system.
         /// </summary>
         /// <constraints>
+        /// 0. System must be Initialized.
         /// 1. Must be called by an existing user.
         /// 2. User must be logged in.
         /// 3. User must be admin.
@@ -117,6 +126,7 @@ namespace ServiceLayer
         /// Checks if the system can connect to the supply system.
         /// </summary>
         /// <constraints>
+        /// 0. System must be Initialized.
         /// 1. Must be called by an existing user.
         /// 2. User must be logged in.
         /// 3. User must be admin.
@@ -131,6 +141,7 @@ namespace ServiceLayer
         /// Adds the product to the shopping cart.
         /// </summary>
         /// <constraints>
+        /// 0. System must be Initialized.
         /// 1. Must be called by an existing user.
         /// 2. User must be logged in.
         /// 3. User must be in buyer state.
@@ -155,6 +166,7 @@ namespace ServiceLayer
         /// Gets all the products on the user's cart.
         /// </summary>
         /// <constraints>
+        /// 0. System must be Initialized.
         /// 1. Must be called by an existing user.
         /// 2. User must be logged in.
         /// 3. User must be in buyer state.
@@ -173,6 +185,7 @@ namespace ServiceLayer
         /// Removes the product from the user's cart.
         /// </summary>
         /// <constraints>
+        /// 0. System must be Initialized.
         /// 1. Must be called by an existing user.
         /// 2. User must be logged in.
         /// 3. User must be in buyer state.
@@ -193,6 +206,7 @@ namespace ServiceLayer
         /// Sets the amount of the product in the cart to the new amount.
         /// </summary>
         /// <constraints>
+        /// 0. System must be Initialized.
         /// 1. Must be called by an existing user.
         /// 2. User must be logged in.
         /// 3. User must be in buyer state.
@@ -214,6 +228,7 @@ namespace ServiceLayer
         /// Adds the product to the shop.
         /// </summary>
         /// <constraints>
+        /// 0. System must be Initialized.
         /// 1. Must be called by an existing user.
         /// 2. User must be logged in.
         /// 3. User must be in seller state.
@@ -241,6 +256,7 @@ namespace ServiceLayer
         /// Removes the product from the shop.
         /// </summary>
         /// <constraints>
+        /// 0. System must be Initialized.
         /// 1. Must be called by an existing user.
         /// 2. User must be logged in.
         /// 3. User must be in seller state.
@@ -263,6 +279,7 @@ namespace ServiceLayer
         /// Set the price and quantity fields of the product to the new parameters.
         /// </summary>
         /// <constraints>
+        /// 0. System must be Initialized.
         /// 1. Must be called by an existing user.
         /// 2. User must be logged in.
         /// 3. User must be in seller state.
@@ -289,6 +306,7 @@ namespace ServiceLayer
         /// Returns a list of products in the shop with a name which contains the product name.
         /// </summary>
         /// <constraints>
+        /// 0. System must be Initialized.
         /// 1. Must be called by an existing user.
         /// 2. User must be logged in.
         /// 3. User must be in buyer/guest state.
@@ -309,6 +327,7 @@ namespace ServiceLayer
         /// Adds the user as a shop owner.
         /// </summary>
         /// <constraints>
+        /// 0. System must be Initialized.
         /// 1. Must be called by an existing user.
         /// 2. User must be logged in.
         /// 3. User must be in seller state.
@@ -332,6 +351,7 @@ namespace ServiceLayer
         /// Removes the shop owner from owning the shop and cascade delete all owners appointed by him.
         /// </summary>
         /// <constraints>
+        /// 0. System must be Initialized.
         /// 1. Must be called by an existing user.
         /// 2. User must be logged in.
         /// 3. User must be in seller state.
@@ -356,6 +376,7 @@ namespace ServiceLayer
         /// Appoints the user as a shop manager of the shop.
         /// </summary>
         /// <constraints>
+        /// 0. System must be Initialized.
         /// 1. Must be called by an existing user.
         /// 2. User must be logged in.
         /// 3. User must be in seller state.
@@ -380,6 +401,7 @@ namespace ServiceLayer
         /// Removes the user from managing the shop.
         /// </summary>
         /// <constraints>
+        /// 0. System must be Initialized.
         /// 1. Must be called by an existing user.
         /// 2. User must be logged in.
         /// 3. User must be in seller state.
@@ -403,6 +425,7 @@ namespace ServiceLayer
         /// Changes the user's state to the new state.
         /// </summary>
         /// <constraints>
+        /// 0. System must be Initialized.
         /// 1. Must be called by an existing user.
         /// 2. User must be logged in.
         /// 3. newState must not be string.IsNullOrWhitespace

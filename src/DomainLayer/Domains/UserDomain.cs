@@ -44,12 +44,12 @@ namespace DomainLayer.Domains
         /// Registeres the user.
         /// </summary>
         /// <returns></returns>
-        public bool Register(string username, string password)
+        public bool Register(string username, string password, bool isAdmin)
         {
             if (IsUsernameTaken(username))
                 return false;
 
-            var newUser = new BaseUser(username.ToLower(), password);
+            var newUser = new BaseUser(username.ToLower(), password, isAdmin);
             DomainData.RegisteredUsersCollection.Add(newUser.Guid, newUser);
             return true;
         }
@@ -93,5 +93,8 @@ namespace DomainLayer.Domains
             var newState = builder.BuildState(newStateString, user);
             return user.SetState(newState);
         }
+
+        public bool IsAdminExists() => DomainData.RegisteredUsersCollection.Any(u => u.IsAdmin);
+
     }
 }

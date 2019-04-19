@@ -51,7 +51,7 @@ namespace Tests
         [Test]
         public static void AddingProductAT1()
         {
-            Guid productGuid = Tester.PBridge.AddShopProduct(Tester.GroismanGuid, Tester._groismanShop, "Galaxy S9", "Cellphones", 2000, 10);
+            Guid productGuid = Tester.PBridge.AddProductToShop(Tester.GroismanGuid, Tester._groismanShop, "Galaxy S9", "Cellphones", 2000, 10);
             if(productGuid.CompareTo(Guid.Empty) == 0)
             {
                 Assert.Fail();
@@ -64,7 +64,7 @@ namespace Tests
         [Test]
         public static void AddingProductAT2()
         {
-            Guid res = Tester.PBridge.AddShopProduct(Tester.GuestGuid,Tester._groismanShop, "Galaxy S9", "Cellphones", 2000, 10);
+            Guid res = Tester.PBridge.AddProductToShop(Tester.GuestGuid,Tester._groismanShop, "Galaxy S9", "Cellphones", 2000, 10);
             Assert.Zero(res.CompareTo(Guid.Empty));
         }
 
@@ -75,14 +75,14 @@ namespace Tests
             {
                 AddingProductAT1();
             }
-            Guid res = Tester.PBridge.AddShopProduct(Tester.GroismanGuid, Tester._groismanShop, "Galaxy S9", "Cellphones", 2000, 10);
+            Guid res = Tester.PBridge.AddProductToShop(Tester.GroismanGuid, Tester._groismanShop, "Galaxy S9", "Cellphones", 2000, 10);
             Assert.Zero(res.CompareTo(Guid.Empty));
         }
 
         [Test]
         public static void AddingProductAT4()
         {
-            Guid productGuid = Tester.PBridge.AddShopProduct(Tester.GroismanGuid, Tester._groismanShop, "Galaxy S9", "Cellphones", -2000, 10);
+            Guid productGuid = Tester.PBridge.AddProductToShop(Tester.GroismanGuid, Tester._groismanShop, "Galaxy S9", "Cellphones", -2000, 10);
             if (productGuid.CompareTo(Guid.Empty) == 0)
             {
                 Assert.Pass();

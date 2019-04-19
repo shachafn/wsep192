@@ -33,7 +33,7 @@ namespace ATBridge
 
         public Guid AddProductToShop(Guid userGuid, Guid shopGuid, string name, string category, double price, int quantity)
         {
-            return _serviceFacade.AddShopProduct(userGuid, shopGuid, name, category, price, quantity);
+            return _serviceFacade.AddProductToShop(userGuid, shopGuid, name, category, price, quantity);
             //throw new NotImplementedException();
         }
 
@@ -75,7 +75,8 @@ namespace ATBridge
 
         public bool Initialize(Guid userGuid, string username, string password)
         {
-            return _serviceFacade.Initialize(userGuid, username, password);
+            throw new NotImplementedException();
+            //return _serviceFacade.Initialize(userGuid, username, password);
         }
 
         public Guid Login(Guid userGuid, string username, string password)

@@ -8,18 +8,21 @@ using ATBridge;
 namespace Tests
 {
     [TestFixture]
-    class StoreOwnerAT
+    public static class StoreOwnerAT
     {
-
-        private ProxyBridge _proxy;
-
         [SetUp]
-        public void Setup()
+        public static void Setup()
         {
-            _proxy = new ProxyBridge();
-            _proxy.SetRealBridge(new BridgeImpl());
+            if (!Tester._initalized)
+                AdminAT.InitializationAT();
+            if (!Tester._groismanRegistered)
+                UserAT.RegisterAT1();
+            if (!Tester._groismanConnected)
+                UserAT.LoginAT1();
+            if (Tester._groismanShop.CompareTo(Guid.Empty) == 0)
+                RegisteredBuyerAT.CreationOfNewStoreByRegisteredUserAT();
         }
-        public void RunStoreOwnerAT()
+        public static void RunStoreOwnerAT()
         {
             StoreManagmentAT(); //GR 4.1
             AppointmentOfNewOwnerAT(); //GR 4.3
@@ -29,7 +32,7 @@ namespace Tests
         }
 
         //GR 4.1 - Store's owner can manage store in his store.
-        public void StoreManagmentAT()
+        public static void StoreManagmentAT()
         {
             AddingProductAT(); //GR 4.1.1
             RemovingProductAT(); //GR 4.1.2
@@ -37,7 +40,7 @@ namespace Tests
         }
 
         //GR 4.1.1
-        public void AddingProductAT()
+        public static void AddingProductAT()
         {
             AddingProductAT1();
             AddingProductAT2();
@@ -46,112 +49,93 @@ namespace Tests
         }
 
         [Test]
-        public void AddingProductAT1()
+        public static void AddingProductAT1()
         {
-            //Register+login to groisman's account
-            /*UserAT userAT = new UserAT();
-            userAT.RegisterAT1();
-            userAT.LoginAT1();
-            //Open shop
-            RegisteredBuyerAT registeredBuyerAT = new RegisteredBuyerAT();
-            if (Tester._groismanShop == null)
-                registeredBuyerAT.CreationOfNewStoreByRegisteredUserAT();
-            //Add products to shop
-           // Tester.galaxyGuid = _proxy.AddProductToShop("Galaxy S9", "Cellphones", 2000, 10, Tester._groismanShop);
-            Assert.NotZero(Guid.Empty.CompareTo(Tester.galaxyGuid)); */
+            Guid productGuid = Tester.PBridge.AddShopProduct(Tester.GroismanGuid, Tester._groismanShop, "Galaxy S9", "Cellphones", 2000, 10);
+            if(productGuid.CompareTo(Guid.Empty) == 0)
+            {
+                Assert.Fail();
+            }
+            Tester.galaxyGuid = productGuid;
+            Assert.Pass();
+
         }
 
         [Test]
-        public void AddingProductAT2()
+        public static void AddingProductAT2()
         {
-            //No check of permissions - can not test.
+            Guid res = Tester.PBridge.AddShopProduct(Tester.GuestGuid,Tester._groismanShop, "Galaxy S9", "Cellphones", 2000, 10);
+            Assert.Zero(res.CompareTo(Guid.Empty));
+        }
+
+        [Test]
+        public static void AddingProductAT3()
+        {
+            if (Tester.galaxyGuid.CompareTo(Guid.Empty) == 0)
+            {
+                AddingProductAT1();
+            }
+            Guid res = Tester.PBridge.AddShopProduct(Tester.GroismanGuid, Tester._groismanShop, "Galaxy S9", "Cellphones", 2000, 10);
+            Assert.Zero(res.CompareTo(Guid.Empty));
+        }
+
+        [Test]
+        public static void AddingProductAT4()
+        {
+            Guid productGuid = Tester.PBridge.AddShopProduct(Tester.GroismanGuid, Tester._groismanShop, "Galaxy S9", "Cellphones", -2000, 10);
+            if (productGuid.CompareTo(Guid.Empty) == 0)
+            {
+                Assert.Pass();
+            }
             Assert.Fail();
         }
 
-        [Test]
-        public void AddingProductAT3()
-        {
-            //Register+login to groisman's account
-            /*UserAT userAT = new UserAT();
-            userAT.RegisterAT1();
-            userAT.LoginAT1();
-            //Open shop
-            RegisteredBuyerAT registeredBuyerAT = new RegisteredBuyerAT();
-            if (Tester._groismanShop == null)
-                registeredBuyerAT.CreationOfNewStoreByRegisteredUserAT(); */
-           // Assert.Zero(Guid.Empty.CompareTo(_proxy.AddProductToShop("Galaxy S9", "Cellphones", 2000, 10, Tester._groismanShop)));
-        }
-
-        [Test]
-        public void AddingProductAT4()
-        {
-            //Expected to get the empty guid because we try to type negative quantity.
-            //Register+login to groisman's account
-            /*UserAT userAT = new UserAT();
-            userAT.RegisterAT1();
-            userAT.LoginAT1();
-            //Open shop
-            RegisteredBuyerAT registeredBuyerAT = new RegisteredBuyerAT();
-            if (Tester._groismanShop == null)
-                registeredBuyerAT.CreationOfNewStoreByRegisteredUserAT(); */
-            //Assert.Zero(Guid.Empty.CompareTo(_proxy.AddProductToShop("IPhone", "Cellphones", 1000, -1, Tester._groismanShop)));
-        }
-
         //GR 4.1.2
-        public void RemovingProductAT()
+        public static void RemovingProductAT()
         {
             RemovingProductAT1();
             RemovingProductAT2();
             RemovingProductAT3();
-            RemovingProductAT4();
         }
 
         [Test]
-        public void RemovingProductAT1()
+        public static void RemovingProductAT1()
         {
-            if (Tester._groismanShop.CompareTo(Guid.Empty) == 0 || Tester.galaxyGuid.CompareTo(Guid.Empty) == 0)
+            if (Tester.galaxyGuid.CompareTo(Guid.Empty) == 0)
             {
                 AddingProductAT1();
             }
             //After setting the pre-conditions.
-            //bool result = _proxy.RemoveProductFromShop(Tester.galaxyGuid, Tester._groismanShop);
-            //Assert.True(result);
-            //if (result)
-            //{
-            //    Tester.galaxyGuid = Guid.Empty;
-            //}
+            bool result = Tester.PBridge.RemoveShopProduct(Tester.GroismanGuid, Tester.galaxyGuid, Tester._groismanShop);
+            Assert.True(result);
+            if (result)
+            {
+                Tester.galaxyGuid = Guid.Empty;
+            }
         }
 
         [Test]
-        public void RemovingProductAT2()
+        public static void RemovingProductAT2()
         {
-            //Can not test it - there is no dependency in user's permissions and identity.
-            Assert.Fail();
+            bool result = Tester.PBridge.RemoveShopProduct(Tester.GuestGuid, Tester.galaxyGuid, Tester._groismanShop);
+            Assert.IsFalse(result);
         }
 
         [Test]
-        public void RemovingProductAT3()
+        public static void RemovingProductAT3()
         {
-            if (Tester._groismanShop.CompareTo(Guid.Empty) == 0 || Tester.galaxyGuid.CompareTo(Guid.Empty) == 0)
+            if (Tester.galaxyGuid.CompareTo(Guid.Empty) == 0)
             {
                 AddingProductAT1();
             }
-            //bool result = _proxy.RemoveProductFromShop(Guid.Empty, Tester._groismanShop); //The empty guid doesn't exist in the shop.
-           // Assert.False(result);
+            bool result = Tester.PBridge.RemoveShopProduct(Tester.GroismanGuid , Guid.Empty , Tester._groismanShop); //The empty guid doesn't exist in the shop.
+            Assert.False(result);
         }
 
-        [Test]
-        public void RemovingProductAT4()
-        {
-            //Can not test it. Reasons:
-            //1. Removing unexisted product is tested in RemovingProductAT3
-            //2. Can not send details of product.
-            //My advice : Removing the requirement from the doucument and removing this test. This test may be irelevant.
-            Assert.Fail();
-        }
+
 
         //GR 4.1.3 
-        public void EditingProductAT()
+        public static void EditingProductAT()
         {
             EditingProductAT1();
             EditingProductAT2();
@@ -160,178 +144,236 @@ namespace Tests
         }
 
         [Test]
-        public void EditingProductAT1()
+        public static void EditingProductAT1()
         {
             if (Tester._groismanShop.CompareTo(Guid.Empty) == 0 || Tester.galaxyGuid.CompareTo(Guid.Empty) == 0)
             {
                 AddingProductAT1();
             }
-           // bool result = _proxy.EditProduct(Tester._groismanShop, Tester.galaxyGuid, 1500, 20);
-           // Assert.True(result);
+           bool result = Tester.PBridge.EditShopProduct(Tester.GroismanGuid,Tester._groismanShop, Tester.galaxyGuid, 1500, 20);
+           Assert.True(result);
         }
 
         [Test]
-        public void EditingProductAT2()
+        public static void EditingProductAT2()
         {
-            //Can not test it - there is no dependency in user's permissions and identity.
-            Assert.Fail();
+            bool result = Tester.PBridge.EditShopProduct(Tester.GuestGuid, Tester._groismanShop, Tester.galaxyGuid, 1500, 20);
+            Assert.True(result);
         }
 
         [Test]
-        public void EditingProductAT3()
+        public static void EditingProductAT3()
         {
-          //  bool result = _proxy.EditProduct(Tester._groismanShop, Guid.Empty, 1500, -20); //The empty guid doesn't exist in the shop.
-            //Assert.False(result);
+            bool result = Tester.PBridge.RemoveShopProduct(Tester.GroismanGuid, Guid.Empty, Tester._groismanShop); //The empty guid doesn't exist in the shop.
+            Assert.False(result);
         }
 
         [Test]
-        public void EditingProductAT4()
+        public static void EditingProductAT4()
         {
-            if (Tester._groismanShop.CompareTo(Guid.Empty) == 0 || Tester.galaxyGuid.CompareTo(Guid.Empty) == 0)
+            if (Tester.galaxyGuid.CompareTo(Guid.Empty) == 0)
             {
                 AddingProductAT1();
             }
-          //  bool result = _proxy.EditProduct(Tester._groismanShop, Tester.galaxyGuid, 1500, -20);
-           // Assert.False(result);
+            bool result = Tester.PBridge.EditShopProduct(Tester.GroismanGuid, Tester._groismanShop, Tester.galaxyGuid, 1500, -20);
+            Assert.False(result);
 
         }
 
         //GR 4.3 - Store's owner can appoint new owner to his store.
-        public void AppointmentOfNewOwnerAT()
+        public static void AppointmentOfNewOwnerAT()
         {
             AppointmentOfNewOwnerAT1();
             AppointmentOfNewOwnerAT2();
             AppointmentOfNewOwnerAT3();
-            AppointmentOfNewOwnerAT4();
+            //AppointmentOfNewOwnerAT4(); //CAN NOT TEST THAT!
         }
 
         [Test]
-        public void AppointmentOfNewOwnerAT1()
+        public static void AppointmentOfNewOwnerAT1()
         {
-            Assert.Pass();
+            if (Tester.BenGuid.CompareTo(Guid.Empty) == 0)
+            {
+                Tester.PBridge.Register(Tester.GuestGuid, "Benhas", "151097");
+                Tester.BenGuid = Tester.PBridge.Login(Tester.GuestGuid, "Benhas", "151097");
+            }
+            bool res = Tester.PBridge.AddShopOwner(Tester.GroismanGuid, Tester._groismanShop, Tester.BenGuid);
+            Assert.True(res);
+            //TODO: Remove Ben from system
         }
 
         [Test]
-        public void AppointmentOfNewOwnerAT2()
+        public static void AppointmentOfNewOwnerAT2()
         {
-            Assert.Pass();
+            bool res = Tester.PBridge.AddShopOwner(Tester.GroismanGuid, Tester._groismanShop, Tester.GuestGuid);
+            Assert.False(res);
         }
 
         [Test]
-        public void AppointmentOfNewOwnerAT3()
+        public static void AppointmentOfNewOwnerAT3()
         {
-            Assert.Pass();
+            if (Tester.BenGuid.CompareTo(Guid.Empty) == 0)
+            {
+                Tester.PBridge.Register(Tester.GuestGuid, "Benhas", "151097");
+                Tester.BenGuid = Tester.PBridge.Login(Tester.GuestGuid, "Benhas", "151097");
+            }
+            bool res = Tester.PBridge.AddShopOwner(Tester.GuestGuid, Tester._groismanShop, Tester.BenGuid);
+            Assert.False(res);
         }
 
-        [Test]
-        public void AppointmentOfNewOwnerAT4()
+        //CAN NOT TEST THAT!
+        /*[Test]
+        public static void AppointmentOfNewOwnerAT4()
         {
             Assert.Pass();
-        }
+        }*/
 
 
         //GR 4.4 - Store's owner can remove new owner from his store.
-        public void RemoveOfOwnerAT()
+        public static void RemoveOfOwnerAT()
         {
-            //TODO: Add to proxy bridge implemention of owner's removing
             RemoveOfOwnerAT1();
             RemoveOfOwnerAT2();
-            RemoveOfOwnerAT3();
+            //RemoveOfOwnerAT3(); // can not test it
             RemoveOfOwnerAT4();
         }
 
         [Test]
-        public void RemoveOfOwnerAT1()
+        public static void RemoveOfOwnerAT1()
         {
-            Assert.Pass();
+            if (Tester.BenGuid.CompareTo(Guid.Empty) == 0)
+            {
+                AppointmentOfNewOwnerAT1();
+            }
+            bool res = Tester.PBridge.CascadeRemoveShopOwner(Tester.GroismanGuid, Tester._groismanShop, Tester.BenGuid);
+            Assert.True(res);
         }
 
         [Test]
-        public void RemoveOfOwnerAT2()
+        public static void RemoveOfOwnerAT2()
         {
-            Assert.Pass();
+            bool res = Tester.PBridge.CascadeRemoveShopOwner(Tester.GroismanGuid, Tester._groismanShop, Tester.GuestGuid);
+            Assert.False(res);
         }
 
-        [Test]
-        public void RemoveOfOwnerAT3()
+        //Can not test it
+       /* [Test]
+        public static void RemoveOfOwnerAT3()
         {
             Assert.Pass();
-        }
+        } */
 
         [Test]
-        public void RemoveOfOwnerAT4()
+        public static void RemoveOfOwnerAT4()
         {
-            Assert.Pass();
+            if (Tester.BenGuid.CompareTo(Guid.Empty) == 0)
+            {
+                AppointmentOfNewOwnerAT1();
+            }
+            bool res = Tester.PBridge.CascadeRemoveShopOwner(Tester.GroismanGuid, Tester._groismanShop, Tester.BenGuid);
+            Assert.False(res);
         }
 
 
         //GR 4.5 - Store's owner can appoint new owner to his store.
-        public void AppointmentOfNewManagerAT()
+        public static void AppointmentOfNewManagerAT()
         {
             //TODO: Add to proxy bridge implemention of adding/appointment of new owner
             AppointmentOfNewManagerAT1();
             AppointmentOfNewManagerAT2();
             AppointmentOfNewManagerAT3();
-            AppointmentOfNewManagerAT4();
+            //AppointmentOfNewManagerAT4(); // can not test it.
         }
 
         [Test]
-        public void AppointmentOfNewManagerAT1()
+        public static void AppointmentOfNewManagerAT1()
         {
-            Assert.Pass();
+            List<string> privillages = new List<string>();
+            privillages.Add("CPA");
+            if (Tester.BenGuid.CompareTo(Guid.Empty) == 0)
+            {
+                Tester.PBridge.Register(Tester.GuestGuid, "Benhas", "151097");
+                Tester.BenGuid = Tester.PBridge.Login(Tester.GuestGuid, "Benhas", "151097");
+            }
+            bool res = Tester.PBridge.AddShopManager(Tester.GroismanGuid, Tester._groismanShop, Tester.BenGuid, privillages);
+            Assert.True(res);
+            //TODO:Remove Ben from manager role.
         }
 
         [Test]
-        public void AppointmentOfNewManagerAT2()
+        public static void AppointmentOfNewManagerAT2()
         {
-            Assert.Pass();
+            List<string> privillages = new List<string>();
+            privillages.Add("CPA");
+           
+            bool res = Tester.PBridge.AddShopManager(Tester.GroismanGuid, Tester._groismanShop, Tester.GuestGuid, privillages);
+            Assert.False(res);
         }
 
         [Test]
-        public void AppointmentOfNewManagerAT3()
+        public static void AppointmentOfNewManagerAT3()
         {
-            Assert.Pass();
+            List<string> privillages = new List<string>();
+            privillages.Add("CPA");
+            if (Tester.BenGuid.CompareTo(Guid.Empty) == 0)
+            {
+                Tester.PBridge.Register(Tester.GuestGuid, "Benhas", "151097");
+                Tester.BenGuid = Tester.PBridge.Login(Tester.GuestGuid, "Benhas", "151097");
+            }
+            bool res = Tester.PBridge.AddShopManager(Tester.GuestGuid, Tester._groismanShop, Tester.BenGuid, privillages);
+            Assert.False(res);
         }
 
-        [Test]
+        /*[Test]
         public void AppointmentOfNewManagerAT4()
         {
             Assert.Pass();
-        }
+        }*/
 
 
         //GR 4.6 - Store's owner can remove manager from his store.
-        public void RemoveOfManagerAT()
+        public static void RemoveOfManagerAT()
         {
             //TODO:Like GR 4.4
             RemoveOfManagerAT1();
             RemoveOfManagerAT2();
-            RemoveOfManagerAT3();
+            //RemoveOfManagerAT3(); //Can not test it
             RemoveOfManagerAT4();
         }
 
         [Test]
-        public void RemoveOfManagerAT1()
+        public static void RemoveOfManagerAT1()
         {
-            Assert.Pass();
+            if (Tester.BenGuid.CompareTo(Guid.Empty) == 0)
+            {
+                AppointmentOfNewManagerAT1();
+            }
+            bool res = Tester.PBridge.RemoveShopManager(Tester.GroismanGuid, Tester._groismanShop, Tester.BenGuid);
+            Assert.True(res);
         }
 
         [Test]
-        public void RemoveOfManagerAT2()
+        public static void RemoveOfManagerAT2()
         {
-            Assert.Pass();
+            bool res = Tester.PBridge.RemoveShopManager(Tester.GroismanGuid, Tester._groismanShop, Tester.GuestGuid);
+            Assert.False(res);
         }
 
-        [Test]
-        public void RemoveOfManagerAT3()
+        /*[Test] //Can not test it
+        public static void RemoveOfManagerAT3()
         {
             Assert.Pass();
-        }
+        }*/
 
         [Test]
-        public void RemoveOfManagerAT4()
+        public static void RemoveOfManagerAT4()
         {
-            Assert.Pass();
+            if (Tester.BenGuid.CompareTo(Guid.Empty) == 0)
+            {
+                AppointmentOfNewManagerAT1();
+            }
+            bool res = Tester.PBridge.CascadeRemoveShopOwner(Tester.GuestGuid, Tester._groismanShop, Tester.BenGuid);
+            Assert.False(res);
         }
 
 

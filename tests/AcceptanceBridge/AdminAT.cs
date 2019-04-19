@@ -18,6 +18,7 @@ namespace Tests
         public static void InitializationAT()
         {
             Assert.IsTrue(Tester.PBridge.Initialize(Tester.GuestGuid, "admin", "000000"));
+            Tester.AdminGuid = Tester.PBridge.Login(Tester.GuestGuid, "admin", "000000"); //Created in init
         }
         //GR 6.2 - Removing of registered user
 
@@ -30,13 +31,44 @@ namespace Tests
         [Test]
         public static void RemoveOfRegisteredUserAT1()
         {
-            Assert.Pass();
+            if (!Tester._initalized) {
+                InitializationAT();
+                Tester._initalized = true;
+            }
+            Tester.PBridge.Login(Tester.GuestGuid, "admin", "000000");
+            if (!Tester._groismanRegistered) {
+                UserAT.RegisterAT1();
+                Tester._groismanRegistered = true;
+            }
+            bool res = Tester.PBridge.RemoveUser(Tester.AdminGuid, Tester.GroismanGuid);
+            Assert.True(res);
+            //delete information from tester
+            Tester._groismanRegistered = false;
+            Tester.GroismanGuid = Guid.Empty;
         }
 
         [Test]
         public static void RemoveOfRegisteredUserAT2()
         {
-            Assert.Pass();
+            if (!Tester._initalized)
+            {
+                InitializationAT();
+                Tester._initalized = true;
+            }
+            Tester.PBridge.Login(Tester.GuestGuid, "admin", "000000");
+            if (!Tester._groismanRegistered)
+            {
+                UserAT.RegisterAT1();
+                Tester._groismanRegistered = true;
+            }
+            //make groisman owner
+            if(Tester._groismanShop.CompareTo(Guid.Empty) == 0)
+            {
+                RegisteredBuyerAT.CreationOfNewStoreByRegisteredUserAT();
+            }
+            bool res = Tester.PBridge.RemoveUser(Tester.AdminGuid, Tester.GroismanGuid);
+            Assert.False(res);
+            //no delete is needed here.
         }
         public static void RunAdminAT()
         {

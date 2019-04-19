@@ -47,7 +47,7 @@ namespace ServiceLayer
         #endregion
 
         #region Admin
-        public bool Initialize(Guid userGuid, string username, string password)
+        public Guid Initialize(Guid userGuid, string username, string password)
         {
             return _domainLayerFacade.Initialize(userGuid, username, password);
         }

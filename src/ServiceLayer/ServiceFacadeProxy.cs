@@ -39,6 +39,16 @@ namespace ServiceLayer
             return false;
         }
 
+        public Guid Initialize(Guid cookie, string username, string password)
+        {
+            var userGuid = _sessionManager.ResolveCookie(cookie);
+            var actualUserGuid = _serviceFacade.Initialize(userGuid, username, password);
+            if (!actualUserGuid.Equals(Guid.Empty))
+                _sessionManager.SetLoggedIn(cookie, actualUserGuid);
+
+            return actualUserGuid;
+        }
+
         public Guid AddProductToShop(Guid cookie, Guid shopGuid, string name, string category, double price, int quantity)
         {
             var userGuid = _sessionManager.ResolveCookie(cookie);
@@ -98,12 +108,6 @@ namespace ServiceLayer
         {
             var userGuid = _sessionManager.ResolveCookie(cookie);
             return _serviceFacade.GetAllProductsInCart(userGuid, shopGuid);
-        }
-
-        public bool Initialize(Guid cookie, string username, string password)
-        {
-            var userGuid = _sessionManager.ResolveCookie(cookie);
-            return _serviceFacade.Initialize(userGuid, username, password);
         }
 
         public Guid OpenShop(Guid cookie)

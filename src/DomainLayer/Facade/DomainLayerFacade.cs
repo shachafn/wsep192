@@ -79,19 +79,22 @@ namespace DomainLayer.Facade
 
         public Guid Initialize(Guid userGuid, string username, string password)
         {
+            // Make sure to use functions in the UserDomain and from this class, since they will fail
+            // Because the system is not marked as initialized untill the end of this function.
             DomainLayerFacadeVerifier.VerifyMe(MethodBase.GetCurrentMethod(), userGuid, username, password);
+
+            if (!External_Services.ExternalServicesManager._paymentSystem.IsAvailable())
+                throw new ServiceUnReachableException($"Payment System Service is unreachable.");
+            if (!External_Services.ExternalServicesManager._supplySystem.IsAvailable())
+                throw new ServiceUnReachableException($"Supply System Service is unreachable.");
+
             var res = Guid.Empty;
 
             if (!UserDomain.IsAdminExists())
                 UserDomain.Register(username, password, true);
 
             res = Login(userGuid, username, password);
-            ChangeUserState(res, AdminUserState.AdminUserStateString);
-
-            if (!External_Services.ExternalServicesManager._paymentSystem.IsAvailable())
-                throw new ServiceUnReachableException($"Payment System Service is unreachable.");
-            if (!External_Services.ExternalServicesManager._supplySystem.IsAvailable())
-                throw new ServiceUnReachableException($"Supply System Service is unreachable.");
+            UserDomain.ChangeUserState(res, AdminUserState.AdminUserStateString);
 
             _isSystemInitialized = res.Equals(Guid.Empty) ? false : true;
             return res;

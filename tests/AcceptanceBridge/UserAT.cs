@@ -86,7 +86,7 @@ namespace Tests
             if (!Tester._groismanConnected)
                 LoginAT1();
             if (Tester._groismanShop.CompareTo(Guid.Empty) == 0)
-                RegisteredBuyerAT.CreationOfNewStoreByRegisteredUserAT(); //the shop is empty and no product is available.
+                RegisteredBuyerAT.OpenStoreAT1(); //the shop is empty and no product is available.
             if (Tester.galaxyGuid.CompareTo(Guid.Empty) == 0)
                 StoreOwnerAT.AddingProductAT1(); //now Groisman's shop has 10 Galaxys
             Assert.IsNotNull(Tester.PBridge.SearchProduct(Tester.GuestGuid, Tester._groismanShop, "Galaxy S9"));
@@ -99,7 +99,7 @@ namespace Tests
             if (!Tester._groismanConnected)
                 LoginAT1();
             if (Tester._groismanShop.CompareTo(Guid.Empty) == 0)
-                RegisteredBuyerAT.CreationOfNewStoreByRegisteredUserAT(); //the shop is empty and no product is available.
+                RegisteredBuyerAT.OpenStoreAT1(); //the shop is empty and no product is available.
             if (Tester.galaxyGuid.CompareTo(Guid.Empty) == 0)
                 StoreOwnerAT.AddingProductAT1(); //now Groisman's shop has 10 Galaxys
             Assert.IsNotNull(Tester.PBridge.SearchProduct(Tester.GuestGuid, Tester._groismanShop, "IPhone 6"));
@@ -139,7 +139,7 @@ namespace Tests
             if (!Tester._groismanConnected)
                 LoginAT1();
             if (Tester._groismanShop.CompareTo(Guid.Empty) == 0)
-                RegisteredBuyerAT.CreationOfNewStoreByRegisteredUserAT(); //the shop is empty and no product is available.
+                RegisteredBuyerAT.OpenStoreAT1(); //the shop is empty and no product is available.
             Assert.IsNull(Tester.PBridge.GetAllProductsInCart(Tester.GuestGuid, Tester._groismanShop));
         }
         [Test]
@@ -150,7 +150,7 @@ namespace Tests
             if (!Tester._groismanConnected)
                 LoginAT1();
             if (Tester._groismanShop.CompareTo(Guid.Empty) == 0)
-                RegisteredBuyerAT.CreationOfNewStoreByRegisteredUserAT(); //the shop is empty and no product is available.
+                RegisteredBuyerAT.OpenStoreAT1(); //the shop is empty and no product is available.
             if(Tester.galaxyGuid.CompareTo(Guid.Empty) == 0)
                 StoreOwnerAT.AddingProductAT1(); //now Groisman's shop has 10 Galaxys
             SavingProductsInCartAT1(); //Add 1 galaxy
@@ -166,7 +166,7 @@ namespace Tests
             if (!Tester._groismanConnected)
                 LoginAT1();
             if (Tester._groismanShop.CompareTo(Guid.Empty) == 0)
-                RegisteredBuyerAT.CreationOfNewStoreByRegisteredUserAT(); //the shop is empty and no product is available.
+                RegisteredBuyerAT.OpenStoreAT1(); //the shop is empty and no product is available.
             if (Tester.galaxyGuid.CompareTo(Guid.Empty) == 0)
                 StoreOwnerAT.AddingProductAT1(); //now Groisman's shop has 10 Galaxys
             SavingProductsInCartAT1(); //Add product to cart.

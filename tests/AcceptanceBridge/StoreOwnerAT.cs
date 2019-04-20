@@ -20,7 +20,7 @@ namespace Tests
             if (!Tester._groismanConnected)
                 UserAT.LoginAT1();
             if (Tester._groismanShop.CompareTo(Guid.Empty) == 0)
-                RegisteredBuyerAT.CreationOfNewStoreByRegisteredUserAT();
+                RegisteredBuyerAT.OpenStoreAT1();
         }
         public static void RunStoreOwnerAT()
         {

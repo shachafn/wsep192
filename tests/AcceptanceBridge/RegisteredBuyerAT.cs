@@ -4,6 +4,7 @@ using System.Text;
 using NUnit.Framework;
 using DomainLayer;
 using ATBridge;
+using DomainLayer.Exceptions;
 
 namespace Tests
 {
@@ -11,7 +12,7 @@ namespace Tests
     public static class RegisteredBuyerAT
     {
 
-        //GR 3.1 - Registered user can commit logout.
+        
 
         [SetUp]
         public static void SetUp()
@@ -26,26 +27,68 @@ namespace Tests
             //TODO: MAYBE I will need to remove groisman's shop
         }
 
-        [Test]
+        //GR 3.1 - Registered user can commit logout.
         public static void LogoutAT()
+        {
+            LogoutAT1();
+            LogoutAT2();
+        }
+
+        [Test]
+        public static void LogoutAT1()
         {
             Assert.IsTrue(Tester.PBridge.Logout(Tester.GroismanGuid));
             Tester._groismanConnected = false;
         }
 
-        //GR 3.2 - Registered user can open new store.
         [Test]
-        public static void CreationOfNewStoreByRegisteredUserAT()
+        public static void LogoutAT2()
+        {
+            try
+            {
+                Tester.PBridge.Logout(Tester.GuestGuid);
+                Assert.Fail();
+            }
+            catch (IllegalOperationException)
+            {
+                Assert.Pass();
+            }
+        }
+
+        //GR 3.2 - Registered user can open new store.
+        public static void OpenStoreAT()
+        {
+            OpenStoreAT1();
+            OpenStoreAT2();
+        }
+       [Test]
+        public static void OpenStoreAT1()
         {
             Tester._groismanShop = Tester.PBridge.OpenShop(Tester.GroismanGuid);
             Assert.NotZero(Tester._groismanShop.CompareTo(Guid.Empty));
         }
 
+        [Test]
+        public static void OpenStoreAT2()
+        {
+            try
+            {
+                Tester.PBridge.OpenShop(Tester.GuestGuid);
+                Assert.Fail();
+            }
+            catch (UserNotFoundException)
+            {
+                Assert.Pass();
+            }
+        }
+
         public static void RunRegisteredUserAT()
         {
-            CreationOfNewStoreByRegisteredUserAT();
+            OpenStoreAT();
             LogoutAT();
 
         }
+
+
     }
 }

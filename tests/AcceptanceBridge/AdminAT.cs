@@ -19,6 +19,7 @@ namespace Tests
         {
             var initResult = Tester.PBridge.Initialize(Tester.GuestGuid, "admin", "000000");
             Assert.AreNotEqual(initResult, Guid.Empty);
+            Tester._initalized = true;
         }
         //GR 6.2 - Removing of registered user
 
@@ -62,7 +63,7 @@ namespace Tests
             //make groisman owner
             if(Tester._groismanShop.CompareTo(Guid.Empty) == 0)
             {
-                RegisteredBuyerAT.CreationOfNewStoreByRegisteredUserAT();
+                RegisteredBuyerAT.OpenStoreAT1();
             }
             bool res = Tester.PBridge.RemoveUser(Tester.AdminGuid, Tester.GroismanGuid);
             Assert.False(res);

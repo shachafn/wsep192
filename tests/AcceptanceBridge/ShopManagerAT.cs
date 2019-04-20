@@ -19,18 +19,18 @@ namespace Tests
         }
         
         //GR 5.1 - Commit something by manager should be done according to his permissions.
-        [Test]
-        public static void CommitSomethingWithPermissionAT()
+        
+        /*public static void CommitSomethingWithPermissionAT()
         {
             CommitSomethingWithPermissionAT1();
             CommitSomethingWithPermissionAT2();
         }
-
+        [Test]
         public static void CommitSomethingWithPermissionAT1()
         {
-            
+            Assert.Pass();
         }
-
+        [Test]
         public static void CommitSomethingWithPermissionAT2()
         {
             Assert.Pass();
@@ -38,6 +38,6 @@ namespace Tests
         public static void RunShopManagerAT()
         {
             CommitSomethingWithPermissionAT();
-        }
+        }*/
     }
 }

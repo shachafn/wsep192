@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Text;
 using DomainLayer.Exceptions;
@@ -438,5 +438,10 @@ namespace ServiceLayer
         /// <exception cref="IllegalOperationException">When user tries to change state to admin, but is not an admin"</exception>
         /// <returns></returns>
         bool ChangeUserState(Guid userGuid, string newState);
+
+        /// <summary>
+        /// Clears all data and requires the system to be Initialized to use it.
+        /// </summary>
+        void ClearSystem();
     }
 }

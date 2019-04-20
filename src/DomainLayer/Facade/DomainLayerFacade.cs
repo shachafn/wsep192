@@ -1,4 +1,4 @@
-﻿using DomainLayer.Data;
+using DomainLayer.Data;
 using DomainLayer.Data.Entitites;
 using DomainLayer.Data.Entitites.Users.States;
 using DomainLayer.Domains;
@@ -204,6 +204,12 @@ namespace DomainLayer.Facade
             VerifySystemIsInitialized();
             DomainLayerFacadeVerifier.VerifyMe(MethodBase.GetCurrentMethod(), newState);
             return UserDomain.ChangeUserState(userGuid, newState);
+        }
+
+        public void ClearSystem()
+        {
+            DomainData.ClearAll();
+            _isSystemInitialized = false;
         }
 
         private User GetLoggedInUser(Guid userGuid) => DomainData.LoggedInUsersEntityCollection[userGuid];

@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using ServiceLayer;
 using DomainLayer.Data.Entitites;
@@ -124,6 +124,11 @@ namespace ATBridge
         public bool ChangeUserState(Guid userGuid, string newState)
         {
             return _serviceFacade.ChangeUserState(userGuid, newState);
+        }
+
+        public void ClearSystem()
+        {
+            _serviceFacade.ClearSystem();
         }
     }
 }

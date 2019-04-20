@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using DomainLayer.Data.Entitites;
 
@@ -127,6 +127,11 @@ namespace ATBridge
         {
             if (_real == null)
                 _real = impl;
+        }
+
+        public void ClearSystem()
+        {
+            _real.ClearSystem();
         }
     }
 }

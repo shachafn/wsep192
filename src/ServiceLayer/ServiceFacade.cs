@@ -1,4 +1,4 @@
-﻿using DomainLayer.Data.Entitites;
+using DomainLayer.Data.Entitites;
 using DomainLayer.Facade;
 using System;
 using System.Collections.Generic;
@@ -149,6 +149,11 @@ namespace ServiceLayer
         public bool ChangeUserState(Guid userGuid, string newState)
         {
             return _domainLayerFacade.ChangeUserState(userGuid, newState);
+        }
+
+        public void ClearSystem()
+        {
+            _domainLayerFacade.ClearSystem();
         }
     }
 }

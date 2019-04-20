@@ -1,4 +1,4 @@
-﻿using DomainLayer.Data.Collections;
+using DomainLayer.Data.Collections;
 
 namespace DomainLayer.Data
 {
@@ -9,5 +9,12 @@ namespace DomainLayer.Data
         public static RegisteredUsersEntityCollection RegisteredUsersCollection = new RegisteredUsersEntityCollection();
         public static ShoppingBagsEntityCollection ShoppingBagsCollection = new ShoppingBagsEntityCollection();
 
+        public static void ClearAll()
+        {
+            LoggedInUsersEntityCollection.Clear();
+            ShopsCollection.Clear();
+            RegisteredUsersCollection.Clear();
+            ShoppingBagsCollection.Clear();
+        }
     }
 }

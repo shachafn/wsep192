@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 
 namespace DomainLayer.Facade
@@ -30,5 +30,6 @@ namespace DomainLayer.Facade
         ICollection<Guid> SearchProduct(Guid userGuid, Guid shopGuid, string productName);
         bool RemoveShopManager(Guid userGuid, Guid shopGuid, Guid managerToRemoveGuid);
         bool ChangeUserState(Guid userGuid, string newState);
+        void ClearSystem();
     }
 }

@@ -1,6 +1,7 @@
 ﻿using ServiceLayer.Exceptions;
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Text;
 
 namespace ServiceLayer
@@ -42,12 +43,19 @@ namespace ServiceLayer
             SessionToUserDictionary[cookie] = newUserGuid;
         }
 
-        public void SetLoggedOut(Guid cookie)
+        public void SetSessionLoggedOut(Guid cookie)
         {
             if (!SessionToUserDictionary.ContainsKey(cookie))
                 throw new CookieNotFoundException($"No Session with cookie {cookie} exists in the dictionary.");
 
             SessionToUserDictionary[cookie] = GuestGuid;
+        }
+
+        internal void SetUserLoggedOut(Guid userToRemoveGuid)
+        {
+            var result = SessionToUserDictionary.FirstOrDefault(s => s.Value.Equals(userToRemoveGuid));
+            if (result.Equals(default(KeyValuePair<Guid, Guid>)))
+                SessionToUserDictionary.Remove(result.Key);
         }
     }
 }

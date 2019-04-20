@@ -16,12 +16,5 @@ namespace Tests
         public static Guid BenGuid = Guid.Empty; //Ben is groiser's worker lol
         public static readonly Guid GuestGuid = new Guid("695D0341-3E62-4046-B337-2486443F311B");
         public static ProxyBridge PBridge = new ProxyBridge();
-
-        public static void ExecuteAcceptanceTests()
-        {
-            AdminAT.RunAdminAT();
-            RegisteredBuyerAT.RunRegisteredUserAT();
-            UserAT.RunUserAT();
-        }
     }
 }

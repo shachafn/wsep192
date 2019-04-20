@@ -40,18 +40,14 @@ namespace DomainLayer.Domains
         #endregion
 
 
-        /// <summary>
-        /// Registeres the user.
-        /// </summary>
-        /// <returns></returns>
-        public bool Register(string username, string password, bool isAdmin)
+        public Guid Register(string username, string password, bool isAdmin)
         {
             if (IsUsernameTaken(username))
-                return false;
+                return Guid.Empty;
 
             var newUser = new BaseUser(username.ToLower(), password, isAdmin);
             DomainData.RegisteredUsersCollection.Add(newUser.Guid, newUser);
-            return true;
+            return newUser.Guid;
         }
 
         private bool IsUsernameTaken(string username) => DomainData.RegisteredUsersCollection.Any(bUser => bUser.Username.Equals(username));

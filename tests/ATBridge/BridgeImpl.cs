@@ -90,7 +90,7 @@ namespace ATBridge
             return _serviceFacade.PurchaseBag(userGuid);
         }
 
-        public bool Register(Guid userGuid, string username, string password)
+        public Guid Register(Guid userGuid, string username, string password)
         {
             return _serviceFacade.Register(userGuid, username, password);
         }
@@ -124,6 +124,11 @@ namespace ATBridge
         public bool ChangeUserState(Guid userGuid, string newState)
         {
             return _serviceFacade.ChangeUserState(userGuid, newState);
+        }
+
+        public void ClearSystem()
+        {
+            _serviceFacade.ClearSystem();
         }
     }
 }

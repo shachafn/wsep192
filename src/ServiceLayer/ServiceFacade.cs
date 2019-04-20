@@ -30,7 +30,7 @@ namespace ServiceLayer
         #endregion
 
         #region Users
-        public bool Register(Guid userGuid, string username, string password)
+        public Guid Register(Guid userGuid, string username, string password)
         {
             return _domainLayerFacade.Register(userGuid, username, password);
         }
@@ -149,6 +149,11 @@ namespace ServiceLayer
         public bool ChangeUserState(Guid userGuid, string newState)
         {
             return _domainLayerFacade.ChangeUserState(userGuid, newState);
+        }
+
+        public void ClearSystem()
+        {
+            _domainLayerFacade.ClearSystem();
         }
     }
 }

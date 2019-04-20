@@ -9,7 +9,7 @@ namespace DomainLayer.Facade
     /// </summary>
     public interface IDomainLayerFacade
     {
-        bool Register(Guid userGuid, string username, string password);
+        Guid Register(Guid userGuid, string username, string password);
         Guid Login(Guid userGuid, string username, string password);
         bool Logout(Guid userGuid);
         Guid OpenShop(Guid userGuid);
@@ -30,5 +30,6 @@ namespace DomainLayer.Facade
         ICollection<Guid> SearchProduct(Guid userGuid, Guid shopGuid, string productName);
         bool RemoveShopManager(Guid userGuid, Guid shopGuid, Guid managerToRemoveGuid);
         bool ChangeUserState(Guid userGuid, string newState);
+        void ClearSystem();
     }
 }

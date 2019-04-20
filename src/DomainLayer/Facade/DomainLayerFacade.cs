@@ -39,7 +39,7 @@ namespace DomainLayer.Facade
         public Guid GuestGuid = new Guid("695D0341-3E62-4046-B337-2486443F311B");
         private static bool _isSystemInitialized = false;
 
-        public bool Register(Guid userGuid, string username, string password)
+        public Guid Register(Guid userGuid, string username, string password)
         {
             VerifySystemIsInitialized();
             DomainLayerFacadeVerifier.VerifyMe(MethodBase.GetCurrentMethod(), userGuid, username, password);
@@ -204,6 +204,12 @@ namespace DomainLayer.Facade
             VerifySystemIsInitialized();
             DomainLayerFacadeVerifier.VerifyMe(MethodBase.GetCurrentMethod(), newState);
             return UserDomain.ChangeUserState(userGuid, newState);
+        }
+
+        public void ClearSystem()
+        {
+            DomainData.ClearAll();
+            _isSystemInitialized = false;
         }
 
         private User GetLoggedInUser(Guid userGuid) => DomainData.LoggedInUsersEntityCollection[userGuid];

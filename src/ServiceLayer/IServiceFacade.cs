@@ -19,8 +19,8 @@ namespace ServiceLayer
         /// </constraints>
         /// <exception cref="IllegalOperationException">When the userGuid is not a GuestGuid.</exception>
         /// <exception cref="IllegalArgumentException">When the username/password are null, empty or whitespace</exception>
-        /// <returns>True if registered successfully. False if username is taken.</returns>
-        bool Register(Guid userGuid, string username, string password);
+        /// <returns>The Guid of the created user, Guid.Empty if the username is taken.</returns>
+        Guid Register(Guid userGuid, string username, string password);
 
         /////Implements General Requirement 2.3
         /// <summary>
@@ -438,5 +438,10 @@ namespace ServiceLayer
         /// <exception cref="IllegalOperationException">When user tries to change state to admin, but is not an admin"</exception>
         /// <returns></returns>
         bool ChangeUserState(Guid userGuid, string newState);
+
+        /// <summary>
+        /// Clears all data and requires the system to be Initialized to use it.
+        /// </summary>
+        void ClearSystem();
     }
 }

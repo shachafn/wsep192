@@ -4,14 +4,15 @@ using System.Text;
 using NUnit.Framework;
 using ATBridge;
 using DomainLayer;
+using DomainLayer.Exceptions;
 
 namespace Tests
 {
     public static class UserAT
     {
 
-        [SetUp]
-        public static void Setup()
+        [OneTimeSetUp]
+        public static void OneTimeSetUp()
         {
             Tester.PBridge.SetRealBridge(new BridgeImpl());
             if (!Tester._initalized)
@@ -59,7 +60,6 @@ namespace Tests
                 Assert.NotZero(groisman.CompareTo(Guid.Empty));
                 Tester.GroismanGuid = groisman;
             }
-            Assert.Pass();
         }
 
         [Test]
@@ -67,8 +67,9 @@ namespace Tests
         {
             string username = "idoGroiser";
             string password = "090902";
-            Guid notFoundUser = Tester.PBridge.Login(Tester.GuestGuid, username, password);
-            Assert.Zero(notFoundUser.CompareTo(Guid.Empty));
+            Assert.Throws<CredentialsMismatchException>(
+                () =>
+                Tester.PBridge.Login(Tester.GuestGuid, username, password));
         }
 
         //GR 2.5 - search products in the catalog

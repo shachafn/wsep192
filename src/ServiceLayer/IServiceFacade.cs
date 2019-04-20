@@ -99,10 +99,12 @@ namespace ServiceLayer
         /// 2. User must be logged in.
         /// 3. User must be in admin state.
         /// 4. UserToRemove must not be the only owner of an active shop.
+        /// 5. UserToRemove must not be the only admin of the system.
         /// </constraints>
         /// <exception cref="UserNotFoundException">When userGuid does not match any logged-in user's guid.</exception>
         /// <exception cref="BadStateException">When the user is not in AdminUserState</exception>
         /// <exception cref="BrokenConstraintException">When the user is the only owner of an active shop</exception>
+        /// <exception cref="BrokenConstraintException">When the user is the only admin of the system</exception>
         /// <returns>True.</returns>
         bool RemoveUser(Guid userGuid, Guid userToRemoveGuid);
 

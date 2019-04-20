@@ -130,6 +130,7 @@ namespace DomainLayer.Facade
             var user = VerifyLoggedInUser(userGuid, new UserNotFoundException());
             VerifyRegisteredUser(userToRemoveGuid, new UserNotFoundException());
             VerifyNotOnlyOwnerOfAnActiveShop(userToRemoveGuid, new BrokenConstraintException());
+            VerifyNotOnlyAdmin(userToRemoveGuid, new BrokenConstraintException());
         }
 
         /// <constraints>
@@ -515,6 +516,18 @@ namespace DomainLayer.Facade
             {
                 StackTrace stackTrace = new StackTrace();
                 var msg = $"State string doesnt not match any state." +
+        $"Cant complete {stackTrace.GetFrame(1).GetMethod().Name}";
+                throw e.Clone(msg);
+            }
+        }
+
+        private static void VerifyNotOnlyAdmin(Guid userToRemoveGuid, ICloneableException<Exception> e)
+        {
+            var admins = DomainData.RegisteredUsersCollection.Where(u => u.IsAdmin).ToList();
+            if (admins.Count == 1 && admins.First().Guid.Equals(userToRemoveGuid))
+            {
+                StackTrace stackTrace = new StackTrace();
+                var msg = $"User with guid - {userToRemoveGuid} is the only admin of the system." +
         $"Cant complete {stackTrace.GetFrame(1).GetMethod().Name}";
                 throw e.Clone(msg);
             }

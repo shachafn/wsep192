@@ -80,6 +80,14 @@ namespace DomainLayer.Facade
         public Guid Initialize(Guid userGuid, string username, string password)
         {
             DomainLayerFacadeVerifier.VerifyMe(MethodBase.GetCurrentMethod(), userGuid, username, password);
+
+            if (_isSystemInitialized)
+                throw new SystemAlreadyInitializedException($"Cannot initialize the system again.");
+            if (!External_Services.ExternalServicesManager._paymentSystem.IsAvailable())
+                throw new ServiceUnReachableException($"Payment System Service is unreachable.");
+            if (!External_Services.ExternalServicesManager._supplySystem.IsAvailable())
+                throw new ServiceUnReachableException($"Supply System Service is unreachable.");
+
             var res = Guid.Empty;
 
             if (!UserDomain.IsAdminExists())
@@ -87,11 +95,6 @@ namespace DomainLayer.Facade
 
             res = UserDomain.Login(userGuid, username, password);
             UserDomain.ChangeUserState(res, AdminUserState.AdminUserStateString);
-
-            if (!External_Services.ExternalServicesManager._paymentSystem.IsAvailable())
-                throw new ServiceUnReachableException($"Payment System Service is unreachable.");
-            if (!External_Services.ExternalServicesManager._supplySystem.IsAvailable())
-                throw new ServiceUnReachableException($"Supply System Service is unreachable.");
 
             _isSystemInitialized = res.Equals(Guid.Empty) ? false : true;
             return res;

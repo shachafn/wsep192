@@ -8,8 +8,8 @@ namespace Tests
 {
     public static class AdminAT
     {
-        [SetUp]
-        public static void Setup()
+        [OneTimeSetUp]
+        public static void OneTimeSetUp()
         {
             Tester.PBridge.SetRealBridge(new BridgeImpl());
         }
@@ -35,11 +35,9 @@ namespace Tests
                 InitializationAT();
                 Tester._initalized = true;
             }
-            Tester.PBridge.Login(Tester.GuestGuid, "admin", "000000");
-            if (!Tester._groismanRegistered) {
-                UserAT.RegisterAT1();
-                Tester._groismanRegistered = true;
-            }
+            //Initialize (registers if no admin user exists) and logs him in.
+            Tester._groismanRegistered = true; 
+
             bool res = Tester.PBridge.RemoveUser(Tester.AdminGuid, Tester.GroismanGuid);
             Assert.True(res);
             //delete information from tester

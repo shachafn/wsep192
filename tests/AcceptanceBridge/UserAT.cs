@@ -10,13 +10,23 @@ namespace Tests
 {
     public static class UserAT
     {
-
         [OneTimeSetUp]
         public static void OneTimeSetUp()
         {
             Tester.PBridge.SetRealBridge(new BridgeImpl());
-            if (!Tester._initalized)
-                AdminAT.InitializationAT();
+        }
+
+
+        [TearDown]
+        public static void TearDown()
+        {
+            Tester.PBridge.ClearSystem();
+        }
+
+        [SetUp]
+        public static void SetUp()
+        {
+            Tester.AdminGuid = Tester.PBridge.Initialize(Tester.GuestGuid, "admin", "000000");
         }
 
 
@@ -30,14 +40,15 @@ namespace Tests
         [Test]
         public static void RegisterAT1()
         {
-            //TODO: Use logout
-            Assert.IsTrue(Tester.PBridge.Register(Tester.GuestGuid, "groisman", "150298"));
-            Tester._groismanRegistered = true;
+            Tester.GroismanGuid = Tester.PBridge.Register(Tester.GuestGuid, "groisman", "150298");
+            Assert.AreNotEqual(Tester.GroismanGuid, Guid.Empty);
         }
         [Test]
         public static void RegisterAT2()
         {
-            Assert.IsFalse(Tester.PBridge.Register(Tester.GuestGuid, "groisman", "1111")); //invalid password. 
+            RegisterAT1();
+            //Same username
+            Assert.AreEqual(Tester.PBridge.Register(Tester.GuestGuid, "groisman", "1111"), Guid.Empty);
         }
         //GR 2.3-login of guest with identifiers.
         public static void LoginAT()

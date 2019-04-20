@@ -1,4 +1,4 @@
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Text;
 using DomainLayer.Exceptions;
@@ -19,8 +19,8 @@ namespace ServiceLayer
         /// </constraints>
         /// <exception cref="IllegalOperationException">When the userGuid is not a GuestGuid.</exception>
         /// <exception cref="IllegalArgumentException">When the username/password are null, empty or whitespace</exception>
-        /// <returns>True if registered successfully. False if username is taken.</returns>
-        bool Register(Guid userGuid, string username, string password);
+        /// <returns>The Guid of the created user, Guid.Empty if the username is taken.</returns>
+        Guid Register(Guid userGuid, string username, string password);
 
         /////Implements General Requirement 2.3
         /// <summary>

@@ -1,4 +1,4 @@
-using DomainLayer.Data.Entitites;
+﻿using DomainLayer.Data.Entitites;
 using DomainLayer.Facade;
 using System;
 using System.Collections.Generic;
@@ -30,7 +30,7 @@ namespace ServiceLayer
         #endregion
 
         #region Users
-        public bool Register(Guid userGuid, string username, string password)
+        public Guid Register(Guid userGuid, string username, string password)
         {
             return _domainLayerFacade.Register(userGuid, username, password);
         }

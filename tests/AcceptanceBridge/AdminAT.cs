@@ -3,9 +3,11 @@ using System.Collections.Generic;
 using System.Text;
 using NUnit.Framework;
 using ATBridge;
+using DomainLayer.Exceptions;
 
 namespace Tests
 {
+    [TestFixture]
     public static class AdminAT
     {
         [OneTimeSetUp]
@@ -13,31 +15,35 @@ namespace Tests
         {
             Tester.PBridge.SetRealBridge(new BridgeImpl());
         }
-        //GR 1 - Initialization of the system
+
+        [TearDown]
+        public static void TearDown()
+        {
+            Tester.PBridge.ClearSystem();
+        }
+
+        [SetUp]
+        public static void SetUp()
+        {
+            Tester.AdminGuid = Tester.PBridge.Initialize(Tester.GuestGuid, "admin", "000000");
+        }
+
+        #region GR 1 - Initialization of the system
+
         [Test]
         public static void InitializationAT()
         {
-            var initResult = Tester.PBridge.Initialize(Tester.GuestGuid, "admin", "000000");
-            Assert.AreNotEqual(initResult, Guid.Empty);
+            Assert.AreNotEqual(Tester.AdminGuid, Guid.Empty);
         }
-        //GR 6.2 - Removing of registered user
 
-        public static void RemoveOfRegisteredUserAT()
-        {
-            RemoveOfRegisteredUserAT1();
-            RemoveOfRegisteredUserAT2();
-        }
+        #endregion
+
+        #region GR 6.2 - Removing of a registered user
 
         [Test]
         public static void RemoveOfRegisteredUserAT1()
         {
-            if (!Tester._initalized) {
-                InitializationAT();
-                Tester._initalized = true;
-            }
-            //Initialize (registers if no admin user exists) and logs him in.
-            Tester._groismanRegistered = true; 
-
+            UserAT.RegisterAT1();
             bool res = Tester.PBridge.RemoveUser(Tester.AdminGuid, Tester.GroismanGuid);
             Assert.True(res);
             //delete information from tester
@@ -48,30 +54,20 @@ namespace Tests
         [Test]
         public static void RemoveOfRegisteredUserAT2()
         {
-            if (!Tester._initalized)
-            {
-                InitializationAT();
-                Tester._initalized = true;
-            }
-            Tester.PBridge.Login(Tester.GuestGuid, "admin", "000000");
             if (!Tester._groismanRegistered)
             {
-                UserAT.RegisterAT1();
+                UserAT.LoginAT1();
                 Tester._groismanRegistered = true;
             }
             //make groisman owner
-            if(Tester._groismanShop.CompareTo(Guid.Empty) == 0)
-            {
+            if (Tester._groismanShop.Equals(Guid.Empty))
                 RegisteredBuyerAT.CreationOfNewStoreByRegisteredUserAT();
-            }
-            bool res = Tester.PBridge.RemoveUser(Tester.AdminGuid, Tester.GroismanGuid);
-            Assert.False(res);
-            //no delete is needed here.
+
+            Assert.Throws<BrokenConstraintException>(
+                () => Tester.PBridge.RemoveUser(Tester.AdminGuid, Tester.GroismanGuid));
         }
-        public static void RunAdminAT()
-        {
-            InitializationAT();
-            RemoveOfRegisteredUserAT();
-        }
+
+        #endregion
+
     }
 }

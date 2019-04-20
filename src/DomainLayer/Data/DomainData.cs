@@ -1,4 +1,4 @@
-using DomainLayer.Data.Collections;
+﻿using DomainLayer.Data.Collections;
 
 namespace DomainLayer.Data
 {

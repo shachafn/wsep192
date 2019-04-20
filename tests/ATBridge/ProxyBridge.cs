@@ -1,4 +1,4 @@
-using System;
+﻿using System;
 using System.Collections.Generic;
 using DomainLayer.Data.Entitites;
 
@@ -88,9 +88,9 @@ namespace ATBridge
             return _real == null ? false : _real.PurchaseBag(userGuid);
         }
 
-        public bool Register(Guid userGuid, string username, string password)
+        public Guid Register(Guid userGuid, string username, string password)
         {
-            return _real == null ? false : _real.Register(userGuid, username, password);
+            return _real == null ? Guid.Empty : _real.Register(userGuid, username, password);
         }
 
         public bool RemoveProductFromCart(Guid userGuid, Guid shopGuid, Guid shopProductGuid)

@@ -1,4 +1,4 @@
-using System;
+﻿using System;
 using System.Collections.Generic;
 using ServiceLayer;
 using DomainLayer.Data.Entitites;
@@ -90,7 +90,7 @@ namespace ATBridge
             return _serviceFacade.PurchaseBag(userGuid);
         }
 
-        public bool Register(Guid userGuid, string username, string password)
+        public Guid Register(Guid userGuid, string username, string password)
         {
             return _serviceFacade.Register(userGuid, username, password);
         }

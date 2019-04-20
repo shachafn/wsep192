@@ -1,4 +1,4 @@
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Text;
 using DomainLayer.Data.Entitites;
@@ -134,7 +134,7 @@ namespace ServiceLayer
             return _serviceFacade.PurchaseBag(userGuid);
         }
 
-        public bool Register(Guid cookie, string username, string password)
+        public Guid Register(Guid cookie, string username, string password)
         {
             var userGuid = _sessionManager.ResolveCookie(cookie);
             return _serviceFacade.Register(userGuid, username, password);

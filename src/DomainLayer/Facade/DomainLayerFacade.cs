@@ -1,4 +1,4 @@
-using DomainLayer.Data;
+﻿using DomainLayer.Data;
 using DomainLayer.Data.Entitites;
 using DomainLayer.Data.Entitites.Users.States;
 using DomainLayer.Domains;
@@ -39,7 +39,7 @@ namespace DomainLayer.Facade
         public Guid GuestGuid = new Guid("695D0341-3E62-4046-B337-2486443F311B");
         private static bool _isSystemInitialized = false;
 
-        public bool Register(Guid userGuid, string username, string password)
+        public Guid Register(Guid userGuid, string username, string password)
         {
             VerifySystemIsInitialized();
             DomainLayerFacadeVerifier.VerifyMe(MethodBase.GetCurrentMethod(), userGuid, username, password);

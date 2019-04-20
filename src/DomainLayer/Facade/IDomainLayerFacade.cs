@@ -1,4 +1,4 @@
-using System;
+﻿using System;
 using System.Collections.Generic;
 
 namespace DomainLayer.Facade
@@ -9,7 +9,7 @@ namespace DomainLayer.Facade
     /// </summary>
     public interface IDomainLayerFacade
     {
-        bool Register(Guid userGuid, string username, string password);
+        Guid Register(Guid userGuid, string username, string password);
         Guid Login(Guid userGuid, string username, string password);
         bool Logout(Guid userGuid);
         Guid OpenShop(Guid userGuid);

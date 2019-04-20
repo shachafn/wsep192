@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Text;
 using DomainLayer.Data.Entitites;
@@ -31,9 +31,21 @@ namespace ServiceLayer
         {
             var userGuid = _sessionManager.ResolveCookie(cookie);
             var isSuccess = _serviceFacade.Logout(userGuid);
-            if (!isSuccess)
+            if (isSuccess)
             {
-                _sessionManager.SetLoggedOut(cookie);
+                _sessionManager.SetSessionLoggedOut(cookie);
+                return true;
+            }
+            return false;
+        }
+
+        public bool RemoveUser(Guid cookie, Guid userToRemoveGuid)
+        {
+            var userGuid = _sessionManager.ResolveCookie(cookie);
+            var isSuccess = _serviceFacade.RemoveUser(userGuid, userToRemoveGuid);
+            if (isSuccess)
+            {
+                _sessionManager.SetUserLoggedOut(userToRemoveGuid);
                 return true;
             }
             return false;
@@ -144,12 +156,6 @@ namespace ServiceLayer
         {
             var userGuid = _sessionManager.ResolveCookie(cookie);
             return _serviceFacade.RemoveShopManager(userGuid, shopGuid, managerToRemoveGuid);
-        }
-
-        public bool RemoveUser(Guid cookie, Guid userToRemoveGuid)
-        {
-            var userGuid = _sessionManager.ResolveCookie(cookie);
-            return _serviceFacade.RemoveUser(userGuid, userToRemoveGuid);
         }
 
         public ICollection<Guid> SearchProduct(Guid cookie, Guid shopGuid, string productName)

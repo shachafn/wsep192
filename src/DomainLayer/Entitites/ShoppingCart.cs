@@ -22,7 +22,7 @@ namespace DomainLayer.Data.Entitites
             PurchasedProducts = new List<Tuple<Guid, int>>();
         }
 
-        public void AddProductToShoppingCart(Guid newShopProductGuid, int amount)
+        public void AddProductToCart(Guid newShopProductGuid, int amount)
         {
             throw new NotImplementedException();
         }

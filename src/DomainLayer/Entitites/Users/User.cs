@@ -57,19 +57,19 @@ namespace DomainLayer.Data.Entitites
             return State.AddProductToShop(_baseUser, shopGuid, name, category, price, quantity);
         }
 
-        public void EditShopProduct(Guid shopGuid, Guid productGuid, double newPrice, int newQuantity)
+        public void EditProductInShop(Guid shopGuid, Guid productGuid, double newPrice, int newQuantity)
         {
-            State.EditShopProduct(_baseUser, shopGuid, productGuid, newPrice, newQuantity);
+            State.EditProductInShop(_baseUser, shopGuid, productGuid, newPrice, newQuantity);
         }
 
-        public bool RemoveShopProduct(Guid shopGuid, Guid shopProductGuid)
+        public bool RemoveProductFromShop(Guid shopGuid, Guid shopProductGuid)
         {
-            return State.RemoveShopProduct(_baseUser, shopGuid, shopProductGuid);
+            return State.RemoveProductFromShop(_baseUser, shopGuid, shopProductGuid);
         }
 
-        public bool AddProductToShoppingCart(Guid shopGuid, Guid shopProductGuid, int quantity)
+        public bool AddProductToCart(Guid shopGuid, Guid shopProductGuid, int quantity)
         {
-            return State.AddProductToShoppingCart(_baseUser, shopGuid, shopProductGuid, quantity);
+            return State.AddProductToCart(_baseUser, shopGuid, shopProductGuid, quantity);
         }
 
         public bool AddShopOwner(Guid shopGuid, Guid newManagaerGuid)

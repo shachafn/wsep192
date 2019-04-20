@@ -159,7 +159,7 @@ namespace ServiceLayer
         /// <exception cref="ProductNotFoundException">When the productGuid does not match any product in the shop.</exception>
         /// <exception cref="BrokenConstraintException">When the product already exists in the user's cart.</exception>
         /// <returns>True.</returns>
-        bool AddProductToShoppingCart(Guid userGuid, Guid productGuid, Guid shopGuid, int quantity);
+        bool AddProductToCart(Guid userGuid, Guid productGuid, Guid shopGuid, int quantity);
 
         /////Implements General Requirement 2.7
         /// <summary>
@@ -272,7 +272,7 @@ namespace ServiceLayer
         /// <exception cref="ShopStateException">When the shop is not active.</exception>
         /// <exception cref="ProductNotFoundException">When shopProductGuid does not match any product in the shop.</exception>
         /// <returns>True if removed successfully. False otherwise.</returns>
-        bool RemoveShopProduct(Guid userGuid, Guid shopProductGuid, Guid shopGuid);
+        bool RemoveProductFromShop(Guid userGuid, Guid shopProductGuid, Guid shopGuid);
 
         /////Implements General Requirement 4.1
         /// <summary>
@@ -299,7 +299,7 @@ namespace ServiceLayer
         /// <exception cref="IllegalArgumentException">When newPrice is not greater than 0.</exception>
         /// <exception cref="IllegalArgumentException">When newQuantity is not equal or greater than 0</exception>
         /// <returns>True if editted successfully. False otherwise.</returns>
-        bool EditShopProduct(Guid userGuid, Guid shopGuid, Guid productGuid, double newPrice, int newQuantity);
+        bool EditProductInShop(Guid userGuid, Guid shopGuid, Guid productGuid, double newPrice, int newQuantity);
 
         /////Implements General Requirement 2.5
         /// <summary>

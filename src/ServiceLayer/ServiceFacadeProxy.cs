@@ -58,7 +58,7 @@ namespace ServiceLayer
         public bool AddProductToShoppingCart(Guid cookie, Guid shopGuid, Guid shopProductGuid, int quantity)
         {
             var userGuid = _sessionManager.ResolveCookie(cookie);
-            return _serviceFacade.AddProductToShoppingCart(userGuid, shopGuid, shopProductGuid, quantity);
+            return _serviceFacade.AddProductToCart(userGuid, shopGuid, shopProductGuid, quantity);
 
         }
 
@@ -101,7 +101,7 @@ namespace ServiceLayer
         public bool EditShopProduct(Guid cookie, Guid shopGuid, Guid productGuid, double newPrice, int newQuantity)
         {
             var userGuid = _sessionManager.ResolveCookie(cookie);
-            return _serviceFacade.EditShopProduct(userGuid, shopGuid, productGuid, newPrice, newQuantity);
+            return _serviceFacade.EditProductInShop(userGuid, shopGuid, productGuid, newPrice, newQuantity);
         }
 
         public ICollection<Guid> GetAllProductsInCart(Guid cookie, Guid shopGuid)
@@ -137,7 +137,7 @@ namespace ServiceLayer
         public bool RemoveProductFromShop(Guid cookie, Guid shopGuid, Guid shopProductGuid)
         {
             var userGuid = _sessionManager.ResolveCookie(cookie);
-            return _serviceFacade.RemoveShopProduct(userGuid, shopGuid, shopProductGuid);
+            return _serviceFacade.RemoveProductFromShop(userGuid, shopGuid, shopProductGuid);
         }
 
         public bool RemoveShopManager(Guid cookie, Guid shopGuid, Guid managerToRemoveGuid)

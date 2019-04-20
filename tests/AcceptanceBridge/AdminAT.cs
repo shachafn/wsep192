@@ -17,8 +17,8 @@ namespace Tests
         [Test]
         public static void InitializationAT()
         {
-            Assert.IsTrue(Tester.PBridge.Initialize(Tester.GuestGuid, "admin", "000000"));
-            Tester.AdminGuid = Tester.PBridge.Login(Tester.GuestGuid, "admin", "000000"); //Created in init
+            var initResult = Tester.PBridge.Initialize(Tester.GuestGuid, "admin", "000000");
+            Assert.AreNotEqual(initResult, Guid.Empty);
         }
         //GR 6.2 - Removing of registered user
 

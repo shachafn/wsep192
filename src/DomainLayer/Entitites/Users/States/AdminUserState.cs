@@ -72,17 +72,17 @@ namespace DomainLayer.Data.Entitites.Users.States
             throw new BadStateException($"Tried to invoke AddProductToShop in Admin State");
         }
 
-        public override void EditShopProduct(BaseUser baseUser, Guid shopGuid, Guid productGuid, double newPrice, int newQuantity)
+        public override void EditProductInShop(BaseUser baseUser, Guid shopGuid, Guid productGuid, double newPrice, int newQuantity)
         {
             throw new BadStateException($"Tried to invoke EditShopProduct in Admin State");
         }
 
-        public override bool RemoveShopProduct(BaseUser baseUser, Guid shopGuid, Guid shopProductGuid)
+        public override bool RemoveProductFromShop(BaseUser baseUser, Guid shopGuid, Guid shopProductGuid)
         {
             throw new BadStateException($"Tried to invoke RemoveShopProduct in Admin State");
         }
 
-        public override bool AddProductToShoppingCart(BaseUser baseUser, Guid shopGuid, Guid shopProductGuid, int quantity)
+        public override bool AddProductToCart(BaseUser baseUser, Guid shopGuid, Guid shopProductGuid, int quantity)
         {
             throw new BadStateException($"Tried to invoke AddProductToShoppingCart in Admin State");
         }

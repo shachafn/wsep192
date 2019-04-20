@@ -63,9 +63,9 @@ namespace ATBridge
             return _real?.GetAllProductsInCart(userGuid, shopGuid);
         }
 
-        public bool Initialize(Guid userGuid, string username, string password)
+        public Guid Initialize(Guid userGuid, string username, string password)
         {
-            return _real == null ? false : _real.Initialize(userGuid, username, password);
+            return _real == null ? Guid.Empty : _real.Initialize(userGuid, username, password);
         }
 
         public Guid Login(Guid userGuid, string username, string password)
@@ -83,9 +83,9 @@ namespace ATBridge
             return _real == null ? Guid.Empty : _real.OpenShop(userGuid);
         }
 
-        public bool PurchaseCart(Guid userGuid, Guid shopGuid)
+        public bool PurchaseBag(Guid userGuid)
         {
-            return _real == null ? false : _real.PurchaseCart(userGuid, shopGuid);
+            return _real == null ? false : _real.PurchaseBag(userGuid);
         }
 
         public bool Register(Guid userGuid, string username, string password)
@@ -116,6 +116,11 @@ namespace ATBridge
         public ICollection<Guid> SearchProduct(Guid userGuid, Guid shopGuid, string productName)
         {
             return _real?.SearchProduct(userGuid, shopGuid, productName);
+        }
+
+        public bool ChangeUserState(Guid userGuid, string newState)
+        {
+            return _real == null ? false : _real.ChangeUserState(userGuid, newState);
         }
 
         public void SetRealBridge(IBridge impl)

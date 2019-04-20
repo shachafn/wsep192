@@ -69,14 +69,14 @@ namespace ServiceLayer
             return _domainLayerFacade.AddProductToShop(userGuid, shopGuid, name, category, price, quantity);
         }
 
-        public bool EditShopProduct(Guid userGuid, Guid shopGuid, Guid productGuid, double newPrice, int newQuantity)
+        public bool EditProductInShop(Guid userGuid, Guid shopGuid, Guid productGuid, double newPrice, int newQuantity)
         {
-            return _domainLayerFacade.EditShopProduct(userGuid, shopGuid, productGuid, newPrice, newQuantity);
+            return _domainLayerFacade.EditProductInShop(userGuid, shopGuid, productGuid, newPrice, newQuantity);
         }
 
-        public bool RemoveShopProduct(Guid userGuid, Guid shopGuid, Guid shopProductGuid)
+        public bool RemoveProductFromShop(Guid userGuid, Guid shopGuid, Guid shopProductGuid)
         {
-            return _domainLayerFacade.RemoveShopProduct(userGuid, shopGuid, shopProductGuid);
+            return _domainLayerFacade.RemoveProductFromShop(userGuid, shopGuid, shopProductGuid);
         }
         #endregion
 
@@ -104,9 +104,9 @@ namespace ServiceLayer
         #endregion
 
         #region Shopping Cart
-        public bool AddProductToShoppingCart(Guid userGuid, Guid shopGuid, Guid shopProductGuid, int quantity)
+        public bool AddProductToCart(Guid userGuid, Guid shopGuid, Guid shopProductGuid, int quantity)
         {
-            return _domainLayerFacade.AddProductToShoppingCart(userGuid, shopGuid, shopProductGuid, quantity);
+            return _domainLayerFacade.AddProductToCart(userGuid, shopGuid, shopProductGuid, quantity);
         }
 
 

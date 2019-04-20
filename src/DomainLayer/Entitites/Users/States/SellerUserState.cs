@@ -51,18 +51,18 @@ namespace DomainLayer.Data.Entitites.Users.States
             return DomainData.ShopsCollection[shopGuid].AddProductToShop(baseUser.Guid, new Product(name, category), price, quantity);
         }
 
-        public override void EditShopProduct(BaseUser baseUser,Guid shopGuid, Guid productGuid, double newPrice, int newQuantity)
+        public override void EditProductInShop(BaseUser baseUser,Guid shopGuid, Guid productGuid, double newPrice, int newQuantity)
         {
             DomainData.ShopsCollection[shopGuid].EditProductInShop(baseUser.Guid, productGuid, newPrice, newQuantity);
         }
 
-        public override bool RemoveShopProduct(BaseUser baseUser, Guid shopGuid, Guid shopProductGuid)
+        public override bool RemoveProductFromShop(BaseUser baseUser, Guid shopGuid, Guid shopProductGuid)
         {
             DomainData.ShopsCollection[shopGuid].RemoveProductFromShop(baseUser.Guid, shopProductGuid);
             return true;
         }
 
-        public override bool AddProductToShoppingCart(BaseUser baseUser, Guid shopGuid, Guid shopProductGuid, int quantity)
+        public override bool AddProductToCart(BaseUser baseUser, Guid shopGuid, Guid shopProductGuid, int quantity)
         {
             throw new BadStateException($"Tried to invoke AddProductToShoppingCart in Seller State");
         }

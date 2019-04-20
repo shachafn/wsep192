@@ -18,9 +18,9 @@ namespace DomainLayer.Facade
         bool ConnectToPaymentSystem(Guid userGuid);
         bool ConnectToSupplySystem(Guid userGuid);
         Guid AddProductToShop(Guid userGuid, Guid shopGuid, string name, string category, double price, int quantity);
-        bool EditShopProduct(Guid userGuid, Guid shopGuid, Guid productGuid, double newPrice, int newQuantity);
-        bool RemoveShopProduct(Guid userGuid, Guid shopGuid, Guid shopProductGuid);
-        bool AddProductToShoppingCart(Guid userGuid, Guid shopGuid, Guid shopProductGuid, int quantity);
+        bool EditProductInShop(Guid userGuid, Guid shopGuid, Guid productGuid, double newPrice, int newQuantity);
+        bool RemoveProductFromShop(Guid userGuid, Guid shopGuid, Guid shopProductGuid);
+        bool AddProductToCart(Guid userGuid, Guid shopGuid, Guid shopProductGuid, int quantity);
         bool AddShopManager(Guid userGuid, Guid shopGuid, Guid newManagaerGuid, List<string> priviliges);
         bool CascadeRemoveShopOwner(Guid userGuid, Guid shopGuid, Guid ownerToRemoveGuid);
         bool EditProductInCart(Guid userGuid, Guid shopGuid, Guid shopProductGuid, int newAmount);

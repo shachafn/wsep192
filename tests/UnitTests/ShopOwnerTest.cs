@@ -4,6 +4,7 @@ using DomainLayer.Data.Entitites;
 
 namespace UnitTests
 {
+    /*
     [TestFixture]
     class ShopOwnerTest
     {
@@ -41,4 +42,5 @@ namespace UnitTests
             Assert.False(beniOwner.CloseShop());
         }
     }
+    */
 }

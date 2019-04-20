@@ -16,67 +16,58 @@ namespace ATBridge
 
         public bool AddProductToShoppingCart(Guid userGuid, Guid productGuid, Guid shopGuid, int quantity)
         {
-            return _serviceFacade.AddProductToShoppingCart(userGuid, productGuid, shopGuid, quantity);
+            return _serviceFacade.AddProductToCart(userGuid, productGuid, shopGuid, quantity);
         }
 
         public bool AddShopManager(Guid userGuid, Guid shopGuid, Guid newManagaerGuid, List<string> priviliges)
         {
             return _serviceFacade.AddShopManager(userGuid, shopGuid, newManagaerGuid, priviliges);
-            //throw new NotImplementedException();
+            
         }
 
         public bool AddShopOwner(Guid userGuid, Guid shopGuid, Guid newShopOwnerGuid)
         {
             return _serviceFacade.AddShopOwner(userGuid, shopGuid, newShopOwnerGuid);
-            //throw new NotImplementedException();
         }
 
         public Guid AddProductToShop(Guid userGuid, Guid shopGuid, string name, string category, double price, int quantity)
         {
             return _serviceFacade.AddProductToShop(userGuid, shopGuid, name, category, price, quantity);
-            //throw new NotImplementedException();
         }
 
         public bool CascadeRemoveShopOwner(Guid userGuid, Guid shopGuid, Guid ownerToRemoveGuid)
         {
             return _serviceFacade.CascadeRemoveShopOwner(userGuid, shopGuid, ownerToRemoveGuid);
-            //throw new NotImplementedException();
         }
 
         public bool ConnectToPaymentSystem(Guid userGuid)
         {
             return _serviceFacade.ConnectToSupplySystem(userGuid);
-           // throw new NotImplementedException();
         }
 
         public bool ConnectToSupplySystem(Guid userGuid)
         {
             return _serviceFacade.ConnectToSupplySystem(userGuid);
-            //throw new NotImplementedException();
         }
 
         public bool EditProductInCart(Guid userGuid, Guid shopGuid, Guid shopProductGuid, int newAmount)
         {
             return _serviceFacade.EditProductInCart(userGuid, shopGuid, shopProductGuid, newAmount);
-            //throw new NotImplementedException();
         }
 
         public bool EditShopProduct(Guid userGuid, Guid shopGuid, Guid productGuid, double newPrice, int newQuantity)
         {
-            //return _serviceFacade.EditProductInCart(userGuid, shopGuid, productGuid, newPrice, newQuantity);
-            throw new NotImplementedException();
+            return _serviceFacade.EditProductInShop(userGuid, shopGuid, productGuid, newPrice, newQuantity);
         }
 
         public ICollection<Guid> GetAllProductsInCart(Guid userGuid, Guid shopGuid)
         {
             return _serviceFacade.GetAllProductsInCart(userGuid, shopGuid);
-            //throw new NotImplementedException();
         }
 
-        public bool Initialize(Guid userGuid, string username, string password)
+        public Guid Initialize(Guid userGuid, string username, string password)
         {
-            throw new NotImplementedException();
-            //return _serviceFacade.Initialize(userGuid, username, password);
+            return _serviceFacade.Initialize(userGuid, username, password);
         }
 
         public Guid Login(Guid userGuid, string username, string password)
@@ -87,19 +78,16 @@ namespace ATBridge
         public bool Logout(Guid userGuid)
         {
             return _serviceFacade.Logout(userGuid);
-            //throw new NotImplementedException();
         }
 
         public Guid OpenShop(Guid userGuid)
         {
             return _serviceFacade.OpenShop(userGuid);
-            //throw new NotImplementedException();
         }
 
-        public bool PurchaseCart(Guid userGuid, Guid shopGuid)
+        public bool PurchaseBag(Guid userGuid)
         {
-            //return _serviceFacade.PurchaseBag(userGuid, shopGuid);
-            throw new NotImplementedException();
+            return _serviceFacade.PurchaseBag(userGuid);
         }
 
         public bool Register(Guid userGuid, string username, string password)
@@ -110,31 +98,32 @@ namespace ATBridge
         public bool RemoveProductFromCart(Guid userGuid, Guid shopGuid, Guid shopProductGuid)
         {
             return _serviceFacade.RemoveProductFromCart(userGuid, shopGuid, shopProductGuid);
-            //throw new NotImplementedException();
+            
         }
 
         public bool RemoveShopManager(Guid userGuid, Guid shopGuid, Guid managerToRemoveGuid)
         {
             return _serviceFacade.RemoveShopManager(userGuid, shopGuid, managerToRemoveGuid);
-            //throw new NotImplementedException();
         }
 
         public bool RemoveShopProduct(Guid userGuid, Guid shopProductGuid, Guid shopGuid)
         {
-            //return _serviceFacade.RemoveShopProduct(userGuid, shopProductGuid, shopGuid);
-            throw new NotImplementedException();
+            return _serviceFacade.RemoveProductFromShop(userGuid, shopProductGuid, shopGuid);
         }
 
         public bool RemoveUser(Guid userGuid, Guid userToRemoveGuid)
         {
             return _serviceFacade.RemoveUser(userGuid, userToRemoveGuid);
-            //throw new NotImplementedException();
         }
 
         public ICollection<Guid> SearchProduct(Guid userGuid, Guid shopGuid, string productName)
         {
             return _serviceFacade.SearchProduct(userGuid, shopGuid, productName);
-            //throw new NotImplementedException();
+        }
+
+        public bool ChangeUserState(Guid userGuid, string newState)
+        {
+            return _serviceFacade.ChangeUserState(userGuid, newState);
         }
     }
 }

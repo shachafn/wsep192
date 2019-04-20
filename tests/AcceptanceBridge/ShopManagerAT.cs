@@ -17,9 +17,14 @@ namespace Tests
                 AdminAT.InitializationAT();
             }
         }
-        
+        [TearDown]
+        public static void TearDown()
+        {
+            Tester.PBridge.ClearSystem();
+        }
+
         //GR 5.1 - Commit something by manager should be done according to his permissions.
-        
+
         /*public static void CommitSomethingWithPermissionAT()
         {
             CommitSomethingWithPermissionAT1();

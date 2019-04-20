@@ -125,12 +125,14 @@ namespace Tests
         [Test]
         public static void SavingProductsInCartAT1()
         {
+            Tester.PBridge.ChangeUserState(Tester.GuestGuid, "BuyerUserState"); //Move to buyer state
             bool res = Tester.PBridge.AddProductToShoppingCart(Tester.GuestGuid, Tester.galaxyGuid, Tester._groismanShop, 1);
             Assert.True(res);
         }
         [Test]
         public static void SavingProductsInCartAT2()
         {
+            Tester.PBridge.ChangeUserState(Tester.GuestGuid, "BuyerUserState"); //Move to buyer state
             bool res = Tester.PBridge.AddProductToShoppingCart(Tester.GuestGuid, Guid.Empty , Tester._groismanShop, 1); //Invalid product.
             Assert.False(res);
         }
@@ -151,6 +153,7 @@ namespace Tests
                 LoginAT1();
             if (Tester._groismanShop.CompareTo(Guid.Empty) == 0)
                 RegisteredBuyerAT.OpenStoreAT1(); //the shop is empty and no product is available.
+            Tester.PBridge.ChangeUserState(Tester.GuestGuid, "BuyerUserState"); //Move to buyer state
             Assert.IsNull(Tester.PBridge.GetAllProductsInCart(Tester.GuestGuid, Tester._groismanShop));
         }
         [Test]
@@ -164,6 +167,8 @@ namespace Tests
                 RegisteredBuyerAT.OpenStoreAT1(); //the shop is empty and no product is available.
             if(Tester.galaxyGuid.CompareTo(Guid.Empty) == 0)
                 StoreOwnerAT.AddingProductAT1(); //now Groisman's shop has 10 Galaxys
+
+            Tester.PBridge.ChangeUserState(Tester.GuestGuid, "BuyerUserState"); //Move to buyer state
             SavingProductsInCartAT1(); //Add 1 galaxy
             ICollection<Guid> expected = new LinkedList<Guid>();
             expected.Add(Tester.galaxyGuid); //Assumption : The list will hold product guid and not shopProduct guid.
@@ -181,10 +186,12 @@ namespace Tests
             if (Tester.galaxyGuid.CompareTo(Guid.Empty) == 0)
                 StoreOwnerAT.AddingProductAT1(); //now Groisman's shop has 10 Galaxys
             SavingProductsInCartAT1(); //Add product to cart.
+            Tester.PBridge.ChangeUserState(Tester.GuestGuid, "BuyerUserState"); //Move to buyer state
             bool res = Tester.PBridge.RemoveProductFromCart(Tester.GuestGuid, Tester._groismanShop, Tester.galaxyGuid);
             Assert.True(res);
         }
 
+        /*
         //GR 2.8 - purchase of products
 
         public static void PurchaseAT()
@@ -253,7 +260,7 @@ namespace Tests
         {
             //TODO: Complete when I'll know how to purchase a product.
             Assert.Pass();
-        }
+        } */
 
         public static void RunUserAT()
         {
@@ -262,7 +269,7 @@ namespace Tests
             SearchProductsAT(); //GR 2.5
             SavingProductsInCartAT();//GR 2.6
             WatchingAndEditingOfCartAT(); // GR 2.7
-            PurchaseAT(); //GR 2.8
+            //PurchaseAT(); //GR 2.8
         }
     }
 }

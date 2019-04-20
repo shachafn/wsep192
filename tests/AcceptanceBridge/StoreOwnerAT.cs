@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Text;
 using NUnit.Framework;
+using DomainLayer.Exceptions;
 using DomainLayer;
 using ATBridge;
 
@@ -21,6 +22,11 @@ namespace Tests
                 UserAT.LoginAT1();
             if (Tester._groismanShop.CompareTo(Guid.Empty) == 0)
                 RegisteredBuyerAT.OpenStoreAT1();
+        }
+        [TearDown]
+        public static void TearDown()
+        {
+            Tester.PBridge.ClearSystem();
         }
         public static void RunStoreOwnerAT()
         {
@@ -52,20 +58,13 @@ namespace Tests
         public static void AddingProductAT1()
         {
             Guid productGuid = Tester.PBridge.AddProductToShop(Tester.GroismanGuid, Tester._groismanShop, "Galaxy S9", "Cellphones", 2000, 10);
-            if(productGuid.CompareTo(Guid.Empty) == 0)
-            {
-                Assert.Fail();
-            }
-            Tester.galaxyGuid = productGuid;
-            Assert.Pass();
-
+            Assert.Zero(productGuid.CompareTo(Guid.Empty));
         }
 
         [Test]
         public static void AddingProductAT2()
         {
-            Guid res = Tester.PBridge.AddProductToShop(Tester.GuestGuid,Tester._groismanShop, "Galaxy S9", "Cellphones", 2000, 10);
-            Assert.Zero(res.CompareTo(Guid.Empty));
+            Assert.Throws<BadStateException>(() => Tester.PBridge.AddProductToShop(Tester.GuestGuid, Tester._groismanShop, "Galaxy S9", "Cellphones", 2000, 10));
         }
 
         [Test]
@@ -82,12 +81,7 @@ namespace Tests
         [Test]
         public static void AddingProductAT4()
         {
-            Guid productGuid = Tester.PBridge.AddProductToShop(Tester.GroismanGuid, Tester._groismanShop, "Galaxy S9", "Cellphones", -2000, 10);
-            if (productGuid.CompareTo(Guid.Empty) == 0)
-            {
-                Assert.Pass();
-            }
-            Assert.Fail();
+            Assert.Throws<IllegalArgumentException>(() => Tester.PBridge.AddProductToShop(Tester.GroismanGuid, Tester._groismanShop, "Galaxy S9", "Cellphones", -2000, 10));
         }
 
         //GR 4.1.2
@@ -117,19 +111,13 @@ namespace Tests
         [Test]
         public static void RemovingProductAT2()
         {
-            bool result = Tester.PBridge.RemoveShopProduct(Tester.GuestGuid, Tester.galaxyGuid, Tester._groismanShop);
-            Assert.IsFalse(result);
+            Assert.Throws<BadStateException>(() => Tester.PBridge.RemoveShopProduct(Tester.GuestGuid, Tester.galaxyGuid, Tester._groismanShop));
         }
 
         [Test]
         public static void RemovingProductAT3()
         {
-            if (Tester.galaxyGuid.CompareTo(Guid.Empty) == 0)
-            {
-                AddingProductAT1();
-            }
-            bool result = Tester.PBridge.RemoveShopProduct(Tester.GroismanGuid , Guid.Empty , Tester._groismanShop); //The empty guid doesn't exist in the shop.
-            Assert.False(result);
+            Assert.Throws<ProductNotFoundException>(() => Tester.PBridge.RemoveShopProduct(Tester.GroismanGuid, Guid.Empty, Tester._groismanShop)); //The empty guid doesn't exist in the shop.
         }
 
 
@@ -150,22 +138,20 @@ namespace Tests
             {
                 AddingProductAT1();
             }
-           bool result = Tester.PBridge.EditShopProduct(Tester.GroismanGuid,Tester._groismanShop, Tester.galaxyGuid, 1500, 20);
-           Assert.True(result);
+            bool result = Tester.PBridge.EditShopProduct(Tester.GroismanGuid, Tester._groismanShop, Tester.galaxyGuid, 1500, 20);
+            Assert.True(result);
         }
 
         [Test]
         public static void EditingProductAT2()
         {
-            bool result = Tester.PBridge.EditShopProduct(Tester.GuestGuid, Tester._groismanShop, Tester.galaxyGuid, 1500, 20);
-            Assert.True(result);
+            Assert.Throws<BadStateException>(() => Tester.PBridge.EditShopProduct(Tester.GuestGuid, Tester._groismanShop, Tester.galaxyGuid, 1500, 20));
         }
 
         [Test]
         public static void EditingProductAT3()
         {
-            bool result = Tester.PBridge.RemoveShopProduct(Tester.GroismanGuid, Guid.Empty, Tester._groismanShop); //The empty guid doesn't exist in the shop.
-            Assert.False(result);
+            Assert.Throws<ProductNotFoundException>(() => Tester.PBridge.RemoveShopProduct(Tester.GroismanGuid, Guid.Empty, Tester._groismanShop)); //The empty guid doesn't exist in the shop.
         }
 
         [Test]
@@ -175,9 +161,7 @@ namespace Tests
             {
                 AddingProductAT1();
             }
-            bool result = Tester.PBridge.EditShopProduct(Tester.GroismanGuid, Tester._groismanShop, Tester.galaxyGuid, 1500, -20);
-            Assert.False(result);
-
+            Assert.Throws<IllegalArgumentException>(() => Tester.PBridge.EditShopProduct(Tester.GroismanGuid, Tester._groismanShop, Tester.galaxyGuid, 1500, -20));
         }
 
         //GR 4.3 - Store's owner can appoint new owner to his store.
@@ -199,14 +183,12 @@ namespace Tests
             }
             bool res = Tester.PBridge.AddShopOwner(Tester.GroismanGuid, Tester._groismanShop, Tester.BenGuid);
             Assert.True(res);
-            //TODO: Remove Ben from system
         }
 
         [Test]
         public static void AppointmentOfNewOwnerAT2()
         {
-            bool res = Tester.PBridge.AddShopOwner(Tester.GroismanGuid, Tester._groismanShop, Tester.GuestGuid);
-            Assert.False(res);
+            Assert.Throws<UserNotFoundException>(()=> Tester.PBridge.AddShopOwner(Tester.GroismanGuid, Tester._groismanShop, Tester.GuestGuid));
         }
 
         [Test]
@@ -217,8 +199,7 @@ namespace Tests
                 Tester.PBridge.Register(Tester.GuestGuid, "Benhas", "151097");
                 Tester.BenGuid = Tester.PBridge.Login(Tester.GuestGuid, "Benhas", "151097");
             }
-            bool res = Tester.PBridge.AddShopOwner(Tester.GuestGuid, Tester._groismanShop, Tester.BenGuid);
-            Assert.False(res);
+            Assert.Throws<BadStateException>( ()=> Tester.PBridge.AddShopOwner(Tester.GuestGuid, Tester._groismanShop, Tester.BenGuid));
         }
 
         //CAN NOT TEST THAT!
@@ -252,16 +233,15 @@ namespace Tests
         [Test]
         public static void RemoveOfOwnerAT2()
         {
-            bool res = Tester.PBridge.CascadeRemoveShopOwner(Tester.GroismanGuid, Tester._groismanShop, Tester.GuestGuid);
-            Assert.False(res);
+            Assert.Throws<UserNotFoundException>(()=> Tester.PBridge.CascadeRemoveShopOwner(Tester.GroismanGuid, Tester._groismanShop, Tester.GuestGuid));
         }
 
         //Can not test it
-       /* [Test]
-        public static void RemoveOfOwnerAT3()
-        {
-            Assert.Pass();
-        } */
+        /* [Test]
+         public static void RemoveOfOwnerAT3()
+         {
+             Assert.Pass();
+         } */
 
         [Test]
         public static void RemoveOfOwnerAT4()
@@ -270,8 +250,7 @@ namespace Tests
             {
                 AppointmentOfNewOwnerAT1();
             }
-            bool res = Tester.PBridge.CascadeRemoveShopOwner(Tester.GroismanGuid, Tester._groismanShop, Tester.BenGuid);
-            Assert.False(res);
+            Assert.Throws<BadStateException>(()=> Tester.PBridge.CascadeRemoveShopOwner(Tester.GuestGuid, Tester._groismanShop, Tester.BenGuid));
         }
 
 
@@ -297,7 +276,6 @@ namespace Tests
             }
             bool res = Tester.PBridge.AddShopManager(Tester.GroismanGuid, Tester._groismanShop, Tester.BenGuid, privillages);
             Assert.True(res);
-            //TODO:Remove Ben from manager role.
         }
 
         [Test]
@@ -305,9 +283,7 @@ namespace Tests
         {
             List<string> privillages = new List<string>();
             privillages.Add("CPA");
-           
-            bool res = Tester.PBridge.AddShopManager(Tester.GroismanGuid, Tester._groismanShop, Tester.GuestGuid, privillages);
-            Assert.False(res);
+            Assert.Throws<UserNotFoundException>(() => Tester.PBridge.AddShopManager(Tester.GroismanGuid, Tester._groismanShop, Tester.GuestGuid, privillages));
         }
 
         [Test]
@@ -320,8 +296,7 @@ namespace Tests
                 Tester.PBridge.Register(Tester.GuestGuid, "Benhas", "151097");
                 Tester.BenGuid = Tester.PBridge.Login(Tester.GuestGuid, "Benhas", "151097");
             }
-            bool res = Tester.PBridge.AddShopManager(Tester.GuestGuid, Tester._groismanShop, Tester.BenGuid, privillages);
-            Assert.False(res);
+            Assert.Throws<BadStateException>(()=> Tester.PBridge.AddShopManager(Tester.GuestGuid, Tester._groismanShop, Tester.BenGuid, privillages));
         }
 
         /*[Test]
@@ -334,7 +309,6 @@ namespace Tests
         //GR 4.6 - Store's owner can remove manager from his store.
         public static void RemoveOfManagerAT()
         {
-            //TODO:Like GR 4.4
             RemoveOfManagerAT1();
             RemoveOfManagerAT2();
             //RemoveOfManagerAT3(); //Can not test it
@@ -355,8 +329,7 @@ namespace Tests
         [Test]
         public static void RemoveOfManagerAT2()
         {
-            bool res = Tester.PBridge.RemoveShopManager(Tester.GroismanGuid, Tester._groismanShop, Tester.GuestGuid);
-            Assert.False(res);
+            Assert.Throws<UserNotFoundException>(() => Tester.PBridge.RemoveShopManager(Tester.GroismanGuid, Tester._groismanShop, Tester.GuestGuid));
         }
 
         /*[Test] //Can not test it
@@ -372,8 +345,7 @@ namespace Tests
             {
                 AppointmentOfNewManagerAT1();
             }
-            bool res = Tester.PBridge.CascadeRemoveShopOwner(Tester.GuestGuid, Tester._groismanShop, Tester.BenGuid);
-            Assert.False(res);
+            Assert.Throws<BadStateException>(()=> Tester.PBridge.CascadeRemoveShopOwner(Tester.GuestGuid, Tester._groismanShop, Tester.BenGuid));
         }
 
 

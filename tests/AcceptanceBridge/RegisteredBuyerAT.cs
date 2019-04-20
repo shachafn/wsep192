@@ -19,12 +19,18 @@ namespace Tests
         {
             Tester.PBridge.SetRealBridge(new BridgeImpl());
             if (!Tester._initalized)
+            {
                 AdminAT.InitializationAT();
+            }
             if (!Tester._groismanRegistered)
                 UserAT.RegisterAT1();
             if(!Tester._groismanConnected)
                 UserAT.LoginAT1();
-            //TODO: MAYBE I will need to remove groisman's shop
+        }
+        [TearDown]
+        public static void TearDown()
+        {
+            Tester.PBridge.ClearSystem();
         }
 
         //GR 3.1 - Registered user can commit logout.
@@ -44,15 +50,7 @@ namespace Tests
         [Test]
         public static void LogoutAT2()
         {
-            try
-            {
-                Tester.PBridge.Logout(Tester.GuestGuid);
-                Assert.Fail();
-            }
-            catch (IllegalOperationException)
-            {
-                Assert.Pass();
-            }
+            Assert.Throws<IllegalOperationException>(() => Tester.PBridge.Logout(Tester.GuestGuid));
         }
 
         //GR 3.2 - Registered user can open new store.
@@ -64,6 +62,7 @@ namespace Tests
        [Test]
         public static void OpenStoreAT1()
         {
+            Tester.PBridge.ChangeUserState(Tester.GroismanGuid, "SellerUserState");
             Tester._groismanShop = Tester.PBridge.OpenShop(Tester.GroismanGuid);
             Assert.NotZero(Tester._groismanShop.CompareTo(Guid.Empty));
         }
@@ -71,15 +70,7 @@ namespace Tests
         [Test]
         public static void OpenStoreAT2()
         {
-            try
-            {
-                Tester.PBridge.OpenShop(Tester.GuestGuid);
-                Assert.Fail();
-            }
-            catch (UserNotFoundException)
-            {
-                Assert.Pass();
-            }
+           Assert.Throws< UserNotFoundException>( () => Tester.PBridge.OpenShop(Tester.GuestGuid));
         }
 
         public static void RunRegisteredUserAT()

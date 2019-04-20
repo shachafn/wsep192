@@ -61,7 +61,7 @@ namespace Tests
             }
             //make groisman owner
             if (Tester._groismanShop.Equals(Guid.Empty))
-                RegisteredBuyerAT.CreationOfNewStoreByRegisteredUserAT();
+                RegisteredBuyerAT.OpenStoreAT1();
 
             Assert.Throws<BrokenConstraintException>(
                 () => Tester.PBridge.RemoveUser(Tester.AdminGuid, Tester.GroismanGuid));

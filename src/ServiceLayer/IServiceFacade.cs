@@ -17,6 +17,7 @@ namespace ServiceLayer
         /// 2. username and password must not be string.IsNullOrWhitespace
         /// 3. if username is taken - return false;
         /// </constraints>
+        /// <exception cref="SystemNotInitializedException">When system has not yet been initialized.</exception>
         /// <exception cref="IllegalOperationException">When the userGuid is not a GuestGuid.</exception>
         /// <exception cref="IllegalArgumentException">When the username/password are null, empty or whitespace</exception>
         /// <returns>The Guid of the created user, Guid.Empty if the username is taken.</returns>
@@ -32,6 +33,7 @@ namespace ServiceLayer
         /// 2. username and password must not be string.IsNullOrWhitespace
         /// 3. if username and password doesnt match nay user - return false
         /// </constraints>
+        /// <exception cref="SystemNotInitializedException">When system has not yet been initialized.</exception>
         /// <exception cref="IllegalOperationException">When the userGuid is not a GuestGuid.</exception>
         /// <exception cref="IllegalArgumentException">When the username/password are null, empty or whitespace</exception>
         /// <exception cref="CredentialsMismatchException">When the username and password does not match any registered user's credentials</exception>
@@ -46,6 +48,7 @@ namespace ServiceLayer
         /// 1. User must exist
         /// 2. User must be logged in.
         /// </constraints>
+        /// <exception cref="SystemNotInitializedException">When system has not yet been initialized.</exception>
         /// <exception cref="IllegalOperationException">When userGuid does not match any logged-in user's guid.</exception>
         /// <returns>True.</returns>
         bool Logout(Guid userGuid);
@@ -60,6 +63,7 @@ namespace ServiceLayer
         /// 2. User must be logged in.
         /// 3. User must be in seller state.
         /// </constraints>
+        /// <exception cref="SystemNotInitializedException">When system has not yet been initialized.</exception>
         /// <exception cref="UserNotFoundException">When userGuid does not match any logged-in user's guid.</exception>
         /// <exception cref="BadStateException">When the user is not in seller state</exception>
         /// <returns>Guid of the created shop.</returns>
@@ -82,6 +86,7 @@ namespace ServiceLayer
         /// 4. username and password must not be string.NullOrWhitespace
         /// 5. if any external service is unavailable - an exception is thrown
         /// </constraints>
+        /// <exception cref="SystemAlreadyInitializedException">When system has already been initialized.</exception>
         /// <exception cref="BrokenConstraintException">When the userGuid is not a GuestGuid.</exception>
         /// <exception cref="IllegalArgumentException">When the username/password are null, empty or whitespace</exception>
         /// <exception cref="CredentialsMismatchException">When the username/password does not match the admin user's credentials</exception>
@@ -101,6 +106,7 @@ namespace ServiceLayer
         /// 4. UserToRemove must not be the only owner of an active shop.
         /// 5. UserToRemove must not be the only admin of the system.
         /// </constraints>
+        /// <exception cref="SystemNotInitializedException">When system has not yet been initialized.</exception>
         /// <exception cref="UserNotFoundException">When userGuid does not match any logged-in user's guid.</exception>
         /// <exception cref="BadStateException">When the user is not in AdminUserState</exception>
         /// <exception cref="BrokenConstraintException">When the user is the only owner of an active shop</exception>
@@ -118,6 +124,7 @@ namespace ServiceLayer
         /// 2. User must be logged in.
         /// 3. User must be admin.
         /// </constraints>
+        /// <exception cref="SystemNotInitializedException">When system has not yet been initialized.</exception>
         /// <exception cref="UserNotFoundException">When userGuid does not match any logged-in user's guid.</exception>
         /// <exception cref="BadStateException">When the user is not in AdminUserState</exception>
         /// <returns>True if can connect, false otherwise.</returns>
@@ -133,6 +140,7 @@ namespace ServiceLayer
         /// 2. User must be logged in.
         /// 3. User must be admin.
         /// </constraints>
+        /// <exception cref="SystemNotInitializedException">When system has not yet been initialized.</exception>
         /// <exception cref="UserNotFoundException">When userGuid does not match any logged-in user's guid.</exception>
         /// <exception cref="BadStateException">When the user is not in AdminUserState</exception>
         /// <returns>True if can connect, false otherwise.</returns>
@@ -153,6 +161,7 @@ namespace ServiceLayer
         /// 7. Product must exist in the shop.
         /// 8. quantity must be greater than 0
         /// </constraints>
+        /// <exception cref="SystemNotInitializedException">When system has not yet been initialized.</exception>
         /// <exception cref="UserNotFoundException">When userGuid does not match any logged-in user's guid.</exception>
         /// <exception cref="BadStateException">When the user is not in BuyerUserState</exception>
         /// <exception cref="ShopNotFoundException">When shopGuid does not match any existing shop guid.</exception>
@@ -175,6 +184,7 @@ namespace ServiceLayer
         /// 5. Shop must exist.
         /// 6. Shop must be active.
         /// </constraints>
+        /// <exception cref="SystemNotInitializedException">When system has not yet been initialized.</exception>
         /// <exception cref="UserNotFoundException">When userGuid does not match any logged-in user's guid.</exception>
         /// <exception cref="BadStateException">When the user is not in BuyerUserState</exception>
         /// <exception cref="ShopNotFoundException">When shopGuid does not match any existing shop guid.</exception>
@@ -195,6 +205,7 @@ namespace ServiceLayer
         /// 6. Shop must be active.
         /// 7. Product must exist in cart.
         /// </constraints>
+        /// <exception cref="SystemNotInitializedException">When system has not yet been initialized.</exception>
         /// <exception cref="UserNotFoundException">When userGuid does not match any logged-in user's guid.</exception>
         /// <exception cref="BadStateException">When the user is not in BuyerUserState</exception>
         /// <exception cref="ShopNotFoundException">When shopGuid does not match any existing shop guid.</exception>
@@ -217,6 +228,7 @@ namespace ServiceLayer
         /// 7. Product must exist in cart.
         /// 8. newAmount must be equal or greater than 1 (For Remove - user RemoveProductFromCart)
         /// </constraints>
+        /// <exception cref="SystemNotInitializedException">When system has not yet been initialized.</exception>
         /// <exception cref="UserNotFoundException">When userGuid does not match any logged-in user's guid.</exception>
         /// <exception cref="BadStateException">When the user is not in BuyerUserState</exception>
         /// <exception cref="ShopNotFoundException">When shopGuid does not match any existing shop guid.</exception>
@@ -242,6 +254,7 @@ namespace ServiceLayer
         /// 9. price must be grater than 0
         /// 10. quantity must be equal or greater than 0 (May not have any to sell at the moment).
         /// </constraints>
+        /// <exception cref="SystemNotInitializedException">When system has not yet been initialized.</exception>
         /// <exception cref="UserNotFoundException">When userGuid does not match any logged-in user's guid.</exception>
         /// <exception cref="BadStateException">When the user is not in SellerUserState</exception>
         /// <exception cref="NoPriviligesException">When the user is not a creator,owner or manager with priviliges.</exception>
@@ -267,6 +280,7 @@ namespace ServiceLayer
         /// 6. Shop must be active.
         /// 7. Product must exist in shop.
         /// </constraints>
+        /// <exception cref="SystemNotInitializedException">When system has not yet been initialized.</exception>
         /// <exception cref="UserNotFoundException">When userGuid does not match any logged-in user's guid.</exception>
         /// <exception cref="BadStateException">When the user is not in SellerUserState</exception>
         /// <exception cref="NoPriviligesException">When the user is not a creator,owner or manager with priviliges.</exception>
@@ -292,6 +306,7 @@ namespace ServiceLayer
         /// 8. newPrice must be greater than 0.
         /// 9. newQuantity must be equal or greater than 0 (May not have any to sell at the moment).
         /// </constraints>
+        /// <exception cref="SystemNotInitializedException">When system has not yet been initialized.</exception>
         /// <exception cref="UserNotFoundException">When userGuid does not match any logged-in user's guid.</exception>
         /// <exception cref="BadStateException">When the user is not in SellerUserState</exception>
         /// <exception cref="NoPriviligesException">When the user is not a creator,owner or manager with priviliges.</exception>
@@ -316,6 +331,7 @@ namespace ServiceLayer
         /// 6. Shop must be active.
         /// 7. productName must not be null or string.Empty
         /// </constraints>
+        /// <exception cref="SystemNotInitializedException">When system has not yet been initialized.</exception>
         /// <exception cref="UserNotFoundException">When userGuid does not match any logged-in user's guid.</exception>
         /// <exception cref="BadStateException">When the user is not in BuyerUserState/GuestUserState</exception>
         /// <exception cref="ShopNotFoundException">When shopGuid does not match any existing shop guid.</exception>
@@ -338,6 +354,7 @@ namespace ServiceLayer
         /// 6. Shop must be active.
         /// 7. new shop manager must be an existing user.
         /// </constraints>
+        /// <exception cref="SystemNotInitializedException">When system has not yet been initialized.</exception>
         /// <exception cref="UserNotFoundException">When userGuid does not match any logged-in user's guid.</exception>
         /// <exception cref="BadStateException">When the user is not in SellerUserState</exception>
         /// <exception cref="NoPriviligesException">When the user is not an owner of the shop.</exception>
@@ -363,6 +380,7 @@ namespace ServiceLayer
         /// 7. ownerToRemove must be an owner of the shop.
         /// 8. ownerToRemove must have been appointed by the user with guid=userGuid
         /// </constraints>
+        /// <exception cref="SystemNotInitializedException">When system has not yet been initialized.</exception>
         /// <exception cref="UserNotFoundException">When userGuid does not match any logged-in user's guid.</exception>
         /// <exception cref="BadStateException">When the user is not in SellerUserState</exception>
         /// <exception cref="NoPriviligesException">When the user is not an owner of the shop.</exception>
@@ -388,6 +406,7 @@ namespace ServiceLayer
         /// 7. newManagaerGuid must be an existing user.
         /// 8. newManagaerGuid must not be the creator of the shop, or one of the owners/managers.
         /// </constraints>
+        /// <exception cref="SystemNotInitializedException">When system has not yet been initialized.</exception>
         /// <exception cref="UserNotFoundException">When userGuid does not match any logged-in user's guid.</exception>
         /// <exception cref="BadStateException">When the user is not in SellerUserState</exception>
         /// <exception cref="NoPriviligesException">When the user is not an owner of the shop.</exception>
@@ -413,6 +432,7 @@ namespace ServiceLayer
         /// 7. newManagaerGuid must be an existing user.
         /// 8. newManagaerGuid must not be the creator of the shop, or one of the owners/managers.
         /// </constraints>
+        /// <exception cref="SystemNotInitializedException">When system has not yet been initialized.</exception>
         /// <exception cref="UserNotFoundException">When userGuid does not match any logged-in user's guid.</exception>
         /// <exception cref="BadStateException">When the user is not in SellerUserState</exception>
         /// <exception cref="NoPriviligesException">When the user is not an owner of the shop.</exception>
@@ -433,6 +453,7 @@ namespace ServiceLayer
         /// 3. newState must not be string.IsNullOrWhitespace
         /// 4. newState must be a valid state (see implementation)
         /// </constraints>
+        /// <exception cref="SystemNotInitializedException">When system has not yet been initialized.</exception>
         /// <exception cref="UserNotFoundException">When userGuid does not match any logged-in user's guid.</exception>
         /// <exception cref="IllegalArgumentException">When the newState is not one of "AdminUserState","BuyerUserState","SellerUserState"</exception>
         /// <exception cref="IllegalOperationException">When user tries to change state to admin, but is not an admin"</exception>

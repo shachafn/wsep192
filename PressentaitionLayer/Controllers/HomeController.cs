@@ -3,13 +3,21 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
 using System.Threading.Tasks;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using PressentaitionLayer.Models;
+using PressentaitionLayer.Services;
 
 namespace PressentaitionLayer.Controllers
 {
     public class HomeController : Controller
     {
+        private readonly ISession _session;
+
+        public HomeController(ISession session)
+        {
+            _session = session;
+        }
         public IActionResult Index()
         {
             return View();
@@ -29,8 +37,11 @@ namespace PressentaitionLayer.Controllers
             return View();
         }
 
-        public IActionResult Privacy()
+        public IActionResult Debug()
         {
+            //modelToRemove moti = new modelToRemove();
+            //moti.Id = _session.GetSessionGuid;
+            ViewData["SessionGuid"] = _session.GetSessionGuid;
             return View();
         }
 

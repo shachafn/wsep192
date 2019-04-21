@@ -20,7 +20,10 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "UnitTests", "tests\UnitTest
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Utils", "src\Utils\Utils.csproj", "{171ADBA2-95ED-4A5E-8794-DA3347C0CE02}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "PressentaitionLayer", "PressentaitionLayer\PressentaitionLayer.csproj", "{D39EA6E8-686E-45F5-9297-A72CF5103736}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "PressentaitionLayer", "PressentaitionLayer\PressentaitionLayer.csproj", "{D39EA6E8-686E-45F5-9297-A72CF5103736}"
+	ProjectSection(ProjectDependencies) = postProject
+		{7C461394-ABDC-43CD-A798-71249C58BA67} = {7C461394-ABDC-43CD-A798-71249C58BA67}
+	EndProjectSection
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

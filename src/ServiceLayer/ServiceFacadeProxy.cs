@@ -15,16 +15,16 @@ namespace ServiceLayer
 
         // Login and Logout functions will act quite different becuase we
         // need them to maintain the Sessions mapping from cookie to user guid
-        public bool Login(Guid cookie, string username, string password)
+        public Guid Login(Guid cookie, string username, string password)
         {
             var userGuid = _sessionManager.ResolveCookie(cookie);
             var actualUserGuid = _serviceFacade.Login(userGuid, username, password);
             if (!actualUserGuid.Equals(Guid.Empty))
             {
                 _sessionManager.SetLoggedIn(cookie, actualUserGuid);
-                return true;
+                return actualUserGuid;
             }
-            return false;
+            return actualUserGuid;
         }
 
         public bool Logout(Guid cookie)

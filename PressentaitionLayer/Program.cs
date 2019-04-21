@@ -7,11 +7,13 @@ using Microsoft.AspNetCore;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Logging;
+using ServiceLayer;
 
 namespace PressentaitionLayer
 {
     public class Program
     {
+        public static ServiceFacadeProxy Service;
         public static void Main(string[] args)
         {
             CreateWebHostBuilder(args).Build().Run();

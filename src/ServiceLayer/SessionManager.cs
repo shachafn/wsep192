@@ -1,6 +1,8 @@
-﻿using ServiceLayer.Exceptions;
+﻿using DomainLayer.ExposedClasses;
+using ServiceLayer.Exceptions;
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Text;
 
 namespace ServiceLayer
@@ -31,23 +33,45 @@ namespace ServiceLayer
         }
         #endregion
         public Dictionary<Guid, Guid> SessionToUserDictionary = new Dictionary<Guid, Guid>();
-        public Guid ResolveCookie(Guid cookie) => SessionToUserDictionary.ContainsKey(cookie) ? SessionToUserDictionary[cookie] : GuestGuid;
+        public ICollection<Guid> SessionToGuestDictionary = new List<Guid>();
+        public UserIdentifier ResolveCookie(Guid cookie)
+        {
+            if (SessionToUserDictionary.ContainsKey(cookie))
+                return new UserIdentifier(SessionToUserDictionary[cookie], false);
+            if (SessionToGuestDictionary.Contains(cookie))
+                return new UserIdentifier(cookie, true);
+            SessionToGuestDictionary.Add(cookie);
+            return new UserIdentifier(cookie, true);
+        }
         public Guid GetNewCookie() => Guid.NewGuid();
 
         public void SetLoggedIn(Guid cookie, Guid newUserGuid)
         {
-            if (!SessionToUserDictionary.ContainsKey(cookie))
-                throw new CookieNotFoundException($"No Session with cookie {cookie} exists in the dictionary.");
+            if (!SessionToGuestDictionary.Contains(cookie))
+                throw new CookieNotFoundException($"Login - No Session with cookie {cookie} exists in the dictionary.");
 
             SessionToUserDictionary[cookie] = newUserGuid;
         }
 
-        public void SetLoggedOut(Guid cookie)
+        public void SetSessionLoggedOut(Guid cookie)
         {
             if (!SessionToUserDictionary.ContainsKey(cookie))
-                throw new CookieNotFoundException($"No Session with cookie {cookie} exists in the dictionary.");
+                throw new CookieNotFoundException($"Logout - No Session with cookie {cookie} exists in the dictionary.");
 
             SessionToUserDictionary[cookie] = GuestGuid;
+        }
+
+        internal void SetUserLoggedOut(Guid userToRemoveGuid)
+        {
+            var result = SessionToUserDictionary.FirstOrDefault(s => s.Value.Equals(userToRemoveGuid));
+            if (result.Equals(default(KeyValuePair<Guid, Guid>)))
+                SessionToUserDictionary.Remove(result.Key);
+        }
+
+        public void Clear()
+        {
+            SessionToGuestDictionary.Clear();
+            SessionToUserDictionary.Clear();
         }
     }
 }

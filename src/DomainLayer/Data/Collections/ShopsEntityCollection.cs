@@ -2,7 +2,7 @@
 
 namespace DomainLayer.Data.Collections
 {
-    public class ShopEntityCollection : EntityCollection<Shop>
+    public class ShopsEntityCollection : EntityCollection<Shop>
     {
     }
 }

@@ -14,109 +14,121 @@ namespace ATBridge
             _serviceFacade = new ServiceFacadeProxy();
         }
 
-        public bool AddProductToShoppingCart(Guid userGuid, Guid productGuid, Guid shopGuid, int quantity)
+        public bool AddProductToCart(Guid userGuid, Guid shopGuid, Guid productGuid, int quantity)
         {
-            throw new NotImplementedException();
+            return _serviceFacade.AddProductToCart(userGuid, shopGuid, productGuid, quantity);
         }
 
         public bool AddShopManager(Guid userGuid, Guid shopGuid, Guid newManagaerGuid, List<string> priviliges)
         {
-            throw new NotImplementedException();
+            return _serviceFacade.AddShopManager(userGuid, shopGuid, newManagaerGuid, priviliges);
+            
         }
 
         public bool AddShopOwner(Guid userGuid, Guid shopGuid, Guid newShopOwnerGuid)
         {
-            throw new NotImplementedException();
+            return _serviceFacade.AddShopOwner(userGuid, shopGuid, newShopOwnerGuid);
         }
 
         public Guid AddProductToShop(Guid userGuid, Guid shopGuid, string name, string category, double price, int quantity)
         {
-            throw new NotImplementedException();
+            return _serviceFacade.AddProductToShop(userGuid, shopGuid, name, category, price, quantity);
         }
 
         public bool CascadeRemoveShopOwner(Guid userGuid, Guid shopGuid, Guid ownerToRemoveGuid)
         {
-            throw new NotImplementedException();
+            return _serviceFacade.CascadeRemoveShopOwner(userGuid, shopGuid, ownerToRemoveGuid);
         }
 
         public bool ConnectToPaymentSystem(Guid userGuid)
         {
-            throw new NotImplementedException();
+            return _serviceFacade.ConnectToSupplySystem(userGuid);
         }
 
         public bool ConnectToSupplySystem(Guid userGuid)
         {
-            throw new NotImplementedException();
+            return _serviceFacade.ConnectToSupplySystem(userGuid);
         }
 
         public bool EditProductInCart(Guid userGuid, Guid shopGuid, Guid shopProductGuid, int newAmount)
         {
-            throw new NotImplementedException();
+            return _serviceFacade.EditProductInCart(userGuid, shopGuid, shopProductGuid, newAmount);
         }
 
-        public bool EditShopProduct(Guid userGuid, Guid shopGuid, Guid productGuid, double newPrice, int newQuantity)
+        public bool EditProductInShop(Guid userGuid, Guid shopGuid, Guid productGuid, double newPrice, int newQuantity)
         {
-            throw new NotImplementedException();
+            return _serviceFacade.EditProductInShop(userGuid, shopGuid, productGuid, newPrice, newQuantity);
         }
 
         public ICollection<Guid> GetAllProductsInCart(Guid userGuid, Guid shopGuid)
         {
-            throw new NotImplementedException();
+            return _serviceFacade.GetAllProductsInCart(userGuid, shopGuid);
         }
 
-        public bool Initialize(Guid userGuid, string username, string password)
+        public Guid Initialize(Guid userGuid, string username, string password)
         {
-            throw new NotImplementedException();
+            return _serviceFacade.Initialize(userGuid, username, password);
         }
 
-        public Guid Login(Guid userGuid, string username, string password)
+        public bool Login(Guid userGuid, string username, string password)
         {
-            throw new NotImplementedException();
+            return _serviceFacade.Login(userGuid, username, password);
         }
 
         public bool Logout(Guid userGuid)
         {
-            throw new NotImplementedException();
+            return _serviceFacade.Logout(userGuid);
         }
 
         public Guid OpenShop(Guid userGuid)
         {
-            throw new NotImplementedException();
+            return _serviceFacade.OpenShop(userGuid);
         }
 
-        public bool PurchaseCart(Guid userGuid, Guid shopGuid)
+        public bool PurchaseBag(Guid userGuid)
         {
-            throw new NotImplementedException();
+            return _serviceFacade.PurchaseBag(userGuid);
         }
 
-        public bool Register(Guid userGuid, string username, string password)
+        public Guid Register(Guid userGuid, string username, string password)
         {
-            throw new NotImplementedException();
+            return _serviceFacade.Register(userGuid, username, password);
         }
 
         public bool RemoveProductFromCart(Guid userGuid, Guid shopGuid, Guid shopProductGuid)
         {
-            throw new NotImplementedException();
+            return _serviceFacade.RemoveProductFromCart(userGuid, shopGuid, shopProductGuid);
+            
         }
 
         public bool RemoveShopManager(Guid userGuid, Guid shopGuid, Guid managerToRemoveGuid)
         {
-            throw new NotImplementedException();
+            return _serviceFacade.RemoveShopManager(userGuid, shopGuid, managerToRemoveGuid);
         }
 
-        public bool RemoveShopProduct(Guid userGuid, Guid shopProductGuid, Guid shopGuid)
+        public bool RemoveProductFromShop(Guid userGuid, Guid shopGuid, Guid shopProductGuid)
         {
-            throw new NotImplementedException();
+            return _serviceFacade.RemoveProductFromShop(userGuid, shopGuid, shopProductGuid);
         }
 
         public bool RemoveUser(Guid userGuid, Guid userToRemoveGuid)
         {
-            throw new NotImplementedException();
+            return _serviceFacade.RemoveUser(userGuid, userToRemoveGuid);
         }
 
-        public ICollection<Guid> SearchProduct(Guid userGuid, Guid shopGuid, string productName)
+        public ICollection<Guid> SearchProduct(Guid userGuid, ICollection<string> toMatch, string searchType)
         {
-            throw new NotImplementedException();
+            return _serviceFacade.SearchProduct(userGuid, toMatch, searchType);
+        }
+
+        public bool ChangeUserState(Guid userGuid, string newState)
+        {
+            return _serviceFacade.ChangeUserState(userGuid, newState);
+        }
+
+        public void ClearSystem()
+        {
+            _serviceFacade.ClearSystem();
         }
     }
 }

@@ -21,8 +21,9 @@ namespace DomainLayer.Data.Entitites
         {
             Creator = new ShopOwner(ownerGuid, Guid);
             Owners = new List<ShopOwner>();
+            Managers = new List<ShopOwner>();
             ShopProducts = new List<ShopProduct>();
-            ShopState = ShopStateEnum.Closed;
+            ShopState = ShopStateEnum.Active;
             UsersPurchaseHistory = new List<Tuple<Guid, ShopProduct>>();
         }
 
@@ -78,10 +79,10 @@ namespace DomainLayer.Data.Entitites
 
         public bool CascadeRemoveShopOwner(Guid userGuid, Guid ownerToRemoveGuid)
         {
-            foreach(var owner in Owners)
+            foreach(var owner in Owners.ToList())
             {
                 if (owner.AppointerGuid.Equals(ownerToRemoveGuid)) 
-                    CascadeRemoveShopOwner(ownerToRemoveGuid, owner.OwnerGuid); //Cascade
+                    CascadeRemoveShopOwner(ownerToRemoveGuid, owner.OwnerGuid);
             }
             Owners.Remove(Owners.FirstOrDefault(o => o.OwnerGuid.Equals(ownerToRemoveGuid)));
             return true;
@@ -132,12 +133,9 @@ namespace DomainLayer.Data.Entitites
             return Owners.FirstOrDefault(o => o.OwnerGuid.Equals(userGuid)) != null;
         }
 
-        public bool AddOwner(ShopOwner oppointer, Guid newOwnerGuid)
+        public bool AddOwner(Guid appointerGuid, Guid newOwnerGuid)
         {
-            if (IsOwner(newOwnerGuid))
-                return false;
-
-            var newOwner = new ShopOwner(newOwnerGuid, oppointer.OwnerGuid, Guid);
+            var newOwner = new ShopOwner(newOwnerGuid, appointerGuid, Guid);
             Owners.Add(newOwner);
             return true;
         }
@@ -155,16 +153,6 @@ namespace DomainLayer.Data.Entitites
             Owners.Remove(ownerToRemove);// remove the owner from the owners list
             return true;
         }
-
-
-        public ICollection<Guid> SearchProduct(string productName)
-        {
-            return ShopProducts
-                .Where(sProduct => sProduct.Product.Name.ToLower().Contains(productName.ToLower()))
-                .Select(prod => prod.Guid)
-                .ToList();
-        }
-
         #region Creator/Owner/Manager Verifiers
 
         public void VerifyCreatorOrOwner(Guid userGuid, ICloneableException<Exception> e)
@@ -221,7 +209,7 @@ namespace DomainLayer.Data.Entitites
 
         public void VerifyOwnerOrCreator(Guid ownerToRemoveGuid, ICloneableException<Exception> e)
         {
-            if (!Owners.Any(owner => owner.OwnerGuid.Equals(ownerToRemoveGuid)) && !Creator.Equals(ownerToRemoveGuid))
+            if (!Owners.Any(owner => owner.OwnerGuid.Equals(ownerToRemoveGuid)) && !Creator.OwnerGuid.Equals(ownerToRemoveGuid))
             {
                 StackTrace stackTrace = new StackTrace();
                 var msg = $"User with Guid - {ownerToRemoveGuid} is not an owner" +
@@ -231,7 +219,18 @@ namespace DomainLayer.Data.Entitites
         }
         public void VerifyAppointedBy(Guid wasAppointed, Guid appointer, ICloneableException<Exception> e)
         {
-            if (!Owners.FirstOrDefault(o => o.OwnerGuid.Equals(wasAppointed)).AppointerGuid.Equals(appointer))
+            var toRemove = Owners.FirstOrDefault(o => o.OwnerGuid.Equals(wasAppointed));
+            if (toRemove == null) toRemove = Managers.FirstOrDefault(m => m.OwnerGuid.Equals(wasAppointed));
+            if (toRemove == null)
+            {
+                StackTrace stackTrace = new StackTrace();
+                var msg = $"User with Guid - {wasAppointed} is not an owner or manager of shop {Guid}" +
+    $" cant complete {stackTrace.GetFrame(1).GetMethod().Name}";
+                throw e.Clone(msg);
+            }
+            var byCreator = Creator.OwnerGuid.Equals(toRemove.AppointerGuid);
+            var byOwner = Owners.Any(o => o.OwnerGuid.Equals(toRemove.AppointerGuid));
+            if (!(byCreator || byOwner))
             {
                 StackTrace stackTrace = new StackTrace();
                 var msg = $"User with Guid - {wasAppointed} was not appointed by {appointer}" +

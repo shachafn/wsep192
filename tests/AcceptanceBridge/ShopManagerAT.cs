@@ -6,24 +6,43 @@ using ATBridge;
 namespace Tests
 {
     [TestFixture]
-    class ShopManagerAT
+    public static class ShopManagerAT
     {
-        ProxyBridge _proxy = new ProxyBridge();
         [SetUp]
-        public void Setup()
+        public static void Setup()
         {
-            _proxy.SetRealBridge(new BridgeImpl());
+            Tester.PBridge.SetRealBridge(new BridgeImpl());
+            if (!Tester._initalized)
+            {
+                AdminAT.InitializationAT();
+            }
         }
-        
+        [TearDown]
+        public static void TearDown()
+        {
+            Tester.PBridge.ClearSystem();
+        }
+
         //GR 5.1 - Commit something by manager should be done according to his permissions.
+
+        /*public static void CommitSomethingWithPermissionAT()
+        {
+            CommitSomethingWithPermissionAT1();
+            CommitSomethingWithPermissionAT2();
+        }
         [Test]
-        public void CommitSomethingWithPermissionAT()
+        public static void CommitSomethingWithPermissionAT1()
         {
             Assert.Pass();
         }
-        public void RunShopManagerAT()
+        [Test]
+        public static void CommitSomethingWithPermissionAT2()
+        {
+            Assert.Pass();
+        }
+        public static void RunShopManagerAT()
         {
             CommitSomethingWithPermissionAT();
-        }
+        }*/
     }
 }

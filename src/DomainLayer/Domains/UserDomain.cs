@@ -8,6 +8,8 @@ using DomainLayer.Data.Entitites.Users.States;
 using DomainLayer.Exceptions;
 using DomainLayer.Data.Entitites.Users;
 using System.Diagnostics;
+using DomainLayer.ExposedClasses;
+using DomainLayer.Entitites.Users;
 
 namespace DomainLayer.Domains
 {
@@ -17,7 +19,7 @@ namespace DomainLayer.Domains
     public class UserDomain
     {
         private static LoggedInUsersEntityCollection LoggedInUsers = DomainData.LoggedInUsersEntityCollection;
-        private static ShopEntityCollection Shops = DomainData.ShopsCollection;
+        private static ShopsEntityCollection Shops = DomainData.ShopsCollection;
 
 
         #region Singleton Implementation
@@ -40,33 +42,38 @@ namespace DomainLayer.Domains
         #endregion
 
 
-        /// <summary>
-        /// Registeres the user.
-        /// </summary>
-        /// <returns></returns>
-        public bool Register(string username, string password, bool isAdmin)
+        public Guid Register(string username, string password, bool isAdmin)
         {
             if (IsUsernameTaken(username))
-                return false;
+                return Guid.Empty;
 
             var newUser = new BaseUser(username.ToLower(), password, isAdmin);
             DomainData.RegisteredUsersCollection.Add(newUser.Guid, newUser);
-            return true;
+            return newUser.Guid;
         }
 
-        private bool IsUsernameTaken(string username) => DomainData.RegisteredUsersCollection.Any(bUser => bUser.Username.Equals(username));
+        public IUser GetUserObject(UserIdentifier userIdentifier)
+        {
+            if (userIdentifier.IsGuest)
+            {
+                if (DomainData.GuestsCollection.TryGetValue(userIdentifier.Guid, out IUser res))
+                    return res;
+                res = new GuestUser(userIdentifier.Guid);
+                DomainData.GuestsCollection.Add(res.Guid,res);
+                return res;
+            }
+            return DomainData.LoggedInUsersEntityCollection[userIdentifier.Guid];
+        }
+
+        private bool IsUsernameTaken(string username) => DomainData.RegisteredUsersCollection.Any(bUser => bUser.Username.ToLower().Equals(username.ToLower()));
 
 
-        /// <summary>
-        /// Loggs the user in. Changes its state to Buyer (default).
-        /// </summary>
-        /// <param name="userGuid">Expected to be the const GuestGuid.</param>
-        /// <returns></returns>
-        public Guid Login(Guid userGuid, string username, string password)
+        public Guid Login(string username, string password)
         {
             BaseUser baseUser = GetRegisteredUserByUsername(username);
-            var user = new User(baseUser);
+            var user = new RegisteredUser(baseUser);
             LoggedInUsers.Add(user.Guid, user);
+            ChangeUserState(user.Guid, BuyerUserState.BuyerUserStateString);
             return user.Guid;
         }
 
@@ -75,14 +82,9 @@ namespace DomainLayer.Domains
             return DomainData.RegisteredUsersCollection.First(r => string.Equals(r.Username.ToLower(), username.ToLower()));
         }
 
-        /// <summary>
-        /// Loggs the user out.
-        /// </summary>
-        /// <param name="userGuid"></param>
-        /// <returns></returns>
-        public bool LogoutUser(Guid userGuid)
+        public bool LogoutUser(UserIdentifier userIdentifier)
         {
-            LoggedInUsers.Remove(userGuid);
+            LoggedInUsers.Remove(userIdentifier.Guid);
             return true;
         }
 

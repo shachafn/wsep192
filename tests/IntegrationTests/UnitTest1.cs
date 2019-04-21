@@ -2,6 +2,7 @@ using NUnit.Framework;
 
 namespace Tests
 {
+    /*
     public class Tests
     {
         [SetUp]
@@ -15,4 +16,5 @@ namespace Tests
             Assert.Pass();
         }
     }
+    */
 }

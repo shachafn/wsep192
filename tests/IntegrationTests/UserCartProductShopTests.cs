@@ -3,6 +3,7 @@ using DomainLayer.Data.Entitites;
 
 namespace IntegrationTests
 {
+    /*
     [TestFixture]
     public class UserCartProductShopTests
     {
@@ -95,4 +96,5 @@ namespace IntegrationTests
 
         }
     }
+    */
 }

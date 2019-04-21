@@ -7,7 +7,7 @@ namespace DomainLayer.Data.Entitites.Users.States
 {
     public class StateBuilder
     {
-        public AbstractUserState BuildState(string newState, User user)
+        public AbstractUserState BuildState(string newState, RegisteredUser user)
         {
             switch(newState)
             {
@@ -22,26 +22,26 @@ namespace DomainLayer.Data.Entitites.Users.States
             }
         }
 
-        private AbstractUserState BuildSellerState(User user)
+        private AbstractUserState BuildSellerState(RegisteredUser user)
         {
             var res = new SellerUserState();
             BuildShopsOwned(res, user);
             return res;
         }
 
-        private void BuildShopsOwned(SellerUserState res, User user)
+        private void BuildShopsOwned(SellerUserState res, RegisteredUser user)
         {
             res.ShopsOwned = DomainData.ShopsCollection.Where(shop => shop.IsOwner(user.Guid)).ToList();
         }
 
-        private AbstractUserState BuildBuyerState(User user)
+        private AbstractUserState BuildBuyerState(RegisteredUser user)
         {
             var res = new BuyerUserState();
             //Build purchase history maybe
             return res;
         }
 
-        private AbstractUserState BuildAdminState(User user)
+        private AbstractUserState BuildAdminState(RegisteredUser user)
         {
             var res = new AdminUserState();
             return res;

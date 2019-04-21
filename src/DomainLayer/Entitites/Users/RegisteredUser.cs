@@ -6,7 +6,7 @@ using DomainLayer.Exceptions;
 
 namespace DomainLayer.Data.Entitites
 {
-    public class User
+    public class RegisteredUser : IUser
     {
         public Guid Guid { get => _baseUser.Guid; }
         public bool IsAdmin { get => _baseUser.IsAdmin; }
@@ -16,7 +16,7 @@ namespace DomainLayer.Data.Entitites
         /// <summary>
         /// Default constructor, creates the user with a default Guest state.
         /// </summary>
-        public User(BaseUser baseUser)
+        public RegisteredUser(BaseUser baseUser)
         {
             _baseUser = baseUser;
             var builder = new StateBuilder();
@@ -31,7 +31,7 @@ namespace DomainLayer.Data.Entitites
 
         public ICollection<ShoppingBag> GetShoppingHistory() => State.GetShoppingHistory();
 
-        public bool PurchaseBag()//may need to retur a value
+        public bool PurchaseBag()
         {
             return State.PurchaseBag();
         }
@@ -57,19 +57,19 @@ namespace DomainLayer.Data.Entitites
             return State.AddProductToShop(_baseUser, shopGuid, name, category, price, quantity);
         }
 
-        public void EditShopProduct(Guid shopGuid, Guid productGuid, double newPrice, int newQuantity)
+        public void EditProductInShop(Guid shopGuid, Guid productGuid, double newPrice, int newQuantity)
         {
-            State.EditShopProduct(_baseUser, shopGuid, productGuid, newPrice, newQuantity);
+            State.EditProductInShop(_baseUser, shopGuid, productGuid, newPrice, newQuantity);
         }
 
-        public bool RemoveShopProduct(Guid shopGuid, Guid shopProductGuid)
+        public bool RemoveProductFromShop(Guid shopGuid, Guid shopProductGuid)
         {
-            return State.RemoveShopProduct(_baseUser, shopGuid, shopProductGuid);
+            return State.RemoveProductFromShop(_baseUser, shopGuid, shopProductGuid);
         }
 
-        public bool AddProductToShoppingCart(Guid shopGuid, Guid shopProductGuid, int quantity)
+        public bool AddProductToCart(Guid shopGuid, Guid shopProductGuid, int quantity)
         {
-            return State.AddProductToShoppingCart(_baseUser, shopGuid, shopProductGuid, quantity);
+            return State.AddProductToCart(_baseUser, shopGuid, shopProductGuid, quantity);
         }
 
         public bool AddShopOwner(Guid shopGuid, Guid newManagaerGuid)
@@ -105,6 +105,11 @@ namespace DomainLayer.Data.Entitites
         public bool RemoveShopManager(Guid shopGuid, Guid managerToRemoveGuid)
         {
             return State.RemoveShopManager(_baseUser, shopGuid, managerToRemoveGuid);
+        }
+
+        public ICollection<Guid> SearchProduct(ICollection<string> toMatch, string searchType)
+        {
+            return State.SearchProduct(toMatch, searchType);
         }
     }
 }

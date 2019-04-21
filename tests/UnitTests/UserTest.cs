@@ -4,6 +4,7 @@ using System;
 
 namespace Tests
 {
+    /*
     [TestFixture]
     public class UserTest1
     {
@@ -86,4 +87,5 @@ namespace Tests
         }
 
     }
+    */
 }

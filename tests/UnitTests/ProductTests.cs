@@ -4,6 +4,7 @@ using DomainLayer.Domains;
 
 namespace UnitTests
 {
+    /*
     [TestFixture]
     public class ProductTests
     {
@@ -40,4 +41,5 @@ namespace UnitTests
         }
         
     }
+    */
 }

@@ -13,9 +13,9 @@ namespace ATBridge
             _real = null;
         }
 
-        public bool AddProductToShoppingCart(Guid userGuid, Guid productGuid, Guid shopGuid, int quantity)
+        public bool AddProductToCart(Guid userGuid, Guid productGuid, Guid shopGuid, int quantity)
         {
-            return _real == null? false : _real.AddProductToShoppingCart(userGuid, productGuid, shopGuid, quantity);
+            return _real == null? false : _real.AddProductToCart(userGuid, productGuid, shopGuid, quantity);
         }
 
         public bool AddShopManager(Guid userGuid, Guid shopGuid, Guid newManagaerGuid, List<string> priviliges)
@@ -53,9 +53,9 @@ namespace ATBridge
             return _real == null ? false : _real.EditProductInCart(userGuid, shopGuid, shopProductGuid, newAmount);
         }
 
-        public bool EditShopProduct(Guid userGuid, Guid shopGuid, Guid productGuid, double newPrice, int newQuantity)
+        public bool EditProductInShop(Guid userGuid, Guid shopGuid, Guid productGuid, double newPrice, int newQuantity)
         {
-            return _real == null ? false : _real.EditShopProduct(userGuid, shopGuid, productGuid, newPrice, newQuantity);
+            return _real == null ? false : _real.EditProductInShop(userGuid, shopGuid, productGuid, newPrice, newQuantity);
         }
 
         public ICollection<Guid> GetAllProductsInCart(Guid userGuid, Guid shopGuid)
@@ -63,14 +63,14 @@ namespace ATBridge
             return _real?.GetAllProductsInCart(userGuid, shopGuid);
         }
 
-        public bool Initialize(Guid userGuid, string username, string password)
+        public Guid Initialize(Guid userGuid, string username, string password)
         {
-            return _real == null ? false : _real.Initialize(userGuid, username, password);
+            return _real == null ? Guid.Empty : _real.Initialize(userGuid, username, password);
         }
 
-        public Guid Login(Guid userGuid, string username, string password)
+        public bool Login(Guid userGuid, string username, string password)
         {
-            return _real == null ? Guid.Empty : _real.Login(userGuid, username, password);
+            return _real == null ? false : _real.Login(userGuid, username, password);
         }
 
         public bool Logout(Guid userGuid)
@@ -83,14 +83,14 @@ namespace ATBridge
             return _real == null ? Guid.Empty : _real.OpenShop(userGuid);
         }
 
-        public bool PurchaseCart(Guid userGuid, Guid shopGuid)
+        public bool PurchaseBag(Guid userGuid)
         {
-            return _real == null ? false : _real.PurchaseCart(userGuid, shopGuid);
+            return _real == null ? false : _real.PurchaseBag(userGuid);
         }
 
-        public bool Register(Guid userGuid, string username, string password)
+        public Guid Register(Guid userGuid, string username, string password)
         {
-            return _real == null ? false : _real.Register(userGuid, username, password);
+            return _real == null ? Guid.Empty : _real.Register(userGuid, username, password);
         }
 
         public bool RemoveProductFromCart(Guid userGuid, Guid shopGuid, Guid shopProductGuid)
@@ -103,9 +103,9 @@ namespace ATBridge
             return _real == null ? false : _real.RemoveShopManager(userGuid, shopGuid, managerToRemoveGuid);
         }
 
-        public bool RemoveShopProduct(Guid userGuid, Guid shopProductGuid, Guid shopGuid)
+        public bool RemoveProductFromShop(Guid userGuid, Guid shopProductGuid, Guid shopGuid)
         {
-            return _real == null ? false : _real.RemoveShopProduct(userGuid, shopProductGuid, shopGuid);
+            return _real == null ? false : _real.RemoveProductFromShop(userGuid, shopProductGuid, shopGuid);
         }
 
         public bool RemoveUser(Guid userGuid, Guid userToRemoveGuid)
@@ -113,15 +113,25 @@ namespace ATBridge
             return _real == null ? false : _real.RemoveUser(userGuid, userToRemoveGuid);
         }
 
-        public ICollection<Guid> SearchProduct(Guid userGuid, Guid shopGuid, string productName)
+        public ICollection<Guid> SearchProduct(Guid userGuid, ICollection<string> toMatch, string searchType)
         {
-            return _real?.SearchProduct(userGuid, shopGuid, productName);
+            return _real?.SearchProduct(userGuid, toMatch, searchType);
+        }
+
+        public bool ChangeUserState(Guid userGuid, string newState)
+        {
+            return _real == null ? false : _real.ChangeUserState(userGuid, newState);
         }
 
         public void SetRealBridge(IBridge impl)
         {
             if (_real == null)
                 _real = impl;
+        }
+
+        public void ClearSystem()
+        {
+            _real.ClearSystem();
         }
     }
 }

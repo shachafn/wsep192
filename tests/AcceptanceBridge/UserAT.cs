@@ -4,212 +4,144 @@ using System.Text;
 using NUnit.Framework;
 using ATBridge;
 using DomainLayer;
+using DomainLayer.Exceptions;
+using System.Linq;
 
 namespace Tests
 {
-    //[TestFixture]
-    //private Guid g = new Guid();
-    public class UserAT
+    public static class UserAT
     {
-        private ProxyBridge _proxy;
-        private StoreOwnerAT _ownerAT;
+        static Guid _admiNCookie = Guid.NewGuid();
 
-        public UserAT()
+        [OneTimeSetUp]
+        public static void OneTimeSetUp()
         {
-            _proxy = new ProxyBridge();
-            _ownerAT = new StoreOwnerAT();
-
+            Tester.PBridge.SetRealBridge(new BridgeImpl());
         }
+
+
+        [TearDown]
+        public static void TearDown()
+        {
+            Tester.PBridge.ClearSystem();
+        }
+
         [SetUp]
-        public void Setup()
+        public static void SetUp()
         {
-            _proxy.SetRealBridge(new BridgeImpl());
-            _proxy.SetRealBridge(new BridgeImpl());
+            Tester.AdminGuid = Tester.PBridge.Initialize(_admiNCookie, "admin", "000000");
         }
 
-        //GR 2.2 - User's registration
-        public void RegisterAT()
+
+        #region GR 2.2 - User's registration
+        [Test]
+        public static void RegisterAT1()
         {
-            RegisterAT1();
-            RegisterAT2();
+            GenerateRandoms(out var cookie, out var username, out var password);
+            var result = RegisterUser(cookie, username, password);
+            Assert.AreNotEqual(result, Guid.Empty);
         }
         [Test]
-        public void RegisterAT1()
+        public static void RegisterAT2()
         {
-            Assert.NotNull(_proxy.Register("groisman", "150298"));
+            GenerateRandoms(out var cookie, out var username, out var password);
+            RegisterUser(cookie, username, password);
+            var second = RegisterUser(cookie, username, password);
+            //Same username
+            Assert.AreEqual(Guid.Empty, second);
         }
+        #endregion
+
+        #region GR 2.3 - login of guest with identifiers.
+
         [Test]
-        public void RegisterAT2()
+        public static void LoginAT1()
         {
-            Assert.Null(_proxy.Register("groisman", "1111")); //invalid Failword. 
-        }
-        //GR 2.3-login of guest with identifiers.
-        public void LoginAT()
-        {
-            LoginAT1();
-            LoginAT2();
+            GenerateRandoms(out var cookie, out var username, out var password);
+            RegisterUser(cookie, username, password);
+            var res = LoginUser(cookie, username, password);
+            Assert.IsTrue(res);
         }
 
         [Test]
-        public void LoginAT1()
+        public static void LoginAT2()
         {
-            Setup();
-            string exist_username = "groisman";
-            string exist_password = "150298";
-            this.RegisterAT1();
+            GenerateRandoms(out var cookie, out var username, out var password);
+            RegisterUser(cookie, username, password);
+            var wrongPass = RandomString();
+            Assert.Throws<CredentialsMismatchException>( () => LoginUser(cookie, username, wrongPass));
+        }
+        #endregion
+
+        #region GR 2.5 - search products in the catalog
+        [Test]
+        public static void SearchProductsAT1()
+        {
+            UserAT.GenerateRandoms(out var cookie, out var username, out var password);
+            UserAT.RegisterUser(cookie, username, password);
+            UserAT.LoginUser(cookie, username, password);
+            Tester.PBridge.ChangeUserState(cookie, "SellerUserState");
+            var shopGuid = Tester.PBridge.OpenShop(cookie);
+            var galaxyGuid = Tester.PBridge.AddProductToShop(cookie, shopGuid, "Galaxy S9", "Cellphones", 2000, 10);
+            var iphoneGuid = Tester.PBridge.AddProductToShop(cookie, shopGuid, "Iphone 6", "Cellphones", 500, 50);
+
+            Tester.PBridge.ChangeUserState(cookie, "BuyerUserState");
+            var resByName = Tester.PBridge.SearchProduct(cookie, new List<string>() { "Iphone" }, "Name");
+            CollectionAssert.AreEquivalent(resByName, new List<Guid>() { iphoneGuid });
+            resByName = Tester.PBridge.SearchProduct(cookie, new List<string>() { "Galaxy" }, "Name");
+            CollectionAssert.AreEquivalent(resByName, new List<Guid>() { galaxyGuid });
+            resByName = Tester.PBridge.SearchProduct(cookie, new List<string>() { "OnePlus" }, "Name");
+            CollectionAssert.AreEquivalent(resByName, new List<Guid>());
+
+            var resByCategory = Tester.PBridge.SearchProduct(cookie, new List<string>() { "Cellphones" }, "Category");
+            CollectionAssert.AreEquivalent(resByCategory, new List<Guid>() { iphoneGuid, galaxyGuid });
+            resByCategory = Tester.PBridge.SearchProduct(cookie, new List<string>() { "Dishwashers" }, "Category");
+            CollectionAssert.AreEquivalent(resByCategory, new List<Guid>());
+
+            /* Not yet supported from service kayer
+            var resByKeywards = Tester.PBridge.SearchProduct(cookie, new List<string>() { "Cellphones" }, "Category");
+            CollectionAssert.AreEquivalent(resByName, new List<Guid>() { iphoneGuid, galaxyGuid });
+            resByCategory = Tester.PBridge.SearchProduct(cookie, new List<string>() { "Dishwashers" }, "Category");
+            CollectionAssert.AreEquivalent(resByName, new List<Guid>());
+            */
+        }
+        [Test]
+        public static void SearchProductsAT2()
+        {
+            if (!Tester._groismanRegistered)
+                RegisterAT1();
             if (!Tester._groismanConnected)
-            {
-                Assert.IsTrue(_proxy.Login(exist_username, exist_password));
-            }
-            Assert.Pass();
-            
+                LoginAT1();
+            if (Tester._groismanShop.CompareTo(Guid.Empty) == 0)
+                RegisteredBuyerAT.OpenStoreAT1(); //the shop is empty and no product is available.
+            if (Tester.galaxyGuid.CompareTo(Guid.Empty) == 0)
+                StoreOwnerAT.AddingProductAT1(); //now Groisman's shop has 10 Galaxys
+            //TODO_REMOVE_COMMENT Assert.IsNotNull(Tester.PBridge.SearchProduct(Tester.GuestGuid, Tester._groismanShop, "IPhone 6"));
+        }
+        #endregion
+
+        public static bool LoginUser(Guid cookie, string username, string password)
+        {
+            return Tester.PBridge.Login(cookie, username, password);
         }
 
-        [Test]
-        public void LoginAT2()
+        public static Guid RegisterUser(Guid cookie, string username, string password)
         {
-            Setup();
-            string username = "idoGroiser";
-            string password = "090902";
-            Assert.IsFalse(_proxy.Login(username, password));
+            return Tester.PBridge.Register(cookie, username, password);
         }
 
-        //GR 2.5 - search products in the catalog
-        public void SearchProductsAT()
+        public static void GenerateRandoms(out Guid cookie, out string username, out string password)
         {
-            SearchProductsAT1();
-            SearchProductsAT2();
+            cookie = Guid.NewGuid();
+            username = RandomString();
+            password = RandomString();
         }
-        [Test]
-        public void SearchProductsAT1()
+        private static Random random = new Random();
+        public static string RandomString()
         {
-            Assert.Fail();
-        }
-        [Test]
-        public void SearchProductsAT2()
-        {
-            Assert.Fail();
-        }
-
-        //GR 2.6 - Saving products in user's cart
-        public void SavingProductsInCartAT()
-        {
-            //TODO
-            SavingProductsInCartAT1();
-            SavingProductsInCartAT2();
-        }
-        [Test]
-        public void SavingProductsInCartAT1()
-        {
-            Assert.Pass();
-        }
-        [Test]
-        public void SavingProductsInCartAT2()
-        {
-            Assert.Pass();
-        }
-
-        //GR 2.7- watching and editing of cart
-        public void WatchingAndEditingOfCartAT()
-        {
-            WatchingAndEditingOfCartAT1();
-            WatchingAndEditingOfCartAT2();
-            WatchingAndEditingOfCartAT3();
-        }
-        [Test]
-        public void WatchingAndEditingOfCartAT1()
-        {
-
-        }
-        [Test]
-        public void WatchingAndEditingOfCartAT2()
-        {
-
-        }
-        [Test]
-        public void WatchingAndEditingOfCartAT3()
-        {
-
-        }
-
-        //GR 2.8 - purchase of products
-
-        public void PurchaseAT()
-        {
-            //TODO
-            PurchaseAT1();
-            PurchaseAT2();
-            PurchaseAT3();
-            PurchaseAT4();
-            PurchaseAT5();
-            PurchaseAT6();
-            PurchaseAT7();
-            PurchaseAT8();
-        }
-
-        [Test]
-        public void PurchaseAT1()
-        {
-            Assert.Fail();
-        }
-
-        [Test]
-        public void PurchaseAT2()
-        {
-            //TODO: Complete when I'll know how to purchase a product.
-            Assert.Fail();
-        }
-
-        [Test]
-        public void PurchaseAT3()
-        {
-            //TODO: Complete when I'll know how to purchase a product.
-            Assert.Fail();
-        }
-
-        [Test]
-        public void PurchaseAT4()
-        {
-            //TODO: Complete when I'll know how to purchase a product.
-            Assert.Fail();
-        }
-
-        [Test]
-        public void PurchaseAT5()
-        {
-            //TODO: Complete when I'll know how to purchase a product.
-            Assert.Fail();
-        }
-
-        [Test]
-        public void PurchaseAT6()
-        {
-            //TODO: Complete when I'll know how to purchase a product.
-            Assert.Fail();
-        }
-
-        [Test]
-        public void PurchaseAT7()
-        {
-            //TODO: Complete when I'll know how to purchase a product.
-            Assert.Fail();
-        }
-
-        [Test]
-        public void PurchaseAT8()
-        {
-            //TODO: Complete when I'll know how to purchase a product.
-            Assert.Fail();
-        }
-
-        public void RunUserAT()
-        {
-            RegisterAT();
-            LoginAT(); //GR 2.3
-            SearchProductsAT(); //GR 2.5
-            SavingProductsInCartAT();//GR 2.6
-            WatchingAndEditingOfCartAT(); // GR 2.7
-            PurchaseAT(); //GR 2.8
+            const string chars = "ABCDEFGHIJKLMNOPQRSTUVWXYZ";
+            return new string(Enumerable.Repeat(chars, 20)
+              .Select(s => s[random.Next(s.Length)]).ToArray());
         }
     }
 }

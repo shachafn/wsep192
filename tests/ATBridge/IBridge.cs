@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
-using DomainLayer.Data.Entitites;
+using System.Text;
+using DomainLayer.Exceptions;
 
 namespace ATBridge
 {
@@ -16,6 +17,7 @@ namespace ATBridge
         /// 2. username and password must not be string.IsNullOrWhitespace
         /// 3. if username is taken - return false;
         /// </constraints>
+        /// <exception cref="SystemNotInitializedException">When system has not yet been initialized.</exception>
         /// <exception cref="IllegalOperationException">When the userGuid is not a GuestGuid.</exception>
         /// <exception cref="IllegalArgumentException">When the username/password are null, empty or whitespace</exception>
         /// <returns>The Guid of the created user, Guid.Empty if the username is taken.</returns>
@@ -31,11 +33,12 @@ namespace ATBridge
         /// 2. username and password must not be string.IsNullOrWhitespace
         /// 3. if username and password doesnt match nay user - return false
         /// </constraints>
+        /// <exception cref="SystemNotInitializedException">When system has not yet been initialized.</exception>
         /// <exception cref="IllegalOperationException">When the userGuid is not a GuestGuid.</exception>
         /// <exception cref="IllegalArgumentException">When the username/password are null, empty or whitespace</exception>
         /// <exception cref="CredentialsMismatchException">When the username and password does not match any registered user's credentials</exception>
-        /// <returns>The user's Guid.</returns>
-        Guid Login(Guid userGuid, string username, string password);
+        /// <returns>true if logged in successfully. False otherwise.</returns>
+        bool Login(Guid userGuid, string username, string password);
 
         /// <summary>
         /// Logs out the user.
@@ -45,6 +48,7 @@ namespace ATBridge
         /// 1. User must exist
         /// 2. User must be logged in.
         /// </constraints>
+        /// <exception cref="SystemNotInitializedException">When system has not yet been initialized.</exception>
         /// <exception cref="IllegalOperationException">When userGuid does not match any logged-in user's guid.</exception>
         /// <returns>True.</returns>
         bool Logout(Guid userGuid);
@@ -59,6 +63,7 @@ namespace ATBridge
         /// 2. User must be logged in.
         /// 3. User must be in seller state.
         /// </constraints>
+        /// <exception cref="SystemNotInitializedException">When system has not yet been initialized.</exception>
         /// <exception cref="UserNotFoundException">When userGuid does not match any logged-in user's guid.</exception>
         /// <exception cref="BadStateException">When the user is not in seller state</exception>
         /// <returns>Guid of the created shop.</returns>
@@ -81,6 +86,7 @@ namespace ATBridge
         /// 4. username and password must not be string.NullOrWhitespace
         /// 5. if any external service is unavailable - an exception is thrown
         /// </constraints>
+        /// <exception cref="SystemAlreadyInitializedException">When system has already been initialized.</exception>
         /// <exception cref="BrokenConstraintException">When the userGuid is not a GuestGuid.</exception>
         /// <exception cref="IllegalArgumentException">When the username/password are null, empty or whitespace</exception>
         /// <exception cref="CredentialsMismatchException">When the username/password does not match the admin user's credentials</exception>
@@ -98,10 +104,13 @@ namespace ATBridge
         /// 2. User must be logged in.
         /// 3. User must be in admin state.
         /// 4. UserToRemove must not be the only owner of an active shop.
+        /// 5. UserToRemove must not be the only admin of the system.
         /// </constraints>
+        /// <exception cref="SystemNotInitializedException">When system has not yet been initialized.</exception>
         /// <exception cref="UserNotFoundException">When userGuid does not match any logged-in user's guid.</exception>
         /// <exception cref="BadStateException">When the user is not in AdminUserState</exception>
         /// <exception cref="BrokenConstraintException">When the user is the only owner of an active shop</exception>
+        /// <exception cref="BrokenConstraintException">When the user is the only admin of the system</exception>
         /// <returns>True.</returns>
         bool RemoveUser(Guid userGuid, Guid userToRemoveGuid);
 
@@ -115,6 +124,7 @@ namespace ATBridge
         /// 2. User must be logged in.
         /// 3. User must be admin.
         /// </constraints>
+        /// <exception cref="SystemNotInitializedException">When system has not yet been initialized.</exception>
         /// <exception cref="UserNotFoundException">When userGuid does not match any logged-in user's guid.</exception>
         /// <exception cref="BadStateException">When the user is not in AdminUserState</exception>
         /// <returns>True if can connect, false otherwise.</returns>
@@ -130,6 +140,7 @@ namespace ATBridge
         /// 2. User must be logged in.
         /// 3. User must be admin.
         /// </constraints>
+        /// <exception cref="SystemNotInitializedException">When system has not yet been initialized.</exception>
         /// <exception cref="UserNotFoundException">When userGuid does not match any logged-in user's guid.</exception>
         /// <exception cref="BadStateException">When the user is not in AdminUserState</exception>
         /// <returns>True if can connect, false otherwise.</returns>
@@ -150,6 +161,7 @@ namespace ATBridge
         /// 7. Product must exist in the shop.
         /// 8. quantity must be greater than 0
         /// </constraints>
+        /// <exception cref="SystemNotInitializedException">When system has not yet been initialized.</exception>
         /// <exception cref="UserNotFoundException">When userGuid does not match any logged-in user's guid.</exception>
         /// <exception cref="BadStateException">When the user is not in BuyerUserState</exception>
         /// <exception cref="ShopNotFoundException">When shopGuid does not match any existing shop guid.</exception>
@@ -158,7 +170,7 @@ namespace ATBridge
         /// <exception cref="ProductNotFoundException">When the productGuid does not match any product in the shop.</exception>
         /// <exception cref="BrokenConstraintException">When the product already exists in the user's cart.</exception>
         /// <returns>True.</returns>
-        bool AddProductToShoppingCart(Guid userGuid, Guid productGuid, Guid shopGuid, int quantity);
+        bool AddProductToCart(Guid userGuid, Guid productGuid, Guid shopGuid, int quantity);
 
         /////Implements General Requirement 2.7
         /// <summary>
@@ -172,6 +184,7 @@ namespace ATBridge
         /// 5. Shop must exist.
         /// 6. Shop must be active.
         /// </constraints>
+        /// <exception cref="SystemNotInitializedException">When system has not yet been initialized.</exception>
         /// <exception cref="UserNotFoundException">When userGuid does not match any logged-in user's guid.</exception>
         /// <exception cref="BadStateException">When the user is not in BuyerUserState</exception>
         /// <exception cref="ShopNotFoundException">When shopGuid does not match any existing shop guid.</exception>
@@ -192,6 +205,7 @@ namespace ATBridge
         /// 6. Shop must be active.
         /// 7. Product must exist in cart.
         /// </constraints>
+        /// <exception cref="SystemNotInitializedException">When system has not yet been initialized.</exception>
         /// <exception cref="UserNotFoundException">When userGuid does not match any logged-in user's guid.</exception>
         /// <exception cref="BadStateException">When the user is not in BuyerUserState</exception>
         /// <exception cref="ShopNotFoundException">When shopGuid does not match any existing shop guid.</exception>
@@ -214,6 +228,7 @@ namespace ATBridge
         /// 7. Product must exist in cart.
         /// 8. newAmount must be equal or greater than 1 (For Remove - user RemoveProductFromCart)
         /// </constraints>
+        /// <exception cref="SystemNotInitializedException">When system has not yet been initialized.</exception>
         /// <exception cref="UserNotFoundException">When userGuid does not match any logged-in user's guid.</exception>
         /// <exception cref="BadStateException">When the user is not in BuyerUserState</exception>
         /// <exception cref="ShopNotFoundException">When shopGuid does not match any existing shop guid.</exception>
@@ -239,6 +254,7 @@ namespace ATBridge
         /// 9. price must be grater than 0
         /// 10. quantity must be equal or greater than 0 (May not have any to sell at the moment).
         /// </constraints>
+        /// <exception cref="SystemNotInitializedException">When system has not yet been initialized.</exception>
         /// <exception cref="UserNotFoundException">When userGuid does not match any logged-in user's guid.</exception>
         /// <exception cref="BadStateException">When the user is not in SellerUserState</exception>
         /// <exception cref="NoPriviligesException">When the user is not a creator,owner or manager with priviliges.</exception>
@@ -264,6 +280,7 @@ namespace ATBridge
         /// 6. Shop must be active.
         /// 7. Product must exist in shop.
         /// </constraints>
+        /// <exception cref="SystemNotInitializedException">When system has not yet been initialized.</exception>
         /// <exception cref="UserNotFoundException">When userGuid does not match any logged-in user's guid.</exception>
         /// <exception cref="BadStateException">When the user is not in SellerUserState</exception>
         /// <exception cref="NoPriviligesException">When the user is not a creator,owner or manager with priviliges.</exception>
@@ -271,7 +288,7 @@ namespace ATBridge
         /// <exception cref="ShopStateException">When the shop is not active.</exception>
         /// <exception cref="ProductNotFoundException">When shopProductGuid does not match any product in the shop.</exception>
         /// <returns>True if removed successfully. False otherwise.</returns>
-        bool RemoveShopProduct(Guid userGuid, Guid shopProductGuid, Guid shopGuid);
+        bool RemoveProductFromShop(Guid userGuid, Guid shopGuid, Guid shopProductGuid);
 
         /////Implements General Requirement 4.1
         /// <summary>
@@ -289,6 +306,7 @@ namespace ATBridge
         /// 8. newPrice must be greater than 0.
         /// 9. newQuantity must be equal or greater than 0 (May not have any to sell at the moment).
         /// </constraints>
+        /// <exception cref="SystemNotInitializedException">When system has not yet been initialized.</exception>
         /// <exception cref="UserNotFoundException">When userGuid does not match any logged-in user's guid.</exception>
         /// <exception cref="BadStateException">When the user is not in SellerUserState</exception>
         /// <exception cref="NoPriviligesException">When the user is not a creator,owner or manager with priviliges.</exception>
@@ -298,28 +316,29 @@ namespace ATBridge
         /// <exception cref="IllegalArgumentException">When newPrice is not greater than 0.</exception>
         /// <exception cref="IllegalArgumentException">When newQuantity is not equal or greater than 0</exception>
         /// <returns>True if editted successfully. False otherwise.</returns>
-        bool EditShopProduct(Guid userGuid, Guid shopGuid, Guid productGuid, double newPrice, int newQuantity);
+        bool EditProductInShop(Guid userGuid, Guid shopGuid, Guid productGuid, double newPrice, int newQuantity);
 
         /////Implements General Requirement 2.5
         /// <summary>
-        /// Returns a list of products in the shop with a name which contains the product name.
+        /// Returns a list of products in all shops who match the search criterea:
+        /// 1. By name - return all products in all shops who contain the name.
+        /// 2. By Category - return all products in all shops who match this category.
+        /// 3. By keywords - return all products in all shops who contains these keyords.
         /// </summary>
         /// <constraints>
         /// 0. System must be Initialized.
-        /// 1. Must be called by an existing user.
-        /// 2. User must be logged in.
-        /// 3. User must be in buyer/guest state.
-        /// 5. Shop must exist.
-        /// 6. Shop must be active.
-        /// 7. productName must not be null or string.Empty
+        /// 1. searchType must be "Name" or "Category" or "Keywords".
+        /// 2. toMatch must not be empty.
+        /// 3. toMatch strings must not be string.IsNullOrWhitespace
+        /// 4. State must be Guest/Buyer
         /// </constraints>
-        /// <exception cref="UserNotFoundException">When userGuid does not match any logged-in user's guid.</exception>
+        /// <exception cref="SystemNotInitializedException">When system has not yet been initialized.</exception>
         /// <exception cref="BadStateException">When the user is not in BuyerUserState/GuestUserState</exception>
-        /// <exception cref="ShopNotFoundException">When shopGuid does not match any existing shop guid.</exception>
-        /// <exception cref="ShopStateException">When the shop is not active.</exception>
-        /// <exception cref="IllegalArgumentException">When productName is null,empty or whitespace</exception>
+        /// <exception cref="IllegalArgumentException">When searchType is not "Name" or "Category" or "Keywords".</exception>
+        /// <exception cref="IllegalArgumentException">When toMatch contains illegal strings.</exception>
+        /// <exception cref="IllegalArgumentException">When toMatch is empty.</exception>
         /// <returns>A list of products.</returns>
-        ICollection<Guid> SearchProduct(Guid userGuid, Guid shopGuid, string productName);
+        ICollection<Guid> SearchProduct(Guid userGuid, ICollection<string> toMatch, string searchType);
 
         /////Implements General Requirement 4.3
         /// <summary>
@@ -335,6 +354,7 @@ namespace ATBridge
         /// 6. Shop must be active.
         /// 7. new shop manager must be an existing user.
         /// </constraints>
+        /// <exception cref="SystemNotInitializedException">When system has not yet been initialized.</exception>
         /// <exception cref="UserNotFoundException">When userGuid does not match any logged-in user's guid.</exception>
         /// <exception cref="BadStateException">When the user is not in SellerUserState</exception>
         /// <exception cref="NoPriviligesException">When the user is not an owner of the shop.</exception>
@@ -360,6 +380,7 @@ namespace ATBridge
         /// 7. ownerToRemove must be an owner of the shop.
         /// 8. ownerToRemove must have been appointed by the user with guid=userGuid
         /// </constraints>
+        /// <exception cref="SystemNotInitializedException">When system has not yet been initialized.</exception>
         /// <exception cref="UserNotFoundException">When userGuid does not match any logged-in user's guid.</exception>
         /// <exception cref="BadStateException">When the user is not in SellerUserState</exception>
         /// <exception cref="NoPriviligesException">When the user is not an owner of the shop.</exception>
@@ -385,6 +406,7 @@ namespace ATBridge
         /// 7. newManagaerGuid must be an existing user.
         /// 8. newManagaerGuid must not be the creator of the shop, or one of the owners/managers.
         /// </constraints>
+        /// <exception cref="SystemNotInitializedException">When system has not yet been initialized.</exception>
         /// <exception cref="UserNotFoundException">When userGuid does not match any logged-in user's guid.</exception>
         /// <exception cref="BadStateException">When the user is not in SellerUserState</exception>
         /// <exception cref="NoPriviligesException">When the user is not an owner of the shop.</exception>
@@ -410,6 +432,7 @@ namespace ATBridge
         /// 7. newManagaerGuid must be an existing user.
         /// 8. newManagaerGuid must not be the creator of the shop, or one of the owners/managers.
         /// </constraints>
+        /// <exception cref="SystemNotInitializedException">When system has not yet been initialized.</exception>
         /// <exception cref="UserNotFoundException">When userGuid does not match any logged-in user's guid.</exception>
         /// <exception cref="BadStateException">When the user is not in SellerUserState</exception>
         /// <exception cref="NoPriviligesException">When the user is not an owner of the shop.</exception>
@@ -430,6 +453,7 @@ namespace ATBridge
         /// 3. newState must not be string.IsNullOrWhitespace
         /// 4. newState must be a valid state (see implementation)
         /// </constraints>
+        /// <exception cref="SystemNotInitializedException">When system has not yet been initialized.</exception>
         /// <exception cref="UserNotFoundException">When userGuid does not match any logged-in user's guid.</exception>
         /// <exception cref="IllegalArgumentException">When the newState is not one of "AdminUserState","BuyerUserState","SellerUserState"</exception>
         /// <exception cref="IllegalOperationException">When user tries to change state to admin, but is not an admin"</exception>

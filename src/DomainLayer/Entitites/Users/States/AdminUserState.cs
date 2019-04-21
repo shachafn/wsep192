@@ -74,17 +74,17 @@ namespace DomainLayer.Data.Entitites.Users.States
 
         public override void EditProductInShop(BaseUser baseUser, Guid shopGuid, Guid productGuid, double newPrice, int newQuantity)
         {
-            throw new BadStateException($"Tried to invoke EditShopProduct in Admin State");
+            throw new BadStateException($"Tried to invoke EditProductInShop in Admin State");
         }
 
         public override bool RemoveProductFromShop(BaseUser baseUser, Guid shopGuid, Guid shopProductGuid)
         {
-            throw new BadStateException($"Tried to invoke RemoveShopProduct in Admin State");
+            throw new BadStateException($"Tried to invoke RemoveProductFromShop in Admin State");
         }
 
         public override bool AddProductToCart(BaseUser baseUser, Guid shopGuid, Guid shopProductGuid, int quantity)
         {
-            throw new BadStateException($"Tried to invoke AddProductToShoppingCart in Admin State");
+            throw new BadStateException($"Tried to invoke AddProductToCart in Admin State");
         }
 
         public override bool AddShopManager(BaseUser baseUser, Guid shopGuid, Guid newManagaerGuid, List<string> priviliges)
@@ -120,6 +120,11 @@ namespace DomainLayer.Data.Entitites.Users.States
         public override bool AddShopOwner(BaseUser baseUser, Guid shopGuid, Guid newManagaerGuid)
         {
             throw new BadStateException($"Tried to invoke AddShopOwner in Admin State");
+        }
+
+        public override ICollection<Guid> SearchProduct(ICollection<string> toMatch, string searchType)
+        {
+            throw new BadStateException($"Tried to invoke SearchProduct in Admin State");
         }
     }
 }

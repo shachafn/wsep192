@@ -17,11 +17,11 @@ namespace DomainLayer.Data.Entitites
         }
 
         
-        public void PurchaseBag(AbstractUserState user)
+        public void PurchaseBag()
         {
             foreach(ShoppingCart cart in ShoppingCarts)
             {
-                cart.PurchaseCart(user);
+                cart.PurchaseCart();
             }
         }
 

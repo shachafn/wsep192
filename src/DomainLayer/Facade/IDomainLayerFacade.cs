@@ -1,4 +1,5 @@
-﻿using System;
+﻿using DomainLayer.ExposedClasses;
+using System;
 using System.Collections.Generic;
 
 namespace DomainLayer.Facade
@@ -9,27 +10,28 @@ namespace DomainLayer.Facade
     /// </summary>
     public interface IDomainLayerFacade
     {
-        Guid Register(Guid userGuid, string username, string password);
-        Guid Login(Guid userGuid, string username, string password);
-        bool Logout(Guid userGuid);
-        Guid OpenShop(Guid userGuid);
-        bool PurchaseBag(Guid userGuid);
-        Guid Initialize(Guid userGuid, string username, string password);
-        bool ConnectToPaymentSystem(Guid userGuid);
-        bool ConnectToSupplySystem(Guid userGuid);
-        Guid AddProductToShop(Guid userGuid, Guid shopGuid, string name, string category, double price, int quantity);
-        bool EditProductInShop(Guid userGuid, Guid shopGuid, Guid productGuid, double newPrice, int newQuantity);
-        bool RemoveProductFromShop(Guid userGuid, Guid shopGuid, Guid shopProductGuid);
-        bool AddProductToCart(Guid userGuid, Guid shopGuid, Guid shopProductGuid, int quantity);
-        bool AddShopManager(Guid userGuid, Guid shopGuid, Guid newManagaerGuid, List<string> priviliges);
-        bool CascadeRemoveShopOwner(Guid userGuid, Guid shopGuid, Guid ownerToRemoveGuid);
-        bool EditProductInCart(Guid userGuid, Guid shopGuid, Guid shopProductGuid, int newAmount);
-        bool RemoveProductFromCart(Guid userGuid, Guid shopGuid, Guid shopProductGuid);
-        ICollection<Guid> GetAllProductsInCart(Guid userGuid, Guid shopGuid);
-        bool RemoveUser(Guid userGuid, Guid userToRemoveGuid);
-        ICollection<Guid> SearchProduct(Guid userGuid, Guid shopGuid, string productName);
-        bool RemoveShopManager(Guid userGuid, Guid shopGuid, Guid managerToRemoveGuid);
-        bool ChangeUserState(Guid userGuid, string newState);
+        Guid Register(UserIdentifier userIdentifier, string username, string password);
+        Guid Login(UserIdentifier userIdentifier, string username, string password);
+        bool Logout(UserIdentifier userIdentifier);
+        Guid OpenShop(UserIdentifier userIdentifier);
+        bool PurchaseBag(UserIdentifier userIdentifier);
+        Guid Initialize(UserIdentifier userIdentifier, string username, string password);
+        bool RemoveUser(UserIdentifier userIdentifier, Guid userToRemoveGuid);
+        bool ConnectToPaymentSystem(UserIdentifier userIdentifier);
+        bool ConnectToSupplySystem(UserIdentifier userIdentifier);
+        Guid AddProductToShop(UserIdentifier userIdentifier, Guid shopGuid, string name, string category, double price, int quantity);
+        bool EditProductInShop(UserIdentifier userIdentifier, Guid shopGuid, Guid productGuid, double newPrice, int newQuantity);
+        bool RemoveProductFromShop(UserIdentifier userIdentifier, Guid shopGuid, Guid shopProductGuid);
+        bool AddProductToCart(UserIdentifier userIdentifier, Guid shopGuid, Guid shopProductGuid, int quantity);
+        bool AddShopManager(UserIdentifier userIdentifier, Guid shopGuid, Guid newManagaerGuid, List<string> priviliges);
+        bool CascadeRemoveShopOwner(UserIdentifier userIdentifier, Guid shopGuid, Guid ownerToRemoveGuid);
+        bool EditProductInCart(UserIdentifier userIdentifier, Guid shopGuid, Guid shopProductGuid, int newAmount);
+        bool RemoveProductFromCart(UserIdentifier userIdentifier, Guid shopGuid, Guid shopProductGuid);
+        ICollection<Guid> GetAllProductsInCart(UserIdentifier userIdentifier, Guid shopGuid);
+        ICollection<Guid> SearchProduct(UserIdentifier userIdentifier, ICollection<string> toMatch, string searchType);
+        bool RemoveShopManager(UserIdentifier userIdentifier, Guid shopGuid, Guid managerToRemoveGuid);
+        bool ChangeUserState(UserIdentifier userIdentifier, string newState);
         void ClearSystem();
+        bool AddShopOwner(UserIdentifier userIdentifier, Guid shopGuid, Guid newShopOwnerGuid);
     }
 }

@@ -7,16 +7,16 @@ namespace ATBridge
 {
     public class BridgeImpl : IBridge
     {
-        private readonly ServiceFacade _serviceFacade;
+        private readonly ServiceFacadeProxy _serviceFacade;
 
         public BridgeImpl()
         {
-            _serviceFacade = new ServiceFacade();
+            _serviceFacade = new ServiceFacadeProxy();
         }
 
-        public bool AddProductToShoppingCart(Guid userGuid, Guid productGuid, Guid shopGuid, int quantity)
+        public bool AddProductToCart(Guid userGuid, Guid shopGuid, Guid productGuid, int quantity)
         {
-            return _serviceFacade.AddProductToCart(userGuid, productGuid, shopGuid, quantity);
+            return _serviceFacade.AddProductToCart(userGuid, shopGuid, productGuid, quantity);
         }
 
         public bool AddShopManager(Guid userGuid, Guid shopGuid, Guid newManagaerGuid, List<string> priviliges)
@@ -55,7 +55,7 @@ namespace ATBridge
             return _serviceFacade.EditProductInCart(userGuid, shopGuid, shopProductGuid, newAmount);
         }
 
-        public bool EditShopProduct(Guid userGuid, Guid shopGuid, Guid productGuid, double newPrice, int newQuantity)
+        public bool EditProductInShop(Guid userGuid, Guid shopGuid, Guid productGuid, double newPrice, int newQuantity)
         {
             return _serviceFacade.EditProductInShop(userGuid, shopGuid, productGuid, newPrice, newQuantity);
         }
@@ -70,7 +70,7 @@ namespace ATBridge
             return _serviceFacade.Initialize(userGuid, username, password);
         }
 
-        public Guid Login(Guid userGuid, string username, string password)
+        public bool Login(Guid userGuid, string username, string password)
         {
             return _serviceFacade.Login(userGuid, username, password);
         }
@@ -106,9 +106,9 @@ namespace ATBridge
             return _serviceFacade.RemoveShopManager(userGuid, shopGuid, managerToRemoveGuid);
         }
 
-        public bool RemoveShopProduct(Guid userGuid, Guid shopProductGuid, Guid shopGuid)
+        public bool RemoveProductFromShop(Guid userGuid, Guid shopGuid, Guid shopProductGuid)
         {
-            return _serviceFacade.RemoveProductFromShop(userGuid, shopProductGuid, shopGuid);
+            return _serviceFacade.RemoveProductFromShop(userGuid, shopGuid, shopProductGuid);
         }
 
         public bool RemoveUser(Guid userGuid, Guid userToRemoveGuid)
@@ -116,9 +116,9 @@ namespace ATBridge
             return _serviceFacade.RemoveUser(userGuid, userToRemoveGuid);
         }
 
-        public ICollection<Guid> SearchProduct(Guid userGuid, Guid shopGuid, string productName)
+        public ICollection<Guid> SearchProduct(Guid userGuid, ICollection<string> toMatch, string searchType)
         {
-            return _serviceFacade.SearchProduct(userGuid, shopGuid, productName);
+            return _serviceFacade.SearchProduct(userGuid, toMatch, searchType);
         }
 
         public bool ChangeUserState(Guid userGuid, string newState)

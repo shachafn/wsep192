@@ -40,6 +40,8 @@ namespace DomainLayer.Data.Collections
             _entitiesCollection.Clear();
         }
 
+        public bool TryGetValue(Guid key, out T result) => _entitiesCollection.TryGetValue(key, out result);
+
         public bool ContainsKey(Guid key) => _entitiesCollection.ContainsKey(key);
 
         public bool ContainsValue(T entity) => _entitiesCollection.ContainsValue(entity);

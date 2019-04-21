@@ -22,6 +22,7 @@ namespace DomainLayer.Data.Entitites.Users.States
         {
             var shop = new Shop(baseUser.Guid);
             ShopsOwned.Add(shop);
+            DomainData.ShopsCollection.Add(shop.Guid, shop);
             return shop.Guid;
         }
 
@@ -64,7 +65,7 @@ namespace DomainLayer.Data.Entitites.Users.States
 
         public override bool AddProductToCart(BaseUser baseUser, Guid shopGuid, Guid shopProductGuid, int quantity)
         {
-            throw new BadStateException($"Tried to invoke AddProductToShoppingCart in Seller State");
+            throw new BadStateException($"Tried to invoke AddProductToCart in Seller State");
         }
 
         public override bool AddShopManager(BaseUser baseUser, Guid shopGuid, Guid newManagaerGuid, List<string> priviliges)
@@ -98,10 +99,14 @@ namespace DomainLayer.Data.Entitites.Users.States
             return DomainData.ShopsCollection[shopGuid].RemoveShopManager(baseUser.Guid, managerToRemoveGuid);
         }
 
-        public override bool AddShopOwner(BaseUser baseUser, Guid shopGuid, Guid newManagaerGuid)
+        public override bool AddShopOwner(BaseUser baseUser, Guid shopGuid, Guid newOwnerGuid)
         {
-            DomainData.ShopsCollection[shopGuid].AddShopOwner(baseUser.Guid, newManagaerGuid);
-            return true;
+            var shop = DomainData.ShopsCollection[shopGuid];
+            return shop.AddOwner(baseUser.Guid, newOwnerGuid);
+        }
+        public override ICollection<Guid> SearchProduct(ICollection<string> toMatch, string searchType)
+        {
+            throw new BadStateException($"Tried to invoke SearchProduct in Seller State");
         }
     }
 }

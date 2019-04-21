@@ -4,7 +4,7 @@ using DomainLayer.Data.Entitites;
 
 namespace DomainLayer.Data.Collections
 {
-    public class LoggedInUsersEntityCollection : EntityCollection<User>
+    public class LoggedInUsersEntityCollection : EntityCollection<RegisteredUser>
     {
     }
 }

@@ -8,10 +8,29 @@ namespace ServiceLayer
     /// <summary>
     /// This is a proxy class to resolve session cookie before processing the request.
     /// </summary>
-    public class ServiceFacadeProxy
+    public class ServiceFacadeProxy : IServiceFacade
     {
-        public IServiceFacade _serviceFacade = ServiceFacade.Instance;
+        public ServiceFacade _serviceFacade = ServiceFacade.Instance;
         public SessionManager _sessionManager = SessionManager.Instance;
+
+        #region Singleton Implementation
+        private static IServiceFacade instance = null;
+        private static readonly object padlock = new object();
+        public static IServiceFacade Instance
+        {
+            get
+            {
+                lock (padlock)
+                {
+                    if (instance == null)
+                    {
+                        instance = new ServiceFacadeProxy();
+                    }
+                    return instance;
+                }
+            }
+        }
+        #endregion
 
         // Login and Logout functions will act quite different becuase we
         // need them to maintain the Sessions mapping from cookie to user guid
@@ -67,7 +86,7 @@ namespace ServiceLayer
             return _serviceFacade.AddProductToShop(userGuid, shopGuid, name, category, price, quantity);
         }
 
-        public bool AddProductToShoppingCart(Guid cookie, Guid shopGuid, Guid shopProductGuid, int quantity)
+        public bool AddProductToCart(Guid cookie, Guid shopGuid, Guid shopProductGuid, int quantity)
         {
             var userGuid = _sessionManager.ResolveCookie(cookie);
             return _serviceFacade.AddProductToCart(userGuid, shopGuid, shopProductGuid, quantity);
@@ -110,7 +129,7 @@ namespace ServiceLayer
             return _serviceFacade.EditProductInCart(userGuid, shopGuid, shopProductGuid, newAmount);
         }
 
-        public bool EditShopProduct(Guid cookie, Guid shopGuid, Guid productGuid, double newPrice, int newQuantity)
+        public bool EditProductInShop(Guid cookie, Guid shopGuid, Guid productGuid, double newPrice, int newQuantity)
         {
             var userGuid = _sessionManager.ResolveCookie(cookie);
             return _serviceFacade.EditProductInShop(userGuid, shopGuid, productGuid, newPrice, newQuantity);
@@ -158,16 +177,22 @@ namespace ServiceLayer
             return _serviceFacade.RemoveShopManager(userGuid, shopGuid, managerToRemoveGuid);
         }
 
-        public ICollection<Guid> SearchProduct(Guid cookie, Guid shopGuid, string productName)
+        public ICollection<Guid> SearchProduct(Guid cookie, ICollection<string> toMatch, string searchType)
         {
             var userGuid = _sessionManager.ResolveCookie(cookie);
-            return _serviceFacade.SearchProduct(userGuid, shopGuid, productName);
+            return _serviceFacade.SearchProduct(userGuid, toMatch, searchType);
         }
 
         public bool ChangeUserState(Guid cookie, string newState)
         {
             var userGuid = _sessionManager.ResolveCookie(cookie);
             return _serviceFacade.ChangeUserState(userGuid, newState);
+        }
+
+        public void ClearSystem()
+        {
+            _sessionManager.Clear();
+            _serviceFacade.ClearSystem();
         }
     }
 }

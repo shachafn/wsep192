@@ -5,11 +5,14 @@ using NUnit.Framework;
 using ATBridge;
 using DomainLayer;
 using DomainLayer.Exceptions;
+using System.Linq;
 
 namespace Tests
 {
     public static class UserAT
     {
+        static Guid _admiNCookie = Guid.NewGuid();
+
         [OneTimeSetUp]
         public static void OneTimeSetUp()
         {
@@ -26,81 +29,81 @@ namespace Tests
         [SetUp]
         public static void SetUp()
         {
-            Tester.AdminGuid = Tester.PBridge.Initialize(Tester.GuestGuid, "admin", "000000");
+            Tester.AdminGuid = Tester.PBridge.Initialize(_admiNCookie, "admin", "000000");
         }
 
 
-        //GR 2.2 - User's registration
-        public static void RegisterAT()
-        {
-            RegisterAT1();
-            RegisterAT2();
-        }
-
+        #region GR 2.2 - User's registration
         [Test]
         public static void RegisterAT1()
         {
-            Tester.GroismanGuid = Tester.PBridge.Register(Tester.GuestGuid, "groisman", "150298");
-            Assert.AreNotEqual(Tester.GroismanGuid, Guid.Empty);
+            GenerateRandoms(out var cookie, out var username, out var password);
+            var result = RegisterUser(cookie, username, password);
+            Assert.AreNotEqual(result, Guid.Empty);
         }
         [Test]
         public static void RegisterAT2()
         {
-            RegisterAT1();
+            GenerateRandoms(out var cookie, out var username, out var password);
+            RegisterUser(cookie, username, password);
+            var second = RegisterUser(cookie, username, password);
             //Same username
-            Assert.AreEqual(Tester.PBridge.Register(Tester.GuestGuid, "groisman", "1111"), Guid.Empty);
+            Assert.AreEqual(Guid.Empty, second);
         }
-        //GR 2.3-login of guest with identifiers.
-        public static void LoginAT()
-        {
-            LoginAT1();
-            LoginAT2();
-        }
+        #endregion
+
+        #region GR 2.3 - login of guest with identifiers.
 
         [Test]
         public static void LoginAT1()
         {
-            string exist_username = "groisman";
-            string exist_password = "150298";
-            if (!Tester._groismanRegistered)
-                RegisterAT1();
-            if (!Tester._groismanConnected)
-            {
-                Tester._groismanConnected = true;
-                Guid groisman = Tester.PBridge.Login(Tester.GuestGuid, exist_username, exist_password);
-                Assert.NotZero(groisman.CompareTo(Guid.Empty));
-                Tester.GroismanGuid = groisman;
-            }
+            GenerateRandoms(out var cookie, out var username, out var password);
+            RegisterUser(cookie, username, password);
+            var res = LoginUser(cookie, username, password);
+            Assert.IsTrue(res);
         }
 
         [Test]
         public static void LoginAT2()
         {
-            string username = "idoGroiser";
-            string password = "090902";
-            Assert.Throws<CredentialsMismatchException>(
-                () =>
-                Tester.PBridge.Login(Tester.GuestGuid, username, password));
+            GenerateRandoms(out var cookie, out var username, out var password);
+            RegisterUser(cookie, username, password);
+            var wrongPass = RandomString();
+            Assert.Throws<CredentialsMismatchException>( () => LoginUser(cookie, username, wrongPass));
         }
+        #endregion
 
-        //GR 2.5 - search products in the catalog
-        public static void SearchProductsAT()
-        {
-            SearchProductsAT1();
-            SearchProductsAT2();
-        }
+        #region GR 2.5 - search products in the catalog
         [Test]
         public static void SearchProductsAT1()
         {
-            if (!Tester._groismanRegistered)
-                RegisterAT1();
-            if (!Tester._groismanConnected)
-                LoginAT1();
-            if (Tester._groismanShop.CompareTo(Guid.Empty) == 0)
-                RegisteredBuyerAT.OpenStoreAT1(); //the shop is empty and no product is available.
-            if (Tester.galaxyGuid.CompareTo(Guid.Empty) == 0)
-                StoreOwnerAT.AddingProductAT1(); //now Groisman's shop has 10 Galaxys
-            Assert.IsNotNull(Tester.PBridge.SearchProduct(Tester.GuestGuid, Tester._groismanShop, "Galaxy S9"));
+            UserAT.GenerateRandoms(out var cookie, out var username, out var password);
+            UserAT.RegisterUser(cookie, username, password);
+            UserAT.LoginUser(cookie, username, password);
+            Tester.PBridge.ChangeUserState(cookie, "SellerUserState");
+            var shopGuid = Tester.PBridge.OpenShop(cookie);
+            var galaxyGuid = Tester.PBridge.AddProductToShop(cookie, shopGuid, "Galaxy S9", "Cellphones", 2000, 10);
+            var iphoneGuid = Tester.PBridge.AddProductToShop(cookie, shopGuid, "Iphone 6", "Cellphones", 500, 50);
+
+            Tester.PBridge.ChangeUserState(cookie, "BuyerUserState");
+            var resByName = Tester.PBridge.SearchProduct(cookie, new List<string>() { "Iphone" }, "Name");
+            CollectionAssert.AreEquivalent(resByName, new List<Guid>() { iphoneGuid });
+            resByName = Tester.PBridge.SearchProduct(cookie, new List<string>() { "Galaxy" }, "Name");
+            CollectionAssert.AreEquivalent(resByName, new List<Guid>() { galaxyGuid });
+            resByName = Tester.PBridge.SearchProduct(cookie, new List<string>() { "OnePlus" }, "Name");
+            CollectionAssert.AreEquivalent(resByName, new List<Guid>());
+
+            var resByCategory = Tester.PBridge.SearchProduct(cookie, new List<string>() { "Cellphones" }, "Category");
+            CollectionAssert.AreEquivalent(resByCategory, new List<Guid>() { iphoneGuid, galaxyGuid });
+            resByCategory = Tester.PBridge.SearchProduct(cookie, new List<string>() { "Dishwashers" }, "Category");
+            CollectionAssert.AreEquivalent(resByCategory, new List<Guid>());
+
+            /* Not yet supported from service kayer
+            var resByKeywards = Tester.PBridge.SearchProduct(cookie, new List<string>() { "Cellphones" }, "Category");
+            CollectionAssert.AreEquivalent(resByName, new List<Guid>() { iphoneGuid, galaxyGuid });
+            resByCategory = Tester.PBridge.SearchProduct(cookie, new List<string>() { "Dishwashers" }, "Category");
+            CollectionAssert.AreEquivalent(resByName, new List<Guid>());
+            */
         }
         [Test]
         public static void SearchProductsAT2()
@@ -113,163 +116,32 @@ namespace Tests
                 RegisteredBuyerAT.OpenStoreAT1(); //the shop is empty and no product is available.
             if (Tester.galaxyGuid.CompareTo(Guid.Empty) == 0)
                 StoreOwnerAT.AddingProductAT1(); //now Groisman's shop has 10 Galaxys
-            Assert.IsNotNull(Tester.PBridge.SearchProduct(Tester.GuestGuid, Tester._groismanShop, "IPhone 6"));
+            //TODO_REMOVE_COMMENT Assert.IsNotNull(Tester.PBridge.SearchProduct(Tester.GuestGuid, Tester._groismanShop, "IPhone 6"));
+        }
+        #endregion
+
+        public static bool LoginUser(Guid cookie, string username, string password)
+        {
+            return Tester.PBridge.Login(cookie, username, password);
         }
 
-        //GR 2.6 - Saving/Adding products in user's cart
-        public static void SavingProductsInCartAT()
+        public static Guid RegisterUser(Guid cookie, string username, string password)
         {
-            SavingProductsInCartAT1();
-            SavingProductsInCartAT2();
-        }
-        [Test]
-        public static void SavingProductsInCartAT1()
-        {
-            Tester.PBridge.ChangeUserState(Tester.GuestGuid, "BuyerUserState"); //Move to buyer state
-            bool res = Tester.PBridge.AddProductToShoppingCart(Tester.GuestGuid, Tester.galaxyGuid, Tester._groismanShop, 1);
-            Assert.True(res);
-        }
-        [Test]
-        public static void SavingProductsInCartAT2()
-        {
-            Tester.PBridge.ChangeUserState(Tester.GuestGuid, "BuyerUserState"); //Move to buyer state
-            bool res = Tester.PBridge.AddProductToShoppingCart(Tester.GuestGuid, Guid.Empty , Tester._groismanShop, 1); //Invalid product.
-            Assert.False(res);
+            return Tester.PBridge.Register(cookie, username, password);
         }
 
-        //GR 2.7- watching and editing of cart
-        public static void WatchingAndEditingOfCartAT()
+        public static void GenerateRandoms(out Guid cookie, out string username, out string password)
         {
-            WatchingAndEditingOfCartAT1();
-            WatchingAndEditingOfCartAT2();
-            WatchingAndEditingOfCartAT3();
+            cookie = Guid.NewGuid();
+            username = RandomString();
+            password = RandomString();
         }
-        [Test]
-        public static void WatchingAndEditingOfCartAT1()
+        private static Random random = new Random();
+        public static string RandomString()
         {
-            if (!Tester._groismanRegistered)
-                RegisterAT1();
-            if (!Tester._groismanConnected)
-                LoginAT1();
-            if (Tester._groismanShop.CompareTo(Guid.Empty) == 0)
-                RegisteredBuyerAT.OpenStoreAT1(); //the shop is empty and no product is available.
-            Tester.PBridge.ChangeUserState(Tester.GuestGuid, "BuyerUserState"); //Move to buyer state
-            Assert.IsNull(Tester.PBridge.GetAllProductsInCart(Tester.GuestGuid, Tester._groismanShop));
-        }
-        [Test]
-        public static void WatchingAndEditingOfCartAT2()
-        {
-            if (!Tester._groismanRegistered)
-                RegisterAT1();
-            if (!Tester._groismanConnected)
-                LoginAT1();
-            if (Tester._groismanShop.CompareTo(Guid.Empty) == 0)
-                RegisteredBuyerAT.OpenStoreAT1(); //the shop is empty and no product is available.
-            if(Tester.galaxyGuid.CompareTo(Guid.Empty) == 0)
-                StoreOwnerAT.AddingProductAT1(); //now Groisman's shop has 10 Galaxys
-
-            Tester.PBridge.ChangeUserState(Tester.GuestGuid, "BuyerUserState"); //Move to buyer state
-            SavingProductsInCartAT1(); //Add 1 galaxy
-            ICollection<Guid> expected = new LinkedList<Guid>();
-            expected.Add(Tester.galaxyGuid); //Assumption : The list will hold product guid and not shopProduct guid.
-            Assert.AreEqual(expected,Tester.PBridge.GetAllProductsInCart(Tester.GuestGuid, Tester._groismanShop));
-        }
-        [Test]
-        public static void WatchingAndEditingOfCartAT3()
-        {
-            if (!Tester._groismanRegistered)
-                RegisterAT1();
-            if (!Tester._groismanConnected)
-                LoginAT1();
-            if (Tester._groismanShop.CompareTo(Guid.Empty) == 0)
-                RegisteredBuyerAT.OpenStoreAT1(); //the shop is empty and no product is available.
-            if (Tester.galaxyGuid.CompareTo(Guid.Empty) == 0)
-                StoreOwnerAT.AddingProductAT1(); //now Groisman's shop has 10 Galaxys
-            SavingProductsInCartAT1(); //Add product to cart.
-            Tester.PBridge.ChangeUserState(Tester.GuestGuid, "BuyerUserState"); //Move to buyer state
-            bool res = Tester.PBridge.RemoveProductFromCart(Tester.GuestGuid, Tester._groismanShop, Tester.galaxyGuid);
-            Assert.True(res);
-        }
-
-        /*
-        //GR 2.8 - purchase of products
-
-        public static void PurchaseAT()
-        {
-            //TODO
-            PurchaseAT1();
-            PurchaseAT2();
-            PurchaseAT3();
-            PurchaseAT4();
-            PurchaseAT5();
-            PurchaseAT6();
-            PurchaseAT7();
-            PurchaseAT8();
-        }
-
-        [Test]
-        public static void PurchaseAT1()
-        {
-            Assert.Pass();
-        }
-
-        [Test]
-        public static void PurchaseAT2()
-        {
-            //TODO: Complete when I'll know how to purchase a product.
-            Assert.Pass();
-        }
-
-        [Test]
-        public static void PurchaseAT3()
-        {
-            //TODO: Complete when I'll know how to purchase a product.
-            Assert.Pass();
-        }
-
-        [Test]
-        public static void PurchaseAT4()
-        {
-            //TODO: Complete when I'll know how to purchase a product.
-            Assert.Pass();
-        }
-
-        [Test]
-        public static void PurchaseAT5()
-        {
-            //TODO: Complete when I'll know how to purchase a product.
-            Assert.Pass();
-        }
-
-        [Test]
-        public static void PurchaseAT6()
-        {
-            //TODO: Complete when I'll know how to purchase a product.
-            Assert.Pass();
-        }
-
-        [Test]
-        public static void PurchaseAT7()
-        {
-            //TODO: Complete when I'll know how to purchase a product.
-            Assert.Pass();
-        }
-
-        [Test]
-        public static void PurchaseAT8()
-        {
-            //TODO: Complete when I'll know how to purchase a product.
-            Assert.Pass();
-        } */
-
-        public static void RunUserAT()
-        {
-            RegisterAT();
-            LoginAT(); //GR 2.3
-            SearchProductsAT(); //GR 2.5
-            SavingProductsInCartAT();//GR 2.6
-            WatchingAndEditingOfCartAT(); // GR 2.7
-            //PurchaseAT(); //GR 2.8
+            const string chars = "ABCDEFGHIJKLMNOPQRSTUVWXYZ";
+            return new string(Enumerable.Repeat(chars, 20)
+              .Select(s => s[random.Next(s.Length)]).ToArray());
         }
     }
 }

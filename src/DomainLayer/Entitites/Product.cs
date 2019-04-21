@@ -1,9 +1,12 @@
-﻿namespace DomainLayer.Data.Entitites
+﻿using System.Collections.Generic;
+
+namespace DomainLayer.Data.Entitites
 {
     public class Product : BaseEntity
     {
         public string Name { get; set; }
         public string Category { get; set; }
+        public ICollection<string> Keywords { get; set; }
 
         public Product(string name, string category)
         {

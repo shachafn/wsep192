@@ -22,7 +22,7 @@ namespace DomainLayer.Data.Entitites.Users.States
         {
             if (!CurrentBag.Empty())
             {
-                CurrentBag.PurchaseBag(this);//sending the user itself as the buyer
+                CurrentBag.PurchaseBag();
                 PurchaseHistory.Add(CurrentBag);
                 return true;
             }
@@ -56,17 +56,17 @@ namespace DomainLayer.Data.Entitites.Users.States
 
         public override void EditProductInShop(BaseUser baseUser, Guid shopGuid, Guid productGuid, double newPrice, int newQuantity)
         {
-            throw new BadStateException($"Tried to invoke EditShopProduct in Buyer State");
+            throw new BadStateException($"Tried to invoke EditProductInShop in Buyer State");
         }
 
         public override bool RemoveProductFromShop(BaseUser baseUser, Guid shopGuid, Guid shopProductGuid)
         {
-            throw new BadStateException($"Tried to invoke RemoveShopProduct in Buyer State");
+            throw new BadStateException($"Tried to invoke RemoveProductFromShop in Buyer State");
         }
 
         public override bool AddProductToCart(BaseUser baseUser, Guid shopGuid, Guid shopProductGuid, int quantity)
         {
-            var cart = GetCartAndCreateIfNeeded(baseUser, shopGuid);
+            var cart = GetCartAndCreateIfNeeded(baseUser.Guid, shopGuid);
             cart.AddProductToCart(shopProductGuid, quantity);
             return true;
         }
@@ -83,19 +83,19 @@ namespace DomainLayer.Data.Entitites.Users.States
 
         public override bool EditProductInCart(BaseUser baseuser, Guid shopGuid, Guid shopProductGuid, int newAmount)
         {
-            var cart = GetCartAndCreateIfNeeded(baseuser, shopGuid);
+            var cart = GetCartAndCreateIfNeeded(baseuser.Guid, shopGuid);
             return cart.EditProductInCart(shopProductGuid, newAmount);
         }
 
         public override bool RemoveProductFromCart(BaseUser baseuser, Guid shopGuid, Guid shopProductGuid)
         {
-            var cart = GetCartAndCreateIfNeeded(baseuser, shopGuid);
+            var cart = GetCartAndCreateIfNeeded(baseuser.Guid, shopGuid);
             return cart.RemoveProductFromCart(shopProductGuid);
         }
 
         public override ICollection<Guid> GetAllProductsInCart(BaseUser baseuser, Guid shopGuid)
         {
-            var cart = GetCartAndCreateIfNeeded(baseuser, shopGuid);
+            var cart = GetCartAndCreateIfNeeded(baseuser.Guid, shopGuid);
             return cart.GetAllProductsInCart();
         }
 
@@ -109,21 +109,31 @@ namespace DomainLayer.Data.Entitites.Users.States
             throw new BadStateException($"Tried to invoke AddShopOwner in Buyer State");
         }
 
-        private ShoppingCart GetCartAndCreateIfNeeded(BaseUser baseUser, Guid shopGuid)
+        public override ICollection<Guid> SearchProduct(ICollection<string> toMatch, string searchType)
         {
-            var userBag = DomainData.ShoppingBagsCollection.FirstOrDefault(bag => bag.UserGuid.Equals(baseUser.Guid));
-            if (userBag == null)
+            var searcher = new ProductsSearcher(searchType);
+            return searcher.Search(toMatch);
+        }
+
+        private ShoppingCart GetCartAndCreateIfNeeded(Guid userGuid, Guid shopGuid)
+        {
+            if (CurrentBag == null)
             {
-                userBag = new ShoppingBag(baseUser.Guid);
-                DomainData.ShoppingBagsCollection.Add(baseUser.Guid, userBag);
+                if (!DomainData.ShoppingBagsCollection.ContainsKey(userGuid))
+                {
+                    CurrentBag = new ShoppingBag(userGuid);
+                    DomainData.ShoppingBagsCollection.Add(userGuid, CurrentBag);
+                }
+                else
+                    CurrentBag = DomainData.ShoppingBagsCollection[userGuid];
             }
-            var userCart = userBag.ShoppingCarts.FirstOrDefault(cart => cart.ShopGuid.Equals(shopGuid));
-            if (userCart == null)
+            ShoppingCart cart = null;
+            if (!CurrentBag.ShoppingCarts.Any(c => c.ShopGuid.Equals(shopGuid)))
             {
-                userCart = new ShoppingCart(baseUser.Guid, shopGuid);
-                userBag.ShoppingCarts.Add(userCart);
+                cart = new ShoppingCart(userGuid, shopGuid);
+                CurrentBag.ShoppingCarts.Add(cart);
             }
-            return userCart;
+            return CurrentBag.ShoppingCarts.First(c => c.ShopGuid.Equals(shopGuid));
         }
     }
 }

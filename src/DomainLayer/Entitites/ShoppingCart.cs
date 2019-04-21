@@ -24,7 +24,7 @@ namespace DomainLayer.Data.Entitites
 
         public void AddProductToCart(Guid newShopProductGuid, int amount)
         {
-            throw new NotImplementedException();
+            PurchasedProducts.Add(new Tuple<Guid, int>(newShopProductGuid, amount));
         }
 
         public bool EditProductInCart(Guid shopProductGuid, int newAmount)
@@ -47,7 +47,7 @@ namespace DomainLayer.Data.Entitites
             return PurchasedProducts.Select(tuple => tuple.Item1).ToList();
         }
 
-        public void PurchaseCart(AbstractUserState state)
+        public void PurchaseCart()
         {
             throw new NotImplementedException();
         }

@@ -11,78 +11,88 @@ namespace Tests
     [TestFixture]
     public static class StoreOwnerAT
     {
-        [SetUp]
-        public static void Setup()
+        static Guid _adminCookie = Guid.NewGuid();
+        static string _adminUsername = "admin";
+        static string _adminPassword = "000000";
+
+        [OneTimeSetUp]
+        public static void OneTimeSetUp()
         {
-            if (!Tester._initalized)
-                AdminAT.InitializationAT();
-            if (!Tester._groismanRegistered)
-                UserAT.RegisterAT1();
-            if (!Tester._groismanConnected)
-                UserAT.LoginAT1();
-            if (Tester._groismanShop.CompareTo(Guid.Empty) == 0)
-                RegisteredBuyerAT.OpenStoreAT1();
+            Tester.PBridge.SetRealBridge(new BridgeImpl());
         }
+
+
         [TearDown]
         public static void TearDown()
         {
             Tester.PBridge.ClearSystem();
         }
-        public static void RunStoreOwnerAT()
+
+        [SetUp]
+        public static void SetUp()
         {
-            StoreManagmentAT(); //GR 4.1
-            AppointmentOfNewOwnerAT(); //GR 4.3
-            RemoveOfOwnerAT(); //GR 4.4
-            AppointmentOfNewManagerAT(); //GR 4.5  
-            RemoveOfManagerAT(); //GR 4.6
+            Tester.AdminGuid = Tester.PBridge.Initialize(_adminCookie, _adminUsername, _adminPassword);
         }
 
-        //GR 4.1 - Store's owner can manage store in his store.
-        public static void StoreManagmentAT()
-        {
-            AddingProductAT(); //GR 4.1.1
-            RemovingProductAT(); //GR 4.1.2
-            EditingProductAT(); //GR 4.1.3
-        }
 
-        //GR 4.1.1
-        public static void AddingProductAT()
-        {
-            AddingProductAT1();
-            AddingProductAT2();
-            AddingProductAT3();
-            AddingProductAT4();
-        }
+        #region GR 4.1.1 - Store owner can add products
 
         [Test]
         public static void AddingProductAT1()
         {
-            Guid productGuid = Tester.PBridge.AddProductToShop(Tester.GroismanGuid, Tester._groismanShop, "Galaxy S9", "Cellphones", 2000, 10);
-            Assert.Zero(productGuid.CompareTo(Guid.Empty));
+            UserAT.GenerateRandoms(out var cookie, out var username, out var password);
+            UserAT.RegisterUser(cookie, username, password);
+            UserAT.LoginUser(cookie, username, password);
+            Tester.PBridge.ChangeUserState(cookie, "SellerUserState");
+            var shopGuid = Tester.PBridge.OpenShop(cookie);
+            var res = AddProductToShop(cookie, shopGuid, "Galaxy S9", "Cellphones", 2000, 10);
+            Assert.AreNotEqual(Guid.Empty, res);
         }
 
         [Test]
         public static void AddingProductAT2()
         {
-            Assert.Throws<BadStateException>(() => Tester.PBridge.AddProductToShop(Tester.GuestGuid, Tester._groismanShop, "Galaxy S9", "Cellphones", 2000, 10));
+            UserAT.GenerateRandoms(out var cookie, out var username, out var password);
+            UserAT.RegisterUser(cookie, username, password);
+            UserAT.LoginUser(cookie, username, password);
+            Tester.PBridge.ChangeUserState(cookie, "SellerUserState");
+            var shopGuid = Tester.PBridge.OpenShop(cookie);
+            Tester.PBridge.ChangeUserState(cookie, "BuyerUserState");
+            Assert.Throws<BadStateException>(
+                () => AddProductToShop(cookie, shopGuid, "Galaxy S9", "Cellphones", 2000, 10));
         }
 
         [Test]
         public static void AddingProductAT3()
         {
-            if (Tester.galaxyGuid.CompareTo(Guid.Empty) == 0)
-            {
-                AddingProductAT1();
-            }
-            Guid res = Tester.PBridge.AddProductToShop(Tester.GroismanGuid, Tester._groismanShop, "Galaxy S9", "Cellphones", 2000, 10);
-            Assert.Zero(res.CompareTo(Guid.Empty));
+            UserAT.GenerateRandoms(out var cookie, out var username, out var password);
+            UserAT.RegisterUser(cookie, username, password);
+            UserAT.LoginUser(cookie, username, password);
+            Tester.PBridge.ChangeUserState(cookie, "SellerUserState");
+            var shopGuid = Tester.PBridge.OpenShop(cookie);
+
+            //non-owner user tries to add
+            UserAT.GenerateRandoms(out var otherCookie, out var otherUsername, out var otherPassword);
+            UserAT.RegisterUser(otherCookie, otherUsername, otherPassword);
+            UserAT.LoginUser(otherCookie, otherUsername, otherPassword);
+            Tester.PBridge.ChangeUserState(otherCookie, "SellerUserState");
+
+            Assert.Throws<NoPriviligesException>(
+                () => AddProductToShop(otherCookie, shopGuid, "Galaxy S9", "Cellphones", 2000, 10));
         }
 
         [Test]
         public static void AddingProductAT4()
         {
-            Assert.Throws<IllegalArgumentException>(() => Tester.PBridge.AddProductToShop(Tester.GroismanGuid, Tester._groismanShop, "Galaxy S9", "Cellphones", -2000, 10));
+            UserAT.GenerateRandoms(out var cookie, out var username, out var password);
+            UserAT.RegisterUser(cookie, username, password);
+            UserAT.LoginUser(cookie, username, password);
+            Tester.PBridge.ChangeUserState(cookie, "SellerUserState");
+            var shopGuid = Tester.PBridge.OpenShop(cookie);
+            Assert.Throws<IllegalArgumentException>(
+                () => AddProductToShop(cookie, shopGuid, "Galaxy S9", "Cellphones", -2000, 10));
         }
+        #endregion
 
         //GR 4.1.2
         public static void RemovingProductAT()
@@ -95,29 +105,41 @@ namespace Tests
         [Test]
         public static void RemovingProductAT1()
         {
-            if (Tester.galaxyGuid.CompareTo(Guid.Empty) == 0)
-            {
-                AddingProductAT1();
-            }
-            //After setting the pre-conditions.
-            bool result = Tester.PBridge.RemoveShopProduct(Tester.GroismanGuid, Tester.galaxyGuid, Tester._groismanShop);
-            Assert.True(result);
-            if (result)
-            {
-                Tester.galaxyGuid = Guid.Empty;
-            }
+            UserAT.GenerateRandoms(out var cookie, out var username, out var password);
+            UserAT.RegisterUser(cookie, username, password);
+            UserAT.LoginUser(cookie, username, password);
+            Tester.PBridge.ChangeUserState(cookie, "SellerUserState");
+            var shopGuid = Tester.PBridge.OpenShop(cookie);
+            var productGuid = AddProductToShop(cookie, shopGuid, "Galaxy S9", "Cellphones", 2000, 10);
+            var res = Tester.PBridge.RemoveProductFromShop(cookie, shopGuid, productGuid);
+            Assert.True(res);
         }
 
         [Test]
         public static void RemovingProductAT2()
         {
-            Assert.Throws<BadStateException>(() => Tester.PBridge.RemoveShopProduct(Tester.GuestGuid, Tester.galaxyGuid, Tester._groismanShop));
+            UserAT.GenerateRandoms(out var cookie, out var username, out var password);
+            UserAT.RegisterUser(cookie, username, password);
+            UserAT.LoginUser(cookie, username, password);
+            Tester.PBridge.ChangeUserState(cookie, "SellerUserState");
+            var shopGuid = Tester.PBridge.OpenShop(cookie);
+            var productGuid = AddProductToShop(cookie, shopGuid, "Galaxy S9", "Cellphones", 2000, 10);
+            Tester.PBridge.ChangeUserState(cookie, "BuyerUserState");
+            Assert.Throws<BadStateException>(
+                () => Tester.PBridge.RemoveProductFromShop(cookie, shopGuid, productGuid));
         }
 
         [Test]
         public static void RemovingProductAT3()
         {
-            Assert.Throws<ProductNotFoundException>(() => Tester.PBridge.RemoveShopProduct(Tester.GroismanGuid, Guid.Empty, Tester._groismanShop)); //The empty guid doesn't exist in the shop.
+            UserAT.GenerateRandoms(out var cookie, out var username, out var password);
+            UserAT.RegisterUser(cookie, username, password);
+            UserAT.LoginUser(cookie, username, password);
+            Tester.PBridge.ChangeUserState(cookie, "SellerUserState");
+            var shopGuid = Tester.PBridge.OpenShop(cookie);
+            var productGuid = AddProductToShop(cookie, shopGuid, "Galaxy S9", "Cellphones", 2000, 10);
+            Assert.Throws<ProductNotFoundException>(
+                () => Tester.PBridge.RemoveProductFromShop(cookie, shopGuid, Guid.Empty));
         }
 
 
@@ -134,73 +156,102 @@ namespace Tests
         [Test]
         public static void EditingProductAT1()
         {
-            if (Tester._groismanShop.CompareTo(Guid.Empty) == 0 || Tester.galaxyGuid.CompareTo(Guid.Empty) == 0)
-            {
-                AddingProductAT1();
-            }
-            bool result = Tester.PBridge.EditShopProduct(Tester.GroismanGuid, Tester._groismanShop, Tester.galaxyGuid, 1500, 20);
+            UserAT.GenerateRandoms(out var cookie, out var username, out var password);
+            UserAT.RegisterUser(cookie, username, password);
+            UserAT.LoginUser(cookie, username, password);
+            Tester.PBridge.ChangeUserState(cookie, "SellerUserState");
+            var shopGuid = Tester.PBridge.OpenShop(cookie);
+            var galaxyGuid = AddProductToShop(cookie, shopGuid, "Galaxy S9", "Cellphones", 2000, 10);
+            bool result = Tester.PBridge.EditProductInShop(cookie, shopGuid, galaxyGuid, 1500, 20);
             Assert.True(result);
         }
 
         [Test]
         public static void EditingProductAT2()
         {
-            Assert.Throws<BadStateException>(() => Tester.PBridge.EditShopProduct(Tester.GuestGuid, Tester._groismanShop, Tester.galaxyGuid, 1500, 20));
+            UserAT.GenerateRandoms(out var cookie, out var username, out var password);
+            UserAT.RegisterUser(cookie, username, password);
+            UserAT.LoginUser(cookie, username, password);
+            Tester.PBridge.ChangeUserState(cookie, "SellerUserState");
+            var shopGuid = Tester.PBridge.OpenShop(cookie);
+            var galaxyGuid = AddProductToShop(cookie, shopGuid, "Galaxy S9", "Cellphones", 2000, 10);
+            Tester.PBridge.ChangeUserState(cookie, "BuyerUserState");
+            Assert.Throws<BadStateException>(() => Tester.PBridge.EditProductInShop(cookie, shopGuid, galaxyGuid, 1500, 20));
         }
 
         [Test]
         public static void EditingProductAT3()
         {
-            Assert.Throws<ProductNotFoundException>(() => Tester.PBridge.RemoveShopProduct(Tester.GroismanGuid, Guid.Empty, Tester._groismanShop)); //The empty guid doesn't exist in the shop.
+            UserAT.GenerateRandoms(out var cookie, out var username, out var password);
+            UserAT.RegisterUser(cookie, username, password);
+            UserAT.LoginUser(cookie, username, password);
+            Tester.PBridge.ChangeUserState(cookie, "SellerUserState");
+            var shopGuid = Tester.PBridge.OpenShop(cookie);
+            var galaxyGuid = AddProductToShop(cookie, shopGuid, "Galaxy S9", "Cellphones", 2000, 10);
+            //Empty guid does not match any product
+            Assert.Throws<ProductNotFoundException>(() => Tester.PBridge.EditProductInShop(cookie, shopGuid, Guid.Empty, 1500, 20)); 
         }
 
         [Test]
         public static void EditingProductAT4()
         {
-            if (Tester.galaxyGuid.CompareTo(Guid.Empty) == 0)
-            {
-                AddingProductAT1();
-            }
-            Assert.Throws<IllegalArgumentException>(() => Tester.PBridge.EditShopProduct(Tester.GroismanGuid, Tester._groismanShop, Tester.galaxyGuid, 1500, -20));
+            UserAT.GenerateRandoms(out var cookie, out var username, out var password);
+            UserAT.RegisterUser(cookie, username, password);
+            UserAT.LoginUser(cookie, username, password);
+            Tester.PBridge.ChangeUserState(cookie, "SellerUserState");
+            var shopGuid = Tester.PBridge.OpenShop(cookie);
+            var galaxyGuid = AddProductToShop(cookie, shopGuid, "Galaxy S9", "Cellphones", 2000, 10);
+            Assert.Throws<IllegalArgumentException>(
+                () => Tester.PBridge.EditProductInShop(cookie, shopGuid, galaxyGuid, 1500, -20));
         }
 
-        //GR 4.3 - Store's owner can appoint new owner to his store.
-        public static void AppointmentOfNewOwnerAT()
-        {
-            AppointmentOfNewOwnerAT1();
-            AppointmentOfNewOwnerAT2();
-            AppointmentOfNewOwnerAT3();
-            //AppointmentOfNewOwnerAT4(); //CAN NOT TEST THAT!
-        }
+        #region GR 4.3 - Store's owner can appoint new owner to his store.
 
         [Test]
         public static void AppointmentOfNewOwnerAT1()
         {
-            if (Tester.BenGuid.CompareTo(Guid.Empty) == 0)
-            {
-                Tester.PBridge.Register(Tester.GuestGuid, "Benhas", "151097");
-                Tester.BenGuid = Tester.PBridge.Login(Tester.GuestGuid, "Benhas", "151097");
-            }
-            bool res = Tester.PBridge.AddShopOwner(Tester.GroismanGuid, Tester._groismanShop, Tester.BenGuid);
+            UserAT.GenerateRandoms(out var cookie, out var username, out var password);
+            UserAT.RegisterUser(cookie, username, password);
+            UserAT.LoginUser(cookie, username, password);
+            Tester.PBridge.ChangeUserState(cookie, "SellerUserState");
+            var shopGuid = Tester.PBridge.OpenShop(cookie);
+
+            UserAT.GenerateRandoms(out var benCookie, out var benUsername, out var benPassword);
+            var benGuid = UserAT.RegisterUser(benCookie, benUsername, benPassword);
+
+            var res = Tester.PBridge.AddShopOwner(cookie, shopGuid, benGuid);
             Assert.True(res);
         }
 
         [Test]
         public static void AppointmentOfNewOwnerAT2()
         {
-            Assert.Throws<UserNotFoundException>(()=> Tester.PBridge.AddShopOwner(Tester.GroismanGuid, Tester._groismanShop, Tester.GuestGuid));
+            UserAT.GenerateRandoms(out var cookie, out var username, out var password);
+            UserAT.RegisterUser(cookie, username, password);
+            UserAT.LoginUser(cookie, username, password);
+            Tester.PBridge.ChangeUserState(cookie, "SellerUserState");
+            var shopGuid = Tester.PBridge.OpenShop(cookie);
+            Assert.Throws<UserNotFoundException>(
+                ()=> Tester.PBridge.AddShopOwner(cookie, shopGuid, Guid.Empty));
         }
 
         [Test]
         public static void AppointmentOfNewOwnerAT3()
         {
-            if (Tester.BenGuid.CompareTo(Guid.Empty) == 0)
-            {
-                Tester.PBridge.Register(Tester.GuestGuid, "Benhas", "151097");
-                Tester.BenGuid = Tester.PBridge.Login(Tester.GuestGuid, "Benhas", "151097");
-            }
-            Assert.Throws<BadStateException>( ()=> Tester.PBridge.AddShopOwner(Tester.GuestGuid, Tester._groismanShop, Tester.BenGuid));
+            UserAT.GenerateRandoms(out var cookie, out var username, out var password);
+            UserAT.RegisterUser(cookie, username, password);
+            UserAT.LoginUser(cookie, username, password);
+            Tester.PBridge.ChangeUserState(cookie, "SellerUserState");
+            var shopGuid = Tester.PBridge.OpenShop(cookie);
+            Tester.PBridge.ChangeUserState(cookie, "BuyerUserState");
+
+            UserAT.GenerateRandoms(out var benCookie, out var benUsername, out var benPassword);
+            var benGuid = UserAT.RegisterUser(benCookie, benUsername, benPassword);
+
+            Assert.Throws<BadStateException>(
+                () => Tester.PBridge.AddShopOwner(cookie, shopGuid, benGuid));
         }
+        #endregion
 
         //CAN NOT TEST THAT!
         /*[Test]
@@ -210,24 +261,23 @@ namespace Tests
         }*/
 
 
-        //GR 4.4 - Store's owner can remove new owner from his store.
-        public static void RemoveOfOwnerAT()
-        {
-            RemoveOfOwnerAT1();
-            RemoveOfOwnerAT2();
-            //RemoveOfOwnerAT3(); // can not test it
-            RemoveOfOwnerAT4();
-        }
+        #region GR 4.4 - Store's owner can remove new owner from his store.
 
         [Test]
         public static void RemoveOfOwnerAT1()
         {
-            if (Tester.BenGuid.CompareTo(Guid.Empty) == 0)
-            {
-                AppointmentOfNewOwnerAT1();
-            }
-            bool res = Tester.PBridge.CascadeRemoveShopOwner(Tester.GroismanGuid, Tester._groismanShop, Tester.BenGuid);
-            Assert.True(res);
+            UserAT.GenerateRandoms(out var cookie, out var username, out var password);
+            UserAT.RegisterUser(cookie, username, password);
+            UserAT.LoginUser(cookie, username, password);
+            Tester.PBridge.ChangeUserState(cookie, "SellerUserState");
+            var shopGuid = Tester.PBridge.OpenShop(cookie);
+
+            UserAT.GenerateRandoms(out var benCookie, out var benUsername, out var benPassword);
+            var benGuid = UserAT.RegisterUser(benCookie, benUsername, benPassword);
+
+            Tester.PBridge.AddShopOwner(cookie, shopGuid, benGuid);
+            var res = Tester.PBridge.CascadeRemoveShopOwner(cookie, shopGuid, benGuid);
+            Assert.IsTrue(res);
         }
 
         [Test]
@@ -236,94 +286,84 @@ namespace Tests
             Assert.Throws<UserNotFoundException>(()=> Tester.PBridge.CascadeRemoveShopOwner(Tester.GroismanGuid, Tester._groismanShop, Tester.GuestGuid));
         }
 
-        //Can not test it
-        /* [Test]
-         public static void RemoveOfOwnerAT3()
-         {
-             Assert.Pass();
-         } */
-
         [Test]
         public static void RemoveOfOwnerAT4()
         {
-            if (Tester.BenGuid.CompareTo(Guid.Empty) == 0)
-            {
-                AppointmentOfNewOwnerAT1();
-            }
-            Assert.Throws<BadStateException>(()=> Tester.PBridge.CascadeRemoveShopOwner(Tester.GuestGuid, Tester._groismanShop, Tester.BenGuid));
-        }
+            UserAT.GenerateRandoms(out var cookie, out var username, out var password);
+            UserAT.RegisterUser(cookie, username, password);
+            UserAT.LoginUser(cookie, username, password);
+            Tester.PBridge.ChangeUserState(cookie, "SellerUserState");
+            var shopGuid = Tester.PBridge.OpenShop(cookie);
 
+            //Appoint ben
+            UserAT.GenerateRandoms(out var benCookie, out var benUsername, out var benPassword);
+            var benGuid = UserAT.RegisterUser(benCookie, benUsername, benPassword);
+            UserAT.LoginUser(benCookie, benUsername, benPassword);
+            Tester.PBridge.ChangeUserState(benCookie, "SellerUserState");
 
-        //GR 4.5 - Store's owner can appoint new owner to his store.
-        public static void AppointmentOfNewManagerAT()
-        {
-            //TODO: Add to proxy bridge implemention of adding/appointment of new owner
-            AppointmentOfNewManagerAT1();
-            AppointmentOfNewManagerAT2();
-            AppointmentOfNewManagerAT3();
-            //AppointmentOfNewManagerAT4(); // can not test it.
+            Tester.PBridge.AddShopOwner(cookie, shopGuid, benGuid);
+
+            //Ben appoints tom
+            UserAT.GenerateRandoms(out var tomCookie, out var tomUsername, out var tomPassword);
+            var tomGuid = UserAT.RegisterUser(tomCookie, tomUsername, tomPassword);
+
+            Tester.PBridge.AddShopOwner(benCookie, shopGuid, tomGuid);
+
+            //Remove ben, and cascade remove tom
+            var res = Tester.PBridge.CascadeRemoveShopOwner(cookie, shopGuid, benGuid);
+            Assert.IsTrue(res);
+
+            UserAT.LoginUser(tomCookie, tomUsername, tomPassword);
+            Tester.PBridge.ChangeUserState(benCookie, "SellerUserState");
+
+            //verify he really is not an owner anymore
+            Assert.Throws<NoPriviligesException>(
+                () => Tester.PBridge.AddShopOwner(tomCookie, shopGuid, benGuid));
         }
+        #endregion
+
+        #region  GR 4.5 - Store's owner can appoint new owner to his store.
 
         [Test]
         public static void AppointmentOfNewManagerAT1()
         {
-            List<string> privillages = new List<string>();
-            privillages.Add("CPA");
-            if (Tester.BenGuid.CompareTo(Guid.Empty) == 0)
-            {
-                Tester.PBridge.Register(Tester.GuestGuid, "Benhas", "151097");
-                Tester.BenGuid = Tester.PBridge.Login(Tester.GuestGuid, "Benhas", "151097");
-            }
-            bool res = Tester.PBridge.AddShopManager(Tester.GroismanGuid, Tester._groismanShop, Tester.BenGuid, privillages);
-            Assert.True(res);
+            UserAT.GenerateRandoms(out var cookie, out var username, out var password);
+            UserAT.RegisterUser(cookie, username, password);
+            UserAT.LoginUser(cookie, username, password);
+            Tester.PBridge.ChangeUserState(cookie, "SellerUserState");
+            var shopGuid = Tester.PBridge.OpenShop(cookie);
+
+            UserAT.GenerateRandoms(out var benCookie, out var benUsername, out var benPassword);
+            var benGuid = UserAT.RegisterUser(benCookie, benUsername, benPassword);
+
+            Tester.PBridge.AddShopManager(cookie, shopGuid, benGuid, new List<string>());
         }
 
         [Test]
         public static void AppointmentOfNewManagerAT2()
         {
-            List<string> privillages = new List<string>();
-            privillages.Add("CPA");
-            Assert.Throws<UserNotFoundException>(() => Tester.PBridge.AddShopManager(Tester.GroismanGuid, Tester._groismanShop, Tester.GuestGuid, privillages));
+            Assert.Throws<UserNotFoundException>(() => Tester.PBridge.AddShopManager(Tester.GroismanGuid, Tester._groismanShop, Tester.GuestGuid, new List<string>()));
         }
 
-        [Test]
-        public static void AppointmentOfNewManagerAT3()
-        {
-            List<string> privillages = new List<string>();
-            privillages.Add("CPA");
-            if (Tester.BenGuid.CompareTo(Guid.Empty) == 0)
-            {
-                Tester.PBridge.Register(Tester.GuestGuid, "Benhas", "151097");
-                Tester.BenGuid = Tester.PBridge.Login(Tester.GuestGuid, "Benhas", "151097");
-            }
-            Assert.Throws<BadStateException>(()=> Tester.PBridge.AddShopManager(Tester.GuestGuid, Tester._groismanShop, Tester.BenGuid, privillages));
-        }
+        #endregion
 
-        /*[Test]
-        public void AppointmentOfNewManagerAT4()
-        {
-            Assert.Pass();
-        }*/
-
-
-        //GR 4.6 - Store's owner can remove manager from his store.
-        public static void RemoveOfManagerAT()
-        {
-            RemoveOfManagerAT1();
-            RemoveOfManagerAT2();
-            //RemoveOfManagerAT3(); //Can not test it
-            RemoveOfManagerAT4();
-        }
+        #region  GR 4.6 - Store's owner can remove manager from his store.
 
         [Test]
         public static void RemoveOfManagerAT1()
         {
-            if (Tester.BenGuid.CompareTo(Guid.Empty) == 0)
-            {
-                AppointmentOfNewManagerAT1();
-            }
-            bool res = Tester.PBridge.RemoveShopManager(Tester.GroismanGuid, Tester._groismanShop, Tester.BenGuid);
-            Assert.True(res);
+            UserAT.GenerateRandoms(out var cookie, out var username, out var password);
+            UserAT.RegisterUser(cookie, username, password);
+            UserAT.LoginUser(cookie, username, password);
+            Tester.PBridge.ChangeUserState(cookie, "SellerUserState");
+            var shopGuid = Tester.PBridge.OpenShop(cookie);
+
+            UserAT.GenerateRandoms(out var benCookie, out var benUsername, out var benPassword);
+            var benGuid = UserAT.RegisterUser(benCookie, benUsername, benPassword);
+
+            Tester.PBridge.AddShopManager(cookie, shopGuid, benGuid, new List<string>());
+            var res = Tester.PBridge.RemoveShopManager(cookie, shopGuid, benGuid);
+            Assert.IsTrue(res);
         }
 
         [Test]
@@ -332,22 +372,11 @@ namespace Tests
             Assert.Throws<UserNotFoundException>(() => Tester.PBridge.RemoveShopManager(Tester.GroismanGuid, Tester._groismanShop, Tester.GuestGuid));
         }
 
-        /*[Test] //Can not test it
-        public static void RemoveOfManagerAT3()
+        #endregion
+        public static Guid AddProductToShop(Guid cookie, Guid shopGuid, string name = "name", string category = "category"
+            , double price = 2, int quantity = 2)
         {
-            Assert.Pass();
-        }*/
-
-        [Test]
-        public static void RemoveOfManagerAT4()
-        {
-            if (Tester.BenGuid.CompareTo(Guid.Empty) == 0)
-            {
-                AppointmentOfNewManagerAT1();
-            }
-            Assert.Throws<BadStateException>(()=> Tester.PBridge.CascadeRemoveShopOwner(Tester.GuestGuid, Tester._groismanShop, Tester.BenGuid));
+            return Tester.PBridge.AddProductToShop(cookie, shopGuid, name, category, price, quantity);
         }
-
-
     }
 }

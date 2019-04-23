@@ -54,7 +54,7 @@ namespace DomainLayer.Data.Entitites.Users.States
             throw new BadStateException($"Tried to invoke AddProductToShop in Buyer State");
         }
 
-        public override void EditProductInShop(BaseUser baseUser, Guid shopGuid, Guid productGuid, double newPrice, int newQuantity)
+        public override void EditProductInShop(BaseUser baseUser, Guid shopGuid, Guid productGuid, double newPrice, int newQuantity, string name, string category)
         {
             throw new BadStateException($"Tried to invoke EditProductInShop in Buyer State");
         }

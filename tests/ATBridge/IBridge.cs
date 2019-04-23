@@ -316,7 +316,7 @@ namespace ATBridge
         /// <exception cref="IllegalArgumentException">When newPrice is not greater than 0.</exception>
         /// <exception cref="IllegalArgumentException">When newQuantity is not equal or greater than 0</exception>
         /// <returns>True if editted successfully. False otherwise.</returns>
-        bool EditProductInShop(Guid userGuid, Guid shopGuid, Guid productGuid, double newPrice, int newQuantity);
+        bool EditProductInShop(Guid userGuid, Guid shopGuid, Guid productGuid, double newPrice, int newQuantity, string name, string category);
 
         /////Implements General Requirement 2.5
         /// <summary>

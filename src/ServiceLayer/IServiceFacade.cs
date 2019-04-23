@@ -315,8 +315,9 @@ namespace ServiceLayer
         /// <exception cref="ProductNotFoundException">When shopProductGuid does not match any product in the shop.</exception>
         /// <exception cref="IllegalArgumentException">When newPrice is not greater than 0.</exception>
         /// <exception cref="IllegalArgumentException">When newQuantity is not equal or greater than 0</exception>
+        /// <exception cref="IllegalArgumentException">When name/category are string.IsNullOrWhitespace</exception>
         /// <returns>True if editted successfully. False otherwise.</returns>
-        bool EditProductInShop(Guid cookie, Guid shopGuid, Guid productGuid, double newPrice, int newQuantity);
+        bool EditProductInShop(Guid cookie, Guid shopGuid, Guid productGuid, double newPrice, int newQuantity, string name, string category);
 
         /////Implements General Requirement 2.5
         /// <summary>

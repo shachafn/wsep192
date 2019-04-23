@@ -57,9 +57,9 @@ namespace DomainLayer.Data.Entitites
             return State.AddProductToShop(_baseUser, shopGuid, name, category, price, quantity);
         }
 
-        public void EditProductInShop(Guid shopGuid, Guid productGuid, double newPrice, int newQuantity)
+        public void EditProductInShop(Guid shopGuid, Guid productGuid, double newPrice, int newQuantity, string name, string category)
         {
-            State.EditProductInShop(_baseUser, shopGuid, productGuid, newPrice, newQuantity);
+            State.EditProductInShop(_baseUser, shopGuid, productGuid, newPrice, newQuantity, name, category);
         }
 
         public bool RemoveProductFromShop(Guid shopGuid, Guid shopProductGuid)

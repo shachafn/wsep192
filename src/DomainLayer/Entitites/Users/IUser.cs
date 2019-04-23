@@ -20,7 +20,7 @@ namespace DomainLayer.Data.Entitites
         bool ConnectToPaymentSystem();
         bool ConnectToSupplySystem();
         bool EditProductInCart(Guid shopGuid, Guid shopProductGuid, int newAmount);
-        void EditProductInShop(Guid shopGuid, Guid productGuid, double newPrice, int newQuantity);
+        void EditProductInShop(Guid shopGuid, Guid productGuid, double newPrice, int newQuantity, string name, string category);
         ICollection<Guid> GetAllProductsInCart(Guid shopGuid);
         ICollection<ShoppingBag> GetShoppingHistory();
         Guid OpenShop();

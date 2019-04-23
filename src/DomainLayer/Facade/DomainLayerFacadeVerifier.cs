@@ -207,7 +207,7 @@ namespace DomainLayer.Facade
         /// 8. checked
         /// 9. checked
         /// </constraints>
-        public static void EditProductInShop(UserIdentifier userIdentifier, Guid shopGuid, Guid productGuid, double newPrice, int newQuantity)
+        public static void EditProductInShop(UserIdentifier userIdentifier, Guid shopGuid, Guid productGuid, double newPrice, int newQuantity, string name, string category)
         {
             var user = VerifyLoggedInUser(userIdentifier.Guid, new UserNotFoundException());
             var shop = VerifyShopExists(shopGuid, new ShopNotFoundException());
@@ -216,6 +216,8 @@ namespace DomainLayer.Facade
             VerifyDoubleGreaterThan0(newPrice, new IllegalArgumentException());
             VerifyIntEqualOrGreaterThan0(newQuantity, new IllegalArgumentException());
             shop.VerifyCreatorOrOwnerOrManager(userIdentifier.Guid, new NoPriviligesException());
+            VerifyString(name, new IllegalArgumentException());
+            VerifyString(category, new IllegalArgumentException());
         }
 
         /// <constraints>

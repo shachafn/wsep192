@@ -53,9 +53,9 @@ namespace ATBridge
             return _real == null ? false : _real.EditProductInCart(userGuid, shopGuid, shopProductGuid, newAmount);
         }
 
-        public bool EditProductInShop(Guid userGuid, Guid shopGuid, Guid productGuid, double newPrice, int newQuantity)
+        public bool EditProductInShop(Guid userGuid, Guid shopGuid, Guid productGuid, double newPrice, int newQuantity, string name, string category)
         {
-            return _real == null ? false : _real.EditProductInShop(userGuid, shopGuid, productGuid, newPrice, newQuantity);
+            return _real == null ? false : _real.EditProductInShop(userGuid, shopGuid, productGuid, newPrice, newQuantity, name, category);
         }
 
         public ICollection<Guid> GetAllProductsInCart(Guid userGuid, Guid shopGuid)

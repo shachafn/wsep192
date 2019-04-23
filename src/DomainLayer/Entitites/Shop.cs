@@ -1,4 +1,4 @@
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Linq;
 using DomainLayer.Exceptions;
@@ -49,11 +49,13 @@ namespace DomainLayer.Data.Entitites
             ShopProducts.Add(newShopProduct);
             return newShopProduct.Guid;
         }
-        public void EditProductInShop(Guid userGuid, Guid shopProductGuid, double newPrice, int newQuantity)
+        public void EditProductInShop(Guid userGuid, Guid shopProductGuid, double newPrice, int newQuantity, string name, string category)
         {
             var toEdit = ShopProducts.FirstOrDefault(p => p.Guid.Equals(shopProductGuid));
             toEdit.Price = newPrice;
             toEdit.Quantity = newQuantity;
+            toEdit.Product.Name = name;
+            toEdit.Product.Category = category;
         }
 
         public void RemoveProductFromShop(Guid userGuid, Guid shopProductGuid)

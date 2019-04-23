@@ -122,11 +122,11 @@ namespace DomainLayer.Facade
             return UserDomain.GetUserObject(userIdentifier).AddProductToShop(shopGuid, name, category, price, quantity);
         }
 
-        public bool EditProductInShop(UserIdentifier userIdentifier, Guid shopGuid, Guid productGuid, double newPrice, int newQuantity)
+        public bool EditProductInShop(UserIdentifier userIdentifier, Guid shopGuid, Guid productGuid, double newPrice, int newQuantity, string name, string category)
         {
             VerifySystemIsInitialized();
-            DomainLayerFacadeVerifier.VerifyMe(MethodBase.GetCurrentMethod(), userIdentifier, shopGuid, productGuid, newPrice, newQuantity);
-            UserDomain.GetUserObject(userIdentifier).EditProductInShop(shopGuid, productGuid, newPrice, newQuantity);
+            DomainLayerFacadeVerifier.VerifyMe(MethodBase.GetCurrentMethod(), userIdentifier, shopGuid, productGuid, newPrice, newQuantity, name, category);
+            UserDomain.GetUserObject(userIdentifier).EditProductInShop(shopGuid, productGuid, newPrice, newQuantity, name, category);
             return true;
         }
 

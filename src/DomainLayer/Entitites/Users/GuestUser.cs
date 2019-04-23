@@ -59,7 +59,7 @@ namespace DomainLayer.Entitites.Users
             throw new BadStateException($"Tried to invoke AddProductToShop in GuestUser");
         }
 
-        public void EditProductInShop( Guid shopGuid, Guid productGuid, double newPrice, int newQuantity)
+        public void EditProductInShop( Guid shopGuid, Guid productGuid, double newPrice, int newQuantity, string name, string category)
         {
             throw new BadStateException($"Tried to invoke EditProductInShop in GuestUser");
         }

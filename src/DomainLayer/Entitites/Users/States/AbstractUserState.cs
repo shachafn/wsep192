@@ -12,7 +12,7 @@ namespace DomainLayer.Data.Entitites.Users.States
         public abstract bool ConnectToPaymentSystem();
         public abstract bool ConnectToSupplySystem();
         public abstract Guid AddProductToShop(BaseUser baseUser, Guid shopGuid, string name, string category, double price, int quantity);
-        public abstract void EditProductInShop(BaseUser baseUser, Guid shopGuid, Guid productGuid, double newPrice, int newQuantity);
+        public abstract void EditProductInShop(BaseUser baseUser, Guid shopGuid, Guid productGuid, double newPrice, int newQuantity, string name, string category);
         public abstract bool RemoveProductFromShop(BaseUser baseUser, Guid shopGuid, Guid shopProductGuid);
         public abstract bool AddShopManager(BaseUser baseUser, Guid shopGuid, Guid newManagaerGuid, List<string> priviliges);
         public abstract bool CascadeRemoveShopOwner(BaseUser baseUser, Guid shopGuid, Guid ownerToRemoveGuid);

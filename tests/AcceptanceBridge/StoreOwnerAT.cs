@@ -162,7 +162,7 @@ namespace Tests
             Tester.PBridge.ChangeUserState(cookie, "SellerUserState");
             var shopGuid = Tester.PBridge.OpenShop(cookie);
             var galaxyGuid = AddProductToShop(cookie, shopGuid, "Galaxy S9", "Cellphones", 2000, 10);
-            bool result = Tester.PBridge.EditProductInShop(cookie, shopGuid, galaxyGuid, 1500, 20);
+            bool result = Tester.PBridge.EditProductInShop(cookie, shopGuid, galaxyGuid, 1500, 20,"newName","newCategory");
             Assert.True(result);
         }
 
@@ -176,7 +176,7 @@ namespace Tests
             var shopGuid = Tester.PBridge.OpenShop(cookie);
             var galaxyGuid = AddProductToShop(cookie, shopGuid, "Galaxy S9", "Cellphones", 2000, 10);
             Tester.PBridge.ChangeUserState(cookie, "BuyerUserState");
-            Assert.Throws<BadStateException>(() => Tester.PBridge.EditProductInShop(cookie, shopGuid, galaxyGuid, 1500, 20));
+            Assert.Throws<BadStateException>(() => Tester.PBridge.EditProductInShop(cookie, shopGuid, galaxyGuid, 1500, 20, "newName", "newCategory"));
         }
 
         [Test]
@@ -189,7 +189,7 @@ namespace Tests
             var shopGuid = Tester.PBridge.OpenShop(cookie);
             var galaxyGuid = AddProductToShop(cookie, shopGuid, "Galaxy S9", "Cellphones", 2000, 10);
             //Empty guid does not match any product
-            Assert.Throws<ProductNotFoundException>(() => Tester.PBridge.EditProductInShop(cookie, shopGuid, Guid.Empty, 1500, 20)); 
+            Assert.Throws<ProductNotFoundException>(() => Tester.PBridge.EditProductInShop(cookie, shopGuid, Guid.Empty, 1500, 20, "newName", "newCategory")); 
         }
 
         [Test]
@@ -202,7 +202,7 @@ namespace Tests
             var shopGuid = Tester.PBridge.OpenShop(cookie);
             var galaxyGuid = AddProductToShop(cookie, shopGuid, "Galaxy S9", "Cellphones", 2000, 10);
             Assert.Throws<IllegalArgumentException>(
-                () => Tester.PBridge.EditProductInShop(cookie, shopGuid, galaxyGuid, 1500, -20));
+                () => Tester.PBridge.EditProductInShop(cookie, shopGuid, galaxyGuid, 1500, -20, "newName", "newCategory"));
         }
 
         #region GR 4.3 - Store's owner can appoint new owner to his store.

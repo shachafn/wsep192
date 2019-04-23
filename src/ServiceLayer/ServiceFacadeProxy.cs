@@ -129,10 +129,10 @@ namespace ServiceLayer
             return _serviceFacade.EditProductInCart(userGuid, shopGuid, shopProductGuid, newAmount);
         }
 
-        public bool EditProductInShop(Guid cookie, Guid shopGuid, Guid productGuid, double newPrice, int newQuantity)
+        public bool EditProductInShop(Guid cookie, Guid shopGuid, Guid productGuid, double newPrice, int newQuantity, string name, string category)
         {
             var userGuid = _sessionManager.ResolveCookie(cookie);
-            return _serviceFacade.EditProductInShop(userGuid, shopGuid, productGuid, newPrice, newQuantity);
+            return _serviceFacade.EditProductInShop(userGuid, shopGuid, productGuid, newPrice, newQuantity, name, category);
         }
 
         public ICollection<Guid> GetAllProductsInCart(Guid cookie, Guid shopGuid)

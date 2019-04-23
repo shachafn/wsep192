@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using DomainLayer.Exceptions;
@@ -29,20 +29,17 @@ namespace DomainLayer.Data.Entitites
 
         public void Close()
         {
-            throw new NotImplementedException();
-            VerifyShopIsActive(); ////MOVE TO DOMAINLAYERFACADEVERIFIER WHEN A USE-CASE TO CHANGE SHOP STATUS IS IMPLEMENTED
+            //VerifyShopIsActive(); ////MOVE TO DOMAINLAYERFACADEVERIFIER WHEN A USE-CASE TO CHANGE SHOP STATUS IS IMPLEMENTED
             ShopState = ShopStateEnum.Closed;
         }
         public void AdminClose()
         {
-            throw new NotImplementedException();
-            VerifyShopIsActiveOrClosed();////MOVE TO DOMAINLAYERFACADEVERIFIER WHEN A USE-CASE TO CHANGE SHOP STATUS IS IMPLEMENTED
+            //VerifyShopIsActiveOrClosed();////MOVE TO DOMAINLAYERFACADEVERIFIER WHEN A USE-CASE TO CHANGE SHOP STATUS IS IMPLEMENTED
             ShopState = ShopStateEnum.PermanentlyClosed;
         }
         public void Open()
         {
-            throw new NotImplementedException();
-            VerifyShopIsClosed();////MOVE TO DOMAINLAYERFACADEVERIFIER WHEN A USE-CASE TO CHANGE SHOP STATUS IS IMPLEMENTED
+            //VerifyShopIsClosed();////MOVE TO DOMAINLAYERFACADEVERIFIER WHEN A USE-CASE TO CHANGE SHOP STATUS IS IMPLEMENTED
             ShopState = ShopStateEnum.Active;
         }
 

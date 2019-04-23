@@ -79,7 +79,7 @@ namespace DomainLayer.Domains
 
         private BaseUser GetRegisteredUserByUsername(string username)
         {
-            return DomainData.RegisteredUsersCollection.First(r => string.Equals(r.Username.ToLower(), username.ToLower()));
+            return DomainData.RegisteredUsersCollection.First(r => string.Equals(r.Username, username.ToLower()));
         }
 
         public bool LogoutUser(UserIdentifier userIdentifier)

@@ -21,12 +21,15 @@ namespace UnitTests
         [Test]
         public void TestReflection()
         {
+            TestInitializeReflection();
+            
             var methods = typeof(IDomainLayerFacade).GetMethods();
-            var count = 0;
-            var names = new List<string>();
             foreach (var method in methods)
             {
-                count++;
+                var name = method.Name;
+                if (name.Equals("Initialize"))
+                    continue;
+
                 try
                 {
                     var parameters = method.GetParameters()
@@ -34,13 +37,30 @@ namespace UnitTests
                         .ToArray();
                     method.Invoke(facade, parameters);
                 }
-                catch(VerifierReflectionNotFound)
+                catch(Exception ex)
                 {
-                    //This is the exception we throw to indicate reflection has failed.
-                    Assert.Fail();
+                    // Exceptions thrown inside a MethodBase.Invoke function
+                    // are thrown as an inner exception
+                    // This is the exception we throw to indicate reflection has failed.
+                    if (ex.InnerException is VerifierReflectionNotFound)
+                        Assert.Fail($"Problem Verifying method {method.Name}");
+                    //We dont check actual exceptions, only reflection.
                 }
-                catch(Exception) { } //We dont check actual exceptions, only reflection.
             }
+        }
+
+        private void TestInitializeReflection()
+        {
+            try
+            {
+                facade.Initialize(new DomainLayer.ExposedClasses.UserIdentifier(Guid.NewGuid(), true), "admin", "0000");
+            }
+            catch(VerifierReflectionNotFound)
+            {
+                Assert.Fail($"Problem Verifying Initialize");
+
+            }
+            catch (Exception) { }
         }
 
         private static object GetDefaultValue(Type type)

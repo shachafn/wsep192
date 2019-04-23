@@ -22,11 +22,12 @@ namespace UnitTests
         public void TestReflection()
         {
             var methods = typeof(IDomainLayerFacade).GetMethods();
-            var count = 0;
-            var names = new List<string>();
             foreach (var method in methods)
             {
-                count++;
+                var name = method.Name;
+                if (name.Equals("Initialize"))
+                    continue;
+
                 try
                 {
                     var parameters = method.GetParameters()
@@ -34,12 +35,13 @@ namespace UnitTests
                         .ToArray();
                     method.Invoke(facade, parameters);
                 }
-                catch (VerifierReflectionNotFound)
+                catch (Exception ex)
                 {
-                    //This is the exception we throw to indicate reflection has failed.
-                    Assert.Fail();
+                    // Exceptions thrown inside a MethodBase.Invoke function
+                    // are thrown as an inner exception
+                    if (!(ex.InnerException is SystemNotInitializedException))
+                        Assert.Fail($"method {method.Name} does not throw SystemNotInitializedException");
                 }
-                catch (Exception) { } //We dont check actual exceptions, only reflection.
             }
         }
 

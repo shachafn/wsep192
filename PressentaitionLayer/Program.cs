@@ -7,6 +7,8 @@ using Microsoft.AspNetCore;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Logging;
+using Serilog;
+using Serilog.Events;
 using ServiceLayer;
 
 namespace PressentaitionLayer
@@ -16,19 +18,40 @@ namespace PressentaitionLayer
         public static ServiceFacadeProxy Service;
         public static void Main(string[] args)
         {
-            CreateWebHostBuilder(args).Build().Run();
-            var host = new WebHostBuilder()
-            .UseKestrel()
-            .UseContentRoot(Directory.GetCurrentDirectory())
-            .UseIISIntegration()
-            .Build();
+            SetupLogging();
+            try
+            {
+                CreateWebHostBuilder(args).Build().Run();
+                var host = new WebHostBuilder()
+                .UseKestrel()
+                .UseContentRoot(Directory.GetCurrentDirectory())
+                .UseIISIntegration()
+                .Build();
 
-            host.Run();
-
+                host.Run();
+            }
+            finally
+            {
+                Log.CloseAndFlush();
+            }
         }
 
         public static IWebHostBuilder CreateWebHostBuilder(string[] args) =>
             WebHost.CreateDefaultBuilder(args)
-                .UseStartup<Startup>();
+                .UseStartup<Startup>()
+                .UseSerilog();
+
+        private static void SetupLogging()
+        {
+            Log.Logger = new LoggerConfiguration()
+                .Enrich.FromLogContext()
+                .MinimumLevel.Debug()
+                .WriteTo.File(path: "C://Wsep192//Logs//info-logs.txt", restrictedToMinimumLevel: LogEventLevel.Debug)
+                .WriteTo.File(path: "C://Wsep192//Logs//error-logs.txt", restrictedToMinimumLevel: LogEventLevel.Error)
+                .WriteTo.Console(
+                    LogEventLevel.Verbose,
+                    "{NewLine}{Timestamp:HH:mm:ss} [{Level}] ({CorrelationToken}) {Message}{NewLine}{Exception}")
+                    .CreateLogger();
+        }
     }
 }

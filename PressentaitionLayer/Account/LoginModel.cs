@@ -18,5 +18,9 @@ namespace PressentaitionLayer.Account
         [Required]
         [DisplayName("Password")]
         public string Password { get; set; }
+
+        [Required]
+        [DisplayName("user type")]
+        public string UserType { get; set; } //the user type
     }
 }

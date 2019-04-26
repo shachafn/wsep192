@@ -5,6 +5,7 @@ using System.Security.Claims;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Authentication.Cookies;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using PressentaitionLayer.Models;
 using PressentaitionLayer.Services;
@@ -55,11 +56,31 @@ namespace PressentaitionLayer.Account
             var claims = new List<Claim>
             {
                 new Claim(ClaimTypes.NameIdentifier, user.Id.ToString()),
-                new Claim(ClaimTypes.Name, user.UserName)
-            };
+                new Claim(ClaimTypes.Name, user.UserName),
+                new Claim(ClaimTypes.Role,user.UserType)
+        };
+
             var identity = new ClaimsIdentity(claims, CookieAuthenticationDefaults.AuthenticationScheme);
             var principal = new ClaimsPrincipal(identity);
             await HttpContext.SignInAsync(principal, properties);
+        }
+
+        [Route("Logout")]
+        public IActionResult Logout(string returnUrl)
+        {  
+            return View();
+        }
+
+        [HttpPost]
+        [Route("logout")]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> Logout()
+        {
+            if (User.Identity.IsAuthenticated)
+            {
+                await HttpContext.SignOutAsync(CookieAuthenticationDefaults.AuthenticationScheme);
+            }
+            return RedirectToAction("Index", "Home");
         }
     }
 }

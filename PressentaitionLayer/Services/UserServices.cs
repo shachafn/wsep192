@@ -11,10 +11,9 @@ namespace PressentaitionLayer.Services
     {
         public static Task<(bool, UserModel)> ValidateUserCredentialsAsync(string username, string password) // logs the user in
         {
-            var userGuid = Program.Service.Login(new Guid(),username,password);
-            var isValid = userGuid == Guid.Empty;
+            var isValid = Program.Service.Login(new Guid(),username,password);
             var user = new UserModel();
-            user.Id = userGuid;
+            user.Id = Guid.Empty;
             user.Password = password;
             user.UserName = username;
             var result = (isValid, user);

@@ -16,10 +16,8 @@ namespace PressentaitionLayer.Account
     [Route("Account")]
     public class AccountController : Controller
     {
-        private readonly ISession _session;
-        public AccountController(ISession session)
+        public AccountController()
         {
-            _session = session;
         }
         public IActionResult Index()
         {
@@ -39,7 +37,7 @@ namespace PressentaitionLayer.Account
         {
             if (ModelState.IsValid)
             {
-                var (isValid, user) = await UserServices.ValidateUserCredentialsAsync(model.UserName, model.Password,model.UserType.ToString(),_session.GetSessionGuid);
+                var (isValid, user) = await UserServices.ValidateUserCredentialsAsync(model.UserName, model.Password,model.UserType.ToString(), new Guid (HttpContext.Session.Id));
                 if (isValid)
                 {
                     await LoginAsync(user);                   
@@ -104,7 +102,7 @@ namespace PressentaitionLayer.Account
         {
             if (ModelState.IsValid)
             {
-                var (isValid, user) = await UserServices.ValidateUserRegisterAsync(model.UserName, model.Password,_session.GetSessionGuid);
+                var (isValid, user) = await UserServices.ValidateUserRegisterAsync(model.UserName, model.Password,new Guid(HttpContext.Session.Id));
                 if (isValid)
                 {
                     return RedirectToAction("Index", "Home");

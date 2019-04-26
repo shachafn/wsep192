@@ -4,7 +4,7 @@
 @{
     if (!Context.Session.Keys.Contains("PreventSessionCookieDelete"))
     {
-        Context.Session.SetString("PreventSessionCookieDelete", Context.Session.ToString());
+        Context.Session.SetString("SessionId", Guid.NewGuid().ToString());
     }
     var consentFeature = Context.Features.Get<ITrackingConsentFeature>();
     var showBanner = !consentFeature?.CanTrack ?? false;

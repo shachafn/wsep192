@@ -40,7 +40,17 @@ namespace PressentaitionLayer.Account
                 var (isValid, user) = await UserServices.ValidateUserCredentialsAsync(model.UserName, model.Password,model.UserType.ToString(), new Guid (HttpContext.Session.Id));
                 if (isValid)
                 {
-                    await LoginAsync(user);                   
+                    await LoginAsync(user);
+                    if (model.UserType.ToString() != "Buyer")
+                    {
+                        string userState = model.UserType.ToString() == "Seller" ? "SellerUserState" : "AdminUserState";
+                        if (!Program.Service.ChangeUserState(new Guid(HttpContext.Session.Id), userState))
+                        {
+                            ModelState.AddModelError("Incorrect User type", "Incorrect User type");
+                            Program.Service.Logout(new Guid(HttpContext.Session.Id));
+                            return View(model);
+                        }
+                    }                   
                     return RedirectToAction("Index", "Home");
                 }
                 ModelState.AddModelError("InvalidCredentials", "Invalid credentials.");

@@ -49,8 +49,7 @@ namespace PressentaitionLayer
                 options.LoginPath = "/auth/login";
                 options.LogoutPath = "/auth/logout";
             });
-
-            services.AddSingleton<Services.ISession, Services.Session>();
+            services.AddSession();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
@@ -70,6 +69,7 @@ namespace PressentaitionLayer
             app.UseStaticFiles();
             app.UseCookiePolicy();
             app.UseAuthentication();
+            app.UseSession();
             Program.Service = new ServiceFacadeProxy();
             Program.Service.Initialize(new Guid(),"meni","moni");
             app.UseMvc(routes =>

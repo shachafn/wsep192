@@ -4,6 +4,7 @@ using System.Diagnostics;
 using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using PressentaitionLayer.Models;
 using PressentaitionLayer.Services;
@@ -12,14 +13,14 @@ namespace PressentaitionLayer.Controllers
 {
     public class HomeController : Controller
     {
-        private readonly ISession _session;
 
-        public HomeController(ISession session)
+        public HomeController()
         {
-            _session = session;
         }
         public IActionResult Index()
         {
+            var paths = HttpContext.Session.GetString("actions") ?? string.Empty;
+            HttpContext.Session.SetString("actions", paths + ";" + "Index");
             return View();
         }
 
@@ -39,9 +40,8 @@ namespace PressentaitionLayer.Controllers
 
         public IActionResult Debug()
         {
-            //modelToRemove moti = new modelToRemove();
-            //moti.Id = _session.GetSessionGuid;
-            ViewData["SessionGuid"] = _session.GetSessionGuid;
+            ViewData["SessionId"] = HttpContext.Session.Id;
+
             return View();
         }
 

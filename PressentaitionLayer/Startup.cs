@@ -71,7 +71,7 @@ namespace PressentaitionLayer
             app.UseCookiePolicy();
             app.UseAuthentication();
             Program.Service = new ServiceFacadeProxy();
-
+            Program.Service.Initialize(new Guid(),"meni","moni");
             app.UseMvc(routes =>
             {
                 routes.MapRoute(

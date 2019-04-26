@@ -5,6 +5,7 @@ using System.Security.Claims;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Authentication.Cookies;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using PressentaitionLayer.Models;
@@ -15,6 +16,11 @@ namespace PressentaitionLayer.Account
     [Route("Account")]
     public class AccountController : Controller
     {
+        private readonly ISession _session;
+        public AccountController(ISession session)
+        {
+            _session = session;
+        }
         public IActionResult Index()
         {
             return View();
@@ -33,7 +39,7 @@ namespace PressentaitionLayer.Account
         {
             if (ModelState.IsValid)
             {
-                var (isValid, user) = await UserServices.ValidateUserCredentialsAsync(model.UserName, model.Password);
+                var (isValid, user) = await UserServices.ValidateUserCredentialsAsync(model.UserName, model.Password,model.UserType.ToString(),_session.GetSessionGuid);
                 if (isValid)
                 {
                     await LoginAsync(user);                   
@@ -66,6 +72,7 @@ namespace PressentaitionLayer.Account
         }
 
         [Route("Logout")]
+        [Authorize]
         public IActionResult Logout(string returnUrl)
         {  
             return View();
@@ -73,6 +80,7 @@ namespace PressentaitionLayer.Account
 
         [HttpPost]
         [Route("logout")]
+        [Authorize]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Logout()
         {
@@ -81,6 +89,30 @@ namespace PressentaitionLayer.Account
                 await HttpContext.SignOutAsync(CookieAuthenticationDefaults.AuthenticationScheme);
             }
             return RedirectToAction("Index", "Home");
+        }
+
+        [Route("Register")]
+        public IActionResult Register(string returnUrl)
+        {
+            return View();
+        }
+
+        [Route("Register")]
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> Register(RegisterModel model)
+        {
+            if (ModelState.IsValid)
+            {
+                var (isValid, user) = await UserServices.ValidateUserRegisterAsync(model.UserName, model.Password,_session.GetSessionGuid);
+                if (isValid)
+                {
+                    return RedirectToAction("Index", "Home");
+                }
+                ModelState.AddModelError("InvalidCredentials", "Invalid credentials.");
+            }
+
+            return View(model);
         }
     }
 }

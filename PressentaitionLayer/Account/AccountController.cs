@@ -1,12 +1,10 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
 using System.Security.Claims;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Authorization;
-using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using PressentaitionLayer.Models;
 using PressentaitionLayer.Services;
@@ -41,22 +39,40 @@ namespace PressentaitionLayer.Account
                 if (isValid)
                 {
                     await LoginAsync(user);
-                    if (model.UserType.ToString() != "Buyer")
-                    {
-                        string userState = model.UserType.ToString() == "Seller" ? "SellerUserState" : "AdminUserState";
-                        if (!Program.Service.ChangeUserState(new Guid(HttpContext.Session.Id), userState))
-                        {
-                            ModelState.AddModelError("Incorrect User type", "Incorrect User type");
-                            Program.Service.Logout(new Guid(HttpContext.Session.Id));
-                            return View(model);
-                        }
-                    }                   
-                    return RedirectToAction("Index", "Home");
+                    return redirectAccordingToState(model.UserType.ToString(),model);
                 }
                 ModelState.AddModelError("InvalidCredentials", "Invalid credentials.");
             }
 
             return View(model);
+        }
+
+        private IActionResult redirectAccordingToState(string userType,LoginModel model)
+        {
+            switch (userType)
+            {
+                case "Buyer":
+                    return RedirectToAction("Index", "Buyer");
+                case "Seller":
+                    if (!Program.Service.ChangeUserState(new Guid(HttpContext.Session.Id), "SellerUserState"))
+                    {
+                        ModelState.AddModelError("Incorrect User type", "Incorrect User type");
+                        Program.Service.Logout(new Guid(HttpContext.Session.Id));
+                        return View(model);
+                    }
+                    return RedirectToAction("Index", "Seller");
+                case "Admin":
+                    if (!Program.Service.ChangeUserState(new Guid(HttpContext.Session.Id), "AdminUserState"))
+                    {
+                        ModelState.AddModelError("Incorrect User type", "Incorrect User type");
+                        Program.Service.Logout(new Guid(HttpContext.Session.Id));
+                        return View(model);
+                    }
+                    return RedirectToAction("Index", "Admin");
+                 default:
+                    ModelState.AddModelError("an error occured", "an error occured");
+                    return View(model);
+            }
         }
 
         private async Task LoginAsync(UserModel user)

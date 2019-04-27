@@ -50,6 +50,7 @@ namespace PressentaitionLayer
                 options.LogoutPath = "/auth/logout";
             });
             services.AddSession();
+            //services.AddAuthorization(options=> options.AddPolicy("BuyerOnly",policy=>policy.RequireRole("Buyer")));
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.

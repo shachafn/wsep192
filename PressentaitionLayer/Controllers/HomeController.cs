@@ -38,6 +38,7 @@ namespace PressentaitionLayer.Controllers
             return View();
         }
 
+        [Authorize(Roles ="Buyer")]
         public IActionResult Debug()
         {
             ViewData["SessionId"] = HttpContext.Session.Id;

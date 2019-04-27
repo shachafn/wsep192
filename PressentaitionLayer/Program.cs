@@ -7,9 +7,12 @@ using Microsoft.AspNetCore;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Logging;
-using Serilog;
 using Serilog.Events;
 using ServiceLayer;
+
+using Microsoft.AspNetCore.Builder;
+using Serilog;
+
 
 namespace PressentaitionLayer
 {
@@ -43,15 +46,21 @@ namespace PressentaitionLayer
 
         private static void SetupLogging()
         {
+            IConfigurationRoot configuration = GetConfigurationAccordingToEnvironmentVariable();
             Log.Logger = new LoggerConfiguration()
-                .Enrich.FromLogContext()
-                .MinimumLevel.Debug()
-                .WriteTo.File(path: "C://Wsep192//Logs//info-logs.txt", restrictedToMinimumLevel: LogEventLevel.Debug)
-                .WriteTo.File(path: "C://Wsep192//Logs//error-logs.txt", restrictedToMinimumLevel: LogEventLevel.Error)
-                .WriteTo.Console(
-                    LogEventLevel.Verbose,
-                    "{NewLine}{Timestamp:HH:mm:ss} [{Level}] ({CorrelationToken}) {Message}{NewLine}{Exception}")
-                    .CreateLogger();
+                            .ReadFrom.Configuration(configuration)
+                            .CreateLogger();
+        }
+
+        private static IConfigurationRoot GetConfigurationAccordingToEnvironmentVariable()
+        {
+            var h = new WebHostBuilder();
+            var environment = h.GetSetting("environment");
+            var builder = new ConfigurationBuilder()
+                    .AddJsonFile("appsettings.json", optional: true, reloadOnChange: true)
+                    .AddJsonFile($"appsettings.{environment}.json", optional: true)
+                    .AddEnvironmentVariables();
+            return builder.Build();
         }
     }
 }

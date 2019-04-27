@@ -111,6 +111,7 @@ namespace PressentaitionLayer.Account
             if (User.Identity.IsAuthenticated)
             {
                 await HttpContext.SignOutAsync(CookieAuthenticationDefaults.AuthenticationScheme);
+                Program.Service.Logout(new Guid(HttpContext.Session.Id));
             }
             return RedirectToAction("Index", "Home");
         }

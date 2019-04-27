@@ -58,7 +58,7 @@ namespace ServiceLayer
             if (!SessionToUserDictionary.ContainsKey(cookie))
                 throw new CookieNotFoundException($"Logout - No Session with cookie {cookie} exists in the dictionary.");
 
-            SessionToUserDictionary[cookie] = GuestGuid;
+            SessionToUserDictionary.Remove(cookie); //remove the user from the logged in list
         }
 
         internal void SetUserLoggedOut(Guid userToRemoveGuid)

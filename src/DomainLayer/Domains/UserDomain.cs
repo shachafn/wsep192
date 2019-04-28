@@ -9,6 +9,7 @@ using DomainLayer.Data.Entitites.Users;
 using DomainLayer.Entitites.Users;
 using ApplicationCore.Interfaces.DomainLayer;
 using ApplicationCore.Entities;
+using Microsoft.Extensions.Logging;
 
 namespace DomainLayer.Domains
 {
@@ -20,6 +21,12 @@ namespace DomainLayer.Domains
         private static LoggedInUsersEntityCollection LoggedInUsers = DomainData.LoggedInUsersEntityCollection;
         private static ShopsEntityCollection Shops = DomainData.ShopsCollection;
 
+
+        ILogger<UserDomain> _logger;
+        public UserDomain(ILogger<UserDomain> logger)
+        {
+            _logger = logger;
+        }
 
         public Guid Register(string username, string password, bool isAdmin)
         {

@@ -2,6 +2,7 @@
 using ApplicationCore.Interfaces.DomainLayer;
 using DomainLayer.Domains;
 using DomainLayer.Facade;
+using Microsoft.Extensions.Logging.Abstractions;
 using NUnit.Framework;
 using NUnit.Framework.Constraints;
 using System;
@@ -18,9 +19,11 @@ namespace UnitTests
     [TestFixture]
     public class DomainLayerInitializationTests
     {
+
         IDomainLayerFacade facade = new DomainLayerFacade(
-                                    new UserDomain(),
-                                    new DomainLayerFacadeVerifier()
+                                    new UserDomain(NullLogger<UserDomain>.Instance),
+                                    new DomainLayerFacadeVerifier(),
+                                    NullLogger<DomainLayerFacade>.Instance
                                 );
 
         [Test]

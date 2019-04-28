@@ -14,6 +14,9 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 using PressentaitionLayer.Services;
 using ServiceLayer;
+using Microsoft.AspNetCore.Builder;
+using Serilog;
+using Serilog.Events;
 
 namespace PressentaitionLayer
 {
@@ -21,18 +24,27 @@ namespace PressentaitionLayer
     {
         public static void Main(string[] args)
         {
-            var host = CreateWebHostBuilder(args)
-            .UseKestrel()
-            .UseContentRoot(Directory.GetCurrentDirectory())
-            .UseIISIntegration()
-            .ConfigureServices(BuildApplicationServices);
+            SetupLogging();
+            try
+            {
+                var host = CreateWebHostBuilder(args)
+                .UseKestrel()
+                .UseContentRoot(Directory.GetCurrentDirectory())
+                .UseIISIntegration()
+                .ConfigureServices(BuildApplicationServices);
 
-            host.Build().Run();
+                host.Build().Run();
+            }
+            finally
+            {
+                Log.CloseAndFlush();
+            }
         }
 
         public static IWebHostBuilder CreateWebHostBuilder(string[] args) =>
             WebHost.CreateDefaultBuilder(args)
-                .UseStartup<Startup>();
+                .UseStartup<Startup>()
+                .UseSerilog();
 
         private static void BuildApplicationServices(IServiceCollection services)
         {
@@ -44,6 +56,26 @@ namespace PressentaitionLayer
             services.AddSingleton<ServiceFacade>();
             services.AddSingleton<IServiceFacade, ServiceFacadeProxy>();
             services.AddSingleton<UserServices>();
+        }
+
+        private static void SetupLogging()
+        {
+            IConfigurationRoot configuration = GetConfigurationAccordingToEnvironmentVariable();
+            Log.Logger = new LoggerConfiguration()
+                            .ReadFrom.Configuration(configuration)
+                            .CreateLogger();
+        }
+
+        private static IConfigurationRoot GetConfigurationAccordingToEnvironmentVariable()
+        {
+            var env = Environment.GetEnvironmentVariable("ASPNETCORE_ENVIRONMENT");
+            var builder = new ConfigurationBuilder();
+            if (env.Equals("Development"))
+                builder.AddJsonFile("appsettings.Development.json");
+            else
+                builder.AddJsonFile($"appsettings.json");
+
+            return builder.Build();
         }
     }
 }

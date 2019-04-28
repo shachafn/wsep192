@@ -1,4 +1,5 @@
-﻿using DomainLayer.Data.Entitites;
+﻿using ApplicationCore.Entities;
+using DomainLayer.Data.Entitites;
 using System;
 using System.Collections.Generic;
 using System.Text;

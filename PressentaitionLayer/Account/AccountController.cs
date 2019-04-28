@@ -2,10 +2,12 @@
 using System.Collections.Generic;
 using System.Security.Claims;
 using System.Threading.Tasks;
+using ApplicationCore.Interfaces.ServiceLayer;
 using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.Extensions.Logging;
 using PressentaitionLayer.Models;
 using PressentaitionLayer.Services;
 
@@ -14,8 +16,14 @@ namespace PressentaitionLayer.Account
     [Route("Account")]
     public class AccountController : Controller
     {
-        public AccountController()
+        IServiceFacade _serviceFacade;
+        UserServices _userServices;
+        ILogger<AccountController> _logger;
+        public AccountController(UserServices userServices, IServiceFacade serviceFacade, ILogger<AccountController> logger)
         {
+            _userServices = userServices;
+            _serviceFacade = serviceFacade;
+            _logger = logger;
         }
         public IActionResult Index()
         {
@@ -35,7 +43,7 @@ namespace PressentaitionLayer.Account
         {
             if (ModelState.IsValid)
             {
-                var (isValid, user) = await UserServices.ValidateUserCredentialsAsync(model.UserName, model.Password,model.UserType.ToString(), new Guid (HttpContext.Session.Id));
+                var (isValid, user) = await _userServices.ValidateUserCredentialsAsync(model.UserName, model.Password,model.UserType.ToString(), new Guid (HttpContext.Session.Id));
                 if (isValid)
                 {
                     await LoginAsync(user);
@@ -54,18 +62,18 @@ namespace PressentaitionLayer.Account
                 case "Buyer":
                     return RedirectToAction("Index", "Buyer");
                 case "Seller":
-                    if (!Program.Service.ChangeUserState(new Guid(HttpContext.Session.Id), "SellerUserState"))
+                    if (!_serviceFacade.ChangeUserState(new Guid(HttpContext.Session.Id), "SellerUserState"))
                     {
                         ModelState.AddModelError("Incorrect User type", "Incorrect User type");
-                        Program.Service.Logout(new Guid(HttpContext.Session.Id));
+                        _serviceFacade.Logout(new Guid(HttpContext.Session.Id));
                         return View(model);
                     }
                     return RedirectToAction("Index", "Seller");
                 case "Admin":
-                    if (!Program.Service.ChangeUserState(new Guid(HttpContext.Session.Id), "AdminUserState"))
+                    if (!_serviceFacade.ChangeUserState(new Guid(HttpContext.Session.Id), "AdminUserState"))
                     {
                         ModelState.AddModelError("Incorrect User type", "Incorrect User type");
-                        Program.Service.Logout(new Guid(HttpContext.Session.Id));
+                        _serviceFacade.Logout(new Guid(HttpContext.Session.Id));
                         return View(model);
                     }
                     return RedirectToAction("Index", "Admin");
@@ -111,7 +119,7 @@ namespace PressentaitionLayer.Account
             if (User.Identity.IsAuthenticated)
             {
                 await HttpContext.SignOutAsync(CookieAuthenticationDefaults.AuthenticationScheme);
-                Program.Service.Logout(new Guid(HttpContext.Session.Id));
+                _serviceFacade.Logout(new Guid(HttpContext.Session.Id));
             }
             return RedirectToAction("Index", "Home");
         }
@@ -129,7 +137,7 @@ namespace PressentaitionLayer.Account
         {
             if (ModelState.IsValid)
             {
-                var (isValid, user) = await UserServices.ValidateUserRegisterAsync(model.UserName, model.Password,new Guid(HttpContext.Session.Id));
+                var (isValid, user) = await _userServices.ValidateUserRegisterAsync(model.UserName, model.Password,new Guid(HttpContext.Session.Id));
                 if (isValid)
                 {
                     return RedirectToAction("Index", "Home");

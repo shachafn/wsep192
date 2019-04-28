@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.Text;
 
-namespace DomainLayer.Operators
+namespace DomainLayer.LogicOperators
 {
     class And : IOperator
     {

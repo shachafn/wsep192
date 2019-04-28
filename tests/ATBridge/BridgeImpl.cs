@@ -2,16 +2,28 @@
 using System.Collections.Generic;
 using ServiceLayer;
 using DomainLayer.Data.Entitites;
+using ApplicationCore.Interfaces.ServiceLayer;
+using DomainLayer.Facade;
+using DomainLayer.Domains;
 
 namespace ATBridge
 {
     public class BridgeImpl : IBridge
     {
-        private readonly ServiceFacadeProxy _serviceFacade;
+        private readonly IServiceFacade _serviceFacade;
 
         public BridgeImpl()
         {
-            _serviceFacade = new ServiceFacadeProxy();
+            _serviceFacade = new ServiceFacadeProxy
+                        (
+                            new ServiceFacade(
+                                new DomainLayerFacade(
+                                    new UserDomain(),
+                                    new DomainLayerFacadeVerifier()
+                                )
+                            ),
+                            new SessionManager()
+                        );
         }
 
         public bool AddProductToCart(Guid userGuid, Guid shopGuid, Guid productGuid, int quantity)

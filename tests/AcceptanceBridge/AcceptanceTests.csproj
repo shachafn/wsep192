@@ -13,6 +13,9 @@
   </ItemGroup>
 
   <ItemGroup>
+    <ProjectReference Include="..\..\ApplicationCore\ApplicationCore.csproj" />
+    <ProjectReference Include="..\..\src\DomainLayer\DomainLayer.csproj" />
+    <ProjectReference Include="..\..\src\ServiceLayer\ServiceLayer.csproj" />
     <ProjectReference Include="..\ATBridge\ATBridge.csproj" />
   </ItemGroup>
 

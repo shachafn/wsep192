@@ -2,6 +2,10 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using ApplicationCore.Interfaces.DomainLayer;
+using ApplicationCore.Interfaces.ServiceLayer;
+using DomainLayer.Domains;
+using DomainLayer.Facade;
 using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
@@ -17,9 +21,12 @@ namespace PressentaitionLayer
 {
     public class Startup
     {
-        public Startup(IConfiguration configuration)
+        IServiceFacade _facade;
+
+        public Startup(IConfiguration configuration, IServiceFacade facade)
         {
             Configuration = configuration;
+            _facade = facade;
         }
 
         public IConfiguration Configuration { get; }
@@ -51,6 +58,8 @@ namespace PressentaitionLayer
             });
             services.AddSession();
             //services.AddAuthorization(options=> options.AddPolicy("BuyerOnly",policy=>policy.RequireRole("Buyer")));
+
+            _facade.Initialize(new Guid(), "meni", "moni");
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
@@ -71,8 +80,6 @@ namespace PressentaitionLayer
             app.UseCookiePolicy();
             app.UseAuthentication();
             app.UseSession();
-            Program.Service = new ServiceFacadeProxy();
-            Program.Service.Initialize(new Guid(),"meni","moni");
             app.UseMvc(routes =>
             {
                 routes.MapRoute(

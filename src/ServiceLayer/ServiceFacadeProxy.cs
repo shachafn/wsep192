@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Text;
+using ApplicationCore.Interfaces.ServiceLayer;
 using DomainLayer.Data.Entitites;
 
 namespace ServiceLayer
@@ -10,27 +11,14 @@ namespace ServiceLayer
     /// </summary>
     public class ServiceFacadeProxy : IServiceFacade
     {
-        public ServiceFacade _serviceFacade = ServiceFacade.Instance;
-        public SessionManager _sessionManager = SessionManager.Instance;
+        public ServiceFacade _serviceFacade;
+        public SessionManager _sessionManager;
 
-        #region Singleton Implementation
-        private static IServiceFacade instance = null;
-        private static readonly object padlock = new object();
-        public static IServiceFacade Instance
+        public ServiceFacadeProxy(ServiceFacade serviceFacade, SessionManager sessionManager)
         {
-            get
-            {
-                lock (padlock)
-                {
-                    if (instance == null)
-                    {
-                        instance = new ServiceFacadeProxy();
-                    }
-                    return instance;
-                }
-            }
+            _serviceFacade = serviceFacade;
+            _sessionManager = sessionManager;
         }
-        #endregion
 
         // Login and Logout functions will act quite different becuase we
         // need them to maintain the Sessions mapping from cookie to user guid

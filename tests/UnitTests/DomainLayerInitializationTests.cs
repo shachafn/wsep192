@@ -1,4 +1,6 @@
-﻿using DomainLayer.Exceptions;
+﻿using ApplicationCore.Exceptions;
+using ApplicationCore.Interfaces.DomainLayer;
+using DomainLayer.Domains;
 using DomainLayer.Facade;
 using NUnit.Framework;
 using NUnit.Framework.Constraints;
@@ -16,7 +18,10 @@ namespace UnitTests
     [TestFixture]
     public class DomainLayerInitializationTests
     {
-        IDomainLayerFacade facade = DomainLayerFacade.Instance;
+        IDomainLayerFacade facade = new DomainLayerFacade(
+                                    new UserDomain(),
+                                    new DomainLayerFacadeVerifier()
+                                );
 
         [Test]
         public void TestReflection()

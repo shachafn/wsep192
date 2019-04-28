@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using ApplicationCore.Interfaces.ServiceLayer;
+using Microsoft.Extensions.Logging;
 using PressentaitionLayer.Models;
 
 namespace PressentaitionLayer.Services
@@ -10,10 +11,11 @@ namespace PressentaitionLayer.Services
     public class UserServices 
     {
         IServiceFacade _serviceFacade;
-
-        public UserServices(IServiceFacade serviceFacade)
+        ILogger<UserServices> _logger;
+        public UserServices(IServiceFacade serviceFacade, ILogger<UserServices> logger)
         {
             _serviceFacade = serviceFacade;
+            _logger = logger;
         }
         public Task<(bool, UserModel)> ValidateUserCredentialsAsync(string username, string password,string type,Guid guid) // logs the user in
         {

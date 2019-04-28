@@ -7,6 +7,7 @@ using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.Extensions.Logging;
 using PressentaitionLayer.Models;
 using PressentaitionLayer.Services;
 
@@ -17,10 +18,12 @@ namespace PressentaitionLayer.Account
     {
         IServiceFacade _serviceFacade;
         UserServices _userServices;
-        public AccountController(UserServices userServices, IServiceFacade serviceFacade)
+        ILogger<AccountController> _logger;
+        public AccountController(UserServices userServices, IServiceFacade serviceFacade, ILogger<AccountController> logger)
         {
             _userServices = userServices;
             _serviceFacade = serviceFacade;
+            _logger = logger;
         }
         public IActionResult Index()
         {

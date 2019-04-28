@@ -5,6 +5,8 @@ using DomainLayer.Data.Entitites;
 using ApplicationCore.Interfaces.ServiceLayer;
 using DomainLayer.Facade;
 using DomainLayer.Domains;
+using Microsoft.Extensions.Logging;
+using Microsoft.Extensions.Logging.Abstractions;
 
 namespace ATBridge
 {
@@ -18,11 +20,14 @@ namespace ATBridge
                         (
                             new ServiceFacade(
                                 new DomainLayerFacade(
-                                    new UserDomain(),
-                                    new DomainLayerFacadeVerifier()
-                                )
+                                    new UserDomain(NullLogger<UserDomain>.Instance),
+                                    new DomainLayerFacadeVerifier(),
+                                    NullLogger<DomainLayerFacade>.Instance
+                                ),
+                                NullLogger<ServiceFacade>.Instance
                             ),
-                            new SessionManager()
+                            new SessionManager(NullLogger<SessionManager>.Instance),
+                            NullLogger<ServiceFacadeProxy>.Instance
                         );
         }
 

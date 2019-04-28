@@ -6,6 +6,7 @@ using DomainLayer.Data.Entitites;
 using DomainLayer.Data.Entitites.Users.States;
 using DomainLayer.Domains;
 using DomainLayer.Properties;
+using Microsoft.Extensions.Logging;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
@@ -18,11 +19,14 @@ namespace DomainLayer.Facade
     {
         IUserDomain _userDomain;
         DomainLayerFacadeVerifier _verifier;
+        ILogger<DomainLayerFacade> _logger;
 
-        public DomainLayerFacade(IUserDomain userDomain, DomainLayerFacadeVerifier verifier)
+        public DomainLayerFacade(IUserDomain userDomain, DomainLayerFacadeVerifier verifier
+            , ILogger<DomainLayerFacade> logger)
         {
             _userDomain = userDomain;
             _verifier = verifier;
+            _logger = logger;
         }
 
         private static bool _isSystemInitialized = false;

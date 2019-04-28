@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Text;
 using ApplicationCore.Interfaces.ServiceLayer;
 using DomainLayer.Data.Entitites;
+using Microsoft.Extensions.Logging;
 
 namespace ServiceLayer
 {
@@ -13,11 +14,12 @@ namespace ServiceLayer
     {
         public ServiceFacade _serviceFacade;
         public SessionManager _sessionManager;
-
-        public ServiceFacadeProxy(ServiceFacade serviceFacade, SessionManager sessionManager)
+        ILogger<ServiceFacadeProxy> _logger;
+        public ServiceFacadeProxy(ServiceFacade serviceFacade, SessionManager sessionManager, ILogger<ServiceFacadeProxy> logger)
         {
             _serviceFacade = serviceFacade;
             _sessionManager = sessionManager;
+            _logger = logger;
         }
 
         // Login and Logout functions will act quite different becuase we

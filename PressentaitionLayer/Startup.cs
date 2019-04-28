@@ -16,17 +16,19 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using PressentaitionLayer.Services;
 using ServiceLayer;
+using Microsoft.Extensions.Logging;
 
 namespace PressentaitionLayer
 {
     public class Startup
     {
         IServiceFacade _facade;
-
-        public Startup(IConfiguration configuration, IServiceFacade facade)
+        ILogger<Startup> _logger;
+        public Startup(IConfiguration configuration, IServiceFacade facade, ILogger<Startup> logger)
         {
             Configuration = configuration;
             _facade = facade;
+            _logger = logger;
         }
 
         public IConfiguration Configuration { get; }
@@ -34,6 +36,7 @@ namespace PressentaitionLayer
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
+            _logger.LogDebug("Configuring Services");
             services.Configure<CookiePolicyOptions>(options =>
             {
                 // This lambda determines whether user consent for non-essential cookies is needed for a given request.

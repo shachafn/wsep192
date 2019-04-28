@@ -2,16 +2,18 @@
 using System.Collections.Generic;
 using ApplicationCore.Interfaces.DomainLayer;
 using ApplicationCore.Entities;
+using Microsoft.Extensions.Logging;
 
 namespace ServiceLayer
 {
     public class ServiceFacade 
     {
         IDomainLayerFacade _domainLayerFacade;
-
-        public ServiceFacade(IDomainLayerFacade domainLayerFacade)
+        ILogger<ServiceFacade> _logger;
+        public ServiceFacade(IDomainLayerFacade domainLayerFacade, ILogger<ServiceFacade> logger)
         {
             _domainLayerFacade = domainLayerFacade;
+            _logger = logger;
         }
 
         #region Users

@@ -1,4 +1,5 @@
-﻿using DomainLayer.ExposedClasses;
+﻿using ApplicationCore.Entities;
+using Microsoft.Extensions.Logging;
 using ServiceLayer.Exceptions;
 using System;
 using System.Collections.Generic;
@@ -12,26 +13,13 @@ namespace ServiceLayer
     /// </summary>
     public class SessionManager
     {
-        public Guid GuestGuid = new Guid("695D0341-3E62-4046-B337-2486443F311B");
-
-        #region Singleton Implementation
-        private static SessionManager instance = null;
-        private static readonly object padlock = new object();
-        public static SessionManager Instance
+        ILogger<SessionManager> _logger;
+        public SessionManager(ILogger<SessionManager> logger)
         {
-            get
-            {
-                lock (padlock)
-                {
-                    if (instance == null)
-                    {
-                        instance = new SessionManager();
-                    }
-                    return instance;
-                }
-            }
+            _logger = logger;
         }
-        #endregion
+
+
         public Dictionary<Guid, Guid> SessionToUserDictionary = new Dictionary<Guid, Guid>();
         public ICollection<Guid> SessionToGuestDictionary = new List<Guid>();
         public UserIdentifier ResolveCookie(Guid cookie)
@@ -58,7 +46,7 @@ namespace ServiceLayer
             if (!SessionToUserDictionary.ContainsKey(cookie))
                 throw new CookieNotFoundException($"Logout - No Session with cookie {cookie} exists in the dictionary.");
 
-            SessionToUserDictionary[cookie] = GuestGuid;
+            SessionToUserDictionary.Remove(cookie); //remove the user from the logged in list
         }
 
         internal void SetUserLoggedOut(Guid userToRemoveGuid)

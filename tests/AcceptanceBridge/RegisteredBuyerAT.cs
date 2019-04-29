@@ -4,7 +4,7 @@ using System.Text;
 using NUnit.Framework;
 using DomainLayer;
 using ATBridge;
-using DomainLayer.Exceptions;
+using ApplicationCore.Exceptions;
 
 namespace Tests
 {

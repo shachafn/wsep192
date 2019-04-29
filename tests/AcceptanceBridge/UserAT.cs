@@ -4,8 +4,8 @@ using System.Text;
 using NUnit.Framework;
 using ATBridge;
 using DomainLayer;
-using DomainLayer.Exceptions;
 using System.Linq;
+using ApplicationCore.Exceptions;
 
 namespace Tests
 {

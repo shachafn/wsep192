@@ -5,42 +5,28 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using DomainLayer.Data.Entitites.Users.States;
-using DomainLayer.Exceptions;
 using DomainLayer.Data.Entitites.Users;
-using System.Diagnostics;
-using DomainLayer.ExposedClasses;
 using DomainLayer.Entitites.Users;
+using ApplicationCore.Interfaces.DomainLayer;
+using ApplicationCore.Entities;
+using Microsoft.Extensions.Logging;
 
 namespace DomainLayer.Domains
 {
     /// <summary>
     /// Singleton class to handle User logic.
     /// </summary>
-    public class UserDomain
+    public class UserDomain : IUserDomain
     {
         private static LoggedInUsersEntityCollection LoggedInUsers = DomainData.LoggedInUsersEntityCollection;
         private static ShopsEntityCollection Shops = DomainData.ShopsCollection;
 
 
-        #region Singleton Implementation
-        private static UserDomain instance = null;
-        private static readonly object padlock = new object();
-        public static UserDomain Instance
+        ILogger<UserDomain> _logger;
+        public UserDomain(ILogger<UserDomain> logger)
         {
-            get
-            {
-                lock (padlock)
-                {
-                    if (instance == null)
-                    {
-                        instance = new UserDomain();
-                    }
-                    return instance;
-                }
-            }
+            _logger = logger;
         }
-        #endregion
-
 
         public Guid Register(string username, string password, bool isAdmin)
         {

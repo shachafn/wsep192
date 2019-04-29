@@ -1,10 +1,11 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Text;
+using ApplicationCore.Interfaces.DomainLayer;
 
-namespace DomainLayer.Operators
+namespace DomainLayer.LogicOperators
 {
-    class Implies : IOperator
+    class Implies : ILogicOperator
     {
         public bool Operate(bool operand1, bool operand2)
         {

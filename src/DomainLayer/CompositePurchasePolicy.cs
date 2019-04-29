@@ -10,7 +10,7 @@ namespace DomainLayer
     {
         private IPurchasePolicy PurchasePolicy1;
         private IPurchasePolicy PurchasePolicy2;
-        private IOperator Operator;
+        private ILogicOperator Operator;
 
         public bool CheckPolicy(ShoppingCart shoppingCart)
         {

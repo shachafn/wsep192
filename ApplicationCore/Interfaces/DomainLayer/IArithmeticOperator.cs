@@ -4,7 +4,7 @@ using System.Text;
 
 namespace DomainLayer.ArithmeticOperators
 {
-    interface IArithmeticOperator
+    public interface IArithmeticOperator
     {
         bool IsValid(int expected,int input);
     }

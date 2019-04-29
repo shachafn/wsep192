@@ -4,7 +4,7 @@ using System.Text;
 
 namespace DomainLayer
 {
-    interface IOperator
+    public interface ILogicOperator
     {
         bool Operate(bool operand1, bool operand2);
     }

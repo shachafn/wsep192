@@ -32,6 +32,7 @@ namespace DomainLayer.Data.Entitites
 
         public void Close()
         {
+
             throw new NotImplementedException();
             VerifyShopIsActive(); ////MOVE TO DOMAINLAYERFACADEVERIFIER WHEN A USE-CASE TO CHANGE SHOP STATUS IS IMPLEMENTED
             ShopState = ShopStateEnum.Closed;

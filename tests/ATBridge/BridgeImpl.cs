@@ -147,5 +147,10 @@ namespace ATBridge
         {
             _serviceFacade.ClearSystem();
         }
+
+        public bool PurchaseCart(Guid userGuid, Guid shopGuid)
+        {
+            return _serviceFacade.PurchaseCart(userGuid, shopGuid);
+        }
     }
 }

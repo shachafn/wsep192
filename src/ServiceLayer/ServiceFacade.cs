@@ -122,6 +122,11 @@ namespace ServiceLayer
             return _domainLayerFacade.PurchaseBag(userIdentifier);
         }
 
+        public bool PurchaseCart(UserIdentifier userIdentifier,Guid shopGuid)
+        {
+            return _domainLayerFacade.PurchaseCart(userIdentifier, shopGuid);
+        }
+
         public bool RemoveUser(UserIdentifier userIdentifier, Guid userToRemoveGuid)
         {
             return _domainLayerFacade.RemoveUser(userIdentifier, userToRemoveGuid);

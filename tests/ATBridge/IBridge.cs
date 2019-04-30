@@ -72,6 +72,12 @@ namespace ATBridge
         /////////////// REDO CONSTRAINTS, CHANGED FROM CART TO BAG ////////////////////////
         bool PurchaseBag(Guid userGuid);
 
+
+        /////Implements General Requirement 2.8. Not entirely, only purchase of the entier bag.
+        /////////////// REDO CONSTRAINTS, CHANGED FROM CART TO BAG ////////////////////////
+        bool PurchaseCart(Guid userGuid , Guid shopGuid);
+
+
         /////Implements General Requirement 1.1
         /// <summary>
         /// Initializes the system. If there is already an admin user - username and password must match it.

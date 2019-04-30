@@ -23,5 +23,6 @@ namespace DomainLayer.Data.Entitites.Users.States
         public abstract bool RemoveShopManager(BaseUser baseUser, Guid shopGuid, Guid managerToRemoveGuid);
         public abstract bool AddShopOwner(BaseUser baseUser, Guid shopGuid, Guid newManagaerGuid);
         public abstract ICollection<Guid> SearchProduct(ICollection<string> toMatch, string searchType);
+        public abstract bool PurchaseCart(Guid userGuid,Guid shopGuid);
     }
 }

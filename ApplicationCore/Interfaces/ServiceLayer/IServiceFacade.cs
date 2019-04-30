@@ -463,5 +463,8 @@ namespace ApplicationCore.Interfaces.ServiceLayer
         /// Clears all data and requires the system to be Initialized to use it.
         /// </summary>
         void ClearSystem();
+
+
+        bool PurchaseCart(Guid cookie, Guid shopGuid);
     }
 }

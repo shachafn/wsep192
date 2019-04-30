@@ -10,6 +10,7 @@ using DomainLayer.Data.Entitites.Users.States;
 using ApplicationCore.Exceptions;
 using ApplicationCore.Entities;
 using static DomainLayer.Data.Entitites.Shop;
+using DomainLayer.Policies;
 
 namespace DomainLayer.Facade
 {
@@ -102,6 +103,17 @@ namespace DomainLayer.Facade
         {
             var user = VerifyLoggedInUser(userIdentifier.Guid, new UserNotFoundException());
         }
+
+        public void PurchaseCart(UserIdentifier userIdentifier , Guid shopGuid)
+        {
+            //TODO: Support guest state
+            var user = VerifyLoggedInUser(userIdentifier.Guid, new UserNotFoundException());
+            var shop = VerifyShopExists(shopGuid, new ShopNotFoundException());
+            var cart = GetCartExistsAndCreateIfNeeded(userIdentifier, shopGuid);
+            VerifyCart(cart,shop,user,new BrokenConstraintException());
+            
+        }
+
 
         /// <constraints>
         /// 1. checked
@@ -481,7 +493,6 @@ namespace DomainLayer.Facade
             }
         }
 
-
         private void VerifyIntGreaterThan0(int toCheck, ICloneableException<Exception> e)
         {
             if (toCheck <= 0)
@@ -607,6 +618,17 @@ namespace DomainLayer.Facade
             }
         }
 
+        private void VerifyCart(ShoppingCart cart, Shop shop, RegisteredUser user, ICloneableException<Exception> e)
+        {
+            foreach(Tuple<Guid,int> record in cart.PurchasedProducts)
+            {
+                foreach(PurchasePolicy policy in shop.PurchasePolicies)
+                {
+                    //TODO: Check policy and handle exception when found broken policy which was broken by throwing/handling exception.
+                }
+            }
+        }
+
         public void VerifyShopProductDoesNotExist(ShoppingCart cart, Guid shopProductGuid, ICloneableException<Exception> e)
         {
             var product = cart.PurchasedProducts.FirstOrDefault(prod => prod.Item1.Equals(shopProductGuid));
@@ -630,6 +652,7 @@ namespace DomainLayer.Facade
                 throw e.Clone(msg);
             }
         }
+
         #endregion
     }
 }

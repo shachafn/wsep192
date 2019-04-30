@@ -140,5 +140,12 @@ namespace DomainLayer.Entitites.Users
             }
             return cart;
         }
+
+        public bool PurchaseCart(Guid userGuid, Guid shopGuid)
+        {
+            ShoppingCart cart = GetCartAndCreateIfNeeded(userGuid, shopGuid);
+            cart.PurchaseCart();
+            return true;
+        }
     }
 }

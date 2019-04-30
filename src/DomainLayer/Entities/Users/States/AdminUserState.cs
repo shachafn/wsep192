@@ -126,5 +126,10 @@ namespace DomainLayer.Data.Entitites.Users.States
         {
             throw new BadStateException($"Tried to invoke SearchProduct in Admin State");
         }
+
+        public override bool PurchaseCart(Guid userGuid, Guid shopGuid)
+        {
+            throw new BadStateException($"Tried to invoke PurchaseCart in Admin State");
+        }
     }
 }

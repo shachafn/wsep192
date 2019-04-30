@@ -111,5 +111,10 @@ namespace DomainLayer.Data.Entitites
         {
             return State.SearchProduct(toMatch, searchType);
         }
+
+        public bool PurchaseCart(Guid userGuid,Guid shopGuid)
+        {
+            return State.PurchaseCart(userGuid,shopGuid);
+        }
     }
 }

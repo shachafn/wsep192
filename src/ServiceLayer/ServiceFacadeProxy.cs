@@ -144,6 +144,12 @@ namespace ServiceLayer
             return _serviceFacade.PurchaseBag(userGuid);
         }
 
+        public bool PurchaseBag(Guid cookie , Guid shopGuid)
+        {
+            var userGuid = _sessionManager.ResolveCookie(cookie);
+            return _serviceFacade.PurchaseCart(userGuid,shopGuid);
+        }
+
         public Guid Register(Guid cookie, string username, string password)
         {
             var userGuid = _sessionManager.ResolveCookie(cookie);
@@ -184,6 +190,12 @@ namespace ServiceLayer
         {
             _sessionManager.Clear();
             _serviceFacade.ClearSystem();
+        }
+
+        public bool PurchaseCart(Guid cookie , Guid shopGuid)
+        {
+            var userGuid = _sessionManager.ResolveCookie(cookie);
+            return _serviceFacade.PurchaseCart(userGuid, shopGuid);
         }
     }
 }

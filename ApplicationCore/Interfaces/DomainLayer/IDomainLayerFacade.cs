@@ -33,5 +33,6 @@ namespace ApplicationCore.Interfaces.DomainLayer
         bool ChangeUserState(UserIdentifier userIdentifier, string newState);
         void ClearSystem();
         bool AddShopOwner(UserIdentifier userIdentifier, Guid shopGuid, Guid newShopOwnerGuid);
+        bool PurchaseCart(UserIdentifier userIdentifier, Guid shopGuid);
     }
 }

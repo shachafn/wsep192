@@ -107,5 +107,10 @@ namespace DomainLayer.Data.Entitites.Users.States
         {
             throw new BadStateException($"Tried to invoke SearchProduct in Seller State");
         }
+
+        public override bool PurchaseCart(Guid userGuid, Guid shopGuid)
+        {
+            throw new BadStateException($"Tried to invoke PurchaseCart in Seller State");
+        }
     }
 }

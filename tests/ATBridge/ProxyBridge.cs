@@ -133,5 +133,10 @@ namespace ATBridge
         {
             _real.ClearSystem();
         }
+
+        public bool PurchaseCart(Guid userGuid, Guid shopGuid)
+        {
+            return _real == null ? false : _real.PurchaseCart(userGuid, shopGuid);
+        }
     }
 }

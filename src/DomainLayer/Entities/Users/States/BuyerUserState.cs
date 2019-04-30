@@ -23,7 +23,7 @@ namespace DomainLayer.Data.Entitites.Users.States
             if (!CurrentBag.Empty())
             {
                 CurrentBag.PurchaseBag();
-                foreach(var cart in CurrentBag.ShoppingCarts)
+                foreach (var cart in CurrentBag.ShoppingCarts)
                     foreach (var p in cart.PurchasedProducts)
                         PurchaseHistory.Add(p.Item1);
 
@@ -137,6 +137,14 @@ namespace DomainLayer.Data.Entitites.Users.States
                 CurrentBag.ShoppingCarts.Add(cart);
             }
             return CurrentBag.ShoppingCarts.First(c => c.ShopGuid.Equals(shopGuid));
+        }
+
+        public override bool PurchaseCart(Guid userGuid, Guid shopGuid)
+        {
+            ShoppingCart cart = GetCartAndCreateIfNeeded(userGuid, shopGuid);
+            cart.PurchaseCart(); //If there are problems with money exception should be handled.
+            //TODO: Get user and take money from his account
+            return true;
         }
     }
 }

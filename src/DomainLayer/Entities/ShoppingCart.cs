@@ -3,6 +3,7 @@ using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
+using ApplicationCore.Exceptions;
 
 namespace DomainLayer.Data.Entitites
 {
@@ -48,7 +49,14 @@ namespace DomainLayer.Data.Entitites
 
         public void PurchaseCart()
         {
-            throw new NotImplementedException();
+            try
+            {
+                //TODO:Call to external service of payment
+            }
+            catch
+            {
+                throw new ExternalServiceFaultException();
+            }
         }
     }
 }

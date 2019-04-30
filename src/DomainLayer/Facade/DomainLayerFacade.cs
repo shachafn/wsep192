@@ -205,6 +205,15 @@ namespace DomainLayer.Facade
             return _userDomain.ChangeUserState(userIdentifier.Guid, newState);
         }
 
+        public bool PurchaseCart(UserIdentifier userIdentifier , Guid shopGuid)
+        {
+            VerifySystemIsInitialized();
+            _verifier.VerifyMe(MethodBase.GetCurrentMethod(), userIdentifier ,shopGuid); //Verification of cart
+            // Need to actually pay for products
+            IUser user = _userDomain.GetUserObject(userIdentifier);
+            return user.PurchaseCart(user.Guid,shopGuid);
+        }
+
         public void ClearSystem()
         {
             DomainData.ClearAll();

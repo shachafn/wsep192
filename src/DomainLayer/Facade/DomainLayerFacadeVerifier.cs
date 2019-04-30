@@ -11,6 +11,7 @@ using ApplicationCore.Exceptions;
 using ApplicationCore.Entities;
 using static DomainLayer.Data.Entitites.Shop;
 using DomainLayer.Policies;
+using DomainLayer.Data.Collections;
 
 namespace DomainLayer.Facade
 {
@@ -620,11 +621,14 @@ namespace DomainLayer.Facade
 
         private void VerifyCart(ShoppingCart cart, Shop shop, RegisteredUser user, ICloneableException<Exception> e)
         {
+            
             foreach(Tuple<Guid,int> record in cart.PurchasedProducts)
             {
-                foreach(PurchasePolicy policy in shop.PurchasePolicies)
+                foreach(ProductPurchasePolicy policy in shop.PurchasePolicies)
                 {
-                    //TODO: Check policy and handle exception when found broken policy which was broken by throwing/handling exception.
+                    bool result = policy.CheckPolicy(cart, record.Item1, record.Item2, user);
+                    if (result == false)
+                        throw e.Clone ("Broken constraint: " + policy.ToString());
                 }
             }
         }

@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.Text;
 
-namespace DomainLayer.ArithmeticOperators
+namespace DomainLayer.Operators.ArithmeticOperators
 {
     class BiggerThan : IArithmeticOperator
     {

@@ -18,7 +18,7 @@ namespace DomainLayer.Data.Entitites
         public ShopStateEnum ShopState { get; set; }
         public ICollection<Tuple<Guid,ShopProduct>> UsersPurchaseHistory { get; set; }
         public ICollection<DiscountPolicy> DiscountPolicies { get; }
-        public ICollection<PurchasePolicy> PurchasePolicies { get; }
+        public ICollection<ProductPurchasePolicy> PurchasePolicies { get; }
 
         public Shop(Guid ownerGuid)
         {

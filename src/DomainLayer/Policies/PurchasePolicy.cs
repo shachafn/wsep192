@@ -1,7 +1,7 @@
 using System;
 using DomainLayer.Data.Entitites;
 
-namespace DomainLayer
+namespace DomainLayer.Policies
 {
     public class PurchasePolicy : IPurchasePolicy
     {

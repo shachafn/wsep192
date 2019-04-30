@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Text;
 using ApplicationCore.Interfaces.DomainLayer;
 
-namespace DomainLayer.LogicOperators
+namespace DomainLayer.Operators.LogicOperators
 {
     class Implies : ILogicOperator
     {

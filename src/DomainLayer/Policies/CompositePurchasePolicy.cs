@@ -2,15 +2,16 @@
 using System.Collections.Generic;
 using System.Text;
 using DomainLayer.Data.Entitites;
+using DomainLayer.Operators.LogicOperators;
 
-namespace DomainLayer
+namespace DomainLayer.Policies
 {
     
     class CompositePurchasePolicy : IPurchasePolicy
     {
         private IPurchasePolicy PurchasePolicy1;
         private IPurchasePolicy PurchasePolicy2;
-        private IOperator Operator;
+        private ILogicOperator Operator;
 
         public bool CheckPolicy(ShoppingCart shoppingCart)
         {

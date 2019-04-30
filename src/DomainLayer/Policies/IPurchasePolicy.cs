@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Text;
 using DomainLayer.Data.Entitites;
 
-namespace DomainLayer
+namespace DomainLayer.Policies
 {
     interface IPurchasePolicy
     {

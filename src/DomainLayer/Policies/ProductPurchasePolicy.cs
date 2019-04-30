@@ -1,6 +1,7 @@
 using System;
 using ApplicationCore.Entities;
 using DomainLayer.Data.Entitites;
+using DomainLayer.Data.Entitites.Users;
 using DomainLayer.Operators.ArithmeticOperators;
 
 
@@ -15,7 +16,7 @@ namespace DomainLayer.Policies
         {
         }
 
-        public bool CheckPolicy(ShoppingCart cart, Guid productGuid, int quantity, IUser user)
+        public bool CheckPolicy(ShoppingCart cart, Guid productGuid, int quantity, BaseUser user)
         {
             return productGuid.CompareTo(ProductGuid) == 0 ? Operator.IsValid(ExpectedQuantity, quantity) : true ;
         }

@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Text;
 using ApplicationCore.Entities;
 using DomainLayer.Data.Entitites;
+using DomainLayer.Data.Entitites.Users;
 using DomainLayer.Operators.ArithmeticOperators;
 
 namespace DomainLayer.Policies
@@ -20,7 +21,7 @@ namespace DomainLayer.Policies
             ExtractInformation = extractInformation;
         }
 
-        public bool CheckPolicy(ShoppingCart cart, Guid productGuid, int quantity, IUser user)
+        public bool CheckPolicy(ShoppingCart cart, Guid productGuid, int quantity, BaseUser user)
         {
             return Operator.IsValid(ExpectedQuantity, ExtractInformation(cart));
         }

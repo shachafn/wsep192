@@ -12,6 +12,7 @@ using ApplicationCore.Entities;
 using static DomainLayer.Data.Entitites.Shop;
 using DomainLayer.Policies;
 using DomainLayer.Data.Collections;
+using DomainLayer.Data.Entitites.Users;
 
 namespace DomainLayer.Facade
 {
@@ -111,7 +112,7 @@ namespace DomainLayer.Facade
             var user = VerifyLoggedInUser(userIdentifier.Guid, new UserNotFoundException());
             var shop = VerifyShopExists(shopGuid, new ShopNotFoundException());
             var cart = GetCartExistsAndCreateIfNeeded(userIdentifier, shopGuid);
-            VerifyCart(cart,shop,user,new BrokenConstraintException());
+            VerifyCart(cart,new BrokenConstraintException());
             
         }
 
@@ -619,9 +620,10 @@ namespace DomainLayer.Facade
             }
         }
 
-        private void VerifyCart(ShoppingCart cart, Shop shop, RegisteredUser user, ICloneableException<Exception> e)
+        private void VerifyCart(ShoppingCart cart,ICloneableException<Exception> e)
         {
-            
+            Shop shop = DomainData.ShopsCollection[cart.ShopGuid];
+            BaseUser user = DomainData.RegisteredUsersCollection[cart.UserGuid];
             foreach(Tuple<Guid,int> record in cart.PurchasedProducts)
             {
                 foreach(ProductPurchasePolicy policy in shop.PurchasePolicies)

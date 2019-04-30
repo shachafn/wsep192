@@ -3,23 +3,24 @@ using System.Collections.Generic;
 using System.Text;
 using ApplicationCore.Entities;
 using DomainLayer.Data.Entitites;
+using DomainLayer.Data.Entitites.Users;
 using DomainLayer.Operators.ArithmeticOperators;
 
 namespace DomainLayer.Policies
 {
     class UserPurchasePolicy : IPurchasePolicy
     {
-        private IUser IdealUser { get; }
-        private Func<Tuple<IUser, IUser>, bool> Predicate { get; }
+        private BaseUser IdealUser { get; }
+        private Func<Tuple<BaseUser, BaseUser>, bool> Predicate { get; }
 
-        public UserPurchasePolicy(IUser idealUser, Func<Tuple<IUser, IUser>, bool> predicate)
+        public UserPurchasePolicy(BaseUser idealUser, Func<Tuple<BaseUser, BaseUser>, bool> predicate)
         {
             IdealUser = idealUser;
             Predicate = predicate;
         }
-        public bool CheckPolicy(ShoppingCart cart, Guid productGuid, int quantity, IUser inputUser)
+        public bool CheckPolicy(ShoppingCart cart, Guid productGuid, int quantity, BaseUser inputUser)
         {
-            Tuple<IUser, IUser> inputForPredicate = new Tuple<IUser, IUser>(IdealUser, inputUser);
+            Tuple<BaseUser, BaseUser> inputForPredicate = new Tuple<BaseUser, BaseUser>(IdealUser, inputUser);
             return Predicate(inputForPredicate);
         }
     }

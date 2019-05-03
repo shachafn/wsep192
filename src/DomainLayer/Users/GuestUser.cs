@@ -1,12 +1,13 @@
-﻿using ApplicationCore.Entities;
+﻿using ApplicationCore.Data;
+using ApplicationCore.Entities.Users;
+using ApplicationCore.Entitites;
 using ApplicationCore.Exceptions;
-using DomainLayer.Data;
-using DomainLayer.Data.Entitites;
+using DomainLayer.Extension_Methods;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 
-namespace DomainLayer.Entitites.Users
+namespace DomainLayer.Users
 {
     public class GuestUser : IUser
     {
@@ -31,9 +32,8 @@ namespace DomainLayer.Entitites.Users
 
         public bool PurchaseBag()
         {
-            if (!CurrentBag.Empty())
+            if (!CurrentBag.IsEmpty())
             {
-                CurrentBag.PurchaseBag();
                 return true;
             }
             return false;
@@ -139,6 +139,11 @@ namespace DomainLayer.Entitites.Users
                 bag.ShoppingCarts.Add(cart);
             }
             return cart;
+        }
+
+        public bool SetState(IAbstractUserState newState)
+        {
+            throw new IllegalOperationException($"Can't change state of a Guestuser with Guid - {Guid}");
         }
     }
 }

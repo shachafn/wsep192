@@ -1,6 +1,6 @@
-﻿using DomainLayer.Data.Collections;
+﻿using ApplicationCore.Data.Collections;
 
-namespace DomainLayer.Data
+namespace ApplicationCore.Data
 {
     public static class DomainData
     {

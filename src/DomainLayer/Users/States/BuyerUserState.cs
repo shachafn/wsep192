@@ -1,9 +1,13 @@
-﻿using ApplicationCore.Exceptions;
+﻿using ApplicationCore.Data;
+using ApplicationCore.Entities.Users;
+using ApplicationCore.Entitites;
+using ApplicationCore.Exceptions;
+using DomainLayer.Extension_Methods;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 
-namespace DomainLayer.Data.Entitites.Users.States
+namespace DomainLayer.Users.States
 {
     public class BuyerUserState : AbstractUserState
     {
@@ -20,9 +24,8 @@ namespace DomainLayer.Data.Entitites.Users.States
 
         public override bool PurchaseBag()
         {
-            if (!CurrentBag.Empty())
+            if (!CurrentBag.IsEmpty())
             {
-                CurrentBag.PurchaseBag();
                 foreach(var cart in CurrentBag.ShoppingCarts)
                     foreach (var p in cart.PurchasedProducts)
                         PurchaseHistory.Add(p.Item1);

@@ -1,12 +1,10 @@
 ﻿using System;
 using System.Collections.Generic;
 using ServiceLayer;
-using DomainLayer.Data.Entitites;
-using ApplicationCore.Interfaces.ServiceLayer;
 using DomainLayer.Facade;
 using DomainLayer.Domains;
-using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Logging.Abstractions;
+using ApplicationCore.Interfaces.ServiceLayer;
 
 namespace ATBridge
 {

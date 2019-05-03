@@ -1,5 +1,3 @@
-using System;
-
 namespace PressentaitionLayer.Models
 {
     public class ErrorViewModel

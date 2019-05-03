@@ -1,10 +1,11 @@
-﻿using System;
+﻿using ApplicationCore.Entities.Users;
+using System;
 using System.Collections.Generic;
 
-namespace DomainLayer.Data.Entitites.Users.States
+namespace DomainLayer.Users.States
 {
-    public abstract class AbstractUserState
-	{
+    public abstract class AbstractUserState : IAbstractUserState
+    {
         public abstract ICollection<Guid> GetShoppingHistory();
         public abstract Guid OpenShop(BaseUser baseUser);
         public abstract bool PurchaseBag();

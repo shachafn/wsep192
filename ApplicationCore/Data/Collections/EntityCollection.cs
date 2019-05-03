@@ -2,7 +2,7 @@
 using System.Collections;
 using System.Collections.Generic;
 
-namespace DomainLayer.Data.Collections
+namespace ApplicationCore.Data.Collections
 {
     public class EntityCollection<T> : IEnumerable<T>
     {

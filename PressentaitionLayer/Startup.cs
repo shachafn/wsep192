@@ -1,21 +1,12 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
-using ApplicationCore.Interfaces.DomainLayer;
 using ApplicationCore.Interfaces.ServiceLayer;
-using DomainLayer.Domains;
-using DomainLayer.Facade;
 using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Http;
-using Microsoft.AspNetCore.HttpsPolicy;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
-using PressentaitionLayer.Services;
-using ServiceLayer;
 using Microsoft.Extensions.Logging;
 
 namespace PressentaitionLayer

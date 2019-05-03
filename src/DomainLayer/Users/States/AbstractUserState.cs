@@ -9,7 +9,7 @@ namespace DomainLayer.Users.States
     {
         public abstract ICollection<Guid> GetShoppingHistory();
         public abstract Guid OpenShop(BaseUser baseUser);
-        public abstract bool PurchaseBag();
+        public abstract bool PurchaseCart(BaseUser baseUser, Guid shopGuid);
         public abstract bool RemoveUser(Guid userToRemoveGuid);
         public abstract bool ConnectToPaymentSystem();
         public abstract bool ConnectToSupplySystem();

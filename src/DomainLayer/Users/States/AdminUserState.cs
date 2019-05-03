@@ -23,7 +23,7 @@ namespace DomainLayer.Users.States
             throw new BadStateException($"Tried to invoke OpenShop in Admin State");
         }
 
-        public override bool PurchaseBag()
+        public override bool PurchaseCart(BaseUser baseUser, Guid shopGuid)
         {
             throw new BadStateException($"Tried to invoke PurchaseBag in Admin State");
         }

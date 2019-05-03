@@ -24,13 +24,14 @@ namespace ApplicationCore.Entities.Users
         ICollection<Guid> GetAllProductsInCart(Guid shopGuid);
         ICollection<Guid> GetShoppingHistory();
         Guid OpenShop();
-        bool PurchaseBag();
+        bool PurchaseCart(Guid shopGuid);
         bool RemoveProductFromCart(Guid shopGuid, Guid shopProductGuid);
         bool RemoveProductFromShop(Guid shopGuid, Guid shopProductGuid);
         bool RemoveShopManager(Guid shopGuid, Guid managerToRemoveGuid);
         bool RemoveUser(Guid userToRemoveGuid);
         ICollection<Tuple<ShopProduct, Guid>> SearchProduct(ICollection<string> toMatch, string searchType);
         bool SetState(IAbstractUserState newState);
+        ICollection<Tuple<Guid, Product, int>> GetPurchaseHistory();
         #endregion
     }
 }

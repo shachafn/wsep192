@@ -83,9 +83,9 @@ namespace ATBridge
             return _real == null ? Guid.Empty : _real.OpenShop(userGuid);
         }
 
-        public bool PurchaseBag(Guid userGuid)
+        public bool PurchaseCart(Guid userGuid, Guid shopGuid)
         {
-            return _real == null ? false : _real.PurchaseBag(userGuid);
+            return _real == null ? false : _real.PurchaseCart(userGuid, shopGuid);
         }
 
         public Guid Register(Guid userGuid, string username, string password)

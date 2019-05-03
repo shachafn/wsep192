@@ -22,17 +22,20 @@ namespace DomainLayer.Users.States
             return PurchaseHistory;
         }
 
-        public override bool PurchaseBag()
+        public override bool PurchaseCart(BaseUser baseUser, Guid shopGuid)
         {
-            if (!CurrentBag.IsEmpty())
-            {
-                foreach(var cart in CurrentBag.ShoppingCarts)
-                    foreach (var p in cart.PurchasedProducts)
-                        PurchaseHistory.Add(p.Item1);
+            var cart = DomainData.ShoppingBagsCollection
+                .First(bag => bag.UserGuid.Equals(baseUser.Guid))
+                .ShoppingCarts
+                .First(c => c.ShopGuid.Equals(shopGuid));
 
-                return true;
-            }
-            return false;
+            var shop = DomainData.ShopsCollection[shopGuid];
+            //Can implement RollBack, purchase is given a Guid, shop.PurchaseCart returns a Guid,
+            // if the user fails to pay later, we can delete the purchase and revert the shop quantities and cart content
+            shop.PurchaseCart(cart);
+
+            //External payment pay, if not true ---- rollback
+            return true;
         }
 
         public override Guid OpenShop(BaseUser baseUser)

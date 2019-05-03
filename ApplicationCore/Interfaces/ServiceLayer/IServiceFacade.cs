@@ -71,7 +71,7 @@ namespace ApplicationCore.Interfaces.ServiceLayer
 
         /////Implements General Requirement 2.8. Not entirely, only purchase of the entier bag.
         /////////////// REDO CONSTRAINTS, CHANGED FROM CART TO BAG ////////////////////////
-        bool PurchaseBag(Guid cookie);
+        bool PurchaseCart(Guid cookie, Guid shopGuid);
 
         /////Implements General Requirement 1.1
         /// <summary>
@@ -464,5 +464,10 @@ namespace ApplicationCore.Interfaces.ServiceLayer
         /// Clears all data and requires the system to be Initialized to use it.
         /// </summary>
         void ClearSystem();
+
+
+
+        //TODO DEFINE CONSTRAINTS
+        ICollection<Tuple<Guid, Product, int>> GetPurchaseHistory(Guid cookie);
     }
 }

@@ -101,9 +101,9 @@ namespace ATBridge
             return _serviceFacade.OpenShop(userGuid);
         }
 
-        public bool PurchaseBag(Guid userGuid)
+        public bool PurchaseCart(Guid userGuid, Guid shopGuid)
         {
-            return _serviceFacade.PurchaseBag(userGuid);
+            return _serviceFacade.PurchaseCart(userGuid, shopGuid);
         }
 
         public Guid Register(Guid userGuid, string username, string password)

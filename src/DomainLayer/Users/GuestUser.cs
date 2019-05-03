@@ -30,13 +30,20 @@ namespace DomainLayer.Users
             throw new BadStateException($"Tried to invoke OpenShop in GuestUser");
         }
 
-        public bool PurchaseBag()
+        public bool PurchaseCart(Guid shopGuid)
         {
-            if (!CurrentBag.IsEmpty())
-            {
-                return true;
-            }
-            return false;
+            var cart = DomainData.ShoppingBagsCollection
+                .First(bag => bag.UserGuid.Equals(Guid))
+                .ShoppingCarts
+                .First(c => c.ShopGuid.Equals(shopGuid));
+
+            var shop = DomainData.ShopsCollection[shopGuid];
+            //Can implement RollBack, purchase is given a Guid, shop.PurchaseCart returns a Guid,
+            // if the user fails to pay later, we can delete the purchase and revert the shop quantities and cart content
+            shop.PurchaseCart(cart);
+
+            //External payment pay, if not true ---- rollback
+            return true;
         }
 
         public bool RemoveUser(Guid userToRemoveGuid)
@@ -144,6 +151,11 @@ namespace DomainLayer.Users
         public bool SetState(IAbstractUserState newState)
         {
             throw new IllegalOperationException($"Can't change state of a Guestuser with Guid - {Guid}");
+        }
+
+        public ICollection<Tuple<Guid, Product, int>> GetPurchaseHistory()
+        {
+            return DomainData.ShopsCollection.SelectMany(shop => shop.GetPurchaseHistory(Guid)).ToList();
         }
     }
 }

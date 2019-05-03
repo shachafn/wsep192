@@ -125,9 +125,9 @@ namespace ServiceLayer
             return _domainLayerFacade.OpenShop(userIdentifier);
         }
 
-        public bool PurchaseBag(UserIdentifier userIdentifier)
+        public bool PurchaseCart(UserIdentifier userIdentifier, Guid shopGuid)
         {
-            return _domainLayerFacade.PurchaseBag(userIdentifier);
+            return _domainLayerFacade.PurchaseCart(userIdentifier, shopGuid);
         }
 
         public bool RemoveUser(UserIdentifier userIdentifier, Guid userToRemoveGuid)
@@ -148,6 +148,11 @@ namespace ServiceLayer
         public void ClearSystem()
         {
             _domainLayerFacade.ClearSystem();
+        }
+
+        public ICollection<Tuple<Guid, Product, int>> GetPurchaseHistory(UserIdentifier userIdentifier)
+        {
+            return _domainLayerFacade.GetPurchaseHistory(userIdentifier);
         }
     }
 }

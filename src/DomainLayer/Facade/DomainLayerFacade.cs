@@ -57,13 +57,13 @@ namespace DomainLayer.Facade
         }
 
 
-        public bool PurchaseBag(UserIdentifier userIdentifier)
+        public bool PurchaseCart(UserIdentifier userIdentifier, Guid shopGuid)
         {
             VerifySystemIsInitialized();
-            _verifier.VerifyMe(MethodBase.GetCurrentMethod(), userIdentifier);
+            _verifier.VerifyMe(MethodBase.GetCurrentMethod(), userIdentifier, shopGuid);
             // Need to actually pay for products
             // if success clear all carts
-            return _userDomain.GetUserObject(userIdentifier).PurchaseBag();
+            return _userDomain.GetUserObject(userIdentifier).PurchaseCart(shopGuid);
         }
 
         public Guid Initialize(UserIdentifier userIdentifier, string username, string password)
@@ -193,6 +193,13 @@ namespace DomainLayer.Facade
             VerifySystemIsInitialized();
             _verifier.VerifyMe(MethodBase.GetCurrentMethod(), userIdentifier, shopGuid, managerToRemoveGuid);
             return _userDomain.GetUserObject(userIdentifier).RemoveShopManager(shopGuid, managerToRemoveGuid);
+        }
+
+        public ICollection<Tuple<Guid, Product, int>> GetPurchaseHistory(UserIdentifier userIdentifier)
+        {
+            VerifySystemIsInitialized();
+            _verifier.VerifyMe(MethodBase.GetCurrentMethod(), userIdentifier);
+            return _userDomain.GetUserObject(userIdentifier).GetPurchaseHistory();
         }
 
         public bool ChangeUserState(UserIdentifier userIdentifier, string newState)

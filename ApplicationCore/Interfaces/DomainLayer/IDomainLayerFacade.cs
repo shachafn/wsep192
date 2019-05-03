@@ -15,7 +15,7 @@ namespace ApplicationCore.Interfaces.DomainLayer
         Guid Login(UserIdentifier userIdentifier, string username, string password);
         bool Logout(UserIdentifier userIdentifier);
         Guid OpenShop(UserIdentifier userIdentifier);
-        bool PurchaseBag(UserIdentifier userIdentifier);
+        bool PurchaseCart(UserIdentifier userIdentifier, Guid shopGuid);
         Guid Initialize(UserIdentifier userIdentifier, string username, string password);
         bool RemoveUser(UserIdentifier userIdentifier, Guid userToRemoveGuid);
         bool ConnectToPaymentSystem(UserIdentifier userIdentifier);
@@ -34,5 +34,6 @@ namespace ApplicationCore.Interfaces.DomainLayer
         bool ChangeUserState(UserIdentifier userIdentifier, string newState);
         void ClearSystem();
         bool AddShopOwner(UserIdentifier userIdentifier, Guid shopGuid, Guid newShopOwnerGuid);
+        ICollection<Tuple<Guid, Product, int>> GetPurchaseHistory(UserIdentifier userIdentifier);
     }
 }

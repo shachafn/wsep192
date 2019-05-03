@@ -137,10 +137,10 @@ namespace ServiceLayer
             return _serviceFacade.OpenShop(userGuid);
         }
 
-        public bool PurchaseBag(Guid cookie)
+        public bool PurchaseCart(Guid cookie, Guid shopGuid)
         {
             var userGuid = _sessionManager.ResolveCookie(cookie);
-            return _serviceFacade.PurchaseBag(userGuid);
+            return _serviceFacade.PurchaseCart(userGuid, shopGuid);
         }
 
         public Guid Register(Guid cookie, string username, string password)
@@ -183,6 +183,12 @@ namespace ServiceLayer
         {
             _sessionManager.Clear();
             _serviceFacade.ClearSystem();
+        }
+
+        public ICollection<Tuple<Guid, Product, int>> GetPurchaseHistory(Guid cookie)
+        {
+            var userGuid = _sessionManager.ResolveCookie(cookie);
+            return _serviceFacade.GetPurchaseHistory(userGuid);
         }
     }
 }

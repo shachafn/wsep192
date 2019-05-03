@@ -2,8 +2,8 @@
 using System.Collections.Generic;
 using System.Text;
 using ApplicationCore.Entities;
-using DomainLayer.Data.Entitites;
-using DomainLayer.Data.Entitites.Users;
+using ApplicationCore.Entities.Users;
+using ApplicationCore.Entitites;
 
 namespace DomainLayer.Policies
 {

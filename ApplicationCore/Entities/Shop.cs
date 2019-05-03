@@ -1,6 +1,6 @@
-﻿using System;
+﻿using DomainLayer.Policies;
+using System;
 using System.Collections.Generic;
-
 namespace ApplicationCore.Entitites
 {
     public class Shop : BaseEntity
@@ -12,7 +12,8 @@ namespace ApplicationCore.Entitites
         public enum ShopStateEnum { Active, Closed, PermanentlyClosed };
         public ShopStateEnum ShopState { get; set; }
         public ICollection<Tuple<Guid,ShopProduct>> UsersPurchaseHistory { get; set; }
-
+        public ICollection<IPurchasePolicy> PurchasePolicies { get; set; }
+        public ICollection<IDiscountPolicy> DiscountPolicies { get; set; }
         public Shop(Guid ownerGuid)
         {
             Creator = new ShopOwner(ownerGuid, Guid);

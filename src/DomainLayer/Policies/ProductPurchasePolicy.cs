@@ -1,5 +1,7 @@
 using System;
 using ApplicationCore.Entities;
+using ApplicationCore.Entities.Users;
+using ApplicationCore.Entitites;
 using DomainLayer.Data.Entitites;
 using DomainLayer.Data.Entitites.Users;
 using DomainLayer.Operators.ArithmeticOperators;

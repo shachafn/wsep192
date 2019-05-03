@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using ApplicationCore.Entities.Users;
 using DomainLaye.Users.States;
+using DomainLayer.Data.Entitites.Users.States;
 using DomainLayer.Users.States;
 
 namespace DomainLayer.Users

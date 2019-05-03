@@ -30,6 +30,7 @@ namespace ApplicationCore.Entities.Users
         bool RemoveUser(Guid userToRemoveGuid);
         ICollection<Guid> SearchProduct(ICollection<string> toMatch, string searchType);
         bool SetState(IAbstractUserState newState);
+        bool PurchaseCart(Guid guid, Guid shopGuid);
         #endregion
     }
 }

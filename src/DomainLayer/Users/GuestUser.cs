@@ -1,12 +1,16 @@
-﻿using ApplicationCore.Entities;
+﻿using ApplicationCore.Data;
+using ApplicationCore.Entities;
+using ApplicationCore.Entitites;
 using ApplicationCore.Exceptions;
+using DomainLayer;
 using DomainLayer.Data;
 using DomainLayer.Data.Entitites;
+using DomainLayer.Extension_Methods;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 
-namespace DomainLayer.Entitites.Users
+namespace ApplicationCore.Entities.Users
 {
     public class GuestUser : IUser
     {
@@ -31,9 +35,9 @@ namespace DomainLayer.Entitites.Users
 
         public bool PurchaseBag()
         {
-            if (!CurrentBag.Empty())
+            if (!CurrentBag.IsEmpty())
             {
-                CurrentBag.PurchaseBag();
+                //CurrentBag.PurchaseBag();
                 return true;
             }
             return false;
@@ -146,6 +150,10 @@ namespace DomainLayer.Entitites.Users
             ShoppingCart cart = GetCartAndCreateIfNeeded(userGuid, shopGuid);
             cart.PurchaseCart();
             return true;
+        }
+        public bool SetState(IAbstractUserState newState)
+        {
+            throw new BadStateException($"Tried to invoke AddShopOwner in GuestUser");
         }
     }
 }

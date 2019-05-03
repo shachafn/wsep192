@@ -1,5 +1,5 @@
-﻿using DomainLayer.Data.Entitites;
-using DomainLayer.Data.Entitites.Users;
+﻿using ApplicationCore.Entities.Users;
+using ApplicationCore.Entitites;
 using System;
 using System.Collections.Generic;
 using System.Text;

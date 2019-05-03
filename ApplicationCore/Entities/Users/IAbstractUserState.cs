@@ -23,5 +23,6 @@ namespace ApplicationCore.Entities.Users
         bool RemoveShopManager(BaseUser baseUser, Guid shopGuid, Guid managerToRemoveGuid);
         bool RemoveUser(Guid userToRemoveGuid);
         ICollection<Guid> SearchProduct(ICollection<string> toMatch, string searchType);
+        bool PurchaseCart(Guid userGuid, Guid shopGuid);
     }
 }

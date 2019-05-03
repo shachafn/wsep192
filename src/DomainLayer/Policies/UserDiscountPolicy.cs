@@ -1,4 +1,6 @@
 using System;
+using ApplicationCore.Entities.Users;
+using ApplicationCore.Entitites;
 using DomainLayer.Data.Entitites;
 using DomainLayer.Data.Entitites.Users;
 using Microsoft.CodeAnalysis.CSharp.Scripting;

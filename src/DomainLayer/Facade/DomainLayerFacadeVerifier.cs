@@ -1,18 +1,20 @@
-﻿using DomainLayer.Data;
-using DomainLayer.Data.Entitites;
-using DomainLayer.Properties;
+﻿using DomainLayer.Properties;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
 using System.Reflection;
-using DomainLayer.Data.Entitites.Users.States;
 using ApplicationCore.Exceptions;
 using ApplicationCore.Entities;
-using static DomainLayer.Data.Entitites.Shop;
+using ApplicationCore.Entitites;
+using ApplicationCore.Data;
+using static ApplicationCore.Entitites.Shop;
+using DomainLayer.Users.States;
+using DomainLayer.Extension_Methods;
+using ApplicationCore.Entities.Users;
 using DomainLayer.Policies;
-using DomainLayer.Data.Collections;
-using DomainLayer.Data.Entitites.Users;
+using DomainLayer.Data.Entitites.Users.States;
+
 
 namespace DomainLayer.Facade
 {
@@ -412,7 +414,7 @@ namespace DomainLayer.Facade
         #endregion
 
         #region Private Verifiers
-        private RegisteredUser VerifyLoggedInUser(Guid userGuid, ICloneableException<Exception> e)
+        private IUser VerifyLoggedInUser(Guid userGuid, ICloneableException<Exception> e)
         {
             //Could equivalently check for IsGuest, but we also want to return the user.
             var user = DomainData.LoggedInUsersEntityCollection[userGuid];
@@ -609,7 +611,7 @@ namespace DomainLayer.Facade
             }
         }
 
-        private void VerifyIfChangeToAdminMustBeAdmin(RegisteredUser user, string newState, ICloneableException<Exception> e)
+        private void VerifyIfChangeToAdminMustBeAdmin(IUser user, string newState, ICloneableException<Exception> e)
         {
             if (newState.Equals(AdminUserState.AdminUserStateString) && !user.IsAdmin)
             {

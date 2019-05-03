@@ -1,6 +1,10 @@
-﻿using DomainLayer.Data;
+﻿using ApplicationCore.Data;
+using ApplicationCore.Entities.Users;
+using ApplicationCore.Entitites;
+using DomainLayer.Data;
 using DomainLayer.Data.Entitites;
 using DomainLayer.Data.Entitites.Users;
+using DomainLayer.Extension_Methods;
 using DomainLayer.Operators.ArithmeticOperators;
 using System;
 using System.Collections.Generic;

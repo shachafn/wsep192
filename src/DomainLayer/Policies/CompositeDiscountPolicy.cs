@@ -1,6 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Text;
+using ApplicationCore.Entities.Users;
+using ApplicationCore.Entitites;
 using DomainLayer.Data.Entitites;
 using DomainLayer.Data.Entitites.Users;
 using DomainLayer.Operators.LogicOperators;

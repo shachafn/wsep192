@@ -1,8 +1,5 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.IO;
-using System.Linq;
-using System.Threading.Tasks;
 using ApplicationCore.Interfaces.DomainLayer;
 using ApplicationCore.Interfaces.ServiceLayer;
 using DomainLayer.Domains;
@@ -11,12 +8,10 @@ using Microsoft.AspNetCore;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
-using Microsoft.Extensions.Logging;
 using PressentaitionLayer.Services;
 using ServiceLayer;
 using Microsoft.AspNetCore.Builder;
 using Serilog;
-using Serilog.Events;
 
 namespace PressentaitionLayer
 {

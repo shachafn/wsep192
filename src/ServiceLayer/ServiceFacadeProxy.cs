@@ -1,8 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Text;
 using ApplicationCore.Interfaces.ServiceLayer;
-using DomainLayer.Data.Entitites;
 using Microsoft.Extensions.Logging;
 
 namespace ServiceLayer

@@ -1,8 +1,7 @@
-﻿using DomainLayer.Data.Entitites.Users.States;
-using System;
+﻿using System;
 using System.Collections.Generic;
 
-namespace DomainLayer.Data.Entitites
+namespace ApplicationCore.Entitites
 {
     public class ShoppingBag : BaseEntity
     {
@@ -16,16 +15,7 @@ namespace DomainLayer.Data.Entitites
             ShoppingCarts = new List<ShoppingCart>();
         }
 
-        
-        public void PurchaseBag()
-        {
-            foreach(ShoppingCart cart in ShoppingCarts)
-            {
-                cart.PurchaseCart();
-            }
-        }
-
-        public bool Empty()
+        public bool IsEmpty()
         {
             return ShoppingCarts.Count==0;
         }

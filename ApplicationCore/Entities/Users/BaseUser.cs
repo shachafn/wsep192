@@ -1,6 +1,7 @@
-﻿using System;
+﻿using ApplicationCore.Entitites;
+using System;
 
-namespace DomainLayer.Data.Entitites.Users
+namespace ApplicationCore.Entities.Users
 {
     public class BaseUser : BaseEntity
     {

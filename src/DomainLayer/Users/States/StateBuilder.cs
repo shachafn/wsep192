@@ -1,13 +1,15 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using ApplicationCore.Data;
+using ApplicationCore.Entities.Users;
+using DomainLayer.Extension_Methods;
+using DomainLayer.Users.States;
+using System;
 using System.Linq;
-using System.Text;
 
-namespace DomainLayer.Data.Entitites.Users.States
+namespace DomainLaye.Users.States
 {
     public class StateBuilder
     {
-        public AbstractUserState BuildState(string newState, RegisteredUser user)
+        public IAbstractUserState BuildState(string newState, IUser user)
         {
             switch(newState)
             {
@@ -22,26 +24,26 @@ namespace DomainLayer.Data.Entitites.Users.States
             }
         }
 
-        private AbstractUserState BuildSellerState(RegisteredUser user)
+        private IAbstractUserState BuildSellerState(IUser user)
         {
             var res = new SellerUserState();
             BuildShopsOwned(res, user);
             return res;
         }
 
-        private void BuildShopsOwned(SellerUserState res, RegisteredUser user)
+        private void BuildShopsOwned(SellerUserState res, IUser user)
         {
             res.ShopsOwned = DomainData.ShopsCollection.Where(shop => shop.IsOwner(user.Guid)).ToList();
         }
 
-        private AbstractUserState BuildBuyerState(RegisteredUser user)
+        private IAbstractUserState BuildBuyerState(IUser user)
         {
             var res = new BuyerUserState();
             //Build purchase history maybe
             return res;
         }
 
-        private AbstractUserState BuildAdminState(RegisteredUser user)
+        private IAbstractUserState BuildAdminState(IUser user)
         {
             var res = new AdminUserState();
             return res;

@@ -1,17 +1,17 @@
 ﻿using System;
 using System.Collections.Generic;
-using ApplicationCore.Entities;
-using DomainLayer.Data.Entitites.Users;
-using DomainLayer.Data.Entitites.Users.States;
+using ApplicationCore.Entities.Users;
+using DomainLaye.Users.States;
+using DomainLayer.Users.States;
 
-namespace DomainLayer.Data.Entitites
+namespace DomainLayer.Users
 {
     public class RegisteredUser : IUser
     {
         public Guid Guid { get => _baseUser.Guid; }
         public bool IsAdmin { get => _baseUser.IsAdmin; }
         private BaseUser _baseUser { get; set; }
-        private AbstractUserState State { get; set; }
+        private IAbstractUserState State { get; set; }
 
         /// <summary>
         /// Default constructor, creates the user with a default Guest state.
@@ -23,7 +23,7 @@ namespace DomainLayer.Data.Entitites
             State = builder.BuildState(BuyerUserState.BuyerUserStateString, this);
         }
 
-        public bool SetState(AbstractUserState newState)
+        public bool SetState(IAbstractUserState newState)
         {
             State = newState;
             return true;

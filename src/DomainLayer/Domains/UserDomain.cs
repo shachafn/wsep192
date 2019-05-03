@@ -1,15 +1,14 @@
-﻿using DomainLayer.Data;
-using DomainLayer.Data.Collections;
-using DomainLayer.Data.Entitites;
-using System;
-using System.Collections.Generic;
+﻿using System;
 using System.Linq;
-using DomainLayer.Data.Entitites.Users.States;
-using DomainLayer.Data.Entitites.Users;
-using DomainLayer.Entitites.Users;
 using ApplicationCore.Interfaces.DomainLayer;
 using ApplicationCore.Entities;
 using Microsoft.Extensions.Logging;
+using ApplicationCore.Data.Collections;
+using ApplicationCore.Data;
+using DomainLayer.Users;
+using DomainLayer.Users.States;
+using DomainLaye.Users.States;
+using ApplicationCore.Entities.Users;
 
 namespace DomainLayer.Domains
 {

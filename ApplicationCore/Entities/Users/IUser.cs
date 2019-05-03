@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 
-namespace ApplicationCore.Entities
+namespace ApplicationCore.Entities.Users
 {
     public interface IUser
     {
@@ -29,7 +29,7 @@ namespace ApplicationCore.Entities
         bool RemoveShopManager(Guid shopGuid, Guid managerToRemoveGuid);
         bool RemoveUser(Guid userToRemoveGuid);
         ICollection<Guid> SearchProduct(ICollection<string> toMatch, string searchType);
-        bool PurchaseCart(Guid userGuid,Guid shopGuid);
+        bool SetState(IAbstractUserState newState);
         #endregion
     }
 }

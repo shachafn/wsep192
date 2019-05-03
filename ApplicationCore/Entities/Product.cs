@@ -1,6 +1,6 @@
 ﻿using System.Collections.Generic;
 
-namespace DomainLayer.Data.Entitites
+namespace ApplicationCore.Entitites
 {
     public class Product : BaseEntity
     {

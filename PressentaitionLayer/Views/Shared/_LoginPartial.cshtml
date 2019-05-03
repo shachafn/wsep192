@@ -19,7 +19,7 @@
             <li><a asp-area="" asp-controller="Home" asp-action="Contact">Contact</a></li>
             <li><a asp-area="" asp-controller="Home" asp-action="Debug">Debug</a></li>
             <li>
-                <form class="form-inline" asp-controller="Buyer" asp-action="Search">
+                <form class="form-inline" asp-controller="Buyer" asp-action="Search" method="post">
                     <input name="searchString" type="text" class="form-control" aria-label="Search" placeholder="Search" style="margin:8px 0;" />
                     <input type="submit" value="Search" class="btn btn-sm">
                 </form>
@@ -59,7 +59,7 @@ else
         <li><a asp-area="" asp-controller="Home" asp-action="Contact">Contact</a></li>
         <li><a asp-area="" asp-controller="Home" asp-action="Debug">Debug</a></li>
         <li>
-            <form class="form-inline" asp-controller="Buyer" asp-action="Search">
+            <form class="form-inline" asp-controller="Buyer" asp-action="Search" method="post">
                 <input name="searchString" type="text" class="form-control" aria-label="Search" placeholder="Search" style="margin:8px 0;" />
                 <input type="submit" value="Search" class="btn btn-sm">
             </form>

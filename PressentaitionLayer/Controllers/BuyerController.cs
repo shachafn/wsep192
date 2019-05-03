@@ -22,5 +22,12 @@ namespace PressentaitionLayer.Controllers
         {
             return View();
         }
+
+        [HttpPost]
+        [AllowAnonymous]
+        public IActionResult Search()
+        {
+            return View();
+        }
     }
 }

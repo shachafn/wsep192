@@ -1,0 +1,57 @@
+﻿@model IEnumerable<ApplicationCore.Entitites.ShopProduct>
+@{
+    ViewData["Title"] = "Search";
+}
+@functions
+{
+public string getRandomImage()
+{
+    System.Random rnd = new System.Random();
+    var random = rnd.Next(1, 24);
+    return $"~/images/random/{random}.jpg";
+}
+}
+
+<h2>Search</h2>
+
+<p>
+    <a asp-action="Create">Create New</a>
+</p>
+<table class="table">
+    <thead>
+        <tr>
+            <th>
+                Product Name
+            </th>
+            <th>
+                Product Category
+            </th>
+            <th>
+                Price
+            </th>
+            <th></th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var item in Model)
+        {
+            <tr>
+                <td>
+                    <img src="@getRandomImage()" alt="@Html.DisplayFor(modelItem => item.Product.Name)" />
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Product.Name)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Product.Category)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Price)
+                </td>
+                <td>
+                    <a class="btn-primary" asp-controller="Buyer" asp-action="Detail" asp-route-id="@item.Guid">Details & Purchase</a>
+                </td>
+            </tr>
+        }
+    </tbody>
+</table>

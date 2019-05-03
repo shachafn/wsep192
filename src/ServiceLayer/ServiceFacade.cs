@@ -3,6 +3,8 @@ using System.Collections.Generic;
 using ApplicationCore.Interfaces.DomainLayer;
 using ApplicationCore.Entities;
 using Microsoft.Extensions.Logging;
+using ApplicationCore.Data.Collections;
+using ApplicationCore.Entitites;
 
 namespace ServiceLayer
 {
@@ -112,6 +114,12 @@ namespace ServiceLayer
         }
         #endregion
 
+        #region Utils
+        public EntityCollection<Shop> getUserShops()
+        {
+            return null;
+        }
+        #endregion
         public Guid OpenShop(UserIdentifier userIdentifier)
         {
             return _domainLayerFacade.OpenShop(userIdentifier);

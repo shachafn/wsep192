@@ -4,6 +4,9 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
 using ApplicationCore.Exceptions;
+using DomainLayer.Policies;
+using DomainLayer.Data.Entitites.Users;
+using ApplicationCore.Entities;
 
 namespace DomainLayer.Data.Entitites
 {
@@ -51,12 +54,26 @@ namespace DomainLayer.Data.Entitites
         {
             try
             {
-                //TODO:Call to external service of payment
+                //TODO:Sum the value of the products in the cart and call to external service of payment
             }
             catch
             {
                 throw new ExternalServiceFaultException();
             }
+        }
+
+        public static void CheckDiscountPolicy(ref ShoppingCart cartRef)
+        {
+            Shop shop = DomainData.ShopsCollection[cartRef.ShopGuid];
+            BaseUser user = DomainData.RegisteredUsersCollection[cartRef.UserGuid];
+            foreach (Tuple<Guid,int> record in cartRef.PurchasedProducts)
+            {
+                foreach(IDiscountPolicy policy in shop.DiscountPolicies)
+                {
+                    policy.CheckPolicy(ref cartRef, record.Item1,record.Item2, user);
+                }
+            }
+
         }
     }
 }

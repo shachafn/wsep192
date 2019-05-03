@@ -142,6 +142,9 @@ namespace DomainLayer.Data.Entitites.Users.States
         public override bool PurchaseCart(Guid userGuid, Guid shopGuid)
         {
             ShoppingCart cart = GetCartAndCreateIfNeeded(userGuid, shopGuid);
+            //Checking discount policy. Pay attention that discount policies are not supposed to be exist, and changes
+            //on the cart may be occured.
+            ShoppingCart.CheckDiscountPolicy(ref cart);
             cart.PurchaseCart(); //If there are problems with money exception should be handled.
             //TODO: Get user and take money from his account
             return true;

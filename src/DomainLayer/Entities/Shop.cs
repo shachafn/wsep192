@@ -17,7 +17,7 @@ namespace DomainLayer.Data.Entitites
         public enum ShopStateEnum { Active, Closed, PermanentlyClosed };
         public ShopStateEnum ShopState { get; set; }
         public ICollection<Tuple<Guid,ShopProduct>> UsersPurchaseHistory { get; set; }
-        public ICollection<DiscountPolicy> DiscountPolicies { get; }
+        public ICollection<UserDiscountPolicy> DiscountPolicies { get; }
         public ICollection<ProductPurchasePolicy> PurchasePolicies { get; }
 
         public Shop(Guid ownerGuid)

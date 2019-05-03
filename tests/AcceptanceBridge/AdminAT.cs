@@ -10,6 +10,7 @@ namespace Tests
     [TestFixture]
     public static class AdminAT
     {
+
         static Guid _adminCookie = Guid.NewGuid();
         static string _adminUsername = "admin";
         static string _adminPassword = "000000";

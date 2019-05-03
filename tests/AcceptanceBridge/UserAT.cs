@@ -108,6 +108,7 @@ namespace Tests
         [Test]
         public static void SearchProductsAT2()
         {
+
             if (!Tester._groismanRegistered)
                 RegisterAT1();
             if (!Tester._groismanConnected)

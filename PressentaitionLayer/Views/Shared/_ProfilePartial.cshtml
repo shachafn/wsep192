@@ -1,0 +1,18 @@
+﻿@if (User.IsInRole("Buyer"))
+{
+    <li>
+        <a asp-controller="Buyer" asp-action="Index" title="Manage">Hello @User.Identity.Name!</a>
+    </li>
+}
+else if (User.IsInRole("Admin"))
+{
+    <li>
+        <a asp-controller="Admin" asp-action="Index" title="Manage">Hello @User.Identity.Name!</a>
+    </li>
+}
+else
+{
+    <li>
+        <a asp-controller="Seller" asp-action="Index" title="Manage">Hello @User.Identity.Name!</a>
+    </li>
+}

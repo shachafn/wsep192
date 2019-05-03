@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using ApplicationCore.Entitites;
 using ApplicationCore.Exceptions;
 
 namespace ApplicationCore.Interfaces.ServiceLayer
@@ -337,7 +338,7 @@ namespace ApplicationCore.Interfaces.ServiceLayer
         /// <exception cref="IllegalArgumentException">When toMatch contains illegal strings.</exception>
         /// <exception cref="IllegalArgumentException">When toMatch is empty.</exception>
         /// <returns>A list of products.</returns>
-        ICollection<Guid> SearchProduct(Guid cookie, ICollection<string> toMatch, string searchType);
+        ICollection<Tuple<ShopProduct, Guid>> SearchProduct(Guid cookie, ICollection<string> toMatch, string searchType);
 
         /////Implements General Requirement 4.3
         /// <summary>

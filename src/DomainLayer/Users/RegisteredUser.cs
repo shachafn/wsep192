@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using ApplicationCore.Entities.Users;
+using ApplicationCore.Entitites;
 using DomainLaye.Users.States;
 using DomainLayer.Users.States;
 
@@ -107,7 +108,7 @@ namespace DomainLayer.Users
             return State.RemoveShopManager(_baseUser, shopGuid, managerToRemoveGuid);
         }
 
-        public ICollection<Guid> SearchProduct(ICollection<string> toMatch, string searchType)
+        public ICollection<Tuple<ShopProduct, Guid>> SearchProduct(ICollection<string> toMatch, string searchType)
         {
             return State.SearchProduct(toMatch, searchType);
         }

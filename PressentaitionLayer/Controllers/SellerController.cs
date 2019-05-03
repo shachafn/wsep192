@@ -21,7 +21,6 @@ namespace PressentaitionLayer.Controllers
         }
         public IActionResult MyShops()
         {
-            _serviceFacade.
             return View();
         }
     }

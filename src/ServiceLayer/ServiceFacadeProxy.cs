@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using ApplicationCore.Entitites;
 using ApplicationCore.Interfaces.ServiceLayer;
 using Microsoft.Extensions.Logging;
 
@@ -166,7 +167,7 @@ namespace ServiceLayer
             return _serviceFacade.RemoveShopManager(userGuid, shopGuid, managerToRemoveGuid);
         }
 
-        public ICollection<Guid> SearchProduct(Guid cookie, ICollection<string> toMatch, string searchType)
+        public ICollection<Tuple<ShopProduct,Guid>> SearchProduct(Guid cookie, ICollection<string> toMatch, string searchType)
         {
             var userGuid = _sessionManager.ResolveCookie(cookie);
             return _serviceFacade.SearchProduct(userGuid, toMatch, searchType);

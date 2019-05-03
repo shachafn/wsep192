@@ -135,7 +135,7 @@ namespace ServiceLayer
             return _domainLayerFacade.RemoveUser(userIdentifier, userToRemoveGuid);
         }
 
-        public ICollection<Guid> SearchProduct(UserIdentifier userIdentifier, ICollection<string> toMatch, string searchType)
+        public ICollection<Tuple<ShopProduct, Guid>> SearchProduct(UserIdentifier userIdentifier, ICollection<string> toMatch, string searchType)
         {
             return _domainLayerFacade.SearchProduct(userIdentifier, toMatch, searchType);
         }

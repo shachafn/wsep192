@@ -1,4 +1,5 @@
-﻿using System;
+﻿using ApplicationCore.Entitites;
+using System;
 using System.Collections.Generic;
 
 namespace ATBridge
@@ -336,7 +337,7 @@ namespace ATBridge
         /// <exception cref="IllegalArgumentException">When toMatch contains illegal strings.</exception>
         /// <exception cref="IllegalArgumentException">When toMatch is empty.</exception>
         /// <returns>A list of products.</returns>
-        ICollection<Guid> SearchProduct(Guid userGuid, ICollection<string> toMatch, string searchType);
+        ICollection<Tuple<ShopProduct, Guid>> SearchProduct(Guid userGuid, ICollection<string> toMatch, string searchType);
 
         /////Implements General Requirement 4.3
         /// <summary>

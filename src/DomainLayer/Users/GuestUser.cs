@@ -114,7 +114,7 @@ namespace DomainLayer.Users
             throw new BadStateException($"Tried to invoke AddShopOwner in GuestUser");
         }
 
-        public ICollection<Guid> SearchProduct(ICollection<string> toMatch, string searchType)
+        public ICollection<Tuple<ShopProduct, Guid>> SearchProduct(ICollection<string> toMatch, string searchType)
         {
             var searcher = new ProductsSearcher(searchType);
             return searcher.Search(toMatch);

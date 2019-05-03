@@ -1,4 +1,5 @@
-﻿using System;
+﻿using ApplicationCore.Entitites;
+using System;
 using System.Collections.Generic;
 
 namespace ApplicationCore.Entities.Users
@@ -28,7 +29,7 @@ namespace ApplicationCore.Entities.Users
         bool RemoveProductFromShop(Guid shopGuid, Guid shopProductGuid);
         bool RemoveShopManager(Guid shopGuid, Guid managerToRemoveGuid);
         bool RemoveUser(Guid userToRemoveGuid);
-        ICollection<Guid> SearchProduct(ICollection<string> toMatch, string searchType);
+        ICollection<Tuple<ShopProduct, Guid>> SearchProduct(ICollection<string> toMatch, string searchType);
         bool SetState(IAbstractUserState newState);
         #endregion
     }

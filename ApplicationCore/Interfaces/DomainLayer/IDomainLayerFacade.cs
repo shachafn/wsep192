@@ -1,4 +1,5 @@
 ﻿using ApplicationCore.Entities;
+using ApplicationCore.Entitites;
 using System;
 using System.Collections.Generic;
 
@@ -28,7 +29,7 @@ namespace ApplicationCore.Interfaces.DomainLayer
         bool EditProductInCart(UserIdentifier userIdentifier, Guid shopGuid, Guid shopProductGuid, int newAmount);
         bool RemoveProductFromCart(UserIdentifier userIdentifier, Guid shopGuid, Guid shopProductGuid);
         ICollection<Guid> GetAllProductsInCart(UserIdentifier userIdentifier, Guid shopGuid);
-        ICollection<Guid> SearchProduct(UserIdentifier userIdentifier, ICollection<string> toMatch, string searchType);
+        ICollection<Tuple<ShopProduct, Guid>> SearchProduct(UserIdentifier userIdentifier, ICollection<string> toMatch, string searchType);
         bool RemoveShopManager(UserIdentifier userIdentifier, Guid shopGuid, Guid managerToRemoveGuid);
         bool ChangeUserState(UserIdentifier userIdentifier, string newState);
         void ClearSystem();

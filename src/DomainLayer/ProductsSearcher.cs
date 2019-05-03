@@ -21,6 +21,7 @@ namespace DomainLayer
             {
                 case "Name":
                     {
+                        //Product and shopGuid
                         ICollection<Tuple<ShopProduct, Guid>> output = new List<Tuple<ShopProduct, Guid>>();
                         foreach (var shop in DomainData.ShopsCollection)
                         {

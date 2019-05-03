@@ -6,6 +6,7 @@ using System.Threading.Tasks;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.Extensions.Logging;
 using PressentaitionLayer.Models;
 using PressentaitionLayer.Services;
 
@@ -14,8 +15,11 @@ namespace PressentaitionLayer.Controllers
     public class HomeController : Controller
     {
 
-        public HomeController()
+        ILogger<HomeController> _logger;
+
+        public HomeController(ILogger<HomeController> logger)
         {
+            _logger = logger;
         }
         public IActionResult Index()
         {

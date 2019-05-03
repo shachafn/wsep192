@@ -1,34 +1,20 @@
-﻿using DomainLayer.Data.Entitites;
-using DomainLayer.ExposedClasses;
-using DomainLayer.Facade;
-using System;
+﻿using System;
 using System.Collections.Generic;
-using System.Text;
+using ApplicationCore.Interfaces.DomainLayer;
+using ApplicationCore.Entities;
+using Microsoft.Extensions.Logging;
 
 namespace ServiceLayer
 {
     public class ServiceFacade 
     {
-        IDomainLayerFacade _domainLayerFacade = DomainLayerFacade.Instance;
-
-        #region Singleton Implementation
-        private static ServiceFacade instance = null;
-        private static readonly object padlock = new object();
-        public static ServiceFacade Instance
+        IDomainLayerFacade _domainLayerFacade;
+        ILogger<ServiceFacade> _logger;
+        public ServiceFacade(IDomainLayerFacade domainLayerFacade, ILogger<ServiceFacade> logger)
         {
-            get
-            {
-                lock (padlock)
-                {
-                    if (instance == null)
-                    {
-                        instance = new ServiceFacade();
-                    }
-                    return instance;
-                }
-            }
+            _domainLayerFacade = domainLayerFacade;
+            _logger = logger;
         }
-        #endregion
 
         #region Users
         public Guid Register(UserIdentifier userIdentifier, string username, string password)

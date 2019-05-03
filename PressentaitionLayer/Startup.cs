@@ -2,6 +2,10 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using ApplicationCore.Interfaces.DomainLayer;
+using ApplicationCore.Interfaces.ServiceLayer;
+using DomainLayer.Domains;
+using DomainLayer.Facade;
 using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
@@ -12,14 +16,19 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using PressentaitionLayer.Services;
 using ServiceLayer;
+using Microsoft.Extensions.Logging;
 
 namespace PressentaitionLayer
 {
     public class Startup
     {
-        public Startup(IConfiguration configuration)
+        IServiceFacade _facade;
+        ILogger<Startup> _logger;
+        public Startup(IConfiguration configuration, IServiceFacade facade, ILogger<Startup> logger)
         {
             Configuration = configuration;
+            _facade = facade;
+            _logger = logger;
         }
 
         public IConfiguration Configuration { get; }
@@ -27,6 +36,7 @@ namespace PressentaitionLayer
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
+            _logger.LogDebug("Configuring Services");
             services.Configure<CookiePolicyOptions>(options =>
             {
                 // This lambda determines whether user consent for non-essential cookies is needed for a given request.
@@ -51,6 +61,8 @@ namespace PressentaitionLayer
             });
             services.AddSession();
             //services.AddAuthorization(options=> options.AddPolicy("BuyerOnly",policy=>policy.RequireRole("Buyer")));
+
+            _facade.Initialize(new Guid(), "meni", "moni");
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
@@ -71,8 +83,6 @@ namespace PressentaitionLayer
             app.UseCookiePolicy();
             app.UseAuthentication();
             app.UseSession();
-            Program.Service = new ServiceFacadeProxy();
-            Program.Service.Initialize(new Guid(),"meni","moni");
             app.UseMvc(routes =>
             {
                 routes.MapRoute(

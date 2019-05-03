@@ -1,4 +1,4 @@
-﻿using DomainLayer.Data.Entitites;
+﻿using ApplicationCore.Entitites;
 using System;
 using System.Collections.Generic;
 

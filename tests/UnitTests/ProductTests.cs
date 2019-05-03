@@ -1,8 +1,4 @@
-﻿using NUnit.Framework;
-using DomainLayer.Data.Entitites;
-using DomainLayer.Domains;
-
-namespace UnitTests
+﻿namespace UnitTests
 {
     /*
     [TestFixture]

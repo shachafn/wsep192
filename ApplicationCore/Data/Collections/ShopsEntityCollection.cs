@@ -1,6 +1,6 @@
-﻿using DomainLayer.Data.Entitites;
+﻿using ApplicationCore.Entitites;
 
-namespace DomainLayer.Data.Collections
+namespace ApplicationCore.Data.Collections
 {
     public class ShopsEntityCollection : EntityCollection<Shop>
     {

@@ -4,12 +4,9 @@ using DomainLayer.Domains;
 using DomainLayer.Facade;
 using Microsoft.Extensions.Logging.Abstractions;
 using NUnit.Framework;
-using NUnit.Framework.Constraints;
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Reflection;
-using System.Text;
 
 namespace UnitTests
 {

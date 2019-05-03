@@ -1,10 +1,14 @@
-﻿using ApplicationCore.Exceptions;
+﻿using ApplicationCore.Data;
+using ApplicationCore.Entities.Users;
+using ApplicationCore.Entitites;
+using ApplicationCore.Exceptions;
+using DomainLayer.Extension_Methods;
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using static DomainLayer.Data.Entitites.Shop;
+using static ApplicationCore.Entitites.Shop;
 
-namespace DomainLayer.Data.Entitites.Users.States
+namespace DomainLayer.Users.States
 {
     public class AdminUserState : AbstractUserState
     {

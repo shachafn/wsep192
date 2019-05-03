@@ -1,4 +1,4 @@
-﻿namespace DomainLayer.Data.Entitites
+﻿namespace ApplicationCore.Entitites
 {
     public class ShopProduct : BaseEntity
     {

@@ -1,16 +1,13 @@
-﻿using ApplicationCore.Entities;
+﻿using ApplicationCore.Data;
+using ApplicationCore.Entities;
+using ApplicationCore.Entitites;
 using ApplicationCore.Exceptions;
 using ApplicationCore.Interfaces.DomainLayer;
-using DomainLayer.Data;
-using DomainLayer.Data.Entitites;
-using DomainLayer.Data.Entitites.Users.States;
-using DomainLayer.Domains;
-using DomainLayer.Properties;
+using DomainLayer.Users.States;
 using Microsoft.Extensions.Logging;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
-using System.Linq;
 using System.Reflection;
 
 namespace DomainLayer.Facade

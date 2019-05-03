@@ -1,4 +1,5 @@
 ﻿using ApplicationCore.Entities;
+using ApplicationCore.Entities.Users;
 using System;
 
 namespace ApplicationCore.Interfaces.DomainLayer

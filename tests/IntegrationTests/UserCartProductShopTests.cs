@@ -1,7 +1,4 @@
-﻿using NUnit.Framework;
-using DomainLayer.Data.Entitites;
-
-namespace IntegrationTests
+﻿namespace IntegrationTests
 {
     /*
     [TestFixture]

@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace DomainLayer.Data.Entitites
+namespace ApplicationCore.Entitites
 {
     public class BaseEntity
     {

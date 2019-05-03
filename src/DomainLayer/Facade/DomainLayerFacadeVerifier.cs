@@ -37,7 +37,7 @@ namespace DomainLayer.Facade
             {
                 method.Invoke(this, parameters);
             }
-            catch (Exception ex) 
+            catch (Exception ex)
             {
                 var is1 = ex is AmbiguousMatchException;
                 var is2 = ex is ArgumentNullException;
@@ -47,7 +47,7 @@ namespace DomainLayer.Facade
                 var is6 = ex is MethodAccessException;
                 var is7 = ex is InvalidOperationException;
                 var is8 = ex is NotSupportedException;
-                if (is1 || is2 || is3 || is4 || is5 || is6  || is7 || is8)
+                if (is1 || is2 || is3 || is4 || is5 || is6 || is7 || is8)
                     throw new VerifierReflectionNotFound("Couldnt verify.", ex);
                 else
                     throw ex.InnerException;
@@ -106,14 +106,14 @@ namespace DomainLayer.Facade
             var user = VerifyLoggedInUser(userIdentifier.Guid, new UserNotFoundException());
         }
 
-        public void PurchaseCart(UserIdentifier userIdentifier , Guid shopGuid)
+        public void PurchaseCart(UserIdentifier userIdentifier, Guid shopGuid)
         {
             //TODO: Support guest state
             var user = VerifyLoggedInUser(userIdentifier.Guid, new UserNotFoundException());
             var shop = VerifyShopExists(shopGuid, new ShopNotFoundException());
             var cart = GetCartExistsAndCreateIfNeeded(userIdentifier, shopGuid);
-            VerifyCart(cart,new BrokenConstraintException());
-            
+            VerifyCart(cart, new BrokenConstraintException());
+
         }
 
 
@@ -127,7 +127,7 @@ namespace DomainLayer.Facade
         public void Initialize(UserIdentifier userIdentifier, string username, string password)
         {
             VerifyGuestUser(userIdentifier, new IllegalOperationException());
-            VerifyString(username, new IllegalArgumentException()); 
+            VerifyString(username, new IllegalArgumentException());
             VerifyString(password, new IllegalArgumentException());
         }
 
@@ -620,17 +620,17 @@ namespace DomainLayer.Facade
             }
         }
 
-        private void VerifyCart(ShoppingCart cart,ICloneableException<Exception> e)
+        private void VerifyCart(ShoppingCart cart, ICloneableException<Exception> e)
         {
             Shop shop = DomainData.ShopsCollection[cart.ShopGuid];
             BaseUser user = DomainData.RegisteredUsersCollection[cart.UserGuid];
-            foreach(Tuple<Guid,int> record in cart.PurchasedProducts)
+            foreach (Tuple<Guid, int> record in cart.PurchasedProducts)
             {
-                foreach(ProductPurchasePolicy policy in shop.PurchasePolicies)
+                foreach (ProductPurchasePolicy policy in shop.PurchasePolicies)
                 {
                     bool result = policy.CheckPolicy(cart, record.Item1, record.Item2, user);
                     if (result == false)
-                        throw e.Clone ("Broken constraint: " + policy.ToString());
+                        throw e.Clone("Broken constraint: " + policy.ToString());
                 }
             }
         }
@@ -659,6 +659,59 @@ namespace DomainLayer.Facade
             }
         }
 
+        public void VerifyNewPolicy(object policyType, object field1, object field2, object field3 = null)
+        {
+            Guid productGuid = Guid.Empty;
+            if (!(typeof(string) == policyType.GetType()))
+                throw new IllegalArgumentException("Wrong policy type");
+            string type = (string)policyType;
+            switch (type)
+            {
+                case "User purchase policy":
+                    //Assumption: property is known and legal.
+                    //Assumption : no operator is needed.
+                    if (field1.GetType() != field3.GetType())
+                        throw new IllegalArgumentException("Mismatch between property type");
+                    //Call to add user purchase policy
+                    break;
+                case "Product purchase policy":
+                    if (!(typeof(Guid) == field1.GetType()))
+                        throw new IllegalArgumentException("Invalid product guid");
+                    //Assumption: Operator is given and legal.
+                    if (!(typeof(int) == field3.GetType()))
+                        throw new IllegalArgumentException("Invalid product quantity");
+                    productGuid = (Guid)field1;
+                    int disount = (int)field3;
+                    break;
+                case "Cart purchase policy":
+                    //Operator is given in field1
+                    if (!(typeof(int) == field2.GetType()))
+                        throw new IllegalArgumentException("Invalid sum of cart");
+                    break;
+                case "Product discount policy":
+                    if (!(typeof(Guid) == field1.GetType()))
+                        throw new IllegalArgumentException("Invalid product guid");
+                    //Assumption: Operator is given and legal.
+                    if (!(typeof(int) == field3.GetType()))
+                        throw new IllegalArgumentException("Invalid product percentage");
+                    productGuid = (Guid)field1;
+                    int quantity = (int)field3;
+                    break;
+                case "Cart discount policy":
+                    if (!(typeof(int) == field2.GetType()))
+                        throw new IllegalArgumentException("Invalid sum of cart");
+                    break;
+                case "User discount policy":
+                    //Assumption: property is known and legal.
+                    //Assumption : no operator is needed.
+                    if (field1.GetType() != field3.GetType())
+                        throw new IllegalArgumentException("Mismatch between property type");
+                    //Call to add user purchase policy
+                    break;
+            }
+
+
+        }
         #endregion
     }
 }

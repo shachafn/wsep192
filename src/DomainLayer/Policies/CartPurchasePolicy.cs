@@ -12,18 +12,19 @@ namespace DomainLayer.Policies
     {
         private int ExpectedQuantity { get; }
         private IArithmeticOperator Operator { get; }
-        private Func<ShoppingCart, int> ExtractInformation { get; }
-
+        //private Func<ShoppingCart, int> ExtractInformation { get; }
+        
         public CartPurchasePolicy(int expectedQuantity, IArithmeticOperator @operator, Func<ShoppingCart, int> extractInformation)
         {
             ExpectedQuantity = expectedQuantity;
             Operator = @operator;
-            ExtractInformation = extractInformation;
+            //ExtractInformation = extractInformation;
         }
 
         public bool CheckPolicy(ShoppingCart cart, Guid productGuid, int quantity, BaseUser user)
         {
-            return Operator.IsValid(ExpectedQuantity, ExtractInformation(cart));
+            throw new NotImplementedException();
+            //return Operator.IsValid(ExpectedQuantity, ExtractInformation(cart));
         }
     }
 }

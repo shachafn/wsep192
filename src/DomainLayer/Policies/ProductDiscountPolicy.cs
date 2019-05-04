@@ -19,6 +19,7 @@ namespace DomainLayer.Policies
         private int ExpectedQuantitiy { get; }
         private int DiscountPercentage { get; }
 
+
         //Discount by percentage only!
         public bool CheckPolicy(ref ShoppingCart cart, Guid productGuid, int quantity, BaseUser user)
         {

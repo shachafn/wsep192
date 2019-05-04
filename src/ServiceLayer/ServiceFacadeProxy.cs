@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using ApplicationCore.Entitites;
 using ApplicationCore.Interfaces.ServiceLayer;
 using Microsoft.Extensions.Logging;
 
@@ -182,6 +183,18 @@ namespace ServiceLayer
         {
             _sessionManager.Clear();
             _serviceFacade.ClearSystem();
+        }
+
+        public IEnumerable<Shop> getUserShops(Guid cookie)
+        {
+            var userGuid = _sessionManager.ResolveCookie(cookie);
+            return _serviceFacade.getUserShops(userGuid);
+        }
+
+        public IEnumerable<ShopProduct> getShopProducts(Guid cookie, Guid shopGuid)
+        {
+            var userGuid= _sessionManager.ResolveCookie(cookie);
+            return _serviceFacade.getShopProducts(userGuid, shopGuid);
         }
     }
 }

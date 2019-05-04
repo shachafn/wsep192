@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using ApplicationCore.Entitites;
 using ApplicationCore.Exceptions;
 
 namespace ApplicationCore.Interfaces.ServiceLayer
@@ -463,5 +464,12 @@ namespace ApplicationCore.Interfaces.ServiceLayer
         /// Clears all data and requires the system to be Initialized to use it.
         /// </summary>
         void ClearSystem();
+
+        /*
+         utils
+         */
+
+        IEnumerable<Shop> getUserShops(Guid id);
+        IEnumerable<ShopProduct> getShopProducts(Guid id,Guid shopGuid);
     }
 }

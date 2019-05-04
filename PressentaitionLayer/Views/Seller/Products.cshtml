@@ -1,0 +1,81 @@
+﻿@model IEnumerable<ApplicationCore.Entitites.ShopProduct>
+
+@{
+    ViewData["Title"] = "Products";
+    var i = 0;
+}
+
+
+<h2>Products</h2>
+
+<p>
+    <a asp-action="Create">Create New</a>
+</p>
+<table class="table">
+    <thead>
+        <tr>
+            <th></th>
+            <th>
+                @Html.DisplayNameFor(model => model.Guid)
+            </th>
+            @*<th>
+                    @Html.DisplayNameFor(model => model.Category)
+                </th>*@
+            <th>
+                @Html.DisplayNameFor(model => model.Price)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.Quantity)
+            </th>
+            <th></th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var item in Model)
+        {
+            <tr>
+                <td>
+                    @*<img src=@getRandomImage() alt="should be product's name" />*@
+                    <img src="~/images/Random/7.jpg" alt="should be the product's name" style="height:80px; width:80px;"/>
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Guid)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Price)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Quantity)
+                </td>
+                <td>
+                    <form asp-action="EditItem" method="post">
+                        <input type="hidden" name="ProductId" value=" @Html.DisplayFor(modelItem => item.Guid)" />
+                        <input type="hidden" name="shopId" value="@ViewData["ShopId"]" />
+                        <input type="submit" value="Edit" class="form-control" />
+                    </form>
+                    <form asp-action="DeleteItem" method="post">
+                        <input type="hidden" name="ProductId" value=" @Html.DisplayFor(modelItem => item.Guid)" />
+                        <input type="hidden" name="shopId" value="@ViewData["ShopId"]" />
+                        <input type="submit" value="Delete" class="form-control" />
+                    </form>
+                </td>
+            </tr>
+        }
+    </tbody>
+</table>
+<div style="margin: 40px 0">
+    <h3>Add a new Product</h3>
+    <form asp-action="CreateItem" method="post" class="form-control" style="height:44px; padding:6px 12px">
+        <input type="text" name="ProductName" placeholder="chosen name" />
+        <input type="number" name="Price" placeholder="0" />
+        <input type="number" name="StoredQuantity" placeholder="0" />
+        <select name="Category" required>
+            <option value="good things"> good things</option>
+            <option value="pro things"> pro things</option>
+            <option value="superb things"> superb things</option>
+            <option value="nice things"> nice things</option>
+        </select>
+        <input type="hidden" name="shopId" value="@ViewData["ShopId"]" />
+        <input type="submit" value="Add new Item" class="btn" />
+    </form>
+</div>

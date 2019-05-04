@@ -115,11 +115,17 @@ namespace ServiceLayer
         #endregion
 
         #region Utils
-        public EntityCollection<Shop> getUserShops()
+        public IEnumerable<Shop> getUserShops(UserIdentifier userId)
         {
-            return null;
+            return _domainLayerFacade.getUserShops(userId);
+        }
+
+        public IEnumerable<ShopProduct> getShopProducts(UserIdentifier userId,Guid shopGuid)
+        {
+            return _domainLayerFacade.GetShopProducts(userId, shopGuid);
         }
         #endregion
+
         public Guid OpenShop(UserIdentifier userIdentifier)
         {
             return _domainLayerFacade.OpenShop(userIdentifier);

@@ -1,4 +1,6 @@
-﻿using ApplicationCore.Entities;
+﻿using ApplicationCore.Data.Collections;
+using ApplicationCore.Entities;
+using ApplicationCore.Entitites;
 using System;
 using System.Collections.Generic;
 
@@ -33,5 +35,7 @@ namespace ApplicationCore.Interfaces.DomainLayer
         bool ChangeUserState(UserIdentifier userIdentifier, string newState);
         void ClearSystem();
         bool AddShopOwner(UserIdentifier userIdentifier, Guid shopGuid, Guid newShopOwnerGuid);
+        IEnumerable<Shop> getUserShops(UserIdentifier userId);
+        IEnumerable<ShopProduct> GetShopProducts(UserIdentifier userIdentifier,Guid shopGuid);
     }
 }

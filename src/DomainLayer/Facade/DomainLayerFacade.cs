@@ -1,4 +1,5 @@
 ﻿using ApplicationCore.Data;
+using ApplicationCore.Data.Collections;
 using ApplicationCore.Entities;
 using ApplicationCore.Entitites;
 using ApplicationCore.Exceptions;
@@ -8,6 +9,7 @@ using Microsoft.Extensions.Logging;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
+using System.Linq;
 using System.Reflection;
 
 namespace DomainLayer.Facade
@@ -219,6 +221,20 @@ namespace DomainLayer.Facade
         $"Cant complete {stackTrace.GetFrame(1).GetMethod().Name}";
                 throw new SystemNotInitializedException(msg);
             }
+        }
+
+        public IEnumerable<Shop> getUserShops(UserIdentifier userId)
+        {
+            /*todo verofy constraints
+             * VerifySystemIsInitialized();
+            _verifier.VerifyMe(MethodBase.GetCurrentMethod(), userIdentifier, newState);*/
+            return ApplicationCore.Data.DomainData.ShopsCollection.Where(shop=>shop.Creator.OwnerGuid.Equals(userId.Guid)).ToList<Shop>();
+        }
+
+        public IEnumerable<ShopProduct> GetShopProducts(UserIdentifier userIdentifier, Guid shopGuid)
+        {
+            Shop shop= GetShop(shopGuid);
+            return shop.ShopProducts;
         }
     }
 }

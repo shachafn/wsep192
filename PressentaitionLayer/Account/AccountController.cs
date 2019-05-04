@@ -119,7 +119,14 @@ namespace PressentaitionLayer.Account
             if (User.Identity.IsAuthenticated)
             {
                 await HttpContext.SignOutAsync(CookieAuthenticationDefaults.AuthenticationScheme);
-                _serviceFacade.Logout(new Guid(HttpContext.Session.Id));
+                try
+                {
+                    _serviceFacade.Logout(new Guid(HttpContext.Session.Id));
+                }
+                catch(Exception ex)
+                {
+
+                }
             }
             return RedirectToAction("Index", "Home");
         }

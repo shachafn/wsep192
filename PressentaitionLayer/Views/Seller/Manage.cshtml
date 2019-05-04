@@ -1,0 +1,14 @@
+﻿
+@{
+    ViewData["Title"] = "Manage";
+}
+
+<h2>Manage your shop</h2>
+<h3>shop @ViewData["ShopId"]</h3>
+<div>
+    <input type="button" class="btn-lg" value="Owners & Managers" onclick="location.href='@Url.Action("Roles","Seller",new { ShopId=ViewData["ShopId"]})'" />
+    <input type="button" class="btn-lg" value="Products" onclick="location.href='@Url.Action("Products","Seller",new { ShopId=ViewData["ShopId"]})'" />
+</div>
+ 
+
+

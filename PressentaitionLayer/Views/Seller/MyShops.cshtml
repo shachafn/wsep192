@@ -1,0 +1,44 @@
+﻿@model IEnumerable<ApplicationCore.Entitites.Shop>
+
+@{
+    ViewData["Title"] = "MyShops";
+}
+
+<h2>MyShops</h2>
+
+<p>
+    <a asp-action="Create">Create New</a>
+</p>
+<table class="table">
+    <thead>
+        <tr>
+            <th>
+                @Html.DisplayNameFor(model => model.ShopState)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.Guid)
+            </th>
+            <th></th>
+        </tr>
+    </thead>
+    <tbody>
+@foreach (var item in Model) {
+        <tr>
+            <td>
+                @Html.DisplayFor(modelItem => item.ShopState)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.Guid)
+            </td>
+            <td>
+                @* <form asp-action="Manage" method="post">
+            <input type="hidden" name="shopId" value=" @Html.DisplayFor(modelItem => item.Guid)" />
+            <input type="submit" value="Manage" class="btn" />
+        </form>*@
+                <input type="button" class="btn" value="Manage" onclick="location.href='@Url.Action("Manage","Seller",new { ShopId=item.Guid})'" />
+            </td>
+        </tr>
+}
+    </tbody>
+</table>
+<input type="button" class="btn" value="Open New Shop" onclick="location.href='@Url.Action("OpenShop","Seller")'" />

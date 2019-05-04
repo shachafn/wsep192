@@ -43,7 +43,6 @@ namespace PressentaitionLayer.Controllers
         {
             var products = _serviceFacade.getShopProducts(new Guid(HttpContext.Session.Id), new Guid(ShopId));
             ViewData["ShopId"] = ShopId;
-            ViewData["pic"]=getRandomImage();
             return View(products);
         }
         [HttpPost]
@@ -53,9 +52,10 @@ namespace PressentaitionLayer.Controllers
             return RedirectToAction("Products","Seller",new { ShopId=shopId});
         }
         [HttpPost]
-        public IActionResult EditItem()
+        public IActionResult EditItem(string ShopId,string ProductId)
         {
-            throw new NotImplementedException();
+            ViewData["ShopId"] = ShopId;
+            return View();
         }
         [HttpPost]
         public IActionResult DeleteItem()
@@ -63,11 +63,5 @@ namespace PressentaitionLayer.Controllers
             throw new NotImplementedException();
         }
 
-        private string getRandomImage()
-        {
-            System.Random rnd = new System.Random();
-            var random = rnd.Next(1, 24);
-            return $"~/images/Random/{random}.jpg";
-        }
     }
 }

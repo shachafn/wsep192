@@ -76,10 +76,6 @@ namespace PressentaitionLayer
             app.UseCookiePolicy();
             app.UseAuthentication();
             app.UseSession();
-            app.UseSignalR(routes =>
-            {
-                routes.MapHub<MyHub>("/notificationsHub");
-            });
             app.UseMvc(routes =>
             {
                 routes.MapRoute(
@@ -88,7 +84,7 @@ namespace PressentaitionLayer
             });
             app.UseSignalR(route =>
             {
-                route.MapHub<NotificationHub>("/notificationhub");
+                route.MapHub<StronglyTypedNotificationHub>("/notificationHub");
             });
         }
     }

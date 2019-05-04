@@ -6,6 +6,7 @@ using Microsoft.AspNetCore.SignalR;
 
 namespace PressentaitionLayer
 {
+
     public class NotificationHub : Hub
     {
         #region NoticiationHubMethods

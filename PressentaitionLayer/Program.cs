@@ -51,7 +51,6 @@ namespace PressentaitionLayer
             services.AddSingleton<ServiceFacade>();
             services.AddSingleton<IServiceFacade, ServiceFacadeProxy>();
             services.AddSingleton<UserServices>();
-            services.AddTransient<MyHub>();
         }
 
         private static void SetupLogging()

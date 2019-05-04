@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Threading;
 using System.Threading.Tasks;
 using Microsoft.AspNet.SignalR;
 using Microsoft.AspNetCore.SignalR;
@@ -21,6 +22,11 @@ namespace PressentaitionLayer
 
         public override async Task OnConnectedAsync()
         {
+            for (int i = 1; i < 10; i++)
+            {
+                await Clients.Caller.RecieveNotification("Welcome to AviExpress");
+                Thread.Sleep(70 * i);
+            }
             await Groups.AddToGroupAsync(Context.ConnectionId, "SignalR Users");
             await base.OnConnectedAsync();
         }

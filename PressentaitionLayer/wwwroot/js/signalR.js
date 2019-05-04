@@ -1,7 +1,7 @@
 ﻿"use strict";
 
 
-var connection = new signalR.HubConnectionBuilder().withUrl("/notificationsHub").build();
+var connection = new signalR.HubConnectionBuilder().withUrl("/notificationHub").build();
 
 function ShowPopUp(title, msg, level) {
     const myNotification = window.createNotification({
@@ -14,12 +14,10 @@ function ShowPopUp(title, msg, level) {
     })
 }
 
-connection.on("ReceiveMessage", function (title, message, theme) {
+connection.on("RecieveNotification", function (title, message, theme) {
     ShowPopUp(title, message, theme);
 });
 
-connection.start().then(function () {
-    document.getElementById("sendButton").disabled = false;
-}).catch(function (err) {
+connection.start().catch(function (err) {
     return console.error(err.toString());
 });

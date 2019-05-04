@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Threading;
 using ApplicationCore.Interfaces.ServiceLayer;
 using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Builder;
@@ -75,6 +76,10 @@ namespace PressentaitionLayer
             app.UseCookiePolicy();
             app.UseAuthentication();
             app.UseSession();
+            app.UseSignalR(routes =>
+            {
+                routes.MapHub<MyHub>("/notificationsHub");
+            });
             app.UseMvc(routes =>
             {
                 routes.MapRoute(

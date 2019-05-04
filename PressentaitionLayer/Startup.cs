@@ -81,6 +81,10 @@ namespace PressentaitionLayer
                     name: "default",
                     template: "{controller=Home}/{action=Index}/{id?}");
             });
+            app.UseSignalR(route =>
+            {
+                route.MapHub<NotificationHub>("/notificationhub");
+            });
         }
     }
 }

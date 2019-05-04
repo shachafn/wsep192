@@ -412,7 +412,7 @@ namespace DomainLayer.Facade
             VerifyIfChangeToAdminMustBeAdmin(user, newState, new IllegalOperationException());
         }
 
-        public void AddNewPurchasePolicy(ref IPurchasePolicy policy, UserIdentifier userIdentifier, object policyType, object field1, object field2, object field3 = null)
+        public void AddNewPurchasePolicy(ref IPurchasePolicy policy, UserIdentifier userIdentifier,Guid shopGuid ,object policyType, object field1, object field2, object field3 = null)
         {
             if (!(typeof(string) == policyType.GetType()))
                 throw new IllegalArgumentException("Wrong policy type");
@@ -439,7 +439,7 @@ namespace DomainLayer.Facade
             }
         }
         private IArithmeticOperator GenerateOperator(string input)
-        {
+        { 
             switch (input)
             {
                 case ">":
@@ -451,7 +451,7 @@ namespace DomainLayer.Facade
             }
         }
 
-        public void AddNewDiscountPolicy(ref IDiscountPolicy policy, UserIdentifier userIdentifier, object policyType, object field1, object field2, object field3 = null)
+        public void AddNewDiscountPolicy(ref IDiscountPolicy policy, UserIdentifier userIdentifier,Guid shopGuid, object policyType, object field1, object field2, object field3 = null)
         {
             if (!(typeof(string) == policyType.GetType()))
                 throw new IllegalArgumentException("Wrong policy type");

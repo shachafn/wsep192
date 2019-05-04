@@ -207,7 +207,19 @@ namespace Tests
         #endregion
 
         #region GR 4.2.1 - Shop owner can define purchase policy in his store
-        
+
+        [Test]
+        public static void AddPurchasePolicyAT1()
+        {
+            UserAT.GenerateRandoms(out var cookie, out var username, out var password);
+            UserAT.RegisterUser(cookie, username, password);
+            UserAT.LoginUser(cookie, username, password);
+            Tester.PBridge.ChangeUserState(cookie, "SellerUserState");
+            var shopGuid = Tester.PBridge.OpenShop(cookie);
+            var productGuid = Tester.PBridge.AddProductToShop(cookie, shopGuid, "Galaxy S9", "Cellphones", 2000, 1);
+            bool res = Tester.PBridge.AddNewPurchasePolicy(cookie, shopGuid, "Product purchase policy", productGuid, "<", 1);
+            Assert.True(res);
+        }
         #endregion
         #region GR 4.3 - Store's owner can appoint new owner to his store.
 

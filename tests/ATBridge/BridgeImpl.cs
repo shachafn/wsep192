@@ -153,12 +153,12 @@ namespace ATBridge
 
         public bool AddNewPurchasePolicy(Guid userGuid, Guid shopGuid, object policyType, object field1, object field2, object field3 = null)
         {
-            return AddNewPurchasePolicy(userGuid, shopGuid, policyType, field1, field2, field3);
+            return _serviceFacade.AddNewPurchasePolicy(userGuid, shopGuid, policyType, field1, field2, field3);
         }
 
         public bool AddNewDiscountPolicy(Guid userGuid, Guid shopGuid, object policyType, object field1, object field2, object field3 = null)
         {
-            return AddNewDiscountPolicy(userGuid, shopGuid, policyType, field1, field2, field3);
+            return _serviceFacade.AddNewDiscountPolicy(userGuid, shopGuid, policyType, field1, field2, field3);
         }
     }
 }

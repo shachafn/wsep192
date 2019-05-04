@@ -1,0 +1,40 @@
+﻿@model IEnumerable<PressentaitionLayer.Models.AdminModels.UsersModel>
+
+@{
+    ViewData["Title"] = "Users";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<h2>Users</h2>
+
+<p>
+    <a asp-action="Create">Create New</a>
+</p>
+<table class="table">
+    <thead>
+        <tr>
+            <th>
+                @Html.DisplayNameFor(model => model.Guid)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.Username)
+            </th>
+            <th></th>
+        </tr>
+    </thead>
+    <tbody>
+@foreach (var item in Model) {
+        <tr>
+            <td>
+                @Html.DisplayFor(modelItem => item.Guid)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.Username)
+            </td>
+            <td>
+                <input type="button" class="btn-lg" value="Delete" onclick="location.href='@Url.Action("DeleteUser","Admin",new { itemGuid = item.Guid})'" />
+            </td>
+        </tr>
+}
+    </tbody>
+</table>

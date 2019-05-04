@@ -15,6 +15,7 @@ namespace ServiceLayer
         public ServiceFacade _serviceFacade;
         public SessionManager _sessionManager;
         ILogger<ServiceFacadeProxy> _logger;
+
         public ServiceFacadeProxy(ServiceFacade serviceFacade, SessionManager sessionManager, ILogger<ServiceFacadeProxy> logger)
         {
             _serviceFacade = serviceFacade;

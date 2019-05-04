@@ -56,11 +56,33 @@ namespace DomainLayer.Domains
 
         public Guid Login(string username, string password)
         {
+            if (IsAdminCredentials(username, password)) return LoginAdmin(username, password);
+
             BaseUser baseUser = GetRegisteredUserByUsername(username);
             var user = new RegisteredUser(baseUser);
             LoggedInUsers.Add(user.Guid, user);
             ChangeUserState(user.Guid, BuyerUserState.BuyerUserStateString);
             return user.Guid;
+        }
+
+        private bool IsAdminCredentials(string username, string password)
+        {
+            var admin = DomainData.RegisteredUsersCollection.First(bU => bU.IsAdmin);
+            if (admin.Username.Equals(username.ToLower()) && admin.CheckPass(password))
+                return true;
+            return false;
+        }
+
+        private Guid LoginAdmin(string username, string password)
+        {
+            if (!DomainData.LoggedInUsersEntityCollection.Any(u => u.IsAdmin))
+            {
+                BaseUser baseUser = GetRegisteredUserByUsername(username);
+                var user = new RegisteredUser(baseUser);
+                LoggedInUsers.Add(user.Guid, user);
+                return baseUser.Guid;
+            }
+            return DomainData.RegisteredUsersCollection.First(bU => bU.IsAdmin).Guid;
         }
 
         private BaseUser GetRegisteredUserByUsername(string username)

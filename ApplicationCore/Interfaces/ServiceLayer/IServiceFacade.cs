@@ -467,7 +467,6 @@ namespace ApplicationCore.Interfaces.ServiceLayer
         void ClearSystem();
 
 
-
         //TODO DEFINE CONSTRAINTS
         ICollection<Tuple<Guid, Product, int>> GetPurchaseHistory(Guid cookie);
 

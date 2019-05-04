@@ -34,5 +34,7 @@ namespace ApplicationCore.Interfaces.DomainLayer
         void ClearSystem();
         bool AddShopOwner(UserIdentifier userIdentifier, Guid shopGuid, Guid newShopOwnerGuid);
         bool PurchaseCart(UserIdentifier userIdentifier, Guid shopGuid);
+        bool AddNewDiscountPolicy(UserIdentifier userGuid, Guid shopGuid, object policyType, object field1, object field2, object field3);
+        bool AddNewPurchasePolicy(UserIdentifier userGuid, Guid shopGuid, object policyType, object field1, object field2, object field3);
     }
 }

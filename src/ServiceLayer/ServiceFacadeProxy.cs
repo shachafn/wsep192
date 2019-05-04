@@ -142,10 +142,10 @@ namespace ServiceLayer
             return _serviceFacade.PurchaseBag(userGuid);
         }
 
-        public bool PurchaseBag(Guid cookie , Guid shopGuid)
+        public bool PurchaseBag(Guid cookie, Guid shopGuid)
         {
             var userGuid = _sessionManager.ResolveCookie(cookie);
-            return _serviceFacade.PurchaseCart(userGuid,shopGuid);
+            return _serviceFacade.PurchaseCart(userGuid, shopGuid);
         }
 
         public Guid Register(Guid cookie, string username, string password)
@@ -190,10 +190,22 @@ namespace ServiceLayer
             _serviceFacade.ClearSystem();
         }
 
-        public bool PurchaseCart(Guid cookie , Guid shopGuid)
+        public bool PurchaseCart(Guid cookie, Guid shopGuid)
         {
             var userGuid = _sessionManager.ResolveCookie(cookie);
             return _serviceFacade.PurchaseCart(userGuid, shopGuid);
+        }
+
+        public bool AddNewPurchasePolicy(Guid cookie, Guid shopGuid, object policyType, object field1, object field2, object field3 = null)
+        {
+            var userGuid = _sessionManager.ResolveCookie(cookie);
+            return _serviceFacade.AddNewPurchasePolicy(userGuid, shopGuid, policyType, field1, field2, field3);
+        }
+
+        public bool AddNewDiscountPolicy(Guid cookie, Guid shopGuid, object policyType, object field1, object field2, object field3 = null)
+        {
+            var userGuid = _sessionManager.ResolveCookie(cookie);
+            return _serviceFacade.AddNewDiscountPolicy(userGuid, shopGuid, policyType, field1, field2, field3);
         }
     }
 }

@@ -3,6 +3,7 @@ using ApplicationCore.Entities.Users;
 using ApplicationCore.Entitites;
 using ApplicationCore.Exceptions;
 using DomainLayer.Extension_Methods;
+using DomainLayer.Policies;
 using System;
 using System.Collections.Generic;
 
@@ -114,6 +115,26 @@ namespace DomainLayer.Users.States
         public override bool PurchaseCart(Guid userGuid, Guid shopGuid)
         {
             throw new BadStateException($"Tried to invoke PurchaseCart in Seller State");
+        }
+
+        public override bool AddNewPurchasePolicy(Guid userGuid, Guid shopGuid, IPurchasePolicy newPolicy)
+        {
+            var shop = DomainData.ShopsCollection[shopGuid];
+            if (!shop.IsOwner(userGuid))
+            {
+                throw new IllegalOperationException("Tried to add new purchase policy to a shop that doesn't belong to him");
+            }
+            return shop.AddNewPurchasePolicy(newPolicy);
+        }
+
+        public override bool AddNewDiscountPolicy(Guid userGuid, Guid shopGuid, IDiscountPolicy newPolicy)
+        {
+            var shop = DomainData.ShopsCollection[shopGuid];
+            if (!shop.IsOwner(userGuid))
+            {
+                throw new IllegalOperationException("Tried to add new discount policy to a shop that doesn't belong to him");
+            }
+            return shop.AddNewDiscountPolicy(newPolicy);
         }
     }
 }

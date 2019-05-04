@@ -1,5 +1,6 @@
 ﻿using ApplicationCore.Entitites;
 using ApplicationCore.Exceptions;
+using DomainLayer.Policies;
 using DomainLayer.Properties;
 using System;
 using System.Collections.Generic;
@@ -127,6 +128,18 @@ namespace DomainLayer.Extension_Methods
                     shop.RemoveOwner(otherOwner.OwnerGuid);
             }
             shop.Owners.Remove(ownerToRemove);// remove the owner from the owners list
+            return true;
+        }
+
+        public static bool AddNewPurchasePolicy(this Shop shop,IPurchasePolicy newPurchasePolicy)
+        {
+            shop.PurchasePolicies.Add(newPurchasePolicy);
+            return true;
+        }
+
+        public static bool AddNewDiscountPolicy(this Shop shop, IDiscountPolicy newDiscountPolicy)
+        {
+            shop.DiscountPolicies.Add(newDiscountPolicy);
             return true;
         }
         #region Creator/Owner/Manager Verifiers

@@ -464,6 +464,10 @@ namespace ATBridge
         /// <returns></returns>
         bool ChangeUserState(Guid userGuid, string newState);
 
+
+        bool AddNewPurchasePolicy(Guid userGuid, Guid shopGuid, object policyType, object field1, object field2, object field3 = null);
+        bool AddNewDiscountPolicy(Guid userGuid, Guid shopGuid, object policyType, object field1, object field2, object field3 = null);
+
         /// <summary>
         /// Clears all data and requires the system to be Initialized to use it.
         /// </summary>

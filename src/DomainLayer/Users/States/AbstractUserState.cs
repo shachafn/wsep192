@@ -1,4 +1,5 @@
 ﻿using ApplicationCore.Entities.Users;
+using DomainLayer.Policies;
 using System;
 using System.Collections.Generic;
 
@@ -24,6 +25,9 @@ namespace DomainLayer.Users.States
         public abstract bool RemoveShopManager(BaseUser baseUser, Guid shopGuid, Guid managerToRemoveGuid);
         public abstract bool AddShopOwner(BaseUser baseUser, Guid shopGuid, Guid newManagaerGuid);
         public abstract ICollection<Guid> SearchProduct(ICollection<string> toMatch, string searchType);
-        public abstract bool PurchaseCart(Guid userGuid,Guid shopGuid);
+        public abstract bool PurchaseCart(Guid userGuid, Guid shopGuid);
+        public abstract bool AddNewPurchasePolicy(Guid userGuid, Guid shopGuid, IPurchasePolicy newPolicy);
+        public abstract bool AddNewDiscountPolicy(Guid userGuid, Guid shopGuid, IDiscountPolicy newPolicy);
+
     }
 }

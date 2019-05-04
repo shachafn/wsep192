@@ -146,5 +146,15 @@ namespace ServiceLayer
         {
             _domainLayerFacade.ClearSystem();
         }
+
+        internal bool AddNewDiscountPolicy(UserIdentifier userGuid, Guid shopGuid,object policyType, object field1, object field2, object field3)
+        {
+            return _domainLayerFacade.AddNewDiscountPolicy(userGuid, shopGuid, policyType, field1, field2, field3);
+        }
+
+        internal bool AddNewPurchasePolicy(UserIdentifier userGuid, Guid shopGuid, object policyType, object field1, object field2, object field3)
+        {
+            return _domainLayerFacade.AddNewPurchasePolicy(userGuid, shopGuid, policyType ,field1, field2, field3);
+        }
     }
 }

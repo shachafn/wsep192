@@ -150,5 +150,15 @@ namespace ATBridge
         {
             return _serviceFacade.PurchaseCart(userGuid, shopGuid);
         }
+
+        public bool AddNewPurchasePolicy(Guid userGuid, Guid shopGuid, object policyType, object field1, object field2, object field3 = null)
+        {
+            return AddNewPurchasePolicy(userGuid, shopGuid, policyType, field1, field2, field3);
+        }
+
+        public bool AddNewDiscountPolicy(Guid userGuid, Guid shopGuid, object policyType, object field1, object field2, object field3 = null)
+        {
+            return AddNewDiscountPolicy(userGuid, shopGuid, policyType, field1, field2, field3);
+        }
     }
 }

@@ -12,6 +12,7 @@ namespace DomainLayer.Policies
 {
     class UserPurchasePolicy : IPurchasePolicy
     {
+
         private BaseUser IdealUser { get; }
         //private Func<Tuple<BaseUser, BaseUser>, bool> Predicate { get; }
 
@@ -20,6 +21,11 @@ namespace DomainLayer.Policies
             IdealUser = idealUser;
             //Predicate = predicate;
         }
+
+        public UserPurchasePolicy()
+        {
+        }
+
         public bool CheckPolicy(ShoppingCart cart, Guid productGuid, int quantity, BaseUser inputUser)
         {
             throw new NotImplementedException();

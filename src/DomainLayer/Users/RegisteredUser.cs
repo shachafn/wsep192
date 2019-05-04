@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using ApplicationCore.Entities.Users;
 using DomainLaye.Users.States;
 using DomainLayer.Data.Entitites.Users.States;
+using DomainLayer.Policies;
 using DomainLayer.Users.States;
 
 namespace DomainLayer.Users
@@ -116,6 +117,16 @@ namespace DomainLayer.Users
         public bool PurchaseCart(Guid userGuid,Guid shopGuid)
         {
             return State.PurchaseCart(userGuid,shopGuid);
+        }
+
+        public bool AddNewPurchasePolicy(Guid userGuid, Guid shopGuid, IPurchasePolicy newPolicy)
+        {
+            return State.AddNewPurchasePolicy(userGuid, shopGuid, newPolicy);
+        }
+
+        public bool AddNewDiscountPolicy(Guid userGuid, Guid shopGuid, IDiscountPolicy newPolicy)
+        {
+            return State.AddNewDiscountPolicy(userGuid, shopGuid, newPolicy);
         }
     }
 }

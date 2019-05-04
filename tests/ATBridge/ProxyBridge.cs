@@ -137,5 +137,15 @@ namespace ATBridge
         {
             return _real == null ? false : _real.PurchaseCart(userGuid, shopGuid);
         }
+
+        public bool AddNewPurchasePolicy(Guid userGuid, Guid shopGuid, object policyType, object field1, object field2, object field3 = null)
+        {
+            return _real == null ? false : _real.AddNewPurchasePolicy(userGuid, shopGuid, policyType, field1, field2, field3);
+        }
+
+        public bool AddNewDiscountPolicy(Guid userGuid, Guid shopGuid, object policyType, object field1, object field2, object field3 = null)
+        {
+            return _real == null ? false : _real.AddNewPurchasePolicy(userGuid, shopGuid, policyType, field1, field2, field3);
+        }
     }
 }

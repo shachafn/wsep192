@@ -3,6 +3,7 @@ using ApplicationCore.Entities.Users;
 using ApplicationCore.Entitites;
 using ApplicationCore.Exceptions;
 using DomainLayer.Extension_Methods;
+using DomainLayer.Policies;
 using DomainLayer.Users.States;
 using System;
 using System.Collections.Generic;
@@ -153,6 +154,16 @@ namespace DomainLayer.Data.Entitites.Users.States
             cart.PurchaseCart(); //If there are problems with money exception should be handled.
             //TODO: Get user and take money from his account
             return true;
+        }
+
+        public override bool AddNewPurchasePolicy(Guid userGuid, Guid shopGuid, IPurchasePolicy newPolicy)
+        {
+            throw new BadStateException($"Tried to invoke AddNewPurchasePolicy in Buyer State");
+        }
+
+        public override bool AddNewDiscountPolicy(Guid userGuid, Guid shopGuid, IDiscountPolicy newPolicy)
+        {
+            throw new BadStateException($"Tried to invoke AddNewDiscountPolicy in Buyer State");
         }
     }
 }

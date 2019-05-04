@@ -4,6 +4,7 @@ using ApplicationCore.Entities.Users;
 using ApplicationCore.Entitites;
 using ApplicationCore.Exceptions;
 using ApplicationCore.Interfaces.DomainLayer;
+using DomainLayer.Policies;
 using DomainLayer.Users.States;
 using Microsoft.Extensions.Logging;
 using System;
@@ -203,13 +204,13 @@ namespace DomainLayer.Facade
             return _userDomain.ChangeUserState(userIdentifier.Guid, newState);
         }
 
-        public bool PurchaseCart(UserIdentifier userIdentifier , Guid shopGuid)
+        public bool PurchaseCart(UserIdentifier userIdentifier, Guid shopGuid)
         {
             VerifySystemIsInitialized();
-            _verifier.VerifyMe(MethodBase.GetCurrentMethod(), userIdentifier ,shopGuid); //Verification of cart
+            _verifier.VerifyMe(MethodBase.GetCurrentMethod(), userIdentifier, shopGuid); //Verification of cart
             // Need to actually pay for products
             IUser user = _userDomain.GetUserObject(userIdentifier);
-            return user.PurchaseCart(user.Guid,shopGuid);
+            return user.PurchaseCart(user.Guid, shopGuid);
         }
 
         public void ClearSystem()
@@ -229,6 +230,25 @@ namespace DomainLayer.Facade
         $"Cant complete {stackTrace.GetFrame(1).GetMethod().Name}";
                 throw new SystemNotInitializedException(msg);
             }
+        }
+
+        public bool AddNewDiscountPolicy(UserIdentifier userIdentifier, Guid shopGuid, object policyType, object field1, object field2, object field3)
+        {
+            VerifySystemIsInitialized();
+            IUser user = _userDomain.GetUserObject(userIdentifier);
+            IDiscountPolicy newPolicy = null;
+            _verifier.VerifyMe(MethodBase.GetCurrentMethod(), newPolicy, userIdentifier, policyType, field1, field2, field3);
+            return user.AddNewDiscountPolicy(user.Guid, shopGuid, newPolicy);
+        }
+
+        public bool AddNewPurchasePolicy(UserIdentifier userIdentifier, Guid shopGuid, object policyType, object field1, object field2, object field3)
+        {
+            VerifySystemIsInitialized();
+            IUser user = _userDomain.GetUserObject(userIdentifier);
+            IPurchasePolicy newPolicy = null;
+            _verifier.VerifyMe(MethodBase.GetCurrentMethod(), newPolicy, userIdentifier, policyType, field1, field2, field3);
+            user.AddNewPurchasePolicy(user.Guid, shopGuid, newPolicy);
+            return true;
         }
     }
 }

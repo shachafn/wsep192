@@ -1,4 +1,5 @@
-﻿using System;
+﻿using DomainLayer.Policies;
+using System;
 using System.Collections.Generic;
 
 namespace ApplicationCore.Entities.Users
@@ -24,5 +25,7 @@ namespace ApplicationCore.Entities.Users
         bool RemoveUser(Guid userToRemoveGuid);
         ICollection<Guid> SearchProduct(ICollection<string> toMatch, string searchType);
         bool PurchaseCart(Guid userGuid, Guid shopGuid);
+        bool AddNewPurchasePolicy(Guid userGuid, Guid shopGuid, IPurchasePolicy newPolicy);
+        bool AddNewDiscountPolicy(Guid userGuid, Guid shopGuid, IDiscountPolicy newPolicy);
     }
 }

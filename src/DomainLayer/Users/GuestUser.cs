@@ -1,11 +1,9 @@
 ﻿using ApplicationCore.Data;
-using ApplicationCore.Entities;
 using ApplicationCore.Entitites;
 using ApplicationCore.Exceptions;
 using DomainLayer;
-using DomainLayer.Data;
-using DomainLayer.Data.Entitites;
 using DomainLayer.Extension_Methods;
+using DomainLayer.Policies;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -154,6 +152,16 @@ namespace ApplicationCore.Entities.Users
         public bool SetState(IAbstractUserState newState)
         {
             throw new BadStateException($"Tried to invoke AddShopOwner in GuestUser");
+        }
+
+        public bool AddNewPurchasePolicy(Guid userGuid, Guid shopGuid, IPurchasePolicy newPolicy)
+        {
+            throw new BadStateException($"Tried to invoke AddNewPurchasePolicy in GuestUser");
+        }
+
+        public bool AddNewDiscountPolicy(Guid userGuid, Guid shopGuid, IDiscountPolicy newPolicy)
+        {
+            throw new BadStateException($"Tried to invoke AddNewDiscountPolicy in GuestUser");
         }
     }
 }

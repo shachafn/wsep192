@@ -411,6 +411,57 @@ namespace DomainLayer.Facade
             VerifyIfChangeToAdminMustBeAdmin(user, newState, new IllegalOperationException());
         }
 
+        public void AddNewPurchasePolicy(ref IPurchasePolicy policy, UserIdentifier userIdentifier, object policyType, object field1, object field2, object field3 = null)
+        {
+            if (!(typeof(string) == policyType.GetType()))
+                throw new IllegalArgumentException("Wrong policy type");
+            string type = (string)policyType;
+            switch (type)
+            {
+                case "User purchase policy":
+                    VerifyUserShopPolicy(new IllegalArgumentException(), field1, field2, field3);
+                    policy = new UserPurchasePolicy();
+                    break;
+                case "Product purchase policy":
+                    VerifyShopProductPolicy(new IllegalArgumentException(), field1, field2, field3);
+                    policy = new ProductPurchasePolicy();
+                    break;
+                case "Cart purchase policy":
+                    //Operator is given in field1
+                    if (!(typeof(int) == field2.GetType()))
+                        throw new IllegalArgumentException("Invalid sum of cart");
+                    policy = new CartPurchasePolicy();
+                    break;
+                default:
+                    throw new IllegalArgumentException("Invalid policy type");
+            }
+        }
+
+        public void AddNewDiscountPolicy(ref IDiscountPolicy policy, UserIdentifier userIdentifier, object policyType, object field1, object field2, object field3 = null)
+        {
+            if (!(typeof(string) == policyType.GetType()))
+                throw new IllegalArgumentException("Wrong policy type");
+            string type = (string)policyType;
+            switch (type)
+            {
+                case "Product discount policy":
+                    VerifyShopProductPolicy(new IllegalArgumentException(), field1, field2, field3);
+                    policy = new UserDiscountPolicy();
+                    break;
+                case "Cart discount policy":
+                    //Operator is given in field1
+                    if (!(typeof(int) == field2.GetType()))
+                        throw new IllegalArgumentException("Invalid sum of cart");
+                    policy = new CartDiscountPolicy();
+                    break;
+                case "User discount policy":
+                    VerifyUserShopPolicy(new IllegalArgumentException(), field1, field2, field3);
+                    policy = new UserDiscountPolicy();
+                    break;
+                default:
+                    throw new IllegalArgumentException("Invalid policy type");
+            }
+        }
         #endregion
 
         #region Private Verifiers
@@ -661,59 +712,32 @@ namespace DomainLayer.Facade
             }
         }
 
-        public void VerifyNewPolicy(object policyType, object field1, object field2, object field3 = null)
+        private void VerifyUserShopPolicy(ICloneableException<Exception> e, object field1, object field2, object field3 = null)
         {
-            Guid productGuid = Guid.Empty;
-            if (!(typeof(string) == policyType.GetType()))
-                throw new IllegalArgumentException("Wrong policy type");
-            string type = (string)policyType;
-            switch (type)
+            //Assumption: property is known and legal.
+            //Assumption : no operator is needed.
+            BaseUser b = new BaseUser("userDemo", "000000", false);
+            FieldInfo[] baseUserFields = b.GetType().GetFields();
+            foreach (FieldInfo baseUserField in baseUserFields)
             {
-                case "User purchase policy":
-                    //Assumption: property is known and legal.
-                    //Assumption : no operator is needed.
-                    if (field1.GetType() != field3.GetType())
-                        throw new IllegalArgumentException("Mismatch between property type");
-                    //Call to add user purchase policy
-                    break;
-                case "Product purchase policy":
-                    if (!(typeof(Guid) == field1.GetType()))
-                        throw new IllegalArgumentException("Invalid product guid");
-                    //Assumption: Operator is given and legal.
-                    if (!(typeof(int) == field3.GetType()))
-                        throw new IllegalArgumentException("Invalid product quantity");
-                    productGuid = (Guid)field1;
-                    int disount = (int)field3;
-                    break;
-                case "Cart purchase policy":
-                    //Operator is given in field1
-                    if (!(typeof(int) == field2.GetType()))
-                        throw new IllegalArgumentException("Invalid sum of cart");
-                    break;
-                case "Product discount policy":
-                    if (!(typeof(Guid) == field1.GetType()))
-                        throw new IllegalArgumentException("Invalid product guid");
-                    //Assumption: Operator is given and legal.
-                    if (!(typeof(int) == field3.GetType()))
-                        throw new IllegalArgumentException("Invalid product percentage");
-                    productGuid = (Guid)field1;
-                    int quantity = (int)field3;
-                    break;
-                case "Cart discount policy":
-                    if (!(typeof(int) == field2.GetType()))
-                        throw new IllegalArgumentException("Invalid sum of cart");
-                    break;
-                case "User discount policy":
-                    //Assumption: property is known and legal.
-                    //Assumption : no operator is needed.
-                    if (field1.GetType() != field3.GetType())
-                        throw new IllegalArgumentException("Mismatch between property type");
-                    //Call to add user purchase policy
-                    break;
+                if (baseUserField.Name == (string)field1 && baseUserField.FieldType != field3.GetType())
+                    e.Clone("Mismatch between property type");
             }
 
-
         }
+
+        private void VerifyShopProductPolicy(ICloneableException<Exception> e, object field1, object field2, object field3 = null)
+        {
+            Guid productGuid = Guid.Empty;
+            if (!(typeof(Guid) == field1.GetType()))
+                throw new IllegalArgumentException("Invalid product guid");
+            //Assumption: Operator is given and legal.
+            if (!(typeof(int) == field3.GetType()))
+                throw new IllegalArgumentException("Invalid product quantity");
+            productGuid = (Guid)field1;
+            int disount = (int)field3;
+        }
+        
         #endregion
     }
 }

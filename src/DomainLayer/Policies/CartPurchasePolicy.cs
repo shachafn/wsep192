@@ -15,7 +15,11 @@ namespace DomainLayer.Policies
         private int ExpectedQuantity { get; }
         private IArithmeticOperator Operator { get; }
         //private Func<ShoppingCart, int> ExtractInformation { get; }
-        
+        public CartPurchasePolicy()
+        {
+
+        }
+
         public CartPurchasePolicy(int expectedQuantity, IArithmeticOperator @operator, Func<ShoppingCart, int> extractInformation)
         {
             ExpectedQuantity = expectedQuantity;

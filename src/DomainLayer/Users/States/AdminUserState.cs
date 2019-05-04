@@ -3,6 +3,7 @@ using ApplicationCore.Entities.Users;
 using ApplicationCore.Entitites;
 using ApplicationCore.Exceptions;
 using DomainLayer.Extension_Methods;
+using DomainLayer.Policies;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -134,6 +135,16 @@ namespace DomainLayer.Users.States
         public override bool PurchaseCart(Guid userGuid, Guid shopGuid)
         {
             throw new BadStateException($"Tried to invoke PurchaseCart in Admin State");
+        }
+
+        public override bool AddNewPurchasePolicy(Guid userGuid, Guid shopGuid, IPurchasePolicy newPolicy)
+        {
+            throw new BadStateException($"Tried to invoke AddNewPurchasePolicy in Admin State");
+        }
+
+        public override bool AddNewDiscountPolicy(Guid userGuid, Guid shopGuid, IDiscountPolicy newPolicy)
+        {
+            throw new BadStateException($"Tried to invoke AddNewDiscountPolicy in Admin State");
         }
     }
 }

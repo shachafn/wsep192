@@ -14,10 +14,25 @@ namespace DomainLayer.Policies
 {
     class ProductDiscountPolicy : IDiscountPolicy
     {
+        public Guid Guid { get; private set; }
         private Guid ProductGuid { get; }
         private IArithmeticOperator Operator { get; }
         private int ExpectedQuantitiy { get; }
         private int DiscountPercentage { get; }
+        private string Description { get; }
+
+
+        public ProductDiscountPolicy(Guid productGuid, IArithmeticOperator @operator, int expectedQuantitiy, int discountPercentage,string description)
+        {
+            Guid = Guid.NewGuid();
+
+            ProductGuid = productGuid;
+            Operator = @operator;
+            ExpectedQuantitiy = expectedQuantitiy;
+            DiscountPercentage = discountPercentage;
+            Description = description;
+        }
+
 
 
         //Discount by percentage only!

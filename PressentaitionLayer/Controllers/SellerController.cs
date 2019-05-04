@@ -1,4 +1,5 @@
-﻿using ApplicationCore.Interfaces.ServiceLayer;
+﻿using ApplicationCore.Entitites;
+using ApplicationCore.Interfaces.ServiceLayer;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
@@ -51,6 +52,7 @@ namespace PressentaitionLayer.Controllers
             _serviceFacade.AddProductToShop(new Guid(HttpContext.Session.Id), new Guid(shopId),ProductName,Category,Price, StoredQuantity);
             return RedirectToAction("Products","Seller",new { ShopId=shopId});
         }
+
         [HttpPost]
         public IActionResult EditItem(string ShopId,string ProductId)
         {
@@ -58,9 +60,17 @@ namespace PressentaitionLayer.Controllers
             return View();
         }
         [HttpPost]
-        public IActionResult DeleteItem()
+        public IActionResult EditItem(ShopProduct product,string ShopId)
         {
-            throw new NotImplementedException();
+            ViewData["ShopId"] = ShopId;
+            _serviceFacade.EditProductInShop(new Guid(HttpContext.Session.Id), new Guid(ShopId), product.Guid,product.Price,product.Quantity);
+            return RedirectToAction("Products","Seller", new { ShopId = ShopId});
+        }
+        [HttpPost]
+        public IActionResult DeleteItem(string ShopId, string ProductId)
+        {
+            _serviceFacade.RemoveProductFromShop(new Guid(HttpContext.Session.Id), new Guid(ShopId), new Guid(ProductId));
+            return RedirectToAction("Products", "Seller", new { ShopId = ShopId });
         }
 
     }

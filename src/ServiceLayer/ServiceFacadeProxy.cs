@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using ApplicationCore.Entities.Users;
 using ApplicationCore.Entitites;
 using ApplicationCore.Interfaces.ServiceLayer;
 using Microsoft.Extensions.Logging;

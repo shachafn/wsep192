@@ -1,0 +1,40 @@
+﻿@model ApplicationCore.Entitites.ShopProduct
+
+@{
+    ViewData["Title"] = "EditItem";
+}
+
+<h2>EditItem</h2>
+
+<h4>ShopProduct</h4>
+<hr />
+<div class="row">
+    <div class="col-md-4">
+        <form asp-action="EditItem">
+            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+            <div class="form-group">
+                <label asp-for="Quantity" class="control-label"></label>
+                <input asp-for="Quantity" class="form-control" />
+                <span asp-validation-for="Quantity" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="Price" class="control-label"></label>
+                <input asp-for="Price" class="form-control" />
+                <span asp-validation-for="Price" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="Guid" class="control-label"></label>
+                <input type="hidden" asp-for="Guid" class="form-control" />
+                <span asp-validation-for="Guid" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <input type="submit" value="Save" class="btn btn-default" />
+            </div>
+        </form>
+    </div>
+</div>
+
+<div>
+    <input type="button" class="btn-lg" value="Back to List" onclick="location.href='@Url.Action("Products","Seller",new { ShopId=ViewData["ShopId"]})'" />
+</div>
+

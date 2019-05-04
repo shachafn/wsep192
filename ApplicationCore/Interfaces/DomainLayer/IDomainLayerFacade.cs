@@ -37,5 +37,7 @@ namespace ApplicationCore.Interfaces.DomainLayer
         bool AddShopOwner(UserIdentifier userIdentifier, Guid shopGuid, Guid newShopOwnerGuid);
         ICollection<Tuple<Guid, Product, int>> GetPurchaseHistory(UserIdentifier userIdentifier);
         ICollection<BaseUser> GetAllUsersExceptMe(UserIdentifier userIdentifier);
+        IEnumerable<ShopProduct> GetShopProducts(UserIdentifier userId, Guid shopGuid);
+        IEnumerable<Shop> getUserShops(UserIdentifier userId);
     }
 }

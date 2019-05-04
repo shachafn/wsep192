@@ -1,4 +1,4 @@
-﻿using ApplicationCore.Entitites;
+﻿using ApplicationCore.Entities;
 using ApplicationCore.Exceptions;
 using DomainLayer.Properties;
 using System;

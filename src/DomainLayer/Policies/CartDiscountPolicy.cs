@@ -8,15 +8,20 @@ namespace DomainLayer.Policies
 {
     class CartDiscountPolicy : IDiscountPolicy
     {
+        private Guid Guid { get; set; }
         private double ExpectedSum;
         private int Discountpercentage;
         private IArithmeticOperator Operator;
+        private string Description { get; }
 
-        public CartDiscountPolicy(double expectedSum, int discountpercentage, IArithmeticOperator @operator)
+
+        public CartDiscountPolicy(double expectedSum, int discountpercentage, IArithmeticOperator @operator,string description)
         {
+            Guid = Guid.NewGuid();
             ExpectedSum = expectedSum;
             Discountpercentage = discountpercentage;
             Operator = @operator;
+            Description = description;
         }
 
         public bool CheckPolicy(ref ShoppingCart cart, Guid productGuid, int quantity, BaseUser user)

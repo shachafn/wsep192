@@ -10,14 +10,19 @@ namespace DomainLayer.Policies
     class UserPurchasePolicy : IPurchasePolicy
     {
 
+        public Guid Guid { get; private set; }
         private string FieldName { get; }
         private object Value { get; }
-        
+        private string Description { get; }
 
-        public UserPurchasePolicy(string fieldName,object value)
+
+        public UserPurchasePolicy(string fieldName,object value,string description)
         {
+            Guid = Guid.NewGuid();
+
             FieldName = fieldName;
             Value = value;
+            Description = description;
         }
 
         public bool CheckPolicy(ShoppingCart cart, Guid productGuid, int quantity, BaseUser inputUser)

@@ -8,12 +8,14 @@ namespace DomainLayer.Policies
 {
     class CartDiscountPolicy : IDiscountPolicy
     {
+        private string Name { get; }
         private double ExpectedSum;
         private int Discountpercentage;
         private IArithmeticOperator Operator;
 
-        public CartDiscountPolicy(double expectedSum, int discountpercentage, IArithmeticOperator @operator)
+        public CartDiscountPolicy(string name,double expectedSum, int discountpercentage, IArithmeticOperator @operator)
         {
+            Name = name;
             ExpectedSum = expectedSum;
             Discountpercentage = discountpercentage;
             Operator = @operator;

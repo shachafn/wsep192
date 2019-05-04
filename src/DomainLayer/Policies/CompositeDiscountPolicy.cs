@@ -11,6 +11,7 @@ namespace DomainLayer.Policies
 {
     class CompositeDiscountPolicy : IDiscountPolicy
     {
+        private string Name { get; }
         private IDiscountPolicy DiscountPolicy1 { get; } 
         private IDiscountPolicy DiscountPolicy2 { get; }
         private Implies Operator { get; } //Discount can be conditioned by purchase

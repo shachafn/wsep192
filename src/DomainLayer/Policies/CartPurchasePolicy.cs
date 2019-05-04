@@ -12,12 +12,14 @@ namespace DomainLayer.Policies
 {
     class CartPurchasePolicy : IPurchasePolicy
     {
+        private string Name { get; }
         private int ExpectedQuantity { get; }
         private IArithmeticOperator Operator { get; }
 
 
-        public CartPurchasePolicy(int expectedQuantity, IArithmeticOperator @operator)
+        public CartPurchasePolicy(string name,int expectedQuantity, IArithmeticOperator @operator)
         {
+            Name = name;
             ExpectedQuantity = expectedQuantity;
             Operator = @operator;
         }

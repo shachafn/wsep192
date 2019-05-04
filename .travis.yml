@@ -2,7 +2,7 @@ dist: xenial
 language: csharp
 solution: "wsep192.sln"
 mono: none
-dotnet: 2.1.300
+dotnet: 2.2
 script:
   - dotnet restore
   - dotnet build

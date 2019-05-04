@@ -3,10 +3,9 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
-using Microsoft.AspNet.SignalR;
 using Microsoft.AspNetCore.SignalR;
 
-namespace PressentaitionLayer
+namespace Infrastructure
 {
     public class StronglyTypedNotificationHub : Hub<INotificationClient>
     {

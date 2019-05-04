@@ -4,7 +4,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.SignalR;
 
-namespace PressentaitionLayer
+namespace Infrastructure
 {
 
     public class NotificationHub : Hub

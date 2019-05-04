@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Threading;
 using ApplicationCore.Interfaces.ServiceLayer;
+using Infrastructure;
 using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;

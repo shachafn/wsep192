@@ -52,6 +52,7 @@ namespace PressentaitionLayer
             });
             services.AddSession();
             //services.AddAuthorization(options=> options.AddPolicy("BuyerOnly",policy=>policy.RequireRole("Buyer")));
+            services.AddSignalR();  // maybe Core
 
             _facade.Initialize(new Guid(), "meni", "moni");
         }

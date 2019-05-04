@@ -25,7 +25,7 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "PressentaitionLayer", "Pres
 		{7C461394-ABDC-43CD-A798-71249C58BA67} = {7C461394-ABDC-43CD-A798-71249C58BA67}
 	EndProjectSection
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ApplicationCore", "ApplicationCore\ApplicationCore.csproj", "{04EFC927-E50F-43CD-AFD4-A10F5CBDC90F}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ApplicationCore", "ApplicationCore\ApplicationCore.csproj", "{04EFC927-E50F-43CD-AFD4-A10F5CBDC90F}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

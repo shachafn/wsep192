@@ -7,7 +7,7 @@ namespace PressentaitionLayer
 {
     public interface INotificationClient
     {
-        Task RecieveNotification(Guid userGuid, string notification);
+        Task RecieveNotification(Guid guid, string notification);
         Task RecieveNotification(string notification);
     }
 }

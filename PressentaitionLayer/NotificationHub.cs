@@ -14,14 +14,9 @@ namespace PressentaitionLayer
             return Clients.All.SendAsync("RecieveNotification", userGuid, notification);
         }
 
-        public Task SendMessageToCaller(string message)
+        public Task SendNoticiationToShopOwners(Guid shopGuid, string message)
         {
-            return Clients.Caller.SendAsync("RecieveNotification", message);
-        }
-
-        public Task SendNoticiationToGroup(string message)
-        {
-            return Clients.Group("Shop Owners").SendAsync("RecieveNotification", message);
+            return Clients.Group(shopGuid.ToString()).SendAsync("RecieveNotification", shopGuid ,message);
         }
         #endregion
 

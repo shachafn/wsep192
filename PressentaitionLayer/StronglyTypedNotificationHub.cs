@@ -14,9 +14,9 @@ namespace PressentaitionLayer
             await Clients.All.RecieveNotification(userGuid, message);
         }
 
-        public Task SendMessageToGroups(string message)
+        public Task SendMessageToShopOwners(Guid shopGuid, string message)
         {
-            return Clients.Group("Shop Owners").RecieveNotification(message);
+            return Clients.Group(shopGuid.ToString()).RecieveNotification(message);
         }
 
         public override async Task OnConnectedAsync()

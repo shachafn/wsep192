@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using ApplicationCore.Entities.Users;
 using ApplicationCore.Entitites;
 using ApplicationCore.Interfaces.ServiceLayer;
 using Microsoft.Extensions.Logging;
@@ -189,6 +190,12 @@ namespace ServiceLayer
         {
             var userGuid = _sessionManager.ResolveCookie(cookie);
             return _serviceFacade.GetPurchaseHistory(userGuid);
+        }
+
+        public ICollection<BaseUser> GetAllUsersExceptMe(Guid cookie)
+        {
+            var userGuid = _sessionManager.ResolveCookie(cookie);
+            return _serviceFacade.GetAllUsersExceptMe(userGuid);
         }
     }
 }

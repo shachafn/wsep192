@@ -9,6 +9,7 @@ using DomainLayer.Users;
 using DomainLayer.Users.States;
 using DomainLaye.Users.States;
 using ApplicationCore.Entities.Users;
+using System.Collections.Generic;
 
 namespace DomainLayer.Domains
 {
@@ -83,5 +84,11 @@ namespace DomainLayer.Domains
 
         public bool IsAdminExists() => DomainData.RegisteredUsersCollection.Any(u => u.IsAdmin);
 
+        public ICollection<BaseUser> GetAllUsersExceptMe(UserIdentifier userIdentifier)
+        {
+            return DomainData.RegisteredUsersCollection
+                .Where(reg => !reg.Guid.Equals(userIdentifier.Guid))
+                .ToList();
+        }
     }
 }

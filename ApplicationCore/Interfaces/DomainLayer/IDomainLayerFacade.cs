@@ -1,4 +1,5 @@
 ﻿using ApplicationCore.Entities;
+using ApplicationCore.Entities.Users;
 using ApplicationCore.Entitites;
 using System;
 using System.Collections.Generic;
@@ -35,5 +36,6 @@ namespace ApplicationCore.Interfaces.DomainLayer
         void ClearSystem();
         bool AddShopOwner(UserIdentifier userIdentifier, Guid shopGuid, Guid newShopOwnerGuid);
         ICollection<Tuple<Guid, Product, int>> GetPurchaseHistory(UserIdentifier userIdentifier);
+        ICollection<BaseUser> GetAllUsersExceptMe(UserIdentifier userIdentifier);
     }
 }

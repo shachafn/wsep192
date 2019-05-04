@@ -1,5 +1,6 @@
 ﻿using ApplicationCore.Data;
 using ApplicationCore.Entities;
+using ApplicationCore.Entities.Users;
 using ApplicationCore.Entitites;
 using ApplicationCore.Exceptions;
 using ApplicationCore.Interfaces.DomainLayer;
@@ -200,6 +201,13 @@ namespace DomainLayer.Facade
             VerifySystemIsInitialized();
             _verifier.VerifyMe(MethodBase.GetCurrentMethod(), userIdentifier);
             return _userDomain.GetUserObject(userIdentifier).GetPurchaseHistory();
+        }
+
+        public ICollection<BaseUser> GetAllUsersExceptMe(UserIdentifier userIdentifier)
+        {
+            VerifySystemIsInitialized();
+            _verifier.VerifyMe(MethodBase.GetCurrentMethod(), userIdentifier);
+            return _userDomain.GetAllUsersExceptMe(userIdentifier);
         }
 
         public bool ChangeUserState(UserIdentifier userIdentifier, string newState)

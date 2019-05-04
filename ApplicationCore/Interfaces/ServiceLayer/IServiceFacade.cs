@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using ApplicationCore.Entities.Users;
 using ApplicationCore.Entitites;
 using ApplicationCore.Exceptions;
 
@@ -469,5 +470,9 @@ namespace ApplicationCore.Interfaces.ServiceLayer
 
         //TODO DEFINE CONSTRAINTS
         ICollection<Tuple<Guid, Product, int>> GetPurchaseHistory(Guid cookie);
+
+        //TODO DEFINE CONSTRAINTS
+        ICollection<BaseUser> GetAllUsersExceptMe(Guid cookie);
+
     }
 }

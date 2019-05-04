@@ -5,6 +5,7 @@ using ApplicationCore.Entities;
 using Microsoft.Extensions.Logging;
 using ApplicationCore.Data.Collections;
 using ApplicationCore.Entitites;
+using ApplicationCore.Entities.Users;
 
 namespace ServiceLayer
 {
@@ -154,6 +155,11 @@ namespace ServiceLayer
         public ICollection<Tuple<Guid, Product, int>> GetPurchaseHistory(UserIdentifier userIdentifier)
         {
             return _domainLayerFacade.GetPurchaseHistory(userIdentifier);
+        }
+
+        public ICollection<BaseUser> GetAllUsersExceptMe(UserIdentifier userIdentifier)
+        {
+            return _domainLayerFacade.GetAllUsersExceptMe(userIdentifier);
         }
     }
 }

@@ -399,6 +399,11 @@ namespace DomainLayer.Facade
             VerifyIfChangeToAdminMustBeAdmin(user, newState, new IllegalOperationException());
         }
 
+        public void GetAllUsersExceptMe(UserIdentifier userIdentifier)
+        {
+            var user = VerifyLoggedInUser(userIdentifier.Guid, new UserNotFoundException());
+        }
+
         #endregion
 
         #region Private Verifiers

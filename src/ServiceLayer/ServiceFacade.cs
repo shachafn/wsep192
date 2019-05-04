@@ -125,6 +125,10 @@ namespace ServiceLayer
         {
             return _domainLayerFacade.GetShopProducts(userId, shopGuid);
         }
+        public IEnumerable<Tuple<ShoppingCart, IEnumerable<ShopProduct>>> getUserBag(UserIdentifier userIdentifier)
+        {
+            return _domainLayerFacade.getUserBag(userIdentifier);
+        }
         #endregion
 
         public Guid OpenShop(UserIdentifier userIdentifier)
@@ -177,5 +181,6 @@ namespace ServiceLayer
         {
             _domainLayerFacade.CloseShopPermanently(userIdentifier, shopGuid);
         }
+
     }
 }

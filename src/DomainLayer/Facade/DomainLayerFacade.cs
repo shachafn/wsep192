@@ -271,5 +271,31 @@ namespace DomainLayer.Facade
                 throw new SystemNotInitializedException(msg);
             }
         }
+
+        public IEnumerable<Tuple<ShoppingCart, IEnumerable<ShopProduct>>> getUserBag(UserIdentifier userIdentifier)
+        {
+           var bag = DomainData.ShoppingBagsCollection[userIdentifier.Guid] ;
+            List<Tuple<ShoppingCart, IEnumerable<ShopProduct>>> result = new List<Tuple<ShoppingCart, IEnumerable<ShopProduct>>>();
+            if (bag != null && bag.ShoppingCarts != null)
+            {
+                foreach (var cart in bag.ShoppingCarts)
+                {
+                    List<ShopProduct> products = new List<ShopProduct>();
+                    var shop = DomainData.ShopsCollection[cart.ShopGuid];
+                    foreach (var item in cart.PurchasedProducts)
+                    {
+                        ShopProduct currProduct = shop.ShopProducts.FirstOrDefault(prod => prod.Guid.Equals(item.Item1));
+                        ShopProduct product = new ShopProduct();
+                        product.Product = new Product(currProduct.Product.Name, currProduct.Product.Category);
+                        product.Guid = currProduct.Guid;
+                        product.Price = currProduct.Price;
+                        product.Quantity = item.Item2;
+                        products.Add(product);
+                    }
+                    result.Add(new Tuple<ShoppingCart, IEnumerable<ShopProduct>>(cart, products));
+                }
+            }
+            return result;
+        }
     }
 }

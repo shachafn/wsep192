@@ -1,4 +1,5 @@
-﻿using ApplicationCore.Interfaces.ServiceLayer;
+﻿using ApplicationCore.Entitites;
+using ApplicationCore.Interfaces.ServiceLayer;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
@@ -35,20 +36,39 @@ namespace PressentaitionLayer.Controllers
             return View(results);
         }
 
-        [AllowAnonymous]
-        public IActionResult Details(Guid ItemId)
+      /*  [AllowAnonymous]
+        public IActionResult Details(Guid ItemId,Guid)
         {
             //model 
             return View();// need to pass a product according to id
-        }
+        }*/
         
         [AllowAnonymous]
         [HttpPost]
-        public IActionResult AddToCart( ShopProductBuyModel model)
+        public IActionResult AddToCart( int Quantity,string ShopId,string ItemId)
         {
-           // _serviceFacade.AddProductToCart(new Guid(HttpContext.Session.Id),model.Id,);
-            return RedirectToAction("redirectAccordingToState", "Account");
-            //model 
+            _serviceFacade.AddProductToCart(new Guid(HttpContext.Session.Id), new Guid(ShopId), new Guid(ItemId), Quantity);
+            if(User.IsInRole("Buyer"))
+            {
+                return RedirectToAction("Index", "Buyer");
+            }
+            return RedirectToAction("Index", "Home");
+        }
+
+        [AllowAnonymous]
+        public IActionResult ShoppingCart()
+        {
+            IEnumerable<Tuple<ShoppingCart, IEnumerable<ShopProduct>>> bag = _serviceFacade.getUserBag(new Guid(HttpContext.Session.Id));
+            CheckoutModel model = new CheckoutModel(bag);
+            return View(model);
+        }
+
+        [HttpPost]
+        [AllowAnonymous]
+        public IActionResult BuyNow(string ShopId)
+        {
+            _serviceFacade.PurchaseCart(new Guid(HttpContext.Session.Id),new Guid(ShopId));
+            return RedirectToAction("ShoppingCart","Buyer");
         }
     }
 }

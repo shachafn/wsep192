@@ -130,7 +130,9 @@ namespace DomainLayer.Extension_Methods
             {
                 var userGuid = cart.UserGuid;
                 var actualProduct = shop.ShopProducts.First(p => p.Guid.Equals(productAndAmountBought.Item1));
+                //decrease stock quantity
                 var quantity = productAndAmountBought.Item2;
+                actualProduct.Quantity -= quantity;
                 shop.UsersPurchaseHistory.Add(new Tuple<Guid, Product, int>(userGuid, actualProduct.Product, quantity));
             }
             cart.PurchaseCart();

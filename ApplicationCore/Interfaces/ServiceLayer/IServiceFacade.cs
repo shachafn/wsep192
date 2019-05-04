@@ -171,7 +171,7 @@ namespace ApplicationCore.Interfaces.ServiceLayer
         /// <exception cref="ProductNotFoundException">When the productGuid does not match any product in the shop.</exception>
         /// <exception cref="BrokenConstraintException">When the product already exists in the user's cart.</exception>
         /// <returns>True.</returns>
-        bool AddProductToCart(Guid cookie, Guid productGuid, Guid shopGuid, int quantity);
+        bool AddProductToCart(Guid cookie, Guid shopGuid, Guid productGuid, int quantity);
 
         /////Implements General Requirement 2.7
         /// <summary>
@@ -481,7 +481,7 @@ namespace ApplicationCore.Interfaces.ServiceLayer
         IEnumerable<Shop> GetUserShops(Guid id);
         IEnumerable<ShopProduct> GetShopProducts(Guid id,Guid shopGuid);
         ICollection<Shop> GetAllShops(Guid cookie);
-
+        IEnumerable<Tuple<ShoppingCart, IEnumerable<ShopProduct>>> getUserBag(Guid cookie);
         void CloseShopPermanently(Guid cookie, Guid shopGuid);
     }
 }

@@ -222,5 +222,11 @@ namespace ServiceLayer
             var userIdentifier = _sessionManager.ResolveCookie(cookie);
             _serviceFacade.CloseShopPermanently(userIdentifier, shopGuid);
         }
+
+        public IEnumerable<Tuple<ShoppingCart, IEnumerable<ShopProduct>>> getUserBag(Guid cookie)
+        {
+            var userIdentifier = _sessionManager.ResolveCookie(cookie);
+            return _serviceFacade.getUserBag(userIdentifier);
+        }
     }
 }

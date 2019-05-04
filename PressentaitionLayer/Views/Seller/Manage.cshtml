@@ -7,6 +7,7 @@
 <h2>Manage your shop</h2>
 <h4>shop @ViewData["ShopId"]</h4>
 <h4>Current Shop state: @Model.Shop.ShopState </h4>
+<h4>Shop creator: @Model.Shop.Creator.OwnerGuid</h4>
 <div class="col-md-5" style="margin-bottom:20px;">
     manage products
     <input type="button" class="btn-lg" value="Products" onclick="location.href='@Url.Action("Products","Seller",new { ShopId=ViewData["ShopId"]})'" />

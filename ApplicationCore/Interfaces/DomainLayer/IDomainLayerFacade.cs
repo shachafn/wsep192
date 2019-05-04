@@ -41,5 +41,6 @@ namespace ApplicationCore.Interfaces.DomainLayer
         IEnumerable<Shop> getUserShops(UserIdentifier userId);
         ICollection<Shop> GetAllShops(UserIdentifier userIdentifier);
         void CloseShopPermanently(UserIdentifier userIdentifier, Guid shopGuid);
+        IEnumerable<Tuple<ShoppingCart, IEnumerable<ShopProduct>>> getUserBag(UserIdentifier userIdentifier);
     }
 }

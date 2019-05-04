@@ -1,16 +1,14 @@
-﻿@model IEnumerable<ApplicationCore.Entitites.ShopProduct>
+﻿@model IEnumerable<Tuple<ApplicationCore.Entitites.ShopProduct, Guid>>
 @{
     ViewData["Title"] = "Search";
 }
 
 <h2>Search</h2>
 
-<p>
-    <a asp-action="Create">Create New</a>
-</p>
 <table class="table">
     <thead>
         <tr>
+            <th></th>
             <th>
                 Product Name
             </th>
@@ -28,19 +26,27 @@
         {
             <tr>
                 <td>
-                    <img src="~/images/Random/7.jpg" alt="@Html.DisplayFor(modelItem => item.Product.Name)" />
+                    <img src="~/images/Random/23.jpg" alt="@Html.DisplayFor(modelItem => item.Item1.Product.Name)" style="width:80px; height:80px;"/>
                 </td>
                 <td>
-                    @Html.DisplayFor(modelItem => item.Product.Name)
+                    @Html.DisplayFor(modelItem => item.Item1.Product.Name)
                 </td>
                 <td>
-                    @Html.DisplayFor(modelItem => item.Product.Category)
+                    @Html.DisplayFor(modelItem => item.Item1.Product.Category)
                 </td>
                 <td>
-                    @Html.DisplayFor(modelItem => item.Price)
+                    @Html.DisplayFor(modelItem => item.Item1.Price)
                 </td>
                 <td>
-                    <a class="btn-primary" asp-controller="Buyer" asp-action="Detail" asp-route-ItemId="@item.Guid">Details & Purchase</a>
+                    <form asp-action="AddToCart" class="form-control" style="height:44px; padding:6px 12px">
+                        <label>
+                            Quantity
+                            <input type="number" name="Quantity" placeholder="0" />
+                        </label>
+                        <input type="hidden" name="ShopId" value="@item.Item2" />
+                        <input type="hidden" name="ItemId" value="@item.Item1.Guid" />
+                        <input type="submit" value="Add items to cart" class="input-sm"/>
+                    </form>
                 </td>
             </tr>
         }

@@ -31,12 +31,12 @@ namespace PressentaitionLayer.Controllers
             ViewData["searched"] = searchstring;
             List<string> strings = new List<string>();
             strings.Add(searchstring);
-            _serviceFacade.SearchProduct(new Guid(HttpContext.Session.Id), strings, "Name");
-            return View();
+            var results =_serviceFacade.SearchProduct(new Guid(HttpContext.Session.Id), strings, "Name");
+            return View(results);
         }
 
         [AllowAnonymous]
-        public IActionResult Details(Guid id)
+        public IActionResult Details(Guid ItemId)
         {
             //model 
             return View();// need to pass a product according to id

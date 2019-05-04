@@ -39,7 +39,7 @@ namespace PressentaitionLayer.Controllers
         public IActionResult Manage(string shopId)
         {
             ViewData["ShopId"] = shopId;
-            var shops = _serviceFacade.getUserShops(new Guid(HttpContext.Session.Id));
+            var shops = _serviceFacade.GetUserShops(new Guid(HttpContext.Session.Id));
             var shop = shops.FirstOrDefault(currshop => currshop.Guid.Equals(new Guid(shopId)));
 
             return View(new ShopManageIndexModel(shop));

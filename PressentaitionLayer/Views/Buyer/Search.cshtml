@@ -2,15 +2,6 @@
 @{
     ViewData["Title"] = "Search";
 }
-@functions
-{
-public string getRandomImage()
-{
-    System.Random rnd = new System.Random();
-    var random = rnd.Next(1, 24);
-    return $"~/images/random/{random}.jpg";
-}
-}
 
 <h2>Search</h2>
 
@@ -37,7 +28,7 @@ public string getRandomImage()
         {
             <tr>
                 <td>
-                    <img src="@getRandomImage()" alt="@Html.DisplayFor(modelItem => item.Product.Name)" />
+                    <img src="~/images/Random/7.jpg" alt="@Html.DisplayFor(modelItem => item.Product.Name)" />
                 </td>
                 <td>
                     @Html.DisplayFor(modelItem => item.Product.Name)
@@ -49,7 +40,7 @@ public string getRandomImage()
                     @Html.DisplayFor(modelItem => item.Price)
                 </td>
                 <td>
-                    <a class="btn-primary" asp-controller="Buyer" asp-action="Detail" asp-route-id="@item.Guid">Details & Purchase</a>
+                    <a class="btn-primary" asp-controller="Buyer" asp-action="Detail" asp-route-ItemId="@item.Guid">Details & Purchase</a>
                 </td>
             </tr>
         }

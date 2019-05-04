@@ -6,6 +6,7 @@ namespace DomainLayer.Operators.ArithmeticOperators
 {
     public interface IArithmeticOperator
     {
-        bool IsValid(int expected,int input);
+        bool IsValid(double expected,double input);
+        
     }
 }

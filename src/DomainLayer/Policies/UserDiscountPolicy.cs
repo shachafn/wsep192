@@ -1,34 +1,32 @@
 using System;
+using System.Reflection;
 using ApplicationCore.Entities.Users;
 using ApplicationCore.Entitites;
-using DomainLayer.Data.Entitites;
-using DomainLayer.Data.Entitites.Users;
-using Microsoft.CodeAnalysis.CSharp.Scripting;
-using Microsoft.CodeAnalysis.Scripting;
+
 
 namespace DomainLayer.Policies
 {
     public class UserDiscountPolicy : IDiscountPolicy
     {
-        private Predicate<BaseUser> UserConstraint;
-        //private Func<ShoppingCart,ShoppingCart> ChangeCartBySail; //Returns updated
-        public UserDiscountPolicy()
-        {
-            
-        }
+        private string FieldName;
+        private object ExpectedValue;
 
-        //Look at it when you'll need Func generator
-        /*public async System.Threading.Tasks.Task<Func<int, int>> incrementFuncAsync()
+        public UserDiscountPolicy(string fieldName, object expectedValue)
         {
-            var body = "x => x+1";
-            var options = ScriptOptions.Default.AddReferences(typeof(int).Assembly);
-            Func<int, int> discountFilterExpression = await CSharpScript.EvaluateAsync<Func<int, int>>(body, options);
-            return discountFilterExpression;
-        }*/
+            FieldName = fieldName;
+            ExpectedValue = expectedValue;
+        }
 
         public bool CheckPolicy(ref ShoppingCart cart, Guid productGuid, int quantity, BaseUser user)
         {
-            throw new NotImplementedException();
+            foreach (PropertyInfo property in user.GetType().GetProperties())
+            {
+                if (property.Name == FieldName)
+                {
+                    return ExpectedValue.Equals(property.GetValue(user)) ? true : false;
+                }
+            }
+            return true;
         }
     }
 

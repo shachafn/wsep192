@@ -14,8 +14,11 @@ namespace DomainLayer.Policies
         private int ExpectedQuantity { get; }
         private Guid ProductGuid { get; }
         private IArithmeticOperator Operator { get; }
-        public ProductPurchasePolicy()
+        public ProductPurchasePolicy(Guid productGuid, IArithmeticOperator givenOperator,int expectedQuantity)
         {
+            ProductGuid = productGuid;
+            Operator = givenOperator;
+            ExpectedQuantity = expectedQuantity;
         }
 
         public bool CheckPolicy(ShoppingCart cart, Guid productGuid, int quantity, BaseUser user)

@@ -1,36 +1,35 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Text;
-using ApplicationCore.Entities;
+using System.Reflection;
+//using System.Reflection;
 using ApplicationCore.Entities.Users;
 using ApplicationCore.Entitites;
-using DomainLayer.Data.Entitites;
-using DomainLayer.Data.Entitites.Users;
-using DomainLayer.Operators.ArithmeticOperators;
 
 namespace DomainLayer.Policies
 {
     class UserPurchasePolicy : IPurchasePolicy
     {
 
-        private BaseUser IdealUser { get; }
-        //private Func<Tuple<BaseUser, BaseUser>, bool> Predicate { get; }
+        private string FieldName { get; }
+        private object Value { get; }
+        
 
-        public UserPurchasePolicy(BaseUser idealUser, Func<Tuple<BaseUser, BaseUser>, bool> predicate)
+        public UserPurchasePolicy(string fieldName,object value)
         {
-            IdealUser = idealUser;
-            //Predicate = predicate;
-        }
-
-        public UserPurchasePolicy()
-        {
+            FieldName = fieldName;
+            Value = value;
         }
 
         public bool CheckPolicy(ShoppingCart cart, Guid productGuid, int quantity, BaseUser inputUser)
         {
-            throw new NotImplementedException();
-            //Tuple<BaseUser, BaseUser> inputForPredicate = new Tuple<BaseUser, BaseUser>(IdealUser, inputUser);
-            //return Predicate(inputForPredicate);
+            foreach(PropertyInfo property in inputUser.GetType().GetProperties())
+            {
+                if(property.Name == FieldName)
+                {
+                    return Value.Equals(property.GetValue(inputUser)) ? true : false;
+                }
+            }
+            return true;
         }
     }
 }

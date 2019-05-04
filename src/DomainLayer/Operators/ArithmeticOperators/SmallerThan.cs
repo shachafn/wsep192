@@ -6,9 +6,13 @@ namespace DomainLayer.Operators.ArithmeticOperators
 {
     class SmallerThan : IArithmeticOperator
     {
-        public bool IsValid(int expected, int input)
+        public bool IsValid(double expected, double input)
         {
             return expected > input;
+        }
+        public override string ToString()
+        {
+            return "<";
         }
     }
 }

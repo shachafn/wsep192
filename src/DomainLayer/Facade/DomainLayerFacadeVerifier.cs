@@ -14,7 +14,8 @@ using DomainLayer.Extension_Methods;
 using ApplicationCore.Entities.Users;
 using DomainLayer.Policies;
 using DomainLayer.Data.Entitites.Users.States;
-
+using DomainLayer.Operators;
+using DomainLayer.Operators.ArithmeticOperators;
 
 namespace DomainLayer.Facade
 {
@@ -420,20 +421,33 @@ namespace DomainLayer.Facade
             {
                 case "User purchase policy":
                     VerifyUserShopPolicy(new IllegalArgumentException(), field1, field2, field3);
-                    policy = new UserPurchasePolicy();
+                    policy = new UserPurchasePolicy((string)field1,field2);
                     break;
                 case "Product purchase policy":
                     VerifyShopProductPolicy(new IllegalArgumentException(), field1, field2, field3);
-                    policy = new ProductPurchasePolicy();
+                    policy = new ProductPurchasePolicy((Guid)field1, GenerateOperator((string)field2), (int)field3);
+
                     break;
                 case "Cart purchase policy":
                     //Operator is given in field1
                     if (!(typeof(int) == field2.GetType()))
                         throw new IllegalArgumentException("Invalid sum of cart");
-                    policy = new CartPurchasePolicy();
+                    policy = new CartPurchasePolicy((int)field2, GenerateOperator((string)field1));
                     break;
                 default:
                     throw new IllegalArgumentException("Invalid policy type");
+            }
+        }
+        private IArithmeticOperator GenerateOperator(string input)
+        {
+            switch (input)
+            {
+                case ">":
+                    return new BiggerThan();
+                case "<":
+                    return new SmallerThan();
+                default:
+                    return null;
             }
         }
 
@@ -446,17 +460,19 @@ namespace DomainLayer.Facade
             {
                 case "Product discount policy":
                     VerifyShopProductPolicy(new IllegalArgumentException(), field1, field2, field3);
-                    policy = new UserDiscountPolicy();
+                    policy = new UserDiscountPolicy((string)field1,field2);
                     break;
                 case "Cart discount policy":
-                    //Operator is given in field1
-                    if (!(typeof(int) == field2.GetType()))
+                    //Operator is given in field2
+                    if (!(typeof(double) == field2.GetType() || typeof(int) == field2.GetType()))
                         throw new IllegalArgumentException("Invalid sum of cart");
-                    policy = new CartDiscountPolicy();
+                    if (!(typeof(int) == field1.GetType()))
+                        throw new IllegalArgumentException("Invalid sum of cart");
+                    policy = new CartDiscountPolicy((double)field2,(int)field3,GenerateOperator((string)field2));
                     break;
                 case "User discount policy":
                     VerifyUserShopPolicy(new IllegalArgumentException(), field1, field2, field3);
-                    policy = new UserDiscountPolicy();
+                    policy = new UserDiscountPolicy((string)field1, field2);
                     break;
                 default:
                     throw new IllegalArgumentException("Invalid policy type");
@@ -737,7 +753,7 @@ namespace DomainLayer.Facade
             productGuid = (Guid)field1;
             int disount = (int)field3;
         }
-        
+
         #endregion
     }
 }

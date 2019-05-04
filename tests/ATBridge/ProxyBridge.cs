@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using DomainLayer.Data.Entitites;
 
 namespace ATBridge
 {

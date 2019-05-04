@@ -1,86 +1,74 @@
-﻿using DomainLayer.Data;
-using DomainLayer.Data.Entitites;
-using DomainLayer.Data.Entitites.Users.States;
-using DomainLayer.Domains;
-using DomainLayer.Exceptions;
-using DomainLayer.ExposedClasses;
-using DomainLayer.Properties;
+﻿using ApplicationCore.Data;
+using ApplicationCore.Entities;
+using ApplicationCore.Entitites;
+using ApplicationCore.Exceptions;
+using ApplicationCore.Interfaces.DomainLayer;
+using DomainLayer.Users.States;
+using Microsoft.Extensions.Logging;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
-using System.Linq;
 using System.Reflection;
-using static DomainLayer.Data.Entitites.Shop;
 
 namespace DomainLayer.Facade
 {
     public class DomainLayerFacade : IDomainLayerFacade
     {
-        UserDomain UserDomain = UserDomain.Instance;
+        IUserDomain _userDomain;
+        DomainLayerFacadeVerifier _verifier;
+        ILogger<DomainLayerFacade> _logger;
 
-        #region Singleton Implementation
-        private static IDomainLayerFacade instance = null;
-        private static readonly object padlock = new object();
-        public static IDomainLayerFacade Instance
+        public DomainLayerFacade(IUserDomain userDomain, DomainLayerFacadeVerifier verifier
+            , ILogger<DomainLayerFacade> logger)
         {
-            get
-            {
-                lock (padlock)
-                {
-                    if (instance == null)
-                    {
-                        instance = new DomainLayerFacade();
-                    }
-                    return instance;
-                }
-            }
+            _userDomain = userDomain;
+            _verifier = verifier;
+            _logger = logger;
         }
-        #endregion
 
-        public Guid GuestGuid = new Guid("695D0341-3E62-4046-B337-2486443F311B");
         private static bool _isSystemInitialized = false;
 
         public Guid Register(UserIdentifier userIdentifier, string username, string password)
         {
             VerifySystemIsInitialized();
-            DomainLayerFacadeVerifier.VerifyMe(MethodBase.GetCurrentMethod(), userIdentifier, username, password);
-            return UserDomain.Register(username, password, false);
+            _verifier.VerifyMe(MethodBase.GetCurrentMethod(), userIdentifier, username, password);
+            return _userDomain.Register(username, password, false);
         }
 
         public Guid Login(UserIdentifier userIdentifier, string username, string password)
         {
             VerifySystemIsInitialized();
-            DomainLayerFacadeVerifier.VerifyMe(MethodBase.GetCurrentMethod(), userIdentifier, username, password);
-            return UserDomain.Login(username, password);
+            _verifier.VerifyMe(MethodBase.GetCurrentMethod(), userIdentifier, username, password);
+            return _userDomain.Login(username, password);
         }
 
         public bool Logout(UserIdentifier userIdentifier)
         {
             VerifySystemIsInitialized();
-            DomainLayerFacadeVerifier.VerifyMe(MethodBase.GetCurrentMethod(), userIdentifier);
-            return UserDomain.LogoutUser(userIdentifier);
+            _verifier.VerifyMe(MethodBase.GetCurrentMethod(), userIdentifier);
+            return _userDomain.LogoutUser(userIdentifier);
         }
 
         public Guid OpenShop(UserIdentifier userIdentifier)
         {
             VerifySystemIsInitialized();
-            DomainLayerFacadeVerifier.VerifyMe(MethodBase.GetCurrentMethod(), userIdentifier);
-            return UserDomain.GetUserObject(userIdentifier).OpenShop();
+            _verifier.VerifyMe(MethodBase.GetCurrentMethod(), userIdentifier);
+            return _userDomain.GetUserObject(userIdentifier).OpenShop();
         }
 
 
         public bool PurchaseBag(UserIdentifier userIdentifier)
         {
             VerifySystemIsInitialized();
-            DomainLayerFacadeVerifier.VerifyMe(MethodBase.GetCurrentMethod(), userIdentifier);
+            _verifier.VerifyMe(MethodBase.GetCurrentMethod(), userIdentifier);
             // Need to actually pay for products
             // if success clear all carts
-            return UserDomain.GetUserObject(userIdentifier).PurchaseBag();
+            return _userDomain.GetUserObject(userIdentifier).PurchaseBag();
         }
 
         public Guid Initialize(UserIdentifier userIdentifier, string username, string password)
         {
-            DomainLayerFacadeVerifier.VerifyMe(MethodBase.GetCurrentMethod(), userIdentifier, username, password);
+            _verifier.VerifyMe(MethodBase.GetCurrentMethod(), userIdentifier, username, password);
 
             if (_isSystemInitialized)
                 throw new SystemAlreadyInitializedException($"Cannot initialize the system again.");
@@ -91,11 +79,11 @@ namespace DomainLayer.Facade
 
             var res = Guid.Empty;
 
-            if (!UserDomain.IsAdminExists())
-                UserDomain.Register(username, password, true);
+            if (!_userDomain.IsAdminExists())
+                _userDomain.Register(username, password, true);
 
-            res = UserDomain.Login(username, password);
-            UserDomain.ChangeUserState(res, AdminUserState.AdminUserStateString);
+            res = _userDomain.Login(username, password);
+            _userDomain.ChangeUserState(res, AdminUserState.AdminUserStateString);
 
             _isSystemInitialized = res.Equals(Guid.Empty) ? false : true;
             return res;
@@ -104,114 +92,114 @@ namespace DomainLayer.Facade
         public bool ConnectToPaymentSystem(UserIdentifier userIdentifier)
         {
             VerifySystemIsInitialized();
-            DomainLayerFacadeVerifier.VerifyMe(MethodBase.GetCurrentMethod(), userIdentifier);
-            return UserDomain.GetUserObject(userIdentifier).ConnectToPaymentSystem();
+            _verifier.VerifyMe(MethodBase.GetCurrentMethod(), userIdentifier);
+            return _userDomain.GetUserObject(userIdentifier).ConnectToPaymentSystem();
         }
 
         public bool ConnectToSupplySystem(UserIdentifier userIdentifier)
         {
             VerifySystemIsInitialized();
-            DomainLayerFacadeVerifier.VerifyMe(MethodBase.GetCurrentMethod(), userIdentifier);
-            return UserDomain.GetUserObject(userIdentifier).ConnectToSupplySystem();
+            _verifier.VerifyMe(MethodBase.GetCurrentMethod(), userIdentifier);
+            return _userDomain.GetUserObject(userIdentifier).ConnectToSupplySystem();
         }
 
         public Guid AddProductToShop(UserIdentifier userIdentifier, Guid shopGuid, string name, string category, double price, int quantity)
         {
             VerifySystemIsInitialized();
-            DomainLayerFacadeVerifier.VerifyMe(MethodBase.GetCurrentMethod(), userIdentifier, shopGuid, name, category, price, quantity);
-            return UserDomain.GetUserObject(userIdentifier).AddProductToShop(shopGuid, name, category, price, quantity);
+            _verifier.VerifyMe(MethodBase.GetCurrentMethod(), userIdentifier, shopGuid, name, category, price, quantity);
+            return _userDomain.GetUserObject(userIdentifier).AddProductToShop(shopGuid, name, category, price, quantity);
         }
 
         public bool EditProductInShop(UserIdentifier userIdentifier, Guid shopGuid, Guid productGuid, double newPrice, int newQuantity)
         {
             VerifySystemIsInitialized();
-            DomainLayerFacadeVerifier.VerifyMe(MethodBase.GetCurrentMethod(), userIdentifier, shopGuid, productGuid, newPrice, newQuantity);
-            UserDomain.GetUserObject(userIdentifier).EditProductInShop(shopGuid, productGuid, newPrice, newQuantity);
+            _verifier.VerifyMe(MethodBase.GetCurrentMethod(), userIdentifier, shopGuid, productGuid, newPrice, newQuantity);
+            _userDomain.GetUserObject(userIdentifier).EditProductInShop(shopGuid, productGuid, newPrice, newQuantity);
             return true;
         }
 
         public bool RemoveProductFromShop(UserIdentifier userIdentifier, Guid shopGuid, Guid shopProductGuid)
         {
             VerifySystemIsInitialized();
-            DomainLayerFacadeVerifier.VerifyMe(MethodBase.GetCurrentMethod(), userIdentifier, shopGuid, shopProductGuid);
-            return UserDomain.GetUserObject(userIdentifier).RemoveProductFromShop(shopGuid, shopProductGuid);
+            _verifier.VerifyMe(MethodBase.GetCurrentMethod(), userIdentifier, shopGuid, shopProductGuid);
+            return _userDomain.GetUserObject(userIdentifier).RemoveProductFromShop(shopGuid, shopProductGuid);
         }
 
         public bool AddProductToCart(UserIdentifier userIdentifier, Guid shopGuid, Guid shopProductGuid, int quantity)
         {
             VerifySystemIsInitialized();
-            DomainLayerFacadeVerifier.VerifyMe(MethodBase.GetCurrentMethod(), userIdentifier, shopGuid, shopProductGuid, quantity);
-            return UserDomain.GetUserObject(userIdentifier).AddProductToCart(shopGuid, shopProductGuid, quantity);
+            _verifier.VerifyMe(MethodBase.GetCurrentMethod(), userIdentifier, shopGuid, shopProductGuid, quantity);
+            return _userDomain.GetUserObject(userIdentifier).AddProductToCart(shopGuid, shopProductGuid, quantity);
         }
 
         public bool AddShopManager(UserIdentifier userIdentifier, Guid shopGuid, Guid newManagaerGuid, List<string> priviliges)
         {
             VerifySystemIsInitialized();
-            DomainLayerFacadeVerifier.VerifyMe(MethodBase.GetCurrentMethod(), userIdentifier, shopGuid, newManagaerGuid, priviliges);
-            return UserDomain.GetUserObject(userIdentifier).AddShopManager(shopGuid, newManagaerGuid, priviliges);
+            _verifier.VerifyMe(MethodBase.GetCurrentMethod(), userIdentifier, shopGuid, newManagaerGuid, priviliges);
+            return _userDomain.GetUserObject(userIdentifier).AddShopManager(shopGuid, newManagaerGuid, priviliges);
         }
 
         public bool AddShopOwner(UserIdentifier userIdentifier, Guid shopGuid, Guid newShopOwnerGuid)
         {
             VerifySystemIsInitialized();
-            DomainLayerFacadeVerifier.VerifyMe(MethodBase.GetCurrentMethod(), userIdentifier, shopGuid, newShopOwnerGuid);
-            return UserDomain.GetUserObject(userIdentifier).AddShopOwner(shopGuid, newShopOwnerGuid);
+            _verifier.VerifyMe(MethodBase.GetCurrentMethod(), userIdentifier, shopGuid, newShopOwnerGuid);
+            return _userDomain.GetUserObject(userIdentifier).AddShopOwner(shopGuid, newShopOwnerGuid);
         }
 
         public bool CascadeRemoveShopOwner(UserIdentifier userIdentifier, Guid shopGuid, Guid ownerToRemoveGuid)
         {
             VerifySystemIsInitialized();
-            DomainLayerFacadeVerifier.VerifyMe(MethodBase.GetCurrentMethod(), userIdentifier, shopGuid, ownerToRemoveGuid);
-            return UserDomain.GetUserObject(userIdentifier).CascadeRemoveShopOwner(shopGuid, ownerToRemoveGuid);
+            _verifier.VerifyMe(MethodBase.GetCurrentMethod(), userIdentifier, shopGuid, ownerToRemoveGuid);
+            return _userDomain.GetUserObject(userIdentifier).CascadeRemoveShopOwner(shopGuid, ownerToRemoveGuid);
         }
 
         public bool EditProductInCart(UserIdentifier userIdentifier, Guid shopGuid, Guid shopProductGuid, int newAmount)
         {
             VerifySystemIsInitialized();
-            DomainLayerFacadeVerifier.VerifyMe(MethodBase.GetCurrentMethod(), userIdentifier, shopGuid, shopProductGuid, newAmount);
-            return UserDomain.GetUserObject(userIdentifier).EditProductInCart(shopGuid, shopProductGuid, newAmount);
+            _verifier.VerifyMe(MethodBase.GetCurrentMethod(), userIdentifier, shopGuid, shopProductGuid, newAmount);
+            return _userDomain.GetUserObject(userIdentifier).EditProductInCart(shopGuid, shopProductGuid, newAmount);
         }
 
         public bool RemoveProductFromCart(UserIdentifier userIdentifier, Guid shopGuid, Guid shopProductGuid)
         {
             VerifySystemIsInitialized();
-            DomainLayerFacadeVerifier.VerifyMe(MethodBase.GetCurrentMethod(), userIdentifier, shopGuid, shopProductGuid);
-            return UserDomain.GetUserObject(userIdentifier).RemoveProductFromCart(shopGuid, shopProductGuid);
+            _verifier.VerifyMe(MethodBase.GetCurrentMethod(), userIdentifier, shopGuid, shopProductGuid);
+            return _userDomain.GetUserObject(userIdentifier).RemoveProductFromCart(shopGuid, shopProductGuid);
         }
 
         public ICollection<Guid> GetAllProductsInCart(UserIdentifier userIdentifier, Guid shopGuid)
         {
             VerifySystemIsInitialized();
-            DomainLayerFacadeVerifier.VerifyMe(MethodBase.GetCurrentMethod(), userIdentifier, shopGuid);
-            return UserDomain.GetUserObject(userIdentifier).GetAllProductsInCart(shopGuid);
+            _verifier.VerifyMe(MethodBase.GetCurrentMethod(), userIdentifier, shopGuid);
+            return _userDomain.GetUserObject(userIdentifier).GetAllProductsInCart(shopGuid);
         }
 
         public bool RemoveUser(UserIdentifier userIdentifier, Guid userToRemoveGuid)
         {
             VerifySystemIsInitialized();
-            DomainLayerFacadeVerifier.VerifyMe(MethodBase.GetCurrentMethod(), userIdentifier, userToRemoveGuid);
-            return UserDomain.GetUserObject(userIdentifier).RemoveUser(userToRemoveGuid);
+            _verifier.VerifyMe(MethodBase.GetCurrentMethod(), userIdentifier, userToRemoveGuid);
+            return _userDomain.GetUserObject(userIdentifier).RemoveUser(userToRemoveGuid);
         }
 
         public ICollection<Guid> SearchProduct(UserIdentifier userIdentifier, ICollection<string> toMatch, string searchType)
         {
             VerifySystemIsInitialized();
-            DomainLayerFacadeVerifier.VerifyMe(MethodBase.GetCurrentMethod(), userIdentifier, toMatch, searchType);
-            return UserDomain.GetUserObject(userIdentifier).SearchProduct(toMatch, searchType);
+            _verifier.VerifyMe(MethodBase.GetCurrentMethod(), userIdentifier, toMatch, searchType);
+            return _userDomain.GetUserObject(userIdentifier).SearchProduct(toMatch, searchType);
         }
 
         public bool RemoveShopManager(UserIdentifier userIdentifier, Guid shopGuid, Guid managerToRemoveGuid)
         {
             VerifySystemIsInitialized();
-            DomainLayerFacadeVerifier.VerifyMe(MethodBase.GetCurrentMethod(), userIdentifier, shopGuid, managerToRemoveGuid);
-            return UserDomain.GetUserObject(userIdentifier).RemoveShopManager(shopGuid, managerToRemoveGuid);
+            _verifier.VerifyMe(MethodBase.GetCurrentMethod(), userIdentifier, shopGuid, managerToRemoveGuid);
+            return _userDomain.GetUserObject(userIdentifier).RemoveShopManager(shopGuid, managerToRemoveGuid);
         }
 
         public bool ChangeUserState(UserIdentifier userIdentifier, string newState)
         {
             VerifySystemIsInitialized();
-            DomainLayerFacadeVerifier.VerifyMe(MethodBase.GetCurrentMethod(), userIdentifier, newState);
-            return UserDomain.ChangeUserState(userIdentifier.Guid, newState);
+            _verifier.VerifyMe(MethodBase.GetCurrentMethod(), userIdentifier, newState);
+            return _userDomain.ChangeUserState(userIdentifier.Guid, newState);
         }
 
         public void ClearSystem()

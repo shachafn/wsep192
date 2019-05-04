@@ -1,7 +1,3 @@
-using NUnit.Framework;
-using DomainLayer.Facade;
-using System;
-
 namespace Tests
 {
     /*

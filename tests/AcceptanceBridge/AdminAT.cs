@@ -1,9 +1,7 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Text;
 using NUnit.Framework;
 using ATBridge;
-using DomainLayer.Exceptions;
+using ApplicationCore.Exceptions;
 
 namespace Tests
 {

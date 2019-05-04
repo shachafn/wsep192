@@ -1,12 +1,12 @@
-﻿using DomainLayer.Exceptions;
+﻿using ApplicationCore.Exceptions;
+using ApplicationCore.Interfaces.DomainLayer;
+using DomainLayer.Domains;
 using DomainLayer.Facade;
+using Microsoft.Extensions.Logging.Abstractions;
 using NUnit.Framework;
-using NUnit.Framework.Constraints;
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Reflection;
-using System.Text;
 
 namespace UnitTests
 {
@@ -16,7 +16,12 @@ namespace UnitTests
     [TestFixture]
     public class DomainLayerInitializationTests
     {
-        IDomainLayerFacade facade = DomainLayerFacade.Instance;
+
+        IDomainLayerFacade facade = new DomainLayerFacade(
+                                    new UserDomain(NullLogger<UserDomain>.Instance),
+                                    new DomainLayerFacadeVerifier(),
+                                    NullLogger<DomainLayerFacade>.Instance
+                                );
 
         [Test]
         public void TestReflection()

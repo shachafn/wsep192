@@ -1,17 +1,32 @@
 ﻿using System;
 using System.Collections.Generic;
 using ServiceLayer;
-using DomainLayer.Data.Entitites;
+using DomainLayer.Facade;
+using DomainLayer.Domains;
+using Microsoft.Extensions.Logging.Abstractions;
+using ApplicationCore.Interfaces.ServiceLayer;
 
 namespace ATBridge
 {
     public class BridgeImpl : IBridge
     {
-        private readonly ServiceFacadeProxy _serviceFacade;
+        private readonly IServiceFacade _serviceFacade;
 
         public BridgeImpl()
         {
-            _serviceFacade = new ServiceFacadeProxy();
+            _serviceFacade = new ServiceFacadeProxy
+                        (
+                            new ServiceFacade(
+                                new DomainLayerFacade(
+                                    new UserDomain(NullLogger<UserDomain>.Instance),
+                                    new DomainLayerFacadeVerifier(),
+                                    NullLogger<DomainLayerFacade>.Instance
+                                ),
+                                NullLogger<ServiceFacade>.Instance
+                            ),
+                            new SessionManager(NullLogger<SessionManager>.Instance),
+                            NullLogger<ServiceFacadeProxy>.Instance
+                        );
         }
 
         public bool AddProductToCart(Guid userGuid, Guid shopGuid, Guid productGuid, int quantity)

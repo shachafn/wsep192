@@ -1,25 +1,24 @@
-﻿using DomainLayer.Data;
-using DomainLayer.Data.Entitites;
-using DomainLayer.Exceptions;
-using DomainLayer.Properties;
+﻿using DomainLayer.Properties;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
-using System.Text;
 using System.Linq;
-using static DomainLayer.Data.Entitites.Shop;
 using System.Reflection;
-using DomainLayer.Data.Entitites.Users.States;
-using DomainLayer.ExposedClasses;
+using ApplicationCore.Exceptions;
+using ApplicationCore.Entities;
+using ApplicationCore.Entitites;
+using ApplicationCore.Data;
+using static ApplicationCore.Entitites.Shop;
+using DomainLayer.Users.States;
+using DomainLayer.Extension_Methods;
+using ApplicationCore.Entities.Users;
 
 namespace DomainLayer.Facade
 {
-    public static class DomainLayerFacadeVerifier
+    public class DomainLayerFacadeVerifier
     {
-        public static Guid GuestGuid = new Guid("695D0341-3E62-4046-B337-2486443F311B");
-
         #region VerifyMe
-        public static void VerifyMe(MethodBase methodInfo, params object[] parameters)
+        public void VerifyMe(MethodBase methodInfo, params object[] parameters)
         {
             MethodInfo method;
             try
@@ -35,7 +34,7 @@ namespace DomainLayer.Facade
             }
             try
             {
-                method.Invoke(typeof(DomainLayerFacadeVerifier), parameters);
+                method.Invoke(this, parameters);
             }
             catch (Exception ex) 
             {
@@ -61,7 +60,7 @@ namespace DomainLayer.Facade
         /// 2. checked
         /// 3. checked in UserDomain
         /// </constraints>
-        public static void Register(UserIdentifier userIdentifier, string username, string password)
+        public void Register(UserIdentifier userIdentifier, string username, string password)
         {
             VerifyGuestUser(userIdentifier, new IllegalOperationException());
             VerifyString(username, new IllegalArgumentException());
@@ -73,7 +72,7 @@ namespace DomainLayer.Facade
         /// 2. checked
         /// 3. checked in UserDmain
         /// </constraints>
-        public static void Login(UserIdentifier userIdentifier, string username, string password)
+        public void Login(UserIdentifier userIdentifier, string username, string password)
         {
             VerifyGuestUser(userIdentifier, new IllegalOperationException());
             VerifyLoginCredentials(username, password, new CredentialsMismatchException());
@@ -85,7 +84,7 @@ namespace DomainLayer.Facade
         /// 1. checked
         /// 2. checked
         /// </constraints>
-        public static void Logout(UserIdentifier userIdentifier)
+        public void Logout(UserIdentifier userIdentifier)
         {
             VerifyLoggedInUser(userIdentifier.Guid, new IllegalOperationException());
         }
@@ -95,13 +94,13 @@ namespace DomainLayer.Facade
         /// 2. checked
         /// 3. checked by design by state pattern
         /// </constraints>
-        public static void OpenShop(UserIdentifier userIdentifier)
+        public void OpenShop(UserIdentifier userIdentifier)
         {
             VerifyLoggedInUser(userIdentifier.Guid, new UserNotFoundException());
         }
 
         /////////// REDO CONSTRAINTS, CHANGED FROM CART TO BAG ////////////////
-        public static void PurchaseBag(UserIdentifier userIdentifier)
+        public void PurchaseBag(UserIdentifier userIdentifier)
         {
             var user = VerifyLoggedInUser(userIdentifier.Guid, new UserNotFoundException());
         }
@@ -113,7 +112,7 @@ namespace DomainLayer.Facade
         /// 4. checked
         /// 5. if any external service is unavailable - return false
         /// </constraints>
-        public static void Initialize(UserIdentifier userIdentifier, string username, string password)
+        public void Initialize(UserIdentifier userIdentifier, string username, string password)
         {
             VerifyGuestUser(userIdentifier, new IllegalOperationException());
             VerifyString(username, new IllegalArgumentException()); 
@@ -126,7 +125,7 @@ namespace DomainLayer.Facade
         /// 3. checked by design by state pattern
         /// 4. checked.
         /// </constraints>
-        public static void RemoveUser(UserIdentifier userIdentifier, Guid userToRemoveGuid)
+        public void RemoveUser(UserIdentifier userIdentifier, Guid userToRemoveGuid)
         {
             var user = VerifyLoggedInUser(userIdentifier.Guid, new UserNotFoundException());
             VerifyRegisteredUser(userToRemoveGuid, new UserNotFoundException());
@@ -139,7 +138,7 @@ namespace DomainLayer.Facade
         /// 2. checked
         /// 3. checked by design by state pattern
         /// </constraints>
-        public static void ConnectToPaymentSystem(UserIdentifier userIdentifier)
+        public void ConnectToPaymentSystem(UserIdentifier userIdentifier)
         {
             VerifyLoggedInUser(userIdentifier.Guid, new UserNotFoundException());
         }
@@ -149,7 +148,7 @@ namespace DomainLayer.Facade
         /// 2. checked
         /// 3. checked by design by state pattern
         /// </constraints>
-        public static void ConnectToSupplySystem(UserIdentifier userIdentifier)
+        public void ConnectToSupplySystem(UserIdentifier userIdentifier)
         {
             VerifyLoggedInUser(userIdentifier.Guid, new UserNotFoundException());
         }
@@ -166,7 +165,7 @@ namespace DomainLayer.Facade
         /// 9. checked
         /// 10. checked
         /// </constraints>
-        public static void AddProductToShop(UserIdentifier userIdentifier, Guid shopGuid, string name, string category, double price, int quantity)
+        public void AddProductToShop(UserIdentifier userIdentifier, Guid shopGuid, string name, string category, double price, int quantity)
         {
             var user = VerifyLoggedInUser(userIdentifier.Guid, new UserNotFoundException());
             var shop = VerifyShopExists(shopGuid, new ShopNotFoundException());
@@ -187,7 +186,7 @@ namespace DomainLayer.Facade
         /// 6. checked
         /// 7. checked
         /// </constraints>
-        public static void RemoveProductFromShop(UserIdentifier userIdentifier, Guid shopGuid, Guid shopProductGuid)
+        public void RemoveProductFromShop(UserIdentifier userIdentifier, Guid shopGuid, Guid shopProductGuid)
         {
             var user = VerifyLoggedInUser(userIdentifier.Guid, new UserNotFoundException());
             var shop = VerifyShopExists(shopGuid, new ShopNotFoundException());
@@ -207,7 +206,7 @@ namespace DomainLayer.Facade
         /// 8. checked
         /// 9. checked
         /// </constraints>
-        public static void EditProductInShop(UserIdentifier userIdentifier, Guid shopGuid, Guid productGuid, double newPrice, int newQuantity)
+        public void EditProductInShop(UserIdentifier userIdentifier, Guid shopGuid, Guid productGuid, double newPrice, int newQuantity)
         {
             var user = VerifyLoggedInUser(userIdentifier.Guid, new UserNotFoundException());
             var shop = VerifyShopExists(shopGuid, new ShopNotFoundException());
@@ -226,7 +225,7 @@ namespace DomainLayer.Facade
         /// 6. checked
         /// 7. checked
         /// </constraints>
-        public static void SearchProduct(UserIdentifier userIdentifier, ICollection<string> toMatch, string searchType)
+        public void SearchProduct(UserIdentifier userIdentifier, ICollection<string> toMatch, string searchType)
         {
             VerifyString(searchType, new IllegalArgumentException());
             VerifySearchString(searchType, new IllegalArgumentException());
@@ -243,7 +242,7 @@ namespace DomainLayer.Facade
         /// 7. checked
         /// 8. quantity must be greater than 0
         /// </constraints>
-        public static void AddProductToCart(UserIdentifier userIdentifier, Guid shopGuid, Guid shopProductGuid, int quantity)
+        public void AddProductToCart(UserIdentifier userIdentifier, Guid shopGuid, Guid shopProductGuid, int quantity)
         {
             var user = VerifyLoggedInUser(userIdentifier.Guid, new UserNotFoundException());
             var shop = VerifyShopExists(shopGuid, new ShopNotFoundException());
@@ -261,7 +260,7 @@ namespace DomainLayer.Facade
         /// 5. checked
         /// 6. checked
         /// </constraints>
-        public static void GetAllProductsInCart(UserIdentifier userIdentifier, Guid shopGuid)
+        public void GetAllProductsInCart(UserIdentifier userIdentifier, Guid shopGuid)
         {
             var user = VerifyLoggedInUser(userIdentifier.Guid, new UserNotFoundException());
             var shop = VerifyShopExists(shopGuid, new ShopNotFoundException());
@@ -277,7 +276,7 @@ namespace DomainLayer.Facade
         /// 6. checked
         /// 7. checked
         /// </constraints>
-        public static void RemoveProductFromCart(UserIdentifier userIdentifier, Guid shopGuid, Guid shopProductGuid)
+        public void RemoveProductFromCart(UserIdentifier userIdentifier, Guid shopGuid, Guid shopProductGuid)
         {
             var user = VerifyLoggedInUser(userIdentifier.Guid, new UserNotFoundException());
             var shop = VerifyShopExists(shopGuid, new ShopNotFoundException());
@@ -295,7 +294,7 @@ namespace DomainLayer.Facade
         /// 7. checked
         /// 8. checked
         /// </constraints>
-        public static void EditProductInCart(UserIdentifier userIdentifier, Guid shopGuid, Guid shopProductGuid, int newAmount)
+        public void EditProductInCart(UserIdentifier userIdentifier, Guid shopGuid, Guid shopProductGuid, int newAmount)
         {
             var user = VerifyLoggedInUser(userIdentifier.Guid, new UserNotFoundException());
             var shop = VerifyShopExists(shopGuid, new ShopNotFoundException());
@@ -315,7 +314,7 @@ namespace DomainLayer.Facade
         /// 7. checked.
         /// 8. Will be checked in Shop class - newManagaerGuid must not be the creator of the shop, or one of the owners/managers.
         /// </constraints>
-        public static void AddShopManager(UserIdentifier userIdentifier, Guid shopGuid, Guid newManagaerGuid, List<string> priviliges)
+        public void AddShopManager(UserIdentifier userIdentifier, Guid shopGuid, Guid newManagaerGuid, List<string> priviliges)
         {
             var user = VerifyLoggedInUser(userIdentifier.Guid, new UserNotFoundException());
             VerifyRegisteredUser(newManagaerGuid, new UserNotFoundException());
@@ -335,7 +334,7 @@ namespace DomainLayer.Facade
         /// 7. checked.
         /// 8. Will be checked in Shop class - newManagaerGuid must not be the creator of the shop, or one of the owners/managers.
         /// </constraints>
-        public static void AddShopOwner(UserIdentifier userIdentifier, Guid shopGuid, Guid newOwnerGuid)
+        public void AddShopOwner(UserIdentifier userIdentifier, Guid shopGuid, Guid newOwnerGuid)
         {
             var user = VerifyLoggedInUser(userIdentifier.Guid, new UserNotFoundException());
             VerifyRegisteredUser(newOwnerGuid, new UserNotFoundException());
@@ -356,7 +355,7 @@ namespace DomainLayer.Facade
         /// 8. ownerToRemove must be an owner/manager of the shop.
         /// 9. ownerToRemove must have been appointed by the user with guid=userIdentifier
         /// </constraints>
-        public static void CascadeRemoveShopOwner(UserIdentifier userIdentifier, Guid shopGuid, Guid ownerToRemoveGuid)
+        public void CascadeRemoveShopOwner(UserIdentifier userIdentifier, Guid shopGuid, Guid ownerToRemoveGuid)
         {
             var user = VerifyLoggedInUser(userIdentifier.Guid, new UserNotFoundException());
             var shop = VerifyShopExists(shopGuid, new ShopNotFoundException());
@@ -374,7 +373,7 @@ namespace DomainLayer.Facade
         /// 7. checked
         /// 8. Will be checked in SHop class - newManagaerGuid must not be the creator of the shop, or one of the owners/managers.
         /// </constraints>
-        public static void RemoveShopManager(UserIdentifier userIdentifier, Guid shopGuid, Guid managerToRemoveGuid)
+        public void RemoveShopManager(UserIdentifier userIdentifier, Guid shopGuid, Guid managerToRemoveGuid)
         {
             var user = VerifyLoggedInUser(userIdentifier.Guid, new UserNotFoundException());
             VerifyRegisteredUser(managerToRemoveGuid, new UserNotFoundException());
@@ -390,7 +389,7 @@ namespace DomainLayer.Facade
         /// 3. checked
         /// 4. checked
         /// </constraints>
-        public static void ChangeUserState(UserIdentifier userIdentifier, string newState)
+        public void ChangeUserState(UserIdentifier userIdentifier, string newState)
         {
             var user = VerifyLoggedInUser(userIdentifier.Guid, new UserNotFoundException());
             VerifyString(newState, new IllegalArgumentException());
@@ -401,7 +400,7 @@ namespace DomainLayer.Facade
         #endregion
 
         #region Private Verifiers
-        private static RegisteredUser VerifyLoggedInUser(Guid userGuid, ICloneableException<Exception> e)
+        private IUser VerifyLoggedInUser(Guid userGuid, ICloneableException<Exception> e)
         {
             //Could equivalently check for IsGuest, but we also want to return the user.
             var user = DomainData.LoggedInUsersEntityCollection[userGuid];
@@ -416,7 +415,7 @@ namespace DomainLayer.Facade
         }
 
 
-        private static Shop VerifyShopExists(Guid shopGuid, ICloneableException<Exception> e)
+        private Shop VerifyShopExists(Guid shopGuid, ICloneableException<Exception> e)
         {
             var shop = DomainData.ShopsCollection[shopGuid];
             if (shop == null)
@@ -430,7 +429,7 @@ namespace DomainLayer.Facade
         }
 
 
-        private static void VerifyGuestUser(UserIdentifier userIdentifier, ICloneableException<Exception> e)
+        private void VerifyGuestUser(UserIdentifier userIdentifier, ICloneableException<Exception> e)
         {
             if (!userIdentifier.IsGuest)
             {
@@ -440,7 +439,7 @@ namespace DomainLayer.Facade
             }
         }
 
-        private static void VerifyRegisteredUser(Guid userGuid, ICloneableException<Exception> e)
+        private void VerifyRegisteredUser(Guid userGuid, ICloneableException<Exception> e)
         {
             if (!DomainData.RegisteredUsersCollection.ContainsKey(userGuid))
             {
@@ -451,7 +450,7 @@ namespace DomainLayer.Facade
             }
         }
 
-        private static void VerifyString(string str, ICloneableException<Exception> e)
+        private void VerifyString(string str, ICloneableException<Exception> e)
         {
             if (string.IsNullOrWhiteSpace(str))
             {
@@ -462,7 +461,7 @@ namespace DomainLayer.Facade
             }
         }
 
-        private static void VerifyDoubleGreaterThan0(double toCheck, ICloneableException<Exception> e)
+        private void VerifyDoubleGreaterThan0(double toCheck, ICloneableException<Exception> e)
         {
             if (toCheck <= 0)
             {
@@ -473,7 +472,7 @@ namespace DomainLayer.Facade
             }
         }
 
-        private static void VerifyIntEqualOrGreaterThan0(int toCheck, ICloneableException<Exception> e)
+        private void VerifyIntEqualOrGreaterThan0(int toCheck, ICloneableException<Exception> e)
         {
             if (toCheck < 0)
             {
@@ -485,7 +484,7 @@ namespace DomainLayer.Facade
         }
 
 
-        private static void VerifyIntGreaterThan0(int toCheck, ICloneableException<Exception> e)
+        private void VerifyIntGreaterThan0(int toCheck, ICloneableException<Exception> e)
         {
             if (toCheck <= 0)
             {
@@ -496,7 +495,7 @@ namespace DomainLayer.Facade
             }
         }
 
-        private static void VerifyNotOnlyOwnerOfAnActiveShop(Guid userGuid, ICloneableException<Exception> e)
+        private void VerifyNotOnlyOwnerOfAnActiveShop(Guid userGuid, ICloneableException<Exception> e)
         {
             var constraint = DomainData.ShopsCollection.Any(shop =>
             {
@@ -517,7 +516,7 @@ namespace DomainLayer.Facade
             }
         }
 
-        private static ShoppingCart GetCartExistsAndCreateIfNeeded(UserIdentifier userIdentifier, Guid shopGuid)
+        private ShoppingCart GetCartExistsAndCreateIfNeeded(UserIdentifier userIdentifier, Guid shopGuid)
         {
             ShoppingBag bag = null;
             if (!DomainData.ShoppingBagsCollection.ContainsKey(userIdentifier.Guid))
@@ -537,7 +536,7 @@ namespace DomainLayer.Facade
             return bag.ShoppingCarts.First(c => c.ShopGuid.Equals(shopGuid));
         }
 
-        private static void VerifyStateString(string newState, ICloneableException<Exception> e)
+        private void VerifyStateString(string newState, ICloneableException<Exception> e)
         {
             if (!(newState.Equals(AdminUserState.AdminUserStateString)
                   || newState.Equals(BuyerUserState.BuyerUserStateString)
@@ -550,7 +549,7 @@ namespace DomainLayer.Facade
             }
         }
 
-        private static void VerifySearchString(string searchType, ICloneableException<Exception> e)
+        private void VerifySearchString(string searchType, ICloneableException<Exception> e)
         {
             if (!(searchType.Equals("Name")
                   || searchType.Equals("Category")
@@ -563,7 +562,7 @@ namespace DomainLayer.Facade
             }
         }
 
-        private static void VerifySearchInput(ICollection<string> toMatch, ICloneableException<Exception> e)
+        private void VerifySearchInput(ICollection<string> toMatch, ICloneableException<Exception> e)
         {
             var isEmpty = toMatch.Count == 0;
             var validStrings = toMatch.All(s => !string.IsNullOrWhiteSpace(s));
@@ -576,7 +575,7 @@ namespace DomainLayer.Facade
             }
         }
 
-        private static void VerifyNotOnlyAdmin(Guid userToRemoveGuid, ICloneableException<Exception> e)
+        private void VerifyNotOnlyAdmin(Guid userToRemoveGuid, ICloneableException<Exception> e)
         {
             var admins = DomainData.RegisteredUsersCollection.Where(u => u.IsAdmin).ToList();
             if (admins.Count == 1 && admins.First().Guid.Equals(userToRemoveGuid))
@@ -588,7 +587,7 @@ namespace DomainLayer.Facade
             }
         }
 
-        private static void VerifyLoginCredentials(string username, string password, ICloneableException<Exception> e)
+        private void VerifyLoginCredentials(string username, string password, ICloneableException<Exception> e)
         {
             if (!DomainData.RegisteredUsersCollection.Any(u => u.Username.ToLower().Equals(username.ToLower()) && u.CheckPass(password)))
             {
@@ -599,7 +598,7 @@ namespace DomainLayer.Facade
             }
         }
 
-        private static void VerifyIfChangeToAdminMustBeAdmin(RegisteredUser user, string newState, ICloneableException<Exception> e)
+        private void VerifyIfChangeToAdminMustBeAdmin(IUser user, string newState, ICloneableException<Exception> e)
         {
             if (newState.Equals(AdminUserState.AdminUserStateString) && !user.IsAdmin)
             {
@@ -610,7 +609,7 @@ namespace DomainLayer.Facade
             }
         }
 
-        public static void VerifyShopProductDoesNotExist(ShoppingCart cart, Guid shopProductGuid, ICloneableException<Exception> e)
+        public void VerifyShopProductDoesNotExist(ShoppingCart cart, Guid shopProductGuid, ICloneableException<Exception> e)
         {
             var product = cart.PurchasedProducts.FirstOrDefault(prod => prod.Item1.Equals(shopProductGuid));
             if (product != null)
@@ -622,7 +621,7 @@ namespace DomainLayer.Facade
             }
         }
 
-        public static void VerifyShopProductExistsInCart(ShoppingCart cart, Guid shopProductGuid, ICloneableException<Exception> e)
+        public void VerifyShopProductExistsInCart(ShoppingCart cart, Guid shopProductGuid, ICloneableException<Exception> e)
         {
             var product = cart.PurchasedProducts.FirstOrDefault(prod => prod.Item1.Equals(shopProductGuid));
             if (product == null)

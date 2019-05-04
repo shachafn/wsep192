@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace PressentaitionLayer.Models.AdminModels
 {
-    public class UsersModel
+    public class AdminUsersDisplayModel
     {
         public Guid Guid { get; set; }
         public string Username { get; set; }

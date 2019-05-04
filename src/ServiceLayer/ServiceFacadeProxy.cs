@@ -187,13 +187,13 @@ namespace ServiceLayer
             _serviceFacade.ClearSystem();
         }
 
-        public IEnumerable<Shop> getUserShops(Guid cookie)
+        public IEnumerable<Shop> GetUserShops(Guid cookie)
         {
             var userGuid = _sessionManager.ResolveCookie(cookie);
             return _serviceFacade.getUserShops(userGuid);
         }
 
-        public IEnumerable<ShopProduct> getShopProducts(Guid cookie, Guid shopGuid)
+        public IEnumerable<ShopProduct> GetShopProducts(Guid cookie, Guid shopGuid)
         {
             var userGuid= _sessionManager.ResolveCookie(cookie);
             return _serviceFacade.getShopProducts(userGuid, shopGuid);
@@ -209,6 +209,18 @@ namespace ServiceLayer
         {
             var userGuid = _sessionManager.ResolveCookie(cookie);
             return _serviceFacade.GetAllUsersExceptMe(userGuid);
+        }
+
+        public ICollection<Shop> GetAllShops(Guid cookie)
+        {
+            var userIdentifier = _sessionManager.ResolveCookie(cookie);
+            return _serviceFacade.GetAllShops(userIdentifier);
+        }
+
+        public void CloseShopPermanently(Guid cookie, Guid shopGuid)
+        {
+            var userIdentifier = _sessionManager.ResolveCookie(cookie);
+            _serviceFacade.CloseShopPermanently(userIdentifier, shopGuid);
         }
     }
 }

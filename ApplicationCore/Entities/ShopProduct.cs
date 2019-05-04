@@ -1,4 +1,4 @@
-﻿namespace ApplicationCore.Entitites
+﻿namespace ApplicationCore.Entities
 {
     public class ShopProduct : BaseEntity
     {

@@ -1,6 +1,6 @@
 ﻿using ApplicationCore.Data;
 using ApplicationCore.Entities;
-using ApplicationCore.Entitites;
+using ApplicationCore.Entities;
 using ApplicationCore.Exceptions;
 using ApplicationCore.Interfaces.DomainLayer;
 using DomainLayer.Users.States;

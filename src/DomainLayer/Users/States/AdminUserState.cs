@@ -1,12 +1,12 @@
 ﻿using ApplicationCore.Data;
 using ApplicationCore.Entities.Users;
-using ApplicationCore.Entitites;
+using ApplicationCore.Entities;
 using ApplicationCore.Exceptions;
 using DomainLayer.Extension_Methods;
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using static ApplicationCore.Entitites.Shop;
+using static ApplicationCore.Entities.Shop;
 
 namespace DomainLayer.Users.States
 {

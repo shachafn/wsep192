@@ -1,4 +1,4 @@
-﻿using ApplicationCore.Entitites;
+﻿using ApplicationCore.Entities;
 
 namespace ApplicationCore.Data.Collections
 {

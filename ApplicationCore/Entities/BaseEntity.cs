@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace ApplicationCore.Entitites
+namespace ApplicationCore.Entities
 {
     public class BaseEntity
     {

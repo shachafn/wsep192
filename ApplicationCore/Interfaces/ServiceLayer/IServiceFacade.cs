@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using ApplicationCore.Entities.Users;
 using ApplicationCore.Entitites;
 using ApplicationCore.Exceptions;
 
@@ -464,7 +465,6 @@ namespace ApplicationCore.Interfaces.ServiceLayer
         /// Clears all data and requires the system to be Initialized to use it.
         /// </summary>
         void ClearSystem();
-
 
 
         //TODO DEFINE CONSTRAINTS

@@ -92,6 +92,7 @@ namespace Tests
         }
         #endregion
 
+        #region GR 4.1.2 - Shop owner can remove products
         //GR 4.1.2
         public static void RemovingProductAT()
         {
@@ -140,8 +141,9 @@ namespace Tests
                 () => Tester.PBridge.RemoveProductFromShop(cookie, shopGuid, Guid.Empty));
         }
 
+        #endregion
 
-
+        #region GR 4.1.3 - Shop owner can edit products
         //GR 4.1.3 
         public static void EditingProductAT()
         {
@@ -202,7 +204,11 @@ namespace Tests
             Assert.Throws<IllegalArgumentException>(
                 () => Tester.PBridge.EditProductInShop(cookie, shopGuid, galaxyGuid, 1500, -20));
         }
+        #endregion
 
+        #region GR 4.2.1 - Shop owner can define purchase policy in his store
+        
+        #endregion
         #region GR 4.3 - Store's owner can appoint new owner to his store.
 
         [Test]
@@ -371,6 +377,7 @@ namespace Tests
         }
 
         #endregion
+
         public static Guid AddProductToShop(Guid cookie, Guid shopGuid, string name = "name", string category = "category"
             , double price = 2, int quantity = 2)
         {

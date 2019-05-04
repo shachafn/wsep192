@@ -37,7 +37,7 @@ namespace DomainLayer.Policies
                         break;
                     }
                 }
-                ShopProduct discountRecord = new ShopProduct(p, DiscountPercentage * shopProductPrice, 1);
+                ShopProduct discountRecord = new ShopProduct(p, -DiscountPercentage * shopProductPrice, 1);
                 cart.AddProductToCart(discountRecord.Guid,quantity);
                 return true;
             }

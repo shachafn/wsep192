@@ -37,7 +37,7 @@ namespace ATBridge
         public bool AddShopManager(Guid userGuid, Guid shopGuid, Guid newManagaerGuid, List<string> priviliges)
         {
             return _serviceFacade.AddShopManager(userGuid, shopGuid, newManagaerGuid, priviliges);
-            
+
         }
 
         public bool AddShopOwner(Guid userGuid, Guid shopGuid, Guid newShopOwnerGuid)
@@ -113,7 +113,7 @@ namespace ATBridge
         public bool RemoveProductFromCart(Guid userGuid, Guid shopGuid, Guid shopProductGuid)
         {
             return _serviceFacade.RemoveProductFromCart(userGuid, shopGuid, shopProductGuid);
-            
+
         }
 
         public bool RemoveShopManager(Guid userGuid, Guid shopGuid, Guid managerToRemoveGuid)
@@ -151,14 +151,14 @@ namespace ATBridge
             return _serviceFacade.PurchaseCart(userGuid, shopGuid);
         }
 
-        public bool AddNewPurchasePolicy(Guid userGuid, Guid shopGuid, object policyType, object field1, object field2, object field3 = null)
+        public bool AddNewPurchasePolicy(Guid userGuid, Guid shopGuid, object policyType, object field1, object field2, object field3 = null, object field4 = null)
         {
-            return _serviceFacade.AddNewPurchasePolicy(userGuid, shopGuid, policyType, field1, field2, field3);
+            return _serviceFacade.AddNewPurchasePolicy(userGuid, shopGuid, policyType, field1, field2, field3, field4);
         }
 
-        public bool AddNewDiscountPolicy(Guid userGuid, Guid shopGuid, object policyType, object field1, object field2, object field3 = null)
+        public bool AddNewDiscountPolicy(Guid userGuid, Guid shopGuid, object policyType, object field1, object field2, object field3 = null, object field4 = null)
         {
-            return _serviceFacade.AddNewDiscountPolicy(userGuid, shopGuid, policyType, field1, field2, field3);
+            return _serviceFacade.AddNewDiscountPolicy(userGuid, shopGuid, policyType, field1, field2, field3, field4);
         }
     }
 }

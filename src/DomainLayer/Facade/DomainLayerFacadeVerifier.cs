@@ -412,7 +412,7 @@ namespace DomainLayer.Facade
             VerifyIfChangeToAdminMustBeAdmin(user, newState, new IllegalOperationException());
         }
 
-        public void AddNewPurchasePolicy(ref IPurchasePolicy policy, UserIdentifier userIdentifier,Guid shopGuid ,object policyType, object field1, object field2, object field3 = null)
+        public void AddNewPurchasePolicy(ref IPurchasePolicy policy, UserIdentifier userIdentifier,Guid shopGuid ,object policyType, object field1, object field2, object field3 = null, object field4=null)
         {
             if (!(typeof(string) == policyType.GetType()))
                 throw new IllegalArgumentException("Wrong policy type");
@@ -421,18 +421,18 @@ namespace DomainLayer.Facade
             {
                 case "User purchase policy":
                     VerifyUserShopPolicy(new IllegalArgumentException(), field1, field2, field3);
-                    policy = new UserPurchasePolicy((string)field1,field2);
+                    policy = new UserPurchasePolicy((string)field1,field2,(string)field3);
                     break;
                 case "Product purchase policy":
                     VerifyShopProductPolicy(new IllegalArgumentException(), field1, field2, field3);
-                    policy = new ProductPurchasePolicy((Guid)field1, GenerateOperator((string)field2), (int)field3);
+                    policy = new ProductPurchasePolicy((Guid)field1, GenerateOperator((string)field2), (int)field3,(string)field4);
 
                     break;
                 case "Cart purchase policy":
                     //Operator is given in field1
                     if (!(typeof(int) == field2.GetType()))
                         throw new IllegalArgumentException("Invalid sum of cart");
-                    policy = new CartPurchasePolicy((int)field2, GenerateOperator((string)field1));
+                    policy = new CartPurchasePolicy((int)field2, GenerateOperator((string)field1),(string)field3);
                     break;
                 default:
                     throw new IllegalArgumentException("Invalid policy type");
@@ -451,7 +451,7 @@ namespace DomainLayer.Facade
             }
         }
 
-        public void AddNewDiscountPolicy(ref IDiscountPolicy policy, UserIdentifier userIdentifier,Guid shopGuid, object policyType, object field1, object field2, object field3 = null)
+        public void AddNewDiscountPolicy(ref IDiscountPolicy policy, UserIdentifier userIdentifier,Guid shopGuid, object policyType, object field1, object field2, object field3 = null,object field4=null)
         {
             if (!(typeof(string) == policyType.GetType()))
                 throw new IllegalArgumentException("Wrong policy type");
@@ -460,7 +460,7 @@ namespace DomainLayer.Facade
             {
                 case "Product discount policy":
                     VerifyShopProductPolicy(new IllegalArgumentException(), field1, field2, field3);
-                    policy = new UserDiscountPolicy((string)field1,field2);
+                    policy = new UserDiscountPolicy((string)field1,field2,(string)field3);
                     break;
                 case "Cart discount policy":
                     //Operator is given in field2
@@ -468,11 +468,11 @@ namespace DomainLayer.Facade
                         throw new IllegalArgumentException("Invalid sum of cart");
                     if (!(typeof(int) == field1.GetType()))
                         throw new IllegalArgumentException("Invalid sum of cart");
-                    policy = new CartDiscountPolicy((double)field2,(int)field3,GenerateOperator((string)field2));
+                    policy = new CartDiscountPolicy((double)field2,(int)field3,GenerateOperator((string)field2), (string)field4);
                     break;
                 case "User discount policy":
                     VerifyUserShopPolicy(new IllegalArgumentException(), field1, field2, field3);
-                    policy = new UserDiscountPolicy((string)field1, field2);
+                    policy = new UserDiscountPolicy((string)field1, field2, (string)field3);
                     break;
                 default:
                     throw new IllegalArgumentException("Invalid policy type");
@@ -742,7 +742,7 @@ namespace DomainLayer.Facade
 
         }
 
-        private void VerifyShopProductPolicy(ICloneableException<Exception> e, object field1, object field2, object field3 = null)
+        private void VerifyShopProductPolicy(ICloneableException<Exception> e, object field1, object field2, object field3 = null, object field4=null)
         {
             Guid productGuid = Guid.Empty;
             if (!(typeof(Guid) == field1.GetType()))
@@ -752,6 +752,7 @@ namespace DomainLayer.Facade
                 throw new IllegalArgumentException("Invalid product quantity");
             productGuid = (Guid)field1;
             int disount = (int)field3;
+            string description = (string)field4;
         }
 
         #endregion

@@ -6,7 +6,7 @@ using Microsoft.Extensions.Logging;
 
 namespace ServiceLayer
 {
-    public class ServiceFacade 
+    public class ServiceFacade
     {
         IDomainLayerFacade _domainLayerFacade;
         ILogger<ServiceFacade> _logger;
@@ -122,7 +122,7 @@ namespace ServiceLayer
             return _domainLayerFacade.PurchaseBag(userIdentifier);
         }
 
-        public bool PurchaseCart(UserIdentifier userIdentifier,Guid shopGuid)
+        public bool PurchaseCart(UserIdentifier userIdentifier, Guid shopGuid)
         {
             return _domainLayerFacade.PurchaseCart(userIdentifier, shopGuid);
         }
@@ -147,14 +147,14 @@ namespace ServiceLayer
             _domainLayerFacade.ClearSystem();
         }
 
-        internal bool AddNewDiscountPolicy(UserIdentifier userGuid, Guid shopGuid,object policyType, object field1, object field2, object field3)
+        internal bool AddNewDiscountPolicy(UserIdentifier userGuid, Guid shopGuid, object policyType, object field1, object field2, object field3, object field4)
         {
-            return _domainLayerFacade.AddNewDiscountPolicy(userGuid, shopGuid, policyType, field1, field2, field3);
+            return _domainLayerFacade.AddNewDiscountPolicy(userGuid, shopGuid, policyType, field1, field2, field3, field4);
         }
 
-        internal bool AddNewPurchasePolicy(UserIdentifier userGuid, Guid shopGuid, object policyType, object field1, object field2, object field3)
+        internal bool AddNewPurchasePolicy(UserIdentifier userGuid, Guid shopGuid, object policyType, object field1, object field2, object field3, object field4)
         {
-            return _domainLayerFacade.AddNewPurchasePolicy(userGuid, shopGuid, policyType ,field1, field2, field3);
+            return _domainLayerFacade.AddNewPurchasePolicy(userGuid, shopGuid, policyType, field1, field2, field3, field4);
         }
     }
 }

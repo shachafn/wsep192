@@ -232,21 +232,21 @@ namespace DomainLayer.Facade
             }
         }
 
-        public bool AddNewDiscountPolicy(UserIdentifier userIdentifier, Guid shopGuid, object policyType, object field1, object field2, object field3)
+        public bool AddNewDiscountPolicy(UserIdentifier userIdentifier, Guid shopGuid, object policyType, object field1, object field2, object field3, object field4)
         {
             VerifySystemIsInitialized();
             IUser user = _userDomain.GetUserObject(userIdentifier);
-            IDiscountPolicy newPolicy = new UserDiscountPolicy("dd","dd");
-            _verifier.AddNewDiscountPolicy(ref newPolicy, userIdentifier,shopGuid, policyType, field1, field2, field3);
+            IDiscountPolicy newPolicy = new UserDiscountPolicy("dd","dd","dd");
+            _verifier.AddNewDiscountPolicy(ref newPolicy, userIdentifier,shopGuid, policyType, field1, field2, field3,field4);
             return user.AddNewDiscountPolicy(user.Guid, shopGuid, newPolicy);
         }
 
-        public bool AddNewPurchasePolicy(UserIdentifier userIdentifier, Guid shopGuid, object policyType, object field1, object field2, object field3)
+        public bool AddNewPurchasePolicy(UserIdentifier userIdentifier, Guid shopGuid, object policyType, object field1, object field2, object field3, object field4)
         {
             VerifySystemIsInitialized();
             IUser user = _userDomain.GetUserObject(userIdentifier);
-            IPurchasePolicy newPolicy = new UserPurchasePolicy("ff","ff");
-            _verifier.AddNewPurchasePolicy(ref newPolicy, userIdentifier,shopGuid, policyType, field1, field2, field3);
+            IPurchasePolicy newPolicy = new UserPurchasePolicy("ff","ff","ff");
+            _verifier.AddNewPurchasePolicy(ref newPolicy, userIdentifier,shopGuid, policyType, field1, field2, field3,field4);
             user.AddNewPurchasePolicy(user.Guid, shopGuid, newPolicy);
             return true;
         }

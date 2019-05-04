@@ -14,7 +14,7 @@ namespace ATBridge
 
         public bool AddProductToCart(Guid userGuid, Guid productGuid, Guid shopGuid, int quantity)
         {
-            return _real == null? false : _real.AddProductToCart(userGuid, productGuid, shopGuid, quantity);
+            return _real == null ? false : _real.AddProductToCart(userGuid, productGuid, shopGuid, quantity);
         }
 
         public bool AddShopManager(Guid userGuid, Guid shopGuid, Guid newManagaerGuid, List<string> priviliges)
@@ -138,14 +138,14 @@ namespace ATBridge
             return _real == null ? false : _real.PurchaseCart(userGuid, shopGuid);
         }
 
-        public bool AddNewPurchasePolicy(Guid userGuid, Guid shopGuid, object policyType, object field1, object field2, object field3 = null)
+        public bool AddNewPurchasePolicy(Guid userGuid, Guid shopGuid, object policyType, object field1, object field2, object field3 = null, object field4 = null)
         {
-            return _real == null ? false : _real.AddNewPurchasePolicy(userGuid, shopGuid, policyType, field1, field2, field3);
+            return _real == null ? false : _real.AddNewPurchasePolicy(userGuid, shopGuid, policyType, field1, field2, field3, field4);
         }
 
-        public bool AddNewDiscountPolicy(Guid userGuid, Guid shopGuid, object policyType, object field1, object field2, object field3 = null)
+        public bool AddNewDiscountPolicy(Guid userGuid, Guid shopGuid, object policyType, object field1, object field2, object field3 = null, object field4 = null)
         {
-            return _real == null ? false : _real.AddNewPurchasePolicy(userGuid, shopGuid, policyType, field1, field2, field3);
+            return _real == null ? false : _real.AddNewPurchasePolicy(userGuid, shopGuid, policyType, field1, field2, field3, field4);
         }
     }
 }

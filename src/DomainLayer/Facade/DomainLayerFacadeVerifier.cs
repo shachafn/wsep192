@@ -404,6 +404,11 @@ namespace DomainLayer.Facade
             var user = VerifyLoggedInUser(userIdentifier.Guid, new UserNotFoundException());
         }
 
+        public void GetAllShops(UserIdentifier userIdentifier)
+        {
+            var user = VerifyLoggedInUser(userIdentifier.Guid, new UserNotFoundException());
+        }
+
         #endregion
 
         #region Private Verifiers

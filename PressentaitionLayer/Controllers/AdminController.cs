@@ -5,6 +5,8 @@ using ApplicationCore.Interfaces.ServiceLayer;
 using System.Linq;
 using PressentaitionLayer.Models.AdminModels;
 using System;
+using System.Collections.Generic;
+using ApplicationCore.Entitites;
 
 namespace PressentaitionLayer.Controllers
 {
@@ -27,7 +29,7 @@ namespace PressentaitionLayer.Controllers
         public IActionResult Users()
         {
             var list = _facade.GetAllUsersExceptMe(new Guid(HttpContext.Session.Id));
-            return View(list.Select(b => new UsersModel()
+            return View(list.Select(b => new AdminUsersDisplayModel()
             {
                 Guid = b.Guid,
                 Username = b.Username,
@@ -38,6 +40,23 @@ namespace PressentaitionLayer.Controllers
         {
             _facade.RemoveUser(new Guid(HttpContext.Session.Id), itemGuid);
             return RedirectToAction("Users", "Admin");
+        }
+
+        public IActionResult Shops()
+        {
+            var shops = _facade.GetAllShops(new Guid(HttpContext.Session.Id));
+            return View(shops.Select(s => new AdminShopDisplayModel()
+            {
+                Guid = s.Guid,
+                CreatorGuid = s.Creator.OwnerGuid,
+                State = s.ShopState
+            }).ToList());
+        }
+
+        public IActionResult CloseShop(Guid shopGuid)
+        {
+            _facade.CloseShopPermanently(new Guid(HttpContext.Session.Id), shopGuid);
+            return RedirectToAction("Shops", "Admin");
         }
     }
 }

@@ -1,0 +1,46 @@
+﻿@model IEnumerable<PressentaitionLayer.Models.AdminModels.AdminShopDisplayModel>
+
+@{
+    ViewData["Title"] = "Shops";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<h2>Shops</h2>
+
+<p>
+    <a asp-action="Create">Create New</a>
+</p>
+<table class="table">
+    <thead>
+        <tr>
+            <th>
+                @Html.DisplayNameFor(model => model.Guid)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.CreatorGuid)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.State)
+            </th>
+            <th></th>
+        </tr>
+    </thead>
+    <tbody>
+@foreach (var item in Model) {
+        <tr>
+            <td>
+                @Html.DisplayFor(modelItem => item.Guid)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.CreatorGuid)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.State)
+            </td>
+            <td>
+                <input type="button" class="btn-lg" value="Close Permanently" onclick="location.href='@Url.Action("CloseShop","Admin",new { shopGuid = item.Guid})'" />
+            </td>
+        </tr>
+}
+    </tbody>
+</table>

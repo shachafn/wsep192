@@ -18,8 +18,7 @@ namespace DomainLayer.Extension_Methods
         }
         public static void AdminClose(this Shop shop)
         {
-            throw new NotImplementedException();
-            VerifyShopIsActiveOrClosed(shop);////MOVE TO DOMAINLAYERFACADEVERIFIER WHEN A USE-CASE TO CHANGE SHOP STATUS IS IMPLEMENTED
+            VerifyShopIsActiveOrClosed(shop);////TODO MOVE TO DOMAINLAYERFACADEVERIFIER WHEN A USE-CASE TO CHANGE SHOP STATUS IS IMPLEMENTED
             shop.ShopState = Shop.ShopStateEnum.PermanentlyClosed;
         }
         public static void Open(this Shop shop)
@@ -263,7 +262,7 @@ namespace DomainLayer.Extension_Methods
 
         public static void VerifyShopIsActiveOrClosed(this Shop shop)
         {
-            if (!(shop.ShopState.Equals(Shop.ShopStateEnum.Closed) && shop.ShopState.Equals(Shop.ShopStateEnum.Closed)))
+            if (!(shop.ShopState.Equals(Shop.ShopStateEnum.Closed) || shop.ShopState.Equals(Shop.ShopStateEnum.Active)))
             {
                 StackTrace stackTrace = new StackTrace();
                 throw new ShopStateException($"Shop is not closed or active. Cant complete method {stackTrace.GetFrame(1).GetMethod().Name}");

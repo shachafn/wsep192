@@ -24,7 +24,7 @@ namespace PressentaitionLayer.Controllers
         }
         public IActionResult MyShops()
         {
-            var shops = _serviceFacade.getUserShops(new Guid(HttpContext.Session.Id));
+            var shops = _serviceFacade.GetUserShops(new Guid(HttpContext.Session.Id));
             return View(shops);
         }
         public IActionResult openShop()
@@ -42,7 +42,7 @@ namespace PressentaitionLayer.Controllers
 
         public IActionResult Products(string ShopId)
         {
-            var products = _serviceFacade.getShopProducts(new Guid(HttpContext.Session.Id), new Guid(ShopId));
+            var products = _serviceFacade.GetShopProducts(new Guid(HttpContext.Session.Id), new Guid(ShopId));
             ViewData["ShopId"] = ShopId;
             return View(products);
         }

@@ -5,6 +5,7 @@ using ApplicationCore.Entities.Users;
 using ApplicationCore.Entitites;
 using ApplicationCore.Exceptions;
 using ApplicationCore.Interfaces.DomainLayer;
+using DomainLayer.Extension_Methods;
 using DomainLayer.Users.States;
 using Microsoft.Extensions.Logging;
 using System;
@@ -212,6 +213,39 @@ namespace DomainLayer.Facade
             return _userDomain.GetAllUsersExceptMe(userIdentifier);
         }
 
+        public ICollection<Shop> GetAllShops(UserIdentifier userIdentifier)
+        {
+            VerifySystemIsInitialized();
+            _verifier.VerifyMe(MethodBase.GetCurrentMethod(), userIdentifier);
+            return DomainData.ShopsCollection.ToList();
+        }
+
+        public IEnumerable<Shop> getUserShops(UserIdentifier userId)
+        {
+            /*todo verofy constraints
+             * VerifySystemIsInitialized();
+            _verifier.VerifyMe(MethodBase.GetCurrentMethod(), userIdentifier, newState);*/
+            return ApplicationCore.Data.DomainData.ShopsCollection.Where(shop => shop.Creator.OwnerGuid.Equals(userId.Guid)).ToList<Shop>();
+        }
+
+        public IEnumerable<ShopProduct> GetShopProducts(UserIdentifier userIdentifier, Guid shopGuid)
+        {
+            /*todo verofy constraints
+            * VerifySystemIsInitialized();
+            _verifier.VerifyMe(MethodBase.GetCurrentMethod(), userIdentifier, newState);*/
+            Shop shop = GetShop(shopGuid);
+            return shop.ShopProducts;
+        }
+
+        public void CloseShopPermanently(UserIdentifier userIdentifier, Guid shopGuid)
+        {
+            /*todo verofy constraints
+             * VerifySystemIsInitialized();
+            _verifier.VerifyMe(MethodBase.GetCurrentMethod(), userIdentifier, newState);*/
+            Shop shop = GetShop(shopGuid);
+            shop.AdminClose();
+        }
+
         public bool ChangeUserState(UserIdentifier userIdentifier, string newState)
         {
             VerifySystemIsInitialized();
@@ -236,20 +270,6 @@ namespace DomainLayer.Facade
         $"Cant complete {stackTrace.GetFrame(1).GetMethod().Name}";
                 throw new SystemNotInitializedException(msg);
             }
-        }
-
-        public IEnumerable<Shop> getUserShops(UserIdentifier userId)
-        {
-            /*todo verofy constraints
-             * VerifySystemIsInitialized();
-            _verifier.VerifyMe(MethodBase.GetCurrentMethod(), userIdentifier, newState);*/
-            return ApplicationCore.Data.DomainData.ShopsCollection.Where(shop=>shop.Creator.OwnerGuid.Equals(userId.Guid)).ToList<Shop>();
-        }
-
-        public IEnumerable<ShopProduct> GetShopProducts(UserIdentifier userIdentifier, Guid shopGuid)
-        {
-            Shop shop= GetShop(shopGuid);
-            return shop.ShopProducts;
         }
     }
 }

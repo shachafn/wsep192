@@ -167,5 +167,15 @@ namespace ServiceLayer
         {
             return _domainLayerFacade.GetAllUsersExceptMe(userIdentifier);
         }
+
+        public ICollection<Shop> GetAllShops(UserIdentifier userIdentifier)
+        {
+            return _domainLayerFacade.GetAllShops(userIdentifier);
+        }
+
+        public void CloseShopPermanently(UserIdentifier userIdentifier, Guid shopGuid)
+        {
+            _domainLayerFacade.CloseShopPermanently(userIdentifier, shopGuid);
+        }
     }
 }

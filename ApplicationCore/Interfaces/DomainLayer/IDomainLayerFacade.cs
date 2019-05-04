@@ -39,5 +39,7 @@ namespace ApplicationCore.Interfaces.DomainLayer
         ICollection<BaseUser> GetAllUsersExceptMe(UserIdentifier userIdentifier);
         IEnumerable<ShopProduct> GetShopProducts(UserIdentifier userId, Guid shopGuid);
         IEnumerable<Shop> getUserShops(UserIdentifier userId);
+        ICollection<Shop> GetAllShops(UserIdentifier userIdentifier);
+        void CloseShopPermanently(UserIdentifier userIdentifier, Guid shopGuid);
     }
 }

@@ -478,7 +478,10 @@ namespace ApplicationCore.Interfaces.ServiceLayer
          utils
          */
 
-        IEnumerable<Shop> getUserShops(Guid id);
-        IEnumerable<ShopProduct> getShopProducts(Guid id,Guid shopGuid);
+        IEnumerable<Shop> GetUserShops(Guid id);
+        IEnumerable<ShopProduct> GetShopProducts(Guid id,Guid shopGuid);
+        ICollection<Shop> GetAllShops(Guid cookie);
+
+        void CloseShopPermanently(Guid cookie, Guid shopGuid);
     }
 }

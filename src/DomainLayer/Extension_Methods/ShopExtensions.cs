@@ -74,7 +74,7 @@ namespace DomainLayer.Extension_Methods
         public static void AddShopOwner(this Shop shop, Guid userGuid, Guid newOwnerGuid)
         {
             var newOwner = new ShopOwner(newOwnerGuid, userGuid, shop.Guid);
-            shop.Managers.Add(newOwner);
+            shop.Owners.Add(newOwner);
         }
 
         public static bool RemoveShopManager(this Shop shop, Guid userGuid, Guid managerToRemoveGuid)

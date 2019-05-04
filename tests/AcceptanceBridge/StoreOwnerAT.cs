@@ -209,7 +209,7 @@ namespace Tests
         #region GR 4.2.1 - Shop owner can define purchase policy in his store
 
         [Test]
-        public static void AddPurchasePolicyAT1()
+        public static void AddPurchasePolicyAT1_1()
         {
             UserAT.GenerateRandoms(out var cookie, out var username, out var password);
             UserAT.RegisterUser(cookie, username, password);
@@ -219,6 +219,35 @@ namespace Tests
             var productGuid = Tester.PBridge.AddProductToShop(cookie, shopGuid, "Galaxy S9", "Cellphones", 2000, 1);
             bool res = Tester.PBridge.AddNewPurchasePolicy(cookie, shopGuid, "Product purchase policy", productGuid, "<", 1);
             Assert.True(res);
+        }
+
+        [Test]
+        public static void AddPurchasePolicyAT1_CompoundPolicy()
+        {
+            UserAT.GenerateRandoms(out var cookie, out var username, out var password);
+            UserAT.RegisterUser(cookie, username, password);
+            UserAT.LoginUser(cookie, username, password);
+            Tester.PBridge.ChangeUserState(cookie, "SellerUserState");
+            var shopGuid = Tester.PBridge.OpenShop(cookie);
+            var productGuid = Tester.PBridge.AddProductToShop(cookie, shopGuid, "Galaxy S9", "Cellphones", 2000, 1);
+            var productGuid1 = Tester.PBridge.AddProductToShop(cookie, shopGuid, "Galaxy S8", "Cellphones", 3000, 1);
+            Tester.PBridge.AddNewPurchasePolicy(cookie, shopGuid, "Product purchase policy", productGuid, ">", 1);
+            Tester.PBridge.AddNewPurchasePolicy(cookie, shopGuid, "Product purchase policy", productGuid1, ">", 1);
+            bool res = Tester.PBridge.AddNewPurchasePolicy(cookie, shopGuid, "Compound purchase policy", null, null, null, null);
+            Assert.True(res);
+        }
+
+        [Test]
+        public static void AddPurchasePolicyAT2()
+        {
+            UserAT.GenerateRandoms(out var cookie, out var username, out var password);
+            UserAT.RegisterUser(cookie, username, password);
+            UserAT.LoginUser(cookie, username, password);
+            Tester.PBridge.ChangeUserState(cookie, "SellerUserState");
+            var shopGuid = Tester.PBridge.OpenShop(cookie);
+            var productGuid = Tester.PBridge.AddProductToShop(cookie, shopGuid, "Galaxy S9", "Cellphones", 2000, 1);
+            UserAT.GenerateRandoms(out var anotherCookie, out var anotherUsername, out var anotherPassword);
+            Assert.Throws<BadStateException>(() => Tester.PBridge.AddNewPurchasePolicy(anotherCookie, shopGuid, "Product purchase policy", productGuid, "<", 1));
         }
         #endregion
         #region GR 4.3 - Store's owner can appoint new owner to his store.

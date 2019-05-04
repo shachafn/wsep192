@@ -1,6 +1,7 @@
 ﻿using ApplicationCore.Data;
 using ApplicationCore.Data.Collections;
 using ApplicationCore.Entities;
+using ApplicationCore.Entities.Users;
 using ApplicationCore.Entitites;
 using ApplicationCore.Exceptions;
 using ApplicationCore.Interfaces.DomainLayer;
@@ -59,13 +60,13 @@ namespace DomainLayer.Facade
         }
 
 
-        public bool PurchaseBag(UserIdentifier userIdentifier)
+        public bool PurchaseCart(UserIdentifier userIdentifier, Guid shopGuid)
         {
             VerifySystemIsInitialized();
-            _verifier.VerifyMe(MethodBase.GetCurrentMethod(), userIdentifier);
+            _verifier.VerifyMe(MethodBase.GetCurrentMethod(), userIdentifier, shopGuid);
             // Need to actually pay for products
             // if success clear all carts
-            return _userDomain.GetUserObject(userIdentifier).PurchaseBag();
+            return _userDomain.GetUserObject(userIdentifier).PurchaseCart(shopGuid);
         }
 
         public Guid Initialize(UserIdentifier userIdentifier, string username, string password)
@@ -183,7 +184,7 @@ namespace DomainLayer.Facade
             return _userDomain.GetUserObject(userIdentifier).RemoveUser(userToRemoveGuid);
         }
 
-        public ICollection<Guid> SearchProduct(UserIdentifier userIdentifier, ICollection<string> toMatch, string searchType)
+        public ICollection<Tuple<ShopProduct, Guid>> SearchProduct(UserIdentifier userIdentifier, ICollection<string> toMatch, string searchType)
         {
             VerifySystemIsInitialized();
             _verifier.VerifyMe(MethodBase.GetCurrentMethod(), userIdentifier, toMatch, searchType);
@@ -195,6 +196,20 @@ namespace DomainLayer.Facade
             VerifySystemIsInitialized();
             _verifier.VerifyMe(MethodBase.GetCurrentMethod(), userIdentifier, shopGuid, managerToRemoveGuid);
             return _userDomain.GetUserObject(userIdentifier).RemoveShopManager(shopGuid, managerToRemoveGuid);
+        }
+
+        public ICollection<Tuple<Guid, Product, int>> GetPurchaseHistory(UserIdentifier userIdentifier)
+        {
+            VerifySystemIsInitialized();
+            _verifier.VerifyMe(MethodBase.GetCurrentMethod(), userIdentifier);
+            return _userDomain.GetUserObject(userIdentifier).GetPurchaseHistory();
+        }
+
+        public ICollection<BaseUser> GetAllUsersExceptMe(UserIdentifier userIdentifier)
+        {
+            VerifySystemIsInitialized();
+            _verifier.VerifyMe(MethodBase.GetCurrentMethod(), userIdentifier);
+            return _userDomain.GetAllUsersExceptMe(userIdentifier);
         }
 
         public bool ChangeUserState(UserIdentifier userIdentifier, string newState)

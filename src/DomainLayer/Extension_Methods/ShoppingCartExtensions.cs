@@ -34,7 +34,8 @@ namespace DomainLayer.Extension_Methods
 
         public static void PurchaseCart(this ShoppingCart cart)
         {
-            throw new NotImplementedException();
+            cart.PurchasedProducts.Clear();
         }
+
     }
 }

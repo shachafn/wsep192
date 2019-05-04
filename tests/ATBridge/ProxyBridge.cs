@@ -1,4 +1,5 @@
-﻿using System;
+﻿using ApplicationCore.Entitites;
+using System;
 using System.Collections.Generic;
 
 namespace ATBridge
@@ -82,9 +83,9 @@ namespace ATBridge
             return _real == null ? Guid.Empty : _real.OpenShop(userGuid);
         }
 
-        public bool PurchaseBag(Guid userGuid)
+        public bool PurchaseCart(Guid userGuid, Guid shopGuid)
         {
-            return _real == null ? false : _real.PurchaseBag(userGuid);
+            return _real == null ? false : _real.PurchaseCart(userGuid, shopGuid);
         }
 
         public Guid Register(Guid userGuid, string username, string password)
@@ -112,7 +113,7 @@ namespace ATBridge
             return _real == null ? false : _real.RemoveUser(userGuid, userToRemoveGuid);
         }
 
-        public ICollection<Guid> SearchProduct(Guid userGuid, ICollection<string> toMatch, string searchType)
+        public ICollection<Tuple<ShopProduct, Guid>> SearchProduct(Guid userGuid, ICollection<string> toMatch, string searchType)
         {
             return _real?.SearchProduct(userGuid, toMatch, searchType);
         }

@@ -49,13 +49,13 @@ namespace DomainLayer.Extension_Methods
             shop.ShopProducts.Remove(toRemove);
         }
 
-        public static ICollection<ShopProduct> GetPurchaseHistory(this Shop shop, Guid userGuid)
+        public static ICollection<Tuple<Guid, Product, int>> GetPurchaseHistory(this Shop shop, Guid userGuid)
         {
-            ICollection<ShopProduct> toReturn = new List<ShopProduct>();
-            foreach (Tuple<Guid, ShopProduct> purchase in shop.UsersPurchaseHistory)
+            ICollection<Tuple<Guid, Product, int>> toReturn = new List<Tuple<Guid, Product, int>>();
+            foreach (Tuple<Guid, Product, int> purchase in shop.UsersPurchaseHistory)
             {
                 if (userGuid.Equals(purchase.Item1))
-                    toReturn.Add(purchase.Item2);
+                    toReturn.Add(new Tuple<Guid, Product, int>(shop.Guid, purchase.Item2, purchase.Item3));
             }
             return toReturn;
         }
@@ -87,11 +87,6 @@ namespace DomainLayer.Extension_Methods
         {
             var newOwner = new ShopOwner(newManagaerGuid, userGuid, shop.Guid, priviliges);
             shop.Managers.Add(newOwner);
-        }
-
-        public static void AddToPurchaseHistory(this Shop shop, Guid userGuid, ShopProduct shopProduct)
-        {
-            shop.UsersPurchaseHistory.Add(Tuple.Create(userGuid, shopProduct));
         }
 
         public static ShopOwner GetOwner(this Shop shop, Guid userGuid)
@@ -129,6 +124,19 @@ namespace DomainLayer.Extension_Methods
             shop.Owners.Remove(ownerToRemove);// remove the owner from the owners list
             return true;
         }
+
+        public static void PurchaseCart(this Shop shop, ShoppingCart cart)
+        {
+            foreach(var productAndAmountBought in cart.PurchasedProducts)
+            {
+                var userGuid = cart.UserGuid;
+                var actualProduct = shop.ShopProducts.First(p => p.Guid.Equals(productAndAmountBought.Item1));
+                var quantity = productAndAmountBought.Item2;
+                shop.UsersPurchaseHistory.Add(new Tuple<Guid, Product, int>(userGuid, actualProduct.Product, quantity));
+            }
+            cart.PurchaseCart();
+        }
+
         #region Creator/Owner/Manager Verifiers
 
         public static void VerifyCreatorOrOwner(this Shop shop, Guid userGuid, ICloneableException<Exception> e)

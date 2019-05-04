@@ -1,4 +1,5 @@
-﻿using System;
+﻿using ApplicationCore.Entitites;
+using System;
 using System.Collections.Generic;
 
 namespace ATBridge
@@ -69,7 +70,7 @@ namespace ATBridge
 
         /////Implements General Requirement 2.8. Not entirely, only purchase of the entier bag.
         /////////////// REDO CONSTRAINTS, CHANGED FROM CART TO BAG ////////////////////////
-        bool PurchaseBag(Guid userGuid);
+        bool PurchaseCart(Guid cookie, Guid shopGuid);
 
         /////Implements General Requirement 1.1
         /// <summary>
@@ -336,7 +337,7 @@ namespace ATBridge
         /// <exception cref="IllegalArgumentException">When toMatch contains illegal strings.</exception>
         /// <exception cref="IllegalArgumentException">When toMatch is empty.</exception>
         /// <returns>A list of products.</returns>
-        ICollection<Guid> SearchProduct(Guid userGuid, ICollection<string> toMatch, string searchType);
+        ICollection<Tuple<ShopProduct, Guid>> SearchProduct(Guid userGuid, ICollection<string> toMatch, string searchType);
 
         /////Implements General Requirement 4.3
         /// <summary>

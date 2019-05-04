@@ -23,7 +23,7 @@ namespace DomainLayer.Users.States
             throw new BadStateException($"Tried to invoke OpenShop in Admin State");
         }
 
-        public override bool PurchaseBag()
+        public override bool PurchaseCart(BaseUser baseUser, Guid shopGuid)
         {
             throw new BadStateException($"Tried to invoke PurchaseBag in Admin State");
         }
@@ -126,7 +126,7 @@ namespace DomainLayer.Users.States
             throw new BadStateException($"Tried to invoke AddShopOwner in Admin State");
         }
 
-        public override ICollection<Guid> SearchProduct(ICollection<string> toMatch, string searchType)
+        public override ICollection<Tuple<ShopProduct, Guid>> SearchProduct(ICollection<string> toMatch, string searchType)
         {
             throw new BadStateException($"Tried to invoke SearchProduct in Admin State");
         }

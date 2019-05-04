@@ -100,9 +100,11 @@ namespace DomainLayer.Facade
         }
 
         /////////// REDO CONSTRAINTS, CHANGED FROM CART TO BAG ////////////////
-        public void PurchaseBag(UserIdentifier userIdentifier)
+        public void PurchaseCart(UserIdentifier userIdentifier, Guid shopGuid)
         {
             var user = VerifyLoggedInUser(userIdentifier.Guid, new UserNotFoundException());
+            var shop = VerifyShopExists(shopGuid, new ShopNotFoundException());
+            shop.VerifyShopIsActive();
         }
 
         /// <constraints>
@@ -395,6 +397,11 @@ namespace DomainLayer.Facade
             VerifyString(newState, new IllegalArgumentException());
             VerifyStateString(newState, new IllegalArgumentException());
             VerifyIfChangeToAdminMustBeAdmin(user, newState, new IllegalOperationException());
+        }
+
+        public void GetAllUsersExceptMe(UserIdentifier userIdentifier)
+        {
+            var user = VerifyLoggedInUser(userIdentifier.Guid, new UserNotFoundException());
         }
 
         #endregion

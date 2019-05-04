@@ -137,10 +137,10 @@ namespace ServiceLayer
             return _serviceFacade.OpenShop(userGuid);
         }
 
-        public bool PurchaseBag(Guid cookie)
+        public bool PurchaseCart(Guid cookie, Guid shopGuid)
         {
             var userGuid = _sessionManager.ResolveCookie(cookie);
-            return _serviceFacade.PurchaseBag(userGuid);
+            return _serviceFacade.PurchaseCart(userGuid, shopGuid);
         }
 
         public Guid Register(Guid cookie, string username, string password)
@@ -167,7 +167,7 @@ namespace ServiceLayer
             return _serviceFacade.RemoveShopManager(userGuid, shopGuid, managerToRemoveGuid);
         }
 
-        public ICollection<Guid> SearchProduct(Guid cookie, ICollection<string> toMatch, string searchType)
+        public ICollection<Tuple<ShopProduct,Guid>> SearchProduct(Guid cookie, ICollection<string> toMatch, string searchType)
         {
             var userGuid = _sessionManager.ResolveCookie(cookie);
             return _serviceFacade.SearchProduct(userGuid, toMatch, searchType);
@@ -195,6 +195,18 @@ namespace ServiceLayer
         {
             var userGuid= _sessionManager.ResolveCookie(cookie);
             return _serviceFacade.getShopProducts(userGuid, shopGuid);
+        }
+
+        public ICollection<Tuple<Guid, Product, int>> GetPurchaseHistory(Guid cookie)
+        {
+            var userGuid = _sessionManager.ResolveCookie(cookie);
+            return _serviceFacade.GetPurchaseHistory(userGuid);
+        }
+
+        public ICollection<BaseUser> GetAllUsersExceptMe(Guid cookie)
+        {
+            var userGuid = _sessionManager.ResolveCookie(cookie);
+            return _serviceFacade.GetAllUsersExceptMe(userGuid);
         }
     }
 }

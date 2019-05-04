@@ -1,4 +1,5 @@
 ﻿using ApplicationCore.Data;
+using ApplicationCore.Entitites;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -14,33 +15,49 @@ namespace DomainLayer
             this._searchType = searchType;
         }
 
-        public ICollection<Guid> Search(ICollection<string> toMatch)
+        public ICollection<Tuple<ShopProduct, Guid>> Search(ICollection<string> toMatch)
         {
             switch (_searchType)
             {
                 case "Name":
                     {
-                        return DomainData.ShopsCollection
-                            .SelectMany(shop => shop.ShopProducts)
-                            .Where(prod => prod.Product.Name.ToLower().Contains(toMatch.First().ToLower()))
-                            .Select(prod => prod.Guid)
-                            .ToList();
+                        //Product and shopGuid
+                        ICollection<Tuple<ShopProduct, Guid>> output = new List<Tuple<ShopProduct, Guid>>();
+                        foreach (var shop in DomainData.ShopsCollection)
+                        {
+                            var filteredProducts = shop.ShopProducts.
+                                Where(product => product.Product.Name.ToLower().Contains(toMatch.First().ToLower()));
+
+                            foreach (var product in filteredProducts)
+                                output.Add(new Tuple<ShopProduct, Guid>(product, shop.Guid));
+                        }
+                        return output;
                     }
                 case "Category":
                     {
-                        return DomainData.ShopsCollection
-                            .SelectMany(shop => shop.ShopProducts)
-                            .Where(prod => prod.Product.Category.ToLower().Equals(toMatch.First().ToLower()))
-                            .Select(prod => prod.Guid)
-                            .ToList();
+                        ICollection<Tuple<ShopProduct, Guid>> output = new List<Tuple<ShopProduct, Guid>>();
+                        foreach (var shop in DomainData.ShopsCollection)
+                        {
+                            var filteredProducts = shop.ShopProducts.
+                                Where(prod => prod.Product.Category.ToLower().Equals(toMatch.First().ToLower()));
+
+                            foreach (var product in filteredProducts)
+                                output.Add(new Tuple<ShopProduct, Guid>(product, shop.Guid));
+                        }
+                        return output;
                     }
                 case "Keywords":
                     {
-                        return DomainData.ShopsCollection
-                            .SelectMany(shop => shop.ShopProducts)
-                            .Where(prod => toMatch.All(keyword => prod.Product.Keywords.Contains(keyword)))
-                            .Select(prod => prod.Guid)
-                            .ToList();
+                        ICollection<Tuple<ShopProduct, Guid>> output = new List<Tuple<ShopProduct, Guid>>();
+                        foreach (var shop in DomainData.ShopsCollection)
+                        {
+                            var filteredProducts = shop.ShopProducts.
+                                Where(prod => toMatch.All(keyword => prod.Product.Keywords.Contains(keyword)));
+
+                            foreach (var product in filteredProducts)
+                                output.Add(new Tuple<ShopProduct, Guid>(product, shop.Guid));
+                        }
+                        return output;
                     }
                 default:
                     return null;

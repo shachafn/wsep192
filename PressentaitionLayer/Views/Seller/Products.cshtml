@@ -2,7 +2,12 @@
 
 @{
     ViewData["Title"] = "Products";
-    var i = 0;
+    var images = new List<string> ();
+    for(int i=1;i<=24;i++)
+    {
+        images.Add($"~/images/Random/{i}.jpg");
+    }
+    var image = "~/images/Random/7.jpg";
 }
 
 
@@ -14,11 +19,14 @@
         <tr>
             <th></th>
             <th>
+                @Html.DisplayNameFor(model => model.Product.Name);
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.Product.Category)
+            </th>
+            <th>
                 @Html.DisplayNameFor(model => model.Guid)
             </th>
-            @*<th>
-                    @Html.DisplayNameFor(model => model.Category)
-                </th>*@
             <th>
                 @Html.DisplayNameFor(model => model.Price)
             </th>
@@ -31,33 +39,39 @@
     <tbody>
         @foreach (var item in Model)
         {
-            <tr>
-                <td>
-                    @*<img src=@getRandomImage() alt="should be product's name" />*@
-                    <img src="~/images/Random/7.jpg" alt="should be the product's name" style="height:80px; width:80px;"/>
-                </td>
-                <td>
-                    @Html.DisplayFor(modelItem => item.Guid)
-                </td>
-                <td>
-                    @Html.DisplayFor(modelItem => item.Price)
-                </td>
-                <td>
-                    @Html.DisplayFor(modelItem => item.Quantity)
-                </td>
-                <td>
-                    <form asp-action="EditItem" method="post">
-                        <input type="hidden" name="ProductId" value=" @Html.DisplayFor(modelItem => item.Guid)" />
-                        <input type="hidden" name="shopId" value="@ViewData["ShopId"]" />
-                        <input type="submit" value="Edit" class="form-control" />
-                    </form>
-                    <form asp-action="DeleteItem" method="post">
-                        <input type="hidden" name="ProductId" value=" @Html.DisplayFor(modelItem => item.Guid)" />
-                        <input type="hidden" name="shopId" value="@ViewData["ShopId"]" />
-                        <input type="submit" value="Delete" class="form-control" />
-                    </form>
-                </td>
-            </tr>
+        <tr>
+            <td>
+                @*<img src=@getRandomImage() alt="should be product's name" />*@
+                <img src="~/images/Random/7.jpg" alt="should be the product's name" style="height:80px; width:80px;" />
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.Product.Name)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.Product.Category)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.Guid)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.Price)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.Quantity)
+            </td>
+            <td>
+                <form asp-action="EditItem" method="post">
+                    <input type="hidden" name="ProductId" value=" @Html.DisplayFor(modelItem => item.Guid)" />
+                    <input type="hidden" name="shopId" value="@ViewData["ShopId"]" />
+                    <input type="submit" value="Edit" class="form-control" />
+                </form>
+                <form asp-action="DeleteItem" method="post">
+                    <input type="hidden" name="ProductId" value=" @Html.DisplayFor(modelItem => item.Guid)" />
+                    <input type="hidden" name="shopId" value="@ViewData["ShopId"]" />
+                    <input type="submit" value="Delete" class="form-control" />
+                </form>
+            </td>
+        </tr>
         }
     </tbody>
 </table>

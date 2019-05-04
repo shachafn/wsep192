@@ -10,7 +10,7 @@
 <hr />
 <div class="row">
     <div class="col-md-4">
-        <form asp-action="EditItem">
+        <form asp-action="PostEditItem" asp-route-ShopId="@ViewData["ShopId"]" method="post">
             <div asp-validation-summary="ModelOnly" class="text-danger"></div>
             <div class="form-group">
                 <label asp-for="Quantity" class="control-label"></label>
@@ -24,7 +24,7 @@
             </div>
             <div class="form-group">
                 <label asp-for="Guid" class="control-label"></label>
-                <input type="hidden" asp-for="Guid" class="form-control" />
+                <input type="hidden" asp-for="Guid" value="@ViewData["ProductId"]" class="form-control" />
                 <span asp-validation-for="Guid" class="text-danger"></span>
             </div>
             <div class="form-group">

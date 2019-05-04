@@ -3,8 +3,10 @@ using ApplicationCore.Interfaces.ServiceLayer;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
+using PressentaitionLayer.Models.SellerModels;
 using System;
 using System.Collections.Generic;
+using System.Linq;
 
 namespace PressentaitionLayer.Controllers
 {
@@ -37,7 +39,10 @@ namespace PressentaitionLayer.Controllers
         public IActionResult Manage(string shopId)
         {
             ViewData["ShopId"] = shopId;
-            return View();
+            var shops = _serviceFacade.getUserShops(new Guid(HttpContext.Session.Id));
+            var shop = shops.FirstOrDefault(currshop => currshop.Guid.Equals(new Guid(shopId)));
+
+            return View(new ShopManageIndexModel(shop));
         }
 
         public IActionResult Products(string ShopId)
@@ -57,10 +62,11 @@ namespace PressentaitionLayer.Controllers
         public IActionResult EditItem(string ShopId,string ProductId)
         {
             ViewData["ShopId"] = ShopId;
+            ViewData["ProductID"] = ProductId;
             return View();
         }
         [HttpPost]
-        public IActionResult EditItem(ShopProduct product,string ShopId)
+        public IActionResult PostEditItem(ShopProduct product,string ShopId)
         {
             ViewData["ShopId"] = ShopId;
             _serviceFacade.EditProductInShop(new Guid(HttpContext.Session.Id), new Guid(ShopId), product.Guid,product.Price,product.Quantity);
@@ -72,6 +78,24 @@ namespace PressentaitionLayer.Controllers
             _serviceFacade.RemoveProductFromShop(new Guid(HttpContext.Session.Id), new Guid(ShopId), new Guid(ProductId));
             return RedirectToAction("Products", "Seller", new { ShopId = ShopId });
         }
+
+        [HttpPost]
+        public IActionResult DeleteRole(string OwnerId, string ShopId)
+        {
+            _serviceFacade.RemoveShopManager(new Guid(HttpContext.Session.Id), new Guid(ShopId), new Guid(OwnerId));
+            return RedirectToAction("Manage", "Seller", new { ShopId = ShopId });
+        }
+        [HttpPost]
+        public IActionResult AddOwner(string OwnerId, string ShopId)
+        {
+            _serviceFacade.AddShopOwner(new Guid(HttpContext.Session.Id), new Guid(ShopId), new Guid(OwnerId));
+            return RedirectToAction("Manage", "Seller", new { ShopId = ShopId });
+        }
+        /*public IActionResult Roles(string ShopId)
+        {
+            _serviceFacade.
+            return View();
+        }*/
 
     }
 }

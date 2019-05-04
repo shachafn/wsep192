@@ -1,14 +1,115 @@
 ﻿
+@model PressentaitionLayer.Models.SellerModels.ShopManageIndexModel
 @{
     ViewData["Title"] = "Manage";
 }
 
 <h2>Manage your shop</h2>
-<h3>shop @ViewData["ShopId"]</h3>
-<div>
-    <input type="button" class="btn-lg" value="Owners & Managers" onclick="location.href='@Url.Action("Roles","Seller",new { ShopId=ViewData["ShopId"]})'" />
+<h4>shop @ViewData["ShopId"]</h4>
+<h4>Current Shop state: @Model.Shop.ShopState </h4>
+<div class="col-md-5" style="margin-bottom:20px;">
+    manage products
     <input type="button" class="btn-lg" value="Products" onclick="location.href='@Url.Action("Products","Seller",new { ShopId=ViewData["ShopId"]})'" />
+    @*
+        todo : add shop history
+         <input type="button" class="btn-lg" value="Owners & Managers" onclick="location.href='@Url.Action("History","Seller",new { ShopId=ViewData["ShopId"]})'" />
+    *@
 </div>
- 
+<h4 class="text-center">Shop Owners</h4>
+<table class="table">
+    <thead>
+        <tr>
+            <th></th>
+            <th>
+                Owner Guid
+            </th>
+            <th>
+                Appointer Guid
+            </th>
+            <th></th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var item in Model.Shop.Owners)
+        {
+            <tr>
+                <td>
+                    @*<img src=@getRandomImage() alt="should be product's name" />*@
+                    <img src="~/images/personIcon.png" alt="should be the product's name" style="height:80px; width:80px;" />
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.OwnerGuid)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.AppointerGuid)
+                </td>
+                <td>
+                    <form asp-action="DeleteItem" method="post">
+                        <input type="hidden" name="ProductId" value=" @Html.DisplayFor(modelItem => item.OwnerGuid)" />
+                        <input type="hidden" name="shopId" value="@ViewData["ShopId"]" />
+                        <input type="submit" value="Delete" class="form-control" />
+                    </form>
+                </td>
+            </tr>
+        }
+        <tr>
+            <td class="form-inline">
+                <form asp-action="AddOwner" method="post">
+                    <input type="text" placeholder="new owner Guid" name="OwnerId" required />
+                    <input type="hidden" name="shopId" value="@ViewData["ShopId"]" />
+                    <input type="submit" value="Add Owner" class="form-control" />
+                </form>
+            </td>
+        </tr>
+    </tbody>
+</table>
+
+<h4 class="text-center">Shop Managers</h4>
+<table class="table">
+    <thead>
+        <tr>
+            <th></th>
+            <th>
+                Manager Guid
+            </th>
+            <th>
+                Appointer Guid
+            </th>
+            <th>
+                Privileges
+            </th>
+            <th></th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var item in Model.Shop.Managers)
+        {
+        <tr>
+            <td>
+                @*<img src=@getRandomImage() alt="should be product's name" />*@
+                <img src="~/images/personIcon.png" alt="should be the product's name" style="height:80px; width:80px;" />
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.OwnerGuid)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.AppointerGuid)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.Priviliges.ToString())
+            </td>
+            <td>
+                <form asp-action="DeleteOwner" method="post">
+                    <input type="hidden" name="OwnerId" value=" @Html.DisplayFor(modelItem => item.OwnerGuid)" />
+                    <input type="hidden" name="shopId" value="@ViewData["ShopId"]" />
+                    <input type="submit" value="Delete" class="form-control" />
+                </form>
+            </td>
+        </tr>
+        }
+    </tbody>
+</table>
+
+
 
 

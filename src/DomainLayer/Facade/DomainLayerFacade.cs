@@ -232,12 +232,12 @@ namespace DomainLayer.Facade
             }
         }
 
-        public Guid AddNewDiscountPolicy(UserIdentifier userIdentifier, Guid shopGuid, object policyType, object field1, object field2, object field3, object field4)
+        public Guid AddNewDiscountPolicy(UserIdentifier userIdentifier, Guid shopGuid, object policyType, object field1, object field2, object field3, object field4,object field5)
         {
             VerifySystemIsInitialized();
             IUser user = _userDomain.GetUserObject(userIdentifier);
             IDiscountPolicy newPolicy = new UserDiscountPolicy("dd","dd","dd");
-            _verifier.AddNewDiscountPolicy(ref newPolicy, userIdentifier,shopGuid, policyType, field1, field2, field3,field4);
+            _verifier.AddNewDiscountPolicy(ref newPolicy, userIdentifier,shopGuid, policyType, field1, field2, field3,field4,field5);
             return user.AddNewDiscountPolicy(user.Guid, shopGuid, newPolicy);
         }
 

@@ -249,6 +249,21 @@ namespace Tests
             UserAT.GenerateRandoms(out var anotherCookie, out var anotherUsername, out var anotherPassword);
             Assert.Throws<BadStateException>(() => Tester.PBridge.AddNewPurchasePolicy(anotherCookie, shopGuid, "Product purchase policy", productGuid, "<", 1));
         }
+
+        #endregion
+        #region GR 4.2.2 Shop owner can define discount policy in his store
+        [Test]
+        public static void AddDiscountPolicyAT1()
+        {
+            UserAT.GenerateRandoms(out var cookie, out var username, out var password);
+            UserAT.RegisterUser(cookie, username, password);
+            UserAT.LoginUser(cookie, username, password);
+            Tester.PBridge.ChangeUserState(cookie, "SellerUserState");
+            var shopGuid = Tester.PBridge.OpenShop(cookie);
+            var productGuid = Tester.PBridge.AddProductToShop(cookie, shopGuid, "Galaxy S9", "Cellphones", 2000, 1);
+            Guid res = Tester.PBridge.AddNewDiscountPolicy(cookie, shopGuid, "Product discount policy", productGuid, "<", 2);
+            Assert.AreNotEqual(Guid.Empty, res);
+        }
         #endregion
         #region GR 4.3 - Store's owner can appoint new owner to his store.
 

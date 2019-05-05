@@ -446,6 +446,8 @@ namespace DomainLayer.Facade
                     throw new IllegalArgumentException("Invalid policy type");
             }
         }
+
+        #region - Operators
         private IArithmeticOperator GetArithmeticOperator(string input)
         {
             switch (input)
@@ -475,8 +477,9 @@ namespace DomainLayer.Facade
                     return null;
             }
         }
+        #endregion
 
-        public void AddNewDiscountPolicy(ref IDiscountPolicy policy, UserIdentifier userIdentifier, Guid shopGuid, object policyType, object field1, object field2, object field3 = null, object field4 = null)
+        public void AddNewDiscountPolicy(ref IDiscountPolicy policy, UserIdentifier userIdentifier, Guid shopGuid, object policyType, object field1, object field2, object field3 = null, object field4 = null, object field5 = null)
         {
             if (!(typeof(string) == policyType.GetType()))
                 throw new IllegalArgumentException("Wrong policy type");
@@ -484,8 +487,10 @@ namespace DomainLayer.Facade
             switch (type)
             {
                 case "Product discount policy":
+
                     VerifyShopProductPolicy(new IllegalArgumentException(), field1, field2, field3);
-                    policy = new UserDiscountPolicy((string)field1, field2, (string)field3);
+                    policy = new ProductDiscountPolicy((Guid)field1, (IArithmeticOperator)field2, (int)field3, (int)field4,(string)field5);
+
                     break;
                 case "Cart discount policy":
                     //Operator is given in field2
@@ -496,9 +501,18 @@ namespace DomainLayer.Facade
                     policy = new CartDiscountPolicy((double)field2, (int)field3, GetArithmeticOperator((string)field2), (string)field4);
                     break;
                 case "User discount policy":
+
                     VerifyUserShopPolicy(new IllegalArgumentException(), field1, field2, field3);
                     policy = new UserDiscountPolicy((string)field1, field2, (string)field3);
                     break;
+                case "Compound discount policy":
+                    VerifyCompositeDiscountPolicy(new IllegalArgumentException(), field1, field2, field3, field4,field5);
+                    IPurchasePolicy p1 = VerifyDiscountPolicyExists(shopGuid, (Guid)field1, new PolicyNotFoundException());
+                    IPurchasePolicy p2 = VerifyDiscountPolicyExists(shopGuid, (Guid)field2, new PolicyNotFoundException());
+                    policy = new CompositeDiscountPolicy(p1, p2, GetLogicalOperator((string)field3), (string)field4);
+
+                    break;
+
                 default:
                     throw new IllegalArgumentException("Invalid policy type");
             }

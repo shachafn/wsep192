@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Threading;
 using ApplicationCore.Interfaces.ServiceLayer;
+using DomainLayer;
 using Infrastructure;
 using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Builder;
@@ -10,18 +11,22 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
+using ServiceLayer;
 
 namespace PressentaitionLayer
 {
     public class Startup
     {
         IServiceFacade _facade;
+        NotificationsSender _notificationsSender;
         ILogger<Startup> _logger;
-        public Startup(IConfiguration configuration, IServiceFacade facade, ILogger<Startup> logger)
+        public Startup(IConfiguration configuration, IServiceFacade facade, ILogger<Startup> logger,
+            NotificationsSender notificationsSender)
         {
             Configuration = configuration;
             _facade = facade;
             _logger = logger;
+            _notificationsSender = notificationsSender;
         }
 
         public IConfiguration Configuration { get; }
@@ -56,7 +61,10 @@ namespace PressentaitionLayer
             //services.AddAuthorization(options=> options.AddPolicy("BuyerOnly",policy=>policy.RequireRole("Buyer")));
             services.AddSignalR();  // maybe Core
 
-            _facade.Initialize(new Guid(), "meni", "moni");
+            var g = Guid.NewGuid();
+            _facade.Initialize(g, "meni", "moni");
+            _facade.Logout(g);
+            UpdateCenter.Subscribe(_notificationsSender.HandleUpdate);
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.

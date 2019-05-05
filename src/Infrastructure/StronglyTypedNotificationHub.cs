@@ -3,15 +3,34 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
+using ApplicationCore.Interfaces.Infastracture;
+using ApplicationCore.Interfaces.ServiceLayer;
+using Microsoft.AspNetCore.Http.Connections.Features;
+using Microsoft.AspNetCore.Http.Connections.Internal;
 using Microsoft.AspNetCore.SignalR;
+using Microsoft.Extensions.Logging;
 
 namespace Infrastructure
 {
-    public class StronglyTypedNotificationHub : Hub<INotificationClient>
+    public class StronglyTypedNotificationHub : Hub<INotificationClient>, IUserNotifier
     {
-        public async Task SendMessage(Guid userGuid, string message)
+        readonly ILogger<StronglyTypedNotificationHub> _logger;
+        readonly IConnectionManager _connectionManager;
+
+        public StronglyTypedNotificationHub(ILogger<StronglyTypedNotificationHub> logger,
+            IConnectionManager connectionManager)
         {
-            await Clients.All.RecieveNotification(userGuid, message);
+            _logger = logger;
+            _connectionManager = connectionManager;
+        }
+
+        public async Task SendMessage(ICollection<Guid> targets, string message)
+        {
+            foreach (var target in targets)
+            {
+                var connectionid = _connectionManager.GetConnectionByUserGuid(target);
+                await Clients.Client(connectionid).RecieveNotification(message);
+            };
         }
 
         public Task SendMessageToShopOwners(Guid shopGuid, string message)
@@ -21,19 +40,25 @@ namespace Infrastructure
 
         public override async Task OnConnectedAsync()
         {
-            for (int i = 1; i < 10; i++)
-            {
-                await Clients.Caller.RecieveNotification("Welcome to AviExpress");
-                Thread.Sleep(70 * i);
-            }
+            var sessionId = GetSessionID(Context);
+            _connectionManager.AddConnection(sessionId, Context.ConnectionId);
+
             await Groups.AddToGroupAsync(Context.ConnectionId, "SignalR Users");
             await base.OnConnectedAsync();
         }
 
         public override async Task OnDisconnectedAsync(Exception exception)
         {
+            var sessionId = GetSessionID(Context);
+            _connectionManager.RemoveConnection(sessionId);
             await Groups.RemoveFromGroupAsync(Context.ConnectionId, "SignalR Users");
             await base.OnDisconnectedAsync(exception);
+        }
+
+        private Guid GetSessionID(HubCallerContext context)
+        {
+            var httpContext = ((HttpConnectionContext)Context.Features[typeof(IHttpContextFeature)]).HttpContext;
+            return new Guid(httpContext.Session.Id);
         }
     }
 }

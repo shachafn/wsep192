@@ -9,13 +9,13 @@ function ShowPopUp(title, msg, level) {
     });
     myNotification({
         title: title,
-        message: msg,
-        theme: level
+        message: "",
+        theme: "success"
     })
 }
 
-connection.on("RecieveNotification", function (title, message, theme) {
-    ShowPopUp(title, message, theme);
+connection.on("RecieveNotification", function (title) {
+    ShowPopUp(title);
 });
 
 connection.start().catch(function (err) {

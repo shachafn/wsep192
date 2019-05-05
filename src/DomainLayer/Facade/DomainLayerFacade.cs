@@ -1,6 +1,7 @@
 ﻿using ApplicationCore.Data;
 using ApplicationCore.Entities;
 using ApplicationCore.Entitites;
+using ApplicationCore.Events;
 using ApplicationCore.Exceptions;
 using ApplicationCore.Interfaces.DomainLayer;
 using DomainLayer.Users.States;
@@ -150,7 +151,10 @@ namespace DomainLayer.Facade
         {
             VerifySystemIsInitialized();
             _verifier.VerifyMe(MethodBase.GetCurrentMethod(), userIdentifier, shopGuid, ownerToRemoveGuid);
-            return _userDomain.GetUserObject(userIdentifier).CascadeRemoveShopOwner(shopGuid, ownerToRemoveGuid);
+            var result = _userDomain.GetUserObject(userIdentifier).CascadeRemoveShopOwner(shopGuid, ownerToRemoveGuid);
+            if (result) //Maybe change CascadeRemoveShopOwner in IUser to return a collection of all removed owners.
+                UpdateCenter.RaiseEvent(new RemovedOwnerEvent(ownerToRemoveGuid, shopGuid));
+            return result;
         }
 
         public bool EditProductInCart(UserIdentifier userIdentifier, Guid shopGuid, Guid shopProductGuid, int newAmount)

@@ -1,7 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Text;
-using ApplicationCore.Entities;
 using ApplicationCore.Entities.Users;
 using ApplicationCore.Entitites;
 

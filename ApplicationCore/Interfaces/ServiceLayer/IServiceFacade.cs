@@ -93,7 +93,7 @@ namespace ApplicationCore.Interfaces.ServiceLayer
         /// <returns>Guid of the admin user.</returns>
         Guid Initialize(Guid cookie, string username, string password);
         Guid AddNewPurchasePolicy(Guid userGuid, Guid shopGuid, object policyType, object field1, object field2, object field3, object field4);
-        bool AddNewDiscountPolicy(Guid userGuid, Guid shopGuid, object policyType, object field1, object field2, object field3, object field4);
+        Guid AddNewDiscountPolicy(Guid userGuid, Guid shopGuid, object policyType, object field1, object field2, object field3, object field4);
 
         /////Implements General Requirement 6.2
         /// <summary>

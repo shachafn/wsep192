@@ -33,7 +33,7 @@ namespace ApplicationCore.Entities.Users
         bool SetState(IAbstractUserState newState);
         bool PurchaseCart(Guid guid, Guid shopGuid);
         Guid AddNewPurchasePolicy(Guid userGuid , Guid shopGuid, IPurchasePolicy newPolicy);
-        bool AddNewDiscountPolicy(Guid userGuid ,Guid shopGuid, IDiscountPolicy newPolicy);
+        Guid AddNewDiscountPolicy(Guid userGuid ,Guid shopGuid, IDiscountPolicy newPolicy);
         #endregion
     }
 }

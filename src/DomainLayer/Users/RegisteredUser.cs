@@ -124,7 +124,7 @@ namespace DomainLayer.Users
             return State.AddNewPurchasePolicy(userGuid, shopGuid, newPolicy);
         }
 
-        public bool AddNewDiscountPolicy(Guid userGuid, Guid shopGuid, IDiscountPolicy newPolicy)
+        public Guid AddNewDiscountPolicy(Guid userGuid, Guid shopGuid, IDiscountPolicy newPolicy)
         {
             return State.AddNewDiscountPolicy(userGuid, shopGuid, newPolicy);
         }

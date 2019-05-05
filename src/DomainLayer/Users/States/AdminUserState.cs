@@ -142,7 +142,7 @@ namespace DomainLayer.Users.States
             throw new BadStateException($"Tried to invoke AddNewPurchasePolicy in Admin State");
         }
 
-        public override bool AddNewDiscountPolicy(Guid userGuid, Guid shopGuid, IDiscountPolicy newPolicy)
+        public override Guid AddNewDiscountPolicy(Guid userGuid, Guid shopGuid, IDiscountPolicy newPolicy)
         {
             throw new BadStateException($"Tried to invoke AddNewDiscountPolicy in Admin State");
         }

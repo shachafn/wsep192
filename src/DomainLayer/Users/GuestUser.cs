@@ -159,7 +159,7 @@ namespace ApplicationCore.Entities.Users
             throw new BadStateException($"Tried to invoke AddNewPurchasePolicy in GuestUser");
         }
 
-        public bool AddNewDiscountPolicy(Guid userGuid, Guid shopGuid, IDiscountPolicy newPolicy)
+        public Guid AddNewDiscountPolicy(Guid userGuid, Guid shopGuid, IDiscountPolicy newPolicy)
         {
             throw new BadStateException($"Tried to invoke AddNewDiscountPolicy in GuestUser");
         }

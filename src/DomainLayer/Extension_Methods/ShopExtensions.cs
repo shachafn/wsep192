@@ -141,14 +141,14 @@ namespace DomainLayer.Extension_Methods
             return newPurchasePolicy.Guid;
         }
 
-        public static bool AddNewDiscountPolicy(this Shop shop, IDiscountPolicy newDiscountPolicy)
+        public static Guid AddNewDiscountPolicy(this Shop shop, IDiscountPolicy newDiscountPolicy)
         {
             if (shop.PurchasePolicies == null)
             {
                 shop.DiscountPolicies = new List<IDiscountPolicy>();
             }
             shop.DiscountPolicies.Add(newDiscountPolicy);
-            return true;
+            return newDiscountPolicy.Guid;
         }
         #region Creator/Owner/Manager Verifiers
 

@@ -27,7 +27,7 @@ namespace DomainLayer.Users.States
         public abstract ICollection<Guid> SearchProduct(ICollection<string> toMatch, string searchType);
         public abstract bool PurchaseCart(Guid userGuid, Guid shopGuid);
         public abstract Guid AddNewPurchasePolicy(Guid userGuid, Guid shopGuid, IPurchasePolicy newPolicy);
-        public abstract bool AddNewDiscountPolicy(Guid userGuid, Guid shopGuid, IDiscountPolicy newPolicy);
+        public abstract Guid AddNewDiscountPolicy(Guid userGuid, Guid shopGuid, IDiscountPolicy newPolicy);
 
     }
 }

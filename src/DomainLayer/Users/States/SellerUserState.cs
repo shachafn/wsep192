@@ -127,7 +127,7 @@ namespace DomainLayer.Users.States
             return shop.AddNewPurchasePolicy(newPolicy);
         }
 
-        public override bool AddNewDiscountPolicy(Guid userGuid, Guid shopGuid, IDiscountPolicy newPolicy)
+        public override Guid AddNewDiscountPolicy(Guid userGuid, Guid shopGuid, IDiscountPolicy newPolicy)
         {
             var shop = DomainData.ShopsCollection[shopGuid];
             if (!shop.IsOwner(userGuid))

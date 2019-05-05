@@ -137,7 +137,7 @@ namespace DomainLayer.Users.States
             throw new BadStateException($"Tried to invoke PurchaseCart in Admin State");
         }
 
-        public override bool AddNewPurchasePolicy(Guid userGuid, Guid shopGuid, IPurchasePolicy newPolicy)
+        public override Guid AddNewPurchasePolicy(Guid userGuid, Guid shopGuid, IPurchasePolicy newPolicy)
         {
             throw new BadStateException($"Tried to invoke AddNewPurchasePolicy in Admin State");
         }

@@ -151,7 +151,7 @@ namespace ATBridge
             return _serviceFacade.PurchaseCart(userGuid, shopGuid);
         }
 
-        public bool AddNewPurchasePolicy(Guid userGuid, Guid shopGuid, object policyType, object field1, object field2, object field3 = null, object field4 = null)
+        public Guid AddNewPurchasePolicy(Guid userGuid, Guid shopGuid, object policyType, object field1, object field2, object field3 = null, object field4 = null)
         {
             return _serviceFacade.AddNewPurchasePolicy(userGuid, shopGuid, policyType, field1, field2, field3, field4);
         }

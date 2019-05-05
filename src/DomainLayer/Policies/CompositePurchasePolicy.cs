@@ -23,7 +23,6 @@ namespace DomainLayer.Policies
         public CompositePurchasePolicy(IPurchasePolicy purchasePolicy1, IPurchasePolicy purchasePolicy2, ILogicOperator @operator, string description)
         {
             Guid = Guid.NewGuid();
-
             PurchasePolicy1 = purchasePolicy1;
             PurchasePolicy2 = purchasePolicy2;
             Operator = @operator;

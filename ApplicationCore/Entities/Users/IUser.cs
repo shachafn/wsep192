@@ -32,7 +32,7 @@ namespace ApplicationCore.Entities.Users
         ICollection<Guid> SearchProduct(ICollection<string> toMatch, string searchType);
         bool SetState(IAbstractUserState newState);
         bool PurchaseCart(Guid guid, Guid shopGuid);
-        bool AddNewPurchasePolicy(Guid userGuid , Guid shopGuid, IPurchasePolicy newPolicy);
+        Guid AddNewPurchasePolicy(Guid userGuid , Guid shopGuid, IPurchasePolicy newPolicy);
         bool AddNewDiscountPolicy(Guid userGuid ,Guid shopGuid, IDiscountPolicy newPolicy);
         #endregion
     }

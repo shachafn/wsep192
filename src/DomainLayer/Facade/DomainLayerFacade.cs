@@ -241,14 +241,13 @@ namespace DomainLayer.Facade
             return user.AddNewDiscountPolicy(user.Guid, shopGuid, newPolicy);
         }
 
-        public bool AddNewPurchasePolicy(UserIdentifier userIdentifier, Guid shopGuid, object policyType, object field1, object field2, object field3, object field4)
+        public Guid AddNewPurchasePolicy(UserIdentifier userIdentifier, Guid shopGuid, object policyType, object field1, object field2, object field3, object field4)
         {
             VerifySystemIsInitialized();
             IUser user = _userDomain.GetUserObject(userIdentifier);
             IPurchasePolicy newPolicy = new UserPurchasePolicy("ff","ff","ff");
             _verifier.AddNewPurchasePolicy(ref newPolicy, userIdentifier,shopGuid, policyType, field1, field2, field3,field4);
-            user.AddNewPurchasePolicy(user.Guid, shopGuid, newPolicy);
-            return true;
+            return user.AddNewPurchasePolicy(user.Guid, shopGuid, newPolicy);
         }
     }
 }

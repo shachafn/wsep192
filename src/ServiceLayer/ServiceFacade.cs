@@ -152,7 +152,7 @@ namespace ServiceLayer
             return _domainLayerFacade.AddNewDiscountPolicy(userGuid, shopGuid, policyType, field1, field2, field3, field4);
         }
 
-        internal bool AddNewPurchasePolicy(UserIdentifier userGuid, Guid shopGuid, object policyType, object field1, object field2, object field3, object field4)
+        internal Guid AddNewPurchasePolicy(UserIdentifier userGuid, Guid shopGuid, object policyType, object field1, object field2, object field3, object field4)
         {
             return _domainLayerFacade.AddNewPurchasePolicy(userGuid, shopGuid, policyType, field1, field2, field3, field4);
         }

@@ -156,7 +156,7 @@ namespace DomainLayer.Data.Entitites.Users.States
             return true;
         }
 
-        public override bool AddNewPurchasePolicy(Guid userGuid, Guid shopGuid, IPurchasePolicy newPolicy)
+        public override Guid AddNewPurchasePolicy(Guid userGuid, Guid shopGuid, IPurchasePolicy newPolicy)
         {
             throw new BadStateException($"Tried to invoke AddNewPurchasePolicy in Buyer State");
         }

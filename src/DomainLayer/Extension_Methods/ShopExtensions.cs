@@ -131,14 +131,14 @@ namespace DomainLayer.Extension_Methods
             return true;
         }
 
-        public static bool AddNewPurchasePolicy(this Shop shop,IPurchasePolicy newPurchasePolicy)
+        public static Guid AddNewPurchasePolicy(this Shop shop,IPurchasePolicy newPurchasePolicy)
         {
             if (shop.PurchasePolicies == null)
             {
                 shop.PurchasePolicies = new List<IPurchasePolicy>();
             }
             shop.PurchasePolicies.Add(newPurchasePolicy);
-            return true;
+            return newPurchasePolicy.Guid;
         }
 
         public static bool AddNewDiscountPolicy(this Shop shop, IDiscountPolicy newDiscountPolicy)

@@ -465,7 +465,7 @@ namespace ATBridge
         bool ChangeUserState(Guid userGuid, string newState);
 
 
-        bool AddNewPurchasePolicy(Guid userGuid, Guid shopGuid, object policyType, object field1, object field2, object field3 = null, object field4 = null);
+        Guid AddNewPurchasePolicy(Guid userGuid, Guid shopGuid, object policyType, object field1, object field2, object field3 = null, object field4 = null);
         bool AddNewDiscountPolicy(Guid userGuid, Guid shopGuid, object policyType, object field1, object field2, object field3 = null, object field4 = null);
 
         /// <summary>

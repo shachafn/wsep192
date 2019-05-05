@@ -119,7 +119,7 @@ namespace DomainLayer.Users
             return State.PurchaseCart(userGuid,shopGuid);
         }
 
-        public bool AddNewPurchasePolicy(Guid userGuid, Guid shopGuid, IPurchasePolicy newPolicy)
+        public Guid AddNewPurchasePolicy(Guid userGuid, Guid shopGuid, IPurchasePolicy newPolicy)
         {
             return State.AddNewPurchasePolicy(userGuid, shopGuid, newPolicy);
         }

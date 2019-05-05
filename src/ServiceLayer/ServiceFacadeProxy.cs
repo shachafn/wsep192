@@ -196,7 +196,7 @@ namespace ServiceLayer
             return _serviceFacade.PurchaseCart(userGuid, shopGuid);
         }
 
-        public bool AddNewPurchasePolicy(Guid cookie, Guid shopGuid, object policyType, object field1, object field2, object field3 = null, object field4 = null)
+        public Guid AddNewPurchasePolicy(Guid cookie, Guid shopGuid, object policyType, object field1, object field2, object field3 = null, object field4 = null)
         {
             var userGuid = _sessionManager.ResolveCookie(cookie);
             return _serviceFacade.AddNewPurchasePolicy(userGuid, shopGuid, policyType, field1, field2, field3, field4);

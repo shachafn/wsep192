@@ -189,7 +189,7 @@ namespace Tests
             var shopGuid = Tester.PBridge.OpenShop(cookie);
             var galaxyGuid = AddProductToShop(cookie, shopGuid, "Galaxy S9", "Cellphones", 2000, 10);
             //Empty guid does not match any product
-            Assert.Throws<ProductNotFoundException>(() => Tester.PBridge.EditProductInShop(cookie, shopGuid, Guid.Empty, 1500, 20)); 
+            Assert.Throws<ProductNotFoundException>(() => Tester.PBridge.EditProductInShop(cookie, shopGuid, Guid.Empty, 1500, 20));
         }
 
         [Test]
@@ -217,8 +217,8 @@ namespace Tests
             Tester.PBridge.ChangeUserState(cookie, "SellerUserState");
             var shopGuid = Tester.PBridge.OpenShop(cookie);
             var productGuid = Tester.PBridge.AddProductToShop(cookie, shopGuid, "Galaxy S9", "Cellphones", 2000, 1);
-            bool res = Tester.PBridge.AddNewPurchasePolicy(cookie, shopGuid, "Product purchase policy", productGuid, "<", 1);
-            Assert.True(res);
+            Guid res = Tester.PBridge.AddNewPurchasePolicy(cookie, shopGuid, "Product purchase policy", productGuid, "<", 1);
+            Assert.AreNotEqual(Guid.Empty, res);
         }
 
         [Test]
@@ -231,10 +231,10 @@ namespace Tests
             var shopGuid = Tester.PBridge.OpenShop(cookie);
             var productGuid = Tester.PBridge.AddProductToShop(cookie, shopGuid, "Galaxy S9", "Cellphones", 2000, 1);
             var productGuid1 = Tester.PBridge.AddProductToShop(cookie, shopGuid, "Galaxy S8", "Cellphones", 3000, 1);
-            Tester.PBridge.AddNewPurchasePolicy(cookie, shopGuid, "Product purchase policy", productGuid, ">", 1);
-            Tester.PBridge.AddNewPurchasePolicy(cookie, shopGuid, "Product purchase policy", productGuid1, ">", 1);
-            bool res = Tester.PBridge.AddNewPurchasePolicy(cookie, shopGuid, "Compound purchase policy", null, null, null, null);
-            Assert.True(res);
+            var policyGuid = Tester.PBridge.AddNewPurchasePolicy(cookie, shopGuid, "Product purchase policy", productGuid, ">", 1);
+            var policyGuid1 = Tester.PBridge.AddNewPurchasePolicy(cookie, shopGuid, "Product purchase policy", productGuid1, ">", 1);
+            Guid res = Tester.PBridge.AddNewPurchasePolicy(cookie, shopGuid, "Compound purchase policy", policyGuid, policyGuid1, "^", null);
+            Assert.AreNotEqual(Guid.Empty, res);
         }
 
         [Test]
@@ -277,7 +277,7 @@ namespace Tests
             Tester.PBridge.ChangeUserState(cookie, "SellerUserState");
             var shopGuid = Tester.PBridge.OpenShop(cookie);
             Assert.Throws<UserNotFoundException>(
-                ()=> Tester.PBridge.AddShopOwner(cookie, shopGuid, Guid.Empty));
+                () => Tester.PBridge.AddShopOwner(cookie, shopGuid, Guid.Empty));
         }
 
         [Test]
@@ -328,7 +328,7 @@ namespace Tests
         [Test]
         public static void RemoveOfOwnerAT2()
         {
-            Assert.Throws<UserNotFoundException>(()=> Tester.PBridge.CascadeRemoveShopOwner(Tester.GroismanGuid, Tester._groismanShop, Tester.GuestGuid));
+            Assert.Throws<UserNotFoundException>(() => Tester.PBridge.CascadeRemoveShopOwner(Tester.GroismanGuid, Tester._groismanShop, Tester.GuestGuid));
         }
 
         [Test]

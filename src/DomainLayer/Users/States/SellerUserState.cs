@@ -117,7 +117,7 @@ namespace DomainLayer.Users.States
             throw new BadStateException($"Tried to invoke PurchaseCart in Seller State");
         }
 
-        public override bool AddNewPurchasePolicy(Guid userGuid, Guid shopGuid, IPurchasePolicy newPolicy)
+        public override Guid AddNewPurchasePolicy(Guid userGuid, Guid shopGuid, IPurchasePolicy newPolicy)
         {
             var shop = DomainData.ShopsCollection[shopGuid];
             if (!shop.IsOwner(userGuid))

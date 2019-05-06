@@ -236,7 +236,7 @@ namespace DomainLayer.Facade
         {
             VerifySystemIsInitialized();
             IUser user = _userDomain.GetUserObject(userIdentifier);
-            IDiscountPolicy newPolicy = new UserDiscountPolicy("dd","dd","dd");
+            IDiscountPolicy newPolicy = new UserDiscountPolicy();
             _verifier.AddNewDiscountPolicy(ref newPolicy, userIdentifier,shopGuid, policyType, field1, field2, field3,field4,field5);
             return user.AddNewDiscountPolicy(user.Guid, shopGuid, newPolicy);
         }
@@ -245,7 +245,7 @@ namespace DomainLayer.Facade
         {
             VerifySystemIsInitialized();
             IUser user = _userDomain.GetUserObject(userIdentifier);
-            IPurchasePolicy newPolicy = new UserPurchasePolicy("ff","ff","ff");
+            IPurchasePolicy newPolicy = new UserPurchasePolicy();
             _verifier.AddNewPurchasePolicy(ref newPolicy, userIdentifier,shopGuid, policyType, field1, field2, field3,field4);
             return user.AddNewPurchasePolicy(user.Guid, shopGuid, newPolicy);
         }

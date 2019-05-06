@@ -143,7 +143,7 @@ namespace DomainLayer.Extension_Methods
 
         public static Guid AddNewDiscountPolicy(this Shop shop, IDiscountPolicy newDiscountPolicy)
         {
-            if (shop.PurchasePolicies == null)
+            if (shop.DiscountPolicies == null)
             {
                 shop.DiscountPolicies = new List<IDiscountPolicy>();
             }

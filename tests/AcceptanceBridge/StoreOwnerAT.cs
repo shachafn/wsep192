@@ -216,8 +216,8 @@ namespace Tests
             UserAT.LoginUser(cookie, username, password);
             Tester.PBridge.ChangeUserState(cookie, "SellerUserState");
             var shopGuid = Tester.PBridge.OpenShop(cookie);
-            var productGuid = Tester.PBridge.AddProductToShop(cookie, shopGuid, "Galaxy S9", "Cellphones", 2000, 1);
-            Guid res = Tester.PBridge.AddNewPurchasePolicy(cookie, shopGuid, "Product purchase policy", productGuid, "<", 1);
+            var productGuid = Tester.PBridge.AddProductToShop(cookie, shopGuid, "Galaxy S9", "Cellphones", 2000, 4);
+            Guid res = Tester.PBridge.AddNewPurchasePolicy(cookie, shopGuid, "Product purchase policy", productGuid, "<", 2, "Must buy less than 2 Galaxy9");
             Assert.AreNotEqual(Guid.Empty, res);
         }
 
@@ -229,11 +229,11 @@ namespace Tests
             UserAT.LoginUser(cookie, username, password);
             Tester.PBridge.ChangeUserState(cookie, "SellerUserState");
             var shopGuid = Tester.PBridge.OpenShop(cookie);
-            var productGuid = Tester.PBridge.AddProductToShop(cookie, shopGuid, "Galaxy S9", "Cellphones", 2000, 1);
-            var productGuid1 = Tester.PBridge.AddProductToShop(cookie, shopGuid, "Galaxy S8", "Cellphones", 3000, 1);
-            var policyGuid = Tester.PBridge.AddNewPurchasePolicy(cookie, shopGuid, "Product purchase policy", productGuid, ">", 1);
-            var policyGuid1 = Tester.PBridge.AddNewPurchasePolicy(cookie, shopGuid, "Product purchase policy", productGuid1, ">", 1);
-            Guid res = Tester.PBridge.AddNewPurchasePolicy(cookie, shopGuid, "Compound purchase policy", policyGuid, policyGuid1, "^", null);
+            var productGuid = Tester.PBridge.AddProductToShop(cookie, shopGuid, "Galaxy S9", "Cellphones", 2000, 5);
+            var productGuid1 = Tester.PBridge.AddProductToShop(cookie, shopGuid, "Iphone X", "Cellphones", 3000, 7);
+            var policyGuid = Tester.PBridge.AddNewPurchasePolicy(cookie, shopGuid, "Product purchase policy", productGuid, ">", 1, "Must buy more than 1 Galaxy9");
+            var policyGuid1 = Tester.PBridge.AddNewPurchasePolicy(cookie, shopGuid, "Product purchase policy", productGuid1, ">", 2, "Must buy more than 2 Iphone X");
+            Guid res = Tester.PBridge.AddNewPurchasePolicy(cookie, shopGuid, "Compound purchase policy", policyGuid, "^", policyGuid1, "Must buy more than 1 Galaxy9 XOR more than 2 Iphone X");
             Assert.AreNotEqual(Guid.Empty, res);
         }
 
@@ -247,7 +247,7 @@ namespace Tests
             var shopGuid = Tester.PBridge.OpenShop(cookie);
             var productGuid = Tester.PBridge.AddProductToShop(cookie, shopGuid, "Galaxy S9", "Cellphones", 2000, 1);
             UserAT.GenerateRandoms(out var anotherCookie, out var anotherUsername, out var anotherPassword);
-            Assert.Throws<BadStateException>(() => Tester.PBridge.AddNewPurchasePolicy(anotherCookie, shopGuid, "Product purchase policy", productGuid, "<", 1));
+            Assert.Throws<BadStateException>(() => Tester.PBridge.AddNewPurchasePolicy(anotherCookie, shopGuid, "Product purchase policy", productGuid, "<", 2, "Must buy less than 2 Galaxy9"));
         }
 
         #endregion
@@ -261,10 +261,50 @@ namespace Tests
             Tester.PBridge.ChangeUserState(cookie, "SellerUserState");
             var shopGuid = Tester.PBridge.OpenShop(cookie);
             var productGuid = Tester.PBridge.AddProductToShop(cookie, shopGuid, "Galaxy S9", "Cellphones", 2000, 1);
-            Guid res = Tester.PBridge.AddNewDiscountPolicy(cookie, shopGuid, "Product discount policy", productGuid, "<", 2);
+            Guid res = Tester.PBridge.AddNewDiscountPolicy(cookie, shopGuid, "Product discount policy", productGuid, ">", 2, 40, "40% if you buy more than 2 Galaxy9");
             Assert.AreNotEqual(Guid.Empty, res);
         }
+        [Test]
+        public static void AddDiscountPolicyAT1_CompoundPolicy()
+        {
+            UserAT.GenerateRandoms(out var cookie, out var username, out var password);
+            UserAT.RegisterUser(cookie, username, password);
+            UserAT.LoginUser(cookie, username, password);
+            Tester.PBridge.ChangeUserState(cookie, "SellerUserState");
+            var shopGuid = Tester.PBridge.OpenShop(cookie);
+            var productHammer = Tester.PBridge.AddProductToShop(cookie, shopGuid, "Hammer", "Tools", 100, 5);
+            var productScrewDriver = Tester.PBridge.AddProductToShop(cookie, shopGuid, "Screwdriver", "Tools", 90, 7);
+            var productNail = Tester.PBridge.AddProductToShop(cookie, shopGuid, "Nail", "Tools", 5, 100);
+            var productDisc = Tester.PBridge.AddProductToShop(cookie, shopGuid, "Disc", "Tools", 200, 4);
+            var policyHammer = Tester.PBridge.AddNewDiscountPolicy(cookie, shopGuid, "Product discount policy", productHammer, ">", 0, 0, "Buy Hammer");
+            var policyScrewDriver = Tester.PBridge.AddNewDiscountPolicy(cookie, shopGuid, "Product discount policy", productScrewDriver, ">", 0, 0, "Buy Screwdriver");
+            var policyHammerAndScrew = Tester.PBridge.AddNewDiscountPolicy(cookie, shopGuid, "Compound discount policy", policyHammer, "&", policyScrewDriver,0, "Buy Hammer and Screwdriver");
+            var policyDisc = Tester.PBridge.AddNewDiscountPolicy(cookie, shopGuid, "Product discount policy", productDisc, ">", 0, 0, "Buy Disc");
+            var policyHammerAndScrew_OrDisc = Tester.PBridge.AddNewDiscountPolicy(cookie, shopGuid, "Compound discount policy", policyHammerAndScrew, "|", policyDisc, 0, "Buy (Hammer and Screwdriver) or Disc");
+            var policyNail = Tester.PBridge.AddNewDiscountPolicy(cookie, shopGuid, "Product discount policy", productNail, ">", 0, 0, "Buy Nails");
+            var policyHammerAndScrew_OrDisc_impliesNail = Tester.PBridge.AddNewDiscountPolicy(cookie, shopGuid, "Compound discount policy", policyHammerAndScrew_OrDisc, "->", policyNail, 60, "Buy (Hammer and Screwdriver) or Disc implies 60% on Nails");
+            Assert.AreNotEqual(Guid.Empty, policyHammerAndScrew_OrDisc_impliesNail);
+        }
+
+        [Test]
+        public static void AddDiscountPolicyAT2()
+        {
+            UserAT.GenerateRandoms(out var cookie, out var username, out var password);
+            UserAT.RegisterUser(cookie, username, password);
+            UserAT.LoginUser(cookie, username, password);
+            Tester.PBridge.ChangeUserState(cookie, "SellerUserState");
+            var shopGuid = Tester.PBridge.OpenShop(cookie);
+            var productGuid = Tester.PBridge.AddProductToShop(cookie, shopGuid, "Galaxy S9", "Cellphones", 2000, 1);
+            UserAT.GenerateRandoms(out var anotherCookie, out var anotherUsername, out var anotherPassword);
+            Assert.Throws<BadStateException>(() => Tester.PBridge.AddNewDiscountPolicy(anotherCookie, shopGuid, "Product discount policy", productGuid, ">", 0, 20, "20% on Galaxy S9"));
+        }
+
+
+
+
+
         #endregion
+
         #region GR 4.3 - Store's owner can appoint new owner to his store.
 
         [Test]
@@ -312,7 +352,6 @@ namespace Tests
                 () => Tester.PBridge.AddShopOwner(cookie, shopGuid, benGuid));
         }
         #endregion
-
         //CAN NOT TEST THAT!
         /*[Test]
         public static void AppointmentOfNewOwnerAT4()

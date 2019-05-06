@@ -42,7 +42,7 @@ namespace ApplicationCore.Entitites
             {
                 foreach (IDiscountPolicy policy in shop.DiscountPolicies)
                 {
-                    policy.CheckPolicy(ref cartRef, record.Item1, record.Item2, user);
+                    policy.ApplyPolicy(ref cartRef, record.Item1, record.Item2, user);
                 }
             }
 

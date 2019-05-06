@@ -202,10 +202,10 @@ namespace ServiceLayer
             return _serviceFacade.AddNewPurchasePolicy(userGuid, shopGuid, policyType, field1, field2, field3, field4);
         }
 
-        public Guid AddNewDiscountPolicy(Guid cookie, Guid shopGuid, object policyType, object field1, object field2, object field3 = null, object field4 = null)
+        public Guid AddNewDiscountPolicy(Guid cookie, Guid shopGuid, object policyType, object field1, object field2, object field3 = null, object field4 = null,object field5=null)
         {
             var userGuid = _sessionManager.ResolveCookie(cookie);
-            return _serviceFacade.AddNewDiscountPolicy(userGuid, shopGuid, policyType, field1, field2, field3, field4);
+            return _serviceFacade.AddNewDiscountPolicy(userGuid, shopGuid, policyType, field1, field2, field3, field4,field5);
         }
     }
 }

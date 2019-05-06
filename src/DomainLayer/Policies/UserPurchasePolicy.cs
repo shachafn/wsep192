@@ -15,7 +15,7 @@ namespace DomainLayer.Policies
         private object Value { get; }
         private string Description { get; }
 
-
+        public UserPurchasePolicy() { } //Empty constructor for ref
         public UserPurchasePolicy(string fieldName,object value,string description)
         {
             Guid = Guid.NewGuid();

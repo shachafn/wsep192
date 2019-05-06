@@ -143,9 +143,9 @@ namespace ATBridge
             return _real == null ? Guid.Empty : _real.AddNewPurchasePolicy(userGuid, shopGuid, policyType, field1, field2, field3, field4);
         }
 
-        public Guid AddNewDiscountPolicy(Guid userGuid, Guid shopGuid, object policyType, object field1, object field2, object field3 = null, object field4 = null,object field5=null)
+        public Guid AddNewDiscountPolicy(Guid userGuid, Guid shopGuid, object policyType, object field1, object field2, object field3 = null, object field4 = null, object field5 = null)
         {
-            return _real == null ? Guid.Empty : _real.AddNewDiscountPolicy(userGuid, shopGuid, policyType, field1, field2, field3, field4,field5);
+            return _real == null ? Guid.Empty : _real.AddNewDiscountPolicy(userGuid, shopGuid, policyType, field1, field2, field3, field4, field5);
         }
     }
 }

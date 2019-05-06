@@ -1,10 +1,7 @@
 using System;
-using ApplicationCore.Entities;
 using ApplicationCore.Entities.Users;
 using ApplicationCore.Entitites;
-using DomainLayer.Data.Entitites;
-using DomainLayer.Data.Entitites.Users;
-using DomainLayer.Operators.ArithmeticOperators;
+using DomainLayer.Operators;
 
 
 namespace DomainLayer.Policies
@@ -18,7 +15,7 @@ namespace DomainLayer.Policies
         private IArithmeticOperator Operator { get; }
         private string Description { get; }
 
-        public ProductPurchasePolicy(Guid productGuid, IArithmeticOperator givenOperator,int expectedQuantity,string description)
+        public ProductPurchasePolicy(Guid productGuid, IArithmeticOperator givenOperator, int expectedQuantity, string description)
         {
             Guid = Guid.NewGuid();
 
@@ -30,7 +27,7 @@ namespace DomainLayer.Policies
 
         public bool CheckPolicy(ShoppingCart cart, Guid productGuid, int quantity, BaseUser user)
         {
-            return productGuid.CompareTo(ProductGuid) == 0 ? Operator.IsValid(ExpectedQuantity, quantity) : true ;
+            return productGuid.CompareTo(ProductGuid) == 0 ? Operator.IsValid(ExpectedQuantity, quantity) : true;
         }
     }
 }

@@ -14,7 +14,6 @@ using Microsoft.AspNetCore.Builder;
 using Serilog;
 using Infrastructure;
 using Microsoft.AspNetCore.SignalR;
-using ApplicationCore.Interfaces.Infastracture;
 
 namespace PressentaitionLayer
 {
@@ -51,14 +50,8 @@ namespace PressentaitionLayer
             services.AddSingleton<DomainLayerFacadeVerifier>();
             services.AddSingleton<IDomainLayerFacade, DomainLayerFacade>();
             services.AddSingleton<ISessionManager, SessionManager>();
-            //SignalR
-            services.AddSingleton<IConnectionManager, ConnectionManager>();
-            //IUserIdProvider services.AddSingleton<IUserIdProvider, ConnectionManager>();
-            services.AddSingleton<IUserNotifier,StronglyTypedNotificationHub>();
-            //NotificationsSender
 
-            services.AddSingleton<NotificationsSender>();
-
+            services.AddSingleton<NotificationsCenter>();
 
             services.AddSingleton<ServiceFacade>();
             services.AddSingleton<IServiceFacade, ServiceFacadeProxy>();

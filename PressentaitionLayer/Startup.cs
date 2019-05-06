@@ -18,15 +18,16 @@ namespace PressentaitionLayer
     public class Startup
     {
         IServiceFacade _facade;
-        NotificationsSender _notificationsSender;
         ILogger<Startup> _logger;
+        NotificationsCenter _notificationsCenter;
+
         public Startup(IConfiguration configuration, IServiceFacade facade, ILogger<Startup> logger,
-            NotificationsSender notificationsSender)
+            NotificationsCenter notificationsCenter)
         {
             Configuration = configuration;
             _facade = facade;
             _logger = logger;
-            _notificationsSender = notificationsSender;
+            _notificationsCenter = notificationsCenter;
         }
 
         public IConfiguration Configuration { get; }
@@ -64,7 +65,7 @@ namespace PressentaitionLayer
             var g = Guid.NewGuid();
             _facade.Initialize(g, "meni", "moni");
             _facade.Logout(g);
-            UpdateCenter.Subscribe(_notificationsSender.HandleUpdate);
+            UpdateCenter.Subscribe(_notificationsCenter.HandleUpdate);
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.

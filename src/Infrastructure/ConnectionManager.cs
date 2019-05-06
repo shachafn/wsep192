@@ -39,6 +39,23 @@ namespace Infrastructure
                 return null;
         }
 
+        public Guid GetSessionIdByConnectionId(string connectionId)
+        {
+            if (_sessionToConnectionDictionary.ContainsValue(connectionId))
+            {
+                var userGuid = _sessionToConnectionDictionary.FirstOrDefault(guid => guid.Value.Equals(connectionId)).Key;
+                return _sessionManager.GetSessionId(userGuid);
+            }
+            else
+                return Guid.Empty;
+        }
+
+        public Guid GetUserGuidByConnectionId(string connectionId)
+        {
+            var sessionId = GetSessionIdByConnectionId(connectionId);
+            return _sessionManager.GetUserGuid(sessionId);
+        }
+
         public void AddConnection(Guid sessionId, string connectionId)
         {
             if (_sessionToConnectionDictionary.ContainsKey(sessionId))
@@ -74,6 +91,11 @@ namespace Infrastructure
         {
             var httpContext = ((HttpConnectionContext)context.Features[typeof(IHttpContextFeature)]).HttpContext;
             return new Guid(httpContext.Session.Id);
+        }
+
+        bool IConnectionManager.IsConnected(Guid userGuid)
+        {
+            return _sessionToConnectionDictionary.ContainsKey(userGuid);
         }
     }
 }

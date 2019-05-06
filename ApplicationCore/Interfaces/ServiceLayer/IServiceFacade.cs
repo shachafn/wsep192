@@ -1,5 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
+using ApplicationCore.Entities.Users;
+using ApplicationCore.Entitites;
 using ApplicationCore.Exceptions;
 
 namespace ApplicationCore.Interfaces.ServiceLayer
@@ -70,7 +72,7 @@ namespace ApplicationCore.Interfaces.ServiceLayer
 
         /////Implements General Requirement 2.8. Not entirely, only purchase of the entier bag.
         /////////////// REDO CONSTRAINTS, CHANGED FROM CART TO BAG ////////////////////////
-        bool PurchaseBag(Guid cookie);
+        bool PurchaseCart(Guid cookie, Guid shopGuid);
 
         /////Implements General Requirement 1.1
         /// <summary>
@@ -169,7 +171,7 @@ namespace ApplicationCore.Interfaces.ServiceLayer
         /// <exception cref="ProductNotFoundException">When the productGuid does not match any product in the shop.</exception>
         /// <exception cref="BrokenConstraintException">When the product already exists in the user's cart.</exception>
         /// <returns>True.</returns>
-        bool AddProductToCart(Guid cookie, Guid productGuid, Guid shopGuid, int quantity);
+        bool AddProductToCart(Guid cookie, Guid shopGuid, Guid productGuid, int quantity);
 
         /////Implements General Requirement 2.7
         /// <summary>
@@ -337,7 +339,7 @@ namespace ApplicationCore.Interfaces.ServiceLayer
         /// <exception cref="IllegalArgumentException">When toMatch contains illegal strings.</exception>
         /// <exception cref="IllegalArgumentException">When toMatch is empty.</exception>
         /// <returns>A list of products.</returns>
-        ICollection<Guid> SearchProduct(Guid cookie, ICollection<string> toMatch, string searchType);
+        ICollection<Tuple<ShopProduct, Guid>> SearchProduct(Guid cookie, ICollection<string> toMatch, string searchType);
 
         /////Implements General Requirement 4.3
         /// <summary>
@@ -463,5 +465,23 @@ namespace ApplicationCore.Interfaces.ServiceLayer
         /// Clears all data and requires the system to be Initialized to use it.
         /// </summary>
         void ClearSystem();
+
+
+        //TODO DEFINE CONSTRAINTS
+        ICollection<Tuple<Guid, Product, int>> GetPurchaseHistory(Guid cookie);
+
+        //TODO DEFINE CONSTRAINTS
+        ICollection<BaseUser> GetAllUsersExceptMe(Guid cookie);
+
+
+        /*
+         utils
+         */
+
+        IEnumerable<Shop> GetUserShops(Guid id);
+        IEnumerable<ShopProduct> GetShopProducts(Guid id,Guid shopGuid);
+        ICollection<Shop> GetAllShops(Guid cookie);
+        IEnumerable<Tuple<ShoppingCart, IEnumerable<ShopProduct>>> getUserBag(Guid cookie);
+        void CloseShopPermanently(Guid cookie, Guid shopGuid);
     }
 }

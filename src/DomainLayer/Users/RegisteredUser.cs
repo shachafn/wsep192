@@ -1,7 +1,11 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
+using ApplicationCore.Data;
 using ApplicationCore.Entities.Users;
+using ApplicationCore.Entitites;
 using DomainLaye.Users.States;
+using DomainLayer.Extension_Methods;
 using DomainLayer.Users.States;
 
 namespace DomainLayer.Users
@@ -31,9 +35,9 @@ namespace DomainLayer.Users
 
         public ICollection<Guid> GetShoppingHistory() => State.GetShoppingHistory();
 
-        public bool PurchaseBag()
+        public bool PurchaseCart(Guid shopGuid)
         {
-            return State.PurchaseBag();
+            return State.PurchaseCart(_baseUser, shopGuid);
         }
 
         public Guid OpenShop() => State.OpenShop(_baseUser);        
@@ -107,9 +111,14 @@ namespace DomainLayer.Users
             return State.RemoveShopManager(_baseUser, shopGuid, managerToRemoveGuid);
         }
 
-        public ICollection<Guid> SearchProduct(ICollection<string> toMatch, string searchType)
+        public ICollection<Tuple<ShopProduct, Guid>> SearchProduct(ICollection<string> toMatch, string searchType)
         {
             return State.SearchProduct(toMatch, searchType);
+        }
+
+        public ICollection<Tuple<Guid, Product, int>> GetPurchaseHistory()
+        {
+            return DomainData.ShopsCollection.SelectMany(shop => shop.GetPurchaseHistory(Guid)).ToList();
         }
     }
 }

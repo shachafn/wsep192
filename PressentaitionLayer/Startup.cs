@@ -53,7 +53,9 @@ namespace PressentaitionLayer
             services.AddSession();
             //services.AddAuthorization(options=> options.AddPolicy("BuyerOnly",policy=>policy.RequireRole("Buyer")));
 
-            _facade.Initialize(new Guid(), "meni", "moni");
+            Guid systemCookie = Guid.NewGuid();
+            _facade.Initialize(systemCookie, "meni", "moni");
+            _facade.Logout(systemCookie);
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.

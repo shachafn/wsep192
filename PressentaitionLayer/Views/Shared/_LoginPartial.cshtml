@@ -5,17 +5,66 @@
 {
     <form asp-area="Identity" asp-page="/Account/Logout" asp-route-returnUrl="@Url.Action("Index", "Home", new { area = "" })" method="post" id="logoutForm" class="navbar-right">
         <ul class="nav navbar-nav navbar-right">
+            <partial name="_ProfilePartial" />
             <li>
-                <a asp-area="Identity" asp-page="/Account/Manage/Index" title="Manage">Hello @User.Identity.Name!</a>
-            </li>
-            <li>
-                <button asp-controller="Account" type="submit" class="btn btn-link navbar-btn navbar-link" asp-action="Logout">Logout</button>          
+                <button asp-controller="Account" type="submit" class="btn btn-link navbar-btn navbar-link" asp-action="Logout">Logout</button>
             </li>
         </ul>
     </form>
+    @if (User.IsInRole("Buyer"))
+    {
+        <ul class="nav navbar-nav">
+            <li><a asp-area="" asp-controller="Home" asp-action="Index">Home</a></li>
+            <li><a asp-area="" asp-controller="Home" asp-action="About">About</a></li>
+            <li><a asp-area="" asp-controller="Home" asp-action="Contact">Contact</a></li>
+            <li><a asp-area="" asp-controller="Home" asp-action="Debug">Debug</a></li>
+            <li>
+                <form class="form-inline" asp-controller="Buyer" asp-action="Search" method="post">
+                    <input name="searchString" type="text" class="form-control" aria-label="Search" placeholder="Search" style="margin:8px 0;" />
+                    <input type="submit" value="Search" class="btn btn-sm">
+                </form>
+            </li>
+        </ul>
+        <ul class="nav navbar-nav navbar-right">
+            <li>
+                <a class="glyphicon glyphicon-shopping-cart" asp-controller="Buyer" asp-action="ShoppingCart"></a>
+            </li>
+        </ul>
+    }
+    else if (User.IsInRole("Admin"))
+    {
+        <ul class="nav navbar-nav">
+            <li><a asp-area="" asp-controller="Admin" asp-action="Index">Home</a></li>
+            <li><a asp-area="" asp-controller="Admin" asp-action="Users">Users</a></li>
+            <li><a asp-area="" asp-controller="Admin" asp-action="Shops">Shops</a></li>
+            <li><a asp-area="" asp-controller="Admin" asp-action="Logs">Logs</a></li>
+            <li><a asp-area="" asp-controller="Admin" asp-action="Complaints">View Complaints</a></li>
+            <li><a asp-area="" asp-controller="Admin" asp-action="Debug">Debug</a></li>
+        </ul>
+    }
+    else// Seller
+    {
+        <ul class="nav navbar-nav">
+            <li><a asp-area="" asp-controller="Seller" asp-action="Index">Home</a></li>
+            <li><a asp-area="" asp-controller="Seller" asp-action="MyShops">My Shops</a></li>
+            <li><a asp-area="" asp-controller="Home" asp-action="Debug">Debug</a></li>
+        </ul>
+    }
 }
 else
 {
+    <ul class="nav navbar-nav">
+        <li><a asp-area="" asp-controller="Home" asp-action="Index">Home</a></li>
+        <li><a asp-area="" asp-controller="Home" asp-action="About">About</a></li>
+        <li><a asp-area="" asp-controller="Home" asp-action="Contact">Contact</a></li>
+        <li><a asp-area="" asp-controller="Home" asp-action="Debug">Debug</a></li>
+        <li>
+            <form class="form-inline" asp-controller="Buyer" asp-action="Search" method="post">
+                <input name="searchString" type="text" class="form-control" aria-label="Search" placeholder="Search" style="margin:8px 0;" />
+                <input type="submit" value="Search" class="btn btn-sm">
+            </form>
+        </li>
+    </ul>
     <ul class="nav navbar-nav navbar-right">
         <li><a asp-controller="Account" asp-action="Register">Register</a></li>
         <li><a asp-controller="Account" asp-action="Login">Login</a></li>

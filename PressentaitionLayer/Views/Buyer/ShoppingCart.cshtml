@@ -1,0 +1,52 @@
+﻿@model PressentaitionLayer.Models.BuyerModels.CheckoutModel
+
+@{
+    ViewData["Title"] = "ShoppingCart";
+}
+
+<h2>ShoppingCart</h2>
+
+@foreach (var cartProductTuple in Model._products)
+{
+    <label>Shop : @cartProductTuple.Item1.ShopGuid</label>
+    <table class="table">
+        <thead>
+            <tr>
+                <th></th>
+                <th>
+                    Product Name
+                </th>
+                <th>
+                    quantity
+                </th>
+                <th>
+                    Total Price
+                </th>
+                <th></th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var item in cartProductTuple.Item2)
+            {
+                <tr>
+                    <td>
+                        <img src="~/images/Random/17.jpg" alt="@item." style="width:80px; height:80px;" />
+                    </td>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.Product.Name)
+                    </td>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.Quantity)
+                    </td>
+                    <td>
+                        @(item.Price*item.Quantity)
+                    </td>
+                </tr>
+            }
+        </tbody>
+    </table>
+    <form asp-action="BuyNow" method="post" class="form-control" style="height:44px; padding:6px 12px">
+        <input type="hidden" name="ShopId" value="@cartProductTuple.Item1.ShopGuid" />
+        <input type="submit" value="Buy Now!" class="btn" />
+    </form>
+}

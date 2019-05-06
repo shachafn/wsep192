@@ -5,6 +5,7 @@ using DomainLayer.Facade;
 using DomainLayer.Domains;
 using Microsoft.Extensions.Logging.Abstractions;
 using ApplicationCore.Interfaces.ServiceLayer;
+using ApplicationCore.Entitites;
 
 namespace ATBridge
 {
@@ -100,9 +101,9 @@ namespace ATBridge
             return _serviceFacade.OpenShop(userGuid);
         }
 
-        public bool PurchaseBag(Guid userGuid)
+        public bool PurchaseCart(Guid userGuid, Guid shopGuid)
         {
-            return _serviceFacade.PurchaseBag(userGuid);
+            return _serviceFacade.PurchaseCart(userGuid, shopGuid);
         }
 
         public Guid Register(Guid userGuid, string username, string password)
@@ -131,7 +132,7 @@ namespace ATBridge
             return _serviceFacade.RemoveUser(userGuid, userToRemoveGuid);
         }
 
-        public ICollection<Guid> SearchProduct(Guid userGuid, ICollection<string> toMatch, string searchType)
+        public ICollection<Tuple<ShopProduct, Guid>> SearchProduct(Guid userGuid, ICollection<string> toMatch, string searchType)
         {
             return _serviceFacade.SearchProduct(userGuid, toMatch, searchType);
         }

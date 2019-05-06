@@ -11,7 +11,7 @@ namespace ApplicationCore.Entitites
         public ICollection<ShopProduct> ShopProducts { get; set; }
         public enum ShopStateEnum { Active, Closed, PermanentlyClosed };
         public ShopStateEnum ShopState { get; set; }
-        public ICollection<Tuple<Guid,ShopProduct>> UsersPurchaseHistory { get; set; }
+        public ICollection<Tuple<Guid,Product,int>> UsersPurchaseHistory { get; set; }
 
         public Shop(Guid ownerGuid)
         {
@@ -20,7 +20,7 @@ namespace ApplicationCore.Entitites
             Managers = new List<ShopOwner>();
             ShopProducts = new List<ShopProduct>();
             ShopState = ShopStateEnum.Active;
-            UsersPurchaseHistory = new List<Tuple<Guid, ShopProduct>>();
+            UsersPurchaseHistory = new List<Tuple<Guid, Product, int>>();
         }
     }
 }

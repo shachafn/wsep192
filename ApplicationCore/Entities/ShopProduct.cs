@@ -7,6 +7,11 @@
         public int Quantity { get; set; }
 
         public double Price { get; set; }
+
+        public ShopProduct()
+        {
+
+        }
         public ShopProduct(Product product, double price, int quantity)
         {
             Product = product;

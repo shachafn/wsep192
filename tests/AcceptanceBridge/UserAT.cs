@@ -84,17 +84,26 @@ namespace Tests
             var iphoneGuid = Tester.PBridge.AddProductToShop(cookie, shopGuid, "Iphone 6", "Cellphones", 500, 50);
 
             Tester.PBridge.ChangeUserState(cookie, "BuyerUserState");
-            var resByName = Tester.PBridge.SearchProduct(cookie, new List<string>() { "Iphone" }, "Name");
-            CollectionAssert.AreEquivalent(resByName, new List<Guid>() { iphoneGuid });
+
+            var resByName = Tester.PBridge.SearchProduct(cookie, new List<string>() { "Iphone 6" }, "Name");
+            Assert.AreEqual(resByName.Count, 1);
+            Assert.IsTrue(resByName.Any(t => t.Item1.Guid.Equals(iphoneGuid)));
+
             resByName = Tester.PBridge.SearchProduct(cookie, new List<string>() { "Galaxy" }, "Name");
-            CollectionAssert.AreEquivalent(resByName, new List<Guid>() { galaxyGuid });
+            Assert.AreEqual(resByName.Count, 1);
+            Assert.IsTrue(resByName.Any(t => t.Item1.Guid.Equals(galaxyGuid)));
+
             resByName = Tester.PBridge.SearchProduct(cookie, new List<string>() { "OnePlus" }, "Name");
-            CollectionAssert.AreEquivalent(resByName, new List<Guid>());
+            Assert.AreEqual(resByName.Count, 0);
 
             var resByCategory = Tester.PBridge.SearchProduct(cookie, new List<string>() { "Cellphones" }, "Category");
-            CollectionAssert.AreEquivalent(resByCategory, new List<Guid>() { iphoneGuid, galaxyGuid });
+            Assert.AreEqual(resByCategory.Count, 2);
+            Assert.IsTrue(resByCategory.Any(t => t.Item1.Guid.Equals(iphoneGuid)));
+            Assert.IsTrue(resByCategory.Any(t => t.Item1.Guid.Equals(galaxyGuid)));
+
             resByCategory = Tester.PBridge.SearchProduct(cookie, new List<string>() { "Dishwashers" }, "Category");
-            CollectionAssert.AreEquivalent(resByCategory, new List<Guid>());
+            Assert.AreEqual(resByCategory.Count, 0);
+
 
             /* Not yet supported from service kayer
             var resByKeywards = Tester.PBridge.SearchProduct(cookie, new List<string>() { "Cellphones" }, "Category");

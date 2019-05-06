@@ -1,5 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
+using ApplicationCore.Entities.Users;
+using ApplicationCore.Entitites;
 using ApplicationCore.Interfaces.ServiceLayer;
 using Microsoft.Extensions.Logging;
 
@@ -13,6 +15,7 @@ namespace ServiceLayer
         public ServiceFacade _serviceFacade;
         public SessionManager _sessionManager;
         ILogger<ServiceFacadeProxy> _logger;
+
         public ServiceFacadeProxy(ServiceFacade serviceFacade, SessionManager sessionManager, ILogger<ServiceFacadeProxy> logger)
         {
             _serviceFacade = serviceFacade;
@@ -136,10 +139,10 @@ namespace ServiceLayer
             return _serviceFacade.OpenShop(userGuid);
         }
 
-        public bool PurchaseBag(Guid cookie)
+        public bool PurchaseCart(Guid cookie, Guid shopGuid)
         {
             var userGuid = _sessionManager.ResolveCookie(cookie);
-            return _serviceFacade.PurchaseBag(userGuid);
+            return _serviceFacade.PurchaseCart(userGuid, shopGuid);
         }
 
         public Guid Register(Guid cookie, string username, string password)
@@ -166,7 +169,7 @@ namespace ServiceLayer
             return _serviceFacade.RemoveShopManager(userGuid, shopGuid, managerToRemoveGuid);
         }
 
-        public ICollection<Guid> SearchProduct(Guid cookie, ICollection<string> toMatch, string searchType)
+        public ICollection<Tuple<ShopProduct,Guid>> SearchProduct(Guid cookie, ICollection<string> toMatch, string searchType)
         {
             var userGuid = _sessionManager.ResolveCookie(cookie);
             return _serviceFacade.SearchProduct(userGuid, toMatch, searchType);
@@ -182,6 +185,48 @@ namespace ServiceLayer
         {
             _sessionManager.Clear();
             _serviceFacade.ClearSystem();
+        }
+
+        public IEnumerable<Shop> GetUserShops(Guid cookie)
+        {
+            var userGuid = _sessionManager.ResolveCookie(cookie);
+            return _serviceFacade.getUserShops(userGuid);
+        }
+
+        public IEnumerable<ShopProduct> GetShopProducts(Guid cookie, Guid shopGuid)
+        {
+            var userGuid= _sessionManager.ResolveCookie(cookie);
+            return _serviceFacade.getShopProducts(userGuid, shopGuid);
+        }
+
+        public ICollection<Tuple<Guid, Product, int>> GetPurchaseHistory(Guid cookie)
+        {
+            var userGuid = _sessionManager.ResolveCookie(cookie);
+            return _serviceFacade.GetPurchaseHistory(userGuid);
+        }
+
+        public ICollection<BaseUser> GetAllUsersExceptMe(Guid cookie)
+        {
+            var userGuid = _sessionManager.ResolveCookie(cookie);
+            return _serviceFacade.GetAllUsersExceptMe(userGuid);
+        }
+
+        public ICollection<Shop> GetAllShops(Guid cookie)
+        {
+            var userIdentifier = _sessionManager.ResolveCookie(cookie);
+            return _serviceFacade.GetAllShops(userIdentifier);
+        }
+
+        public void CloseShopPermanently(Guid cookie, Guid shopGuid)
+        {
+            var userIdentifier = _sessionManager.ResolveCookie(cookie);
+            _serviceFacade.CloseShopPermanently(userIdentifier, shopGuid);
+        }
+
+        public IEnumerable<Tuple<ShoppingCart, IEnumerable<ShopProduct>>> getUserBag(Guid cookie)
+        {
+            var userIdentifier = _sessionManager.ResolveCookie(cookie);
+            return _serviceFacade.getUserBag(userIdentifier);
         }
     }
 }

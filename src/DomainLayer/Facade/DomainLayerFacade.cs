@@ -1,13 +1,17 @@
 ﻿using ApplicationCore.Data;
+using ApplicationCore.Data.Collections;
 using ApplicationCore.Entities;
+using ApplicationCore.Entities.Users;
 using ApplicationCore.Entitites;
 using ApplicationCore.Exceptions;
 using ApplicationCore.Interfaces.DomainLayer;
+using DomainLayer.Extension_Methods;
 using DomainLayer.Users.States;
 using Microsoft.Extensions.Logging;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
+using System.Linq;
 using System.Reflection;
 
 namespace DomainLayer.Facade
@@ -57,13 +61,13 @@ namespace DomainLayer.Facade
         }
 
 
-        public bool PurchaseBag(UserIdentifier userIdentifier)
+        public bool PurchaseCart(UserIdentifier userIdentifier, Guid shopGuid)
         {
             VerifySystemIsInitialized();
-            _verifier.VerifyMe(MethodBase.GetCurrentMethod(), userIdentifier);
+            _verifier.VerifyMe(MethodBase.GetCurrentMethod(), userIdentifier, shopGuid);
             // Need to actually pay for products
             // if success clear all carts
-            return _userDomain.GetUserObject(userIdentifier).PurchaseBag();
+            return _userDomain.GetUserObject(userIdentifier).PurchaseCart(shopGuid);
         }
 
         public Guid Initialize(UserIdentifier userIdentifier, string username, string password)
@@ -181,7 +185,7 @@ namespace DomainLayer.Facade
             return _userDomain.GetUserObject(userIdentifier).RemoveUser(userToRemoveGuid);
         }
 
-        public ICollection<Guid> SearchProduct(UserIdentifier userIdentifier, ICollection<string> toMatch, string searchType)
+        public ICollection<Tuple<ShopProduct, Guid>> SearchProduct(UserIdentifier userIdentifier, ICollection<string> toMatch, string searchType)
         {
             VerifySystemIsInitialized();
             _verifier.VerifyMe(MethodBase.GetCurrentMethod(), userIdentifier, toMatch, searchType);
@@ -193,6 +197,53 @@ namespace DomainLayer.Facade
             VerifySystemIsInitialized();
             _verifier.VerifyMe(MethodBase.GetCurrentMethod(), userIdentifier, shopGuid, managerToRemoveGuid);
             return _userDomain.GetUserObject(userIdentifier).RemoveShopManager(shopGuid, managerToRemoveGuid);
+        }
+
+        public ICollection<Tuple<Guid, Product, int>> GetPurchaseHistory(UserIdentifier userIdentifier)
+        {
+            VerifySystemIsInitialized();
+            _verifier.VerifyMe(MethodBase.GetCurrentMethod(), userIdentifier);
+            return _userDomain.GetUserObject(userIdentifier).GetPurchaseHistory();
+        }
+
+        public ICollection<BaseUser> GetAllUsersExceptMe(UserIdentifier userIdentifier)
+        {
+            VerifySystemIsInitialized();
+            _verifier.VerifyMe(MethodBase.GetCurrentMethod(), userIdentifier);
+            return _userDomain.GetAllUsersExceptMe(userIdentifier);
+        }
+
+        public ICollection<Shop> GetAllShops(UserIdentifier userIdentifier)
+        {
+            VerifySystemIsInitialized();
+            _verifier.VerifyMe(MethodBase.GetCurrentMethod(), userIdentifier);
+            return DomainData.ShopsCollection.ToList();
+        }
+
+        public IEnumerable<Shop> getUserShops(UserIdentifier userId)
+        {
+            /*todo verofy constraints
+             * VerifySystemIsInitialized();
+            _verifier.VerifyMe(MethodBase.GetCurrentMethod(), userIdentifier, newState);*/
+            return ApplicationCore.Data.DomainData.ShopsCollection.Where(shop => shop.Creator.OwnerGuid.Equals(userId.Guid)).ToList<Shop>();
+        }
+
+        public IEnumerable<ShopProduct> GetShopProducts(UserIdentifier userIdentifier, Guid shopGuid)
+        {
+            /*todo verofy constraints
+            * VerifySystemIsInitialized();
+            _verifier.VerifyMe(MethodBase.GetCurrentMethod(), userIdentifier, newState);*/
+            Shop shop = GetShop(shopGuid);
+            return shop.ShopProducts;
+        }
+
+        public void CloseShopPermanently(UserIdentifier userIdentifier, Guid shopGuid)
+        {
+            /*todo verofy constraints
+             * VerifySystemIsInitialized();
+            _verifier.VerifyMe(MethodBase.GetCurrentMethod(), userIdentifier, newState);*/
+            Shop shop = GetShop(shopGuid);
+            shop.AdminClose();
         }
 
         public bool ChangeUserState(UserIdentifier userIdentifier, string newState)
@@ -219,6 +270,32 @@ namespace DomainLayer.Facade
         $"Cant complete {stackTrace.GetFrame(1).GetMethod().Name}";
                 throw new SystemNotInitializedException(msg);
             }
+        }
+
+        public IEnumerable<Tuple<ShoppingCart, IEnumerable<ShopProduct>>> getUserBag(UserIdentifier userIdentifier)
+        {
+           var bag = DomainData.ShoppingBagsCollection[userIdentifier.Guid] ;
+            List<Tuple<ShoppingCart, IEnumerable<ShopProduct>>> result = new List<Tuple<ShoppingCart, IEnumerable<ShopProduct>>>();
+            if (bag != null && bag.ShoppingCarts != null)
+            {
+                foreach (var cart in bag.ShoppingCarts)
+                {
+                    List<ShopProduct> products = new List<ShopProduct>();
+                    var shop = DomainData.ShopsCollection[cart.ShopGuid];
+                    foreach (var item in cart.PurchasedProducts)
+                    {
+                        ShopProduct currProduct = shop.ShopProducts.FirstOrDefault(prod => prod.Guid.Equals(item.Item1));
+                        ShopProduct product = new ShopProduct();
+                        product.Product = new Product(currProduct.Product.Name, currProduct.Product.Category);
+                        product.Guid = currProduct.Guid;
+                        product.Price = currProduct.Price;
+                        product.Quantity = item.Item2;
+                        products.Add(product);
+                    }
+                    result.Add(new Tuple<ShoppingCart, IEnumerable<ShopProduct>>(cart, products));
+                }
+            }
+            return result;
         }
     }
 }

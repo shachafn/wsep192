@@ -3,6 +3,9 @@ using System.Collections.Generic;
 using ApplicationCore.Interfaces.DomainLayer;
 using ApplicationCore.Entities;
 using Microsoft.Extensions.Logging;
+using ApplicationCore.Data.Collections;
+using ApplicationCore.Entitites;
+using ApplicationCore.Entities.Users;
 
 namespace ServiceLayer
 {
@@ -112,14 +115,30 @@ namespace ServiceLayer
         }
         #endregion
 
+        #region Utils
+        public IEnumerable<Shop> getUserShops(UserIdentifier userId)
+        {
+            return _domainLayerFacade.getUserShops(userId);
+        }
+
+        public IEnumerable<ShopProduct> getShopProducts(UserIdentifier userId,Guid shopGuid)
+        {
+            return _domainLayerFacade.GetShopProducts(userId, shopGuid);
+        }
+        public IEnumerable<Tuple<ShoppingCart, IEnumerable<ShopProduct>>> getUserBag(UserIdentifier userIdentifier)
+        {
+            return _domainLayerFacade.getUserBag(userIdentifier);
+        }
+        #endregion
+
         public Guid OpenShop(UserIdentifier userIdentifier)
         {
             return _domainLayerFacade.OpenShop(userIdentifier);
         }
 
-        public bool PurchaseBag(UserIdentifier userIdentifier)
+        public bool PurchaseCart(UserIdentifier userIdentifier, Guid shopGuid)
         {
-            return _domainLayerFacade.PurchaseBag(userIdentifier);
+            return _domainLayerFacade.PurchaseCart(userIdentifier, shopGuid);
         }
 
         public bool RemoveUser(UserIdentifier userIdentifier, Guid userToRemoveGuid)
@@ -127,7 +146,8 @@ namespace ServiceLayer
             return _domainLayerFacade.RemoveUser(userIdentifier, userToRemoveGuid);
         }
 
-        public ICollection<Guid> SearchProduct(UserIdentifier userIdentifier, ICollection<string> toMatch, string searchType)
+        //Product and shopGuid
+        public ICollection<Tuple<ShopProduct, Guid>> SearchProduct(UserIdentifier userIdentifier, ICollection<string> toMatch, string searchType)
         {
             return _domainLayerFacade.SearchProduct(userIdentifier, toMatch, searchType);
         }
@@ -141,5 +161,26 @@ namespace ServiceLayer
         {
             _domainLayerFacade.ClearSystem();
         }
+
+        public ICollection<Tuple<Guid, Product, int>> GetPurchaseHistory(UserIdentifier userIdentifier)
+        {
+            return _domainLayerFacade.GetPurchaseHistory(userIdentifier);
+        }
+
+        public ICollection<BaseUser> GetAllUsersExceptMe(UserIdentifier userIdentifier)
+        {
+            return _domainLayerFacade.GetAllUsersExceptMe(userIdentifier);
+        }
+
+        public ICollection<Shop> GetAllShops(UserIdentifier userIdentifier)
+        {
+            return _domainLayerFacade.GetAllShops(userIdentifier);
+        }
+
+        public void CloseShopPermanently(UserIdentifier userIdentifier, Guid shopGuid)
+        {
+            _domainLayerFacade.CloseShopPermanently(userIdentifier, shopGuid);
+        }
+
     }
 }

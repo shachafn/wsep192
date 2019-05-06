@@ -1,4 +1,5 @@
 ﻿using ApplicationCore.Entities;
+using ApplicationCore.Interfaces.ServiceLayer;
 using Microsoft.Extensions.Logging;
 using ServiceLayer.Exceptions;
 using System;
@@ -10,17 +11,15 @@ namespace ServiceLayer
     /// <summary>
     /// Singleton class responsible for handling cookies (defining a Session).
     /// </summary>
-    public class SessionManager
+    public class SessionManager : ISessionManager
     {
         ILogger<SessionManager> _logger;
         public SessionManager(ILogger<SessionManager> logger)
         {
             _logger = logger;
         }
-
-
-        public Dictionary<Guid, Guid> SessionToUserDictionary = new Dictionary<Guid, Guid>();
-        public ICollection<Guid> SessionToGuestDictionary = new List<Guid>();
+        public static Dictionary<Guid, Guid> SessionToUserDictionary = new Dictionary<Guid, Guid>();
+        public static ICollection<Guid> SessionToGuestDictionary = new List<Guid>();
         public UserIdentifier ResolveCookie(Guid cookie)
         {
             if (SessionToUserDictionary.ContainsKey(cookie))
@@ -30,7 +29,6 @@ namespace ServiceLayer
             SessionToGuestDictionary.Add(cookie);
             return new UserIdentifier(cookie, true);
         }
-        public Guid GetNewCookie() => Guid.NewGuid();
 
         public void SetLoggedIn(Guid cookie, Guid newUserGuid)
         {
@@ -38,6 +36,7 @@ namespace ServiceLayer
                 throw new CookieNotFoundException($"Login - No Session with cookie {cookie} exists in the dictionary.");
 
             SessionToUserDictionary[cookie] = newUserGuid;
+            SessionToGuestDictionary.Remove(cookie);
         }
 
         public void SetSessionLoggedOut(Guid cookie)
@@ -48,11 +47,17 @@ namespace ServiceLayer
             SessionToUserDictionary.Remove(cookie); //remove the user from the logged in list
         }
 
-        internal void SetUserLoggedOut(Guid userToRemoveGuid)
+        public void SetUserLoggedOut(Guid userToRemoveGuid)
         {
             var result = SessionToUserDictionary.FirstOrDefault(s => s.Value.Equals(userToRemoveGuid));
             if (result.Equals(default(KeyValuePair<Guid, Guid>)))
                 SessionToUserDictionary.Remove(result.Key);
+        }
+
+        public Guid GetSessionId(Guid userGuid)
+        {
+            var result = SessionToUserDictionary.FirstOrDefault(s => s.Value.Equals(userGuid));
+            return result.Key;
         }
 
         public void Clear()

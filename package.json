@@ -1,0 +1,27 @@
+{
+  "name": "wsep192",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "directories": {
+    "test": "tests"
+  },
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/shachafn/wsep192.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/shachafn/wsep192/issues"
+  },
+  "homepage": "https://github.com/shachafn/wsep192#readme",
+  "dependencies": {
+    "@aspnet/signalr": "^1.1.4",
+    "noty": "^3.2.0-beta"
+  }
+}

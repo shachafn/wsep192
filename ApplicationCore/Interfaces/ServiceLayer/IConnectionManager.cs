@@ -10,5 +10,9 @@ namespace ApplicationCore.Interfaces.ServiceLayer
         void RemoveConnection(Guid sessionId);
         void Clear();
         IEnumerator<KeyValuePair<Guid, string>> GetEnumerator();
+        bool IsConnected(Guid userGuid);
+        Guid GetSessionIdByConnectionId(string connectionId);
+        Guid GetUserGuidByConnectionId(string connectionId);
+
     }
 }

@@ -45,9 +45,9 @@
                     @Html.DisplayFor(modelItem => item.AppointerGuid)
                 </td>
                 <td>
-                    <form asp-action="DeleteItem" method="post">
-                        <input type="hidden" name="ProductId" value=" @Html.DisplayFor(modelItem => item.OwnerGuid)" />
-                        <input type="hidden" name="shopId" value="@ViewData["ShopId"]" />
+                    <form asp-action="DeleteRole" method="post">
+                        <input type="hidden" name="OwnerId" value=" @Html.DisplayFor(modelItem => item.OwnerGuid)" />
+                        <input type="hidden" name="ShopId" value="@ViewData["ShopId"]" />
                         <input type="submit" value="Delete" class="form-control" />
                     </form>
                 </td>

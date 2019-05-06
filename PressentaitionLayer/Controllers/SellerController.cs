@@ -82,7 +82,7 @@ namespace PressentaitionLayer.Controllers
         [HttpPost]
         public IActionResult DeleteRole(string OwnerId, string ShopId)
         {
-            _serviceFacade.RemoveShopManager(new Guid(HttpContext.Session.Id), new Guid(ShopId), new Guid(OwnerId));
+            _serviceFacade.CascadeRemoveShopOwner(new Guid(HttpContext.Session.Id), new Guid(ShopId), new Guid(OwnerId));
             return RedirectToAction("Manage", "Seller", new { ShopId = ShopId });
         }
         [HttpPost]

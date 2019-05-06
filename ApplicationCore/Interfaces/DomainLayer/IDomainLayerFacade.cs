@@ -42,8 +42,5 @@ namespace ApplicationCore.Interfaces.DomainLayer
         ICollection<Shop> GetAllShops(UserIdentifier userIdentifier);
         void CloseShopPermanently(UserIdentifier userIdentifier, Guid shopGuid);
         IEnumerable<Tuple<ShoppingCart, IEnumerable<ShopProduct>>> getUserBag(UserIdentifier userIdentifier);
-        bool PurchaseCart(UserIdentifier userIdentifier, Guid shopGuid);
-        Guid AddNewDiscountPolicy(UserIdentifier userGuid, Guid shopGuid, object policyType, object field1, object field2, object field3, object field4,object field5);
-        Guid AddNewPurchasePolicy(UserIdentifier userGuid, Guid shopGuid, object policyType, object field1, object field2, object field3, object field4);
     }
 }

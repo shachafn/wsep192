@@ -94,8 +94,6 @@ namespace ApplicationCore.Interfaces.ServiceLayer
         /// <exception cref="ServiceUnReachableException">When an external service is unreachable.</exception>
         /// <returns>Guid of the admin user.</returns>
         Guid Initialize(Guid cookie, string username, string password);
-        Guid AddNewPurchasePolicy(Guid userGuid, Guid shopGuid, object policyType, object field1, object field2, object field3, object field4);
-        Guid AddNewDiscountPolicy(Guid userGuid, Guid shopGuid, object policyType, object field1, object field2, object field3, object field4,object field5);
 
         /////Implements General Requirement 6.2
         /// <summary>
@@ -485,8 +483,5 @@ namespace ApplicationCore.Interfaces.ServiceLayer
         ICollection<Shop> GetAllShops(Guid cookie);
         IEnumerable<Tuple<ShoppingCart, IEnumerable<ShopProduct>>> getUserBag(Guid cookie);
         void CloseShopPermanently(Guid cookie, Guid shopGuid);
-
-
-        bool PurchaseCart(Guid cookie, Guid shopGuid);
     }
 }

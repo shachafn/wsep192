@@ -9,7 +9,7 @@ using ApplicationCore.Entities.Users;
 
 namespace ServiceLayer
 {
-    public class ServiceFacade
+    public class ServiceFacade 
     {
         IDomainLayerFacade _domainLayerFacade;
         ILogger<ServiceFacade> _logger;
@@ -141,11 +141,6 @@ namespace ServiceLayer
             return _domainLayerFacade.PurchaseCart(userIdentifier, shopGuid);
         }
 
-        public bool PurchaseCart(UserIdentifier userIdentifier, Guid shopGuid)
-        {
-            return _domainLayerFacade.PurchaseCart(userIdentifier, shopGuid);
-        }
-
         public bool RemoveUser(UserIdentifier userIdentifier, Guid userToRemoveGuid)
         {
             return _domainLayerFacade.RemoveUser(userIdentifier, userToRemoveGuid);
@@ -187,15 +182,5 @@ namespace ServiceLayer
             _domainLayerFacade.CloseShopPermanently(userIdentifier, shopGuid);
         }
 
-
-        internal Guid AddNewDiscountPolicy(UserIdentifier userGuid, Guid shopGuid, object policyType, object field1, object field2, object field3, object field4, object field5)
-        {
-            return _domainLayerFacade.AddNewDiscountPolicy(userGuid, shopGuid, policyType, field1, field2, field3, field4, field5);
-        }
-
-        internal Guid AddNewPurchasePolicy(UserIdentifier userGuid, Guid shopGuid, object policyType, object field1, object field2, object field3, object field4)
-        {
-            return _domainLayerFacade.AddNewPurchasePolicy(userGuid, shopGuid, policyType, field1, field2, field3, field4);
-        }
     }
 }

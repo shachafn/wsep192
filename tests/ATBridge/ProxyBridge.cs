@@ -15,7 +15,7 @@ namespace ATBridge
 
         public bool AddProductToCart(Guid userGuid, Guid productGuid, Guid shopGuid, int quantity)
         {
-            return _real == null ? false : _real.AddProductToCart(userGuid, productGuid, shopGuid, quantity);
+            return _real == null? false : _real.AddProductToCart(userGuid, productGuid, shopGuid, quantity);
         }
 
         public bool AddShopManager(Guid userGuid, Guid shopGuid, Guid newManagaerGuid, List<string> priviliges)
@@ -132,21 +132,6 @@ namespace ATBridge
         public void ClearSystem()
         {
             _real.ClearSystem();
-        }
-
-        public bool PurchaseCart(Guid userGuid, Guid shopGuid)
-        {
-            return _real == null ? false : _real.PurchaseCart(userGuid, shopGuid);
-        }
-
-        public Guid AddNewPurchasePolicy(Guid userGuid, Guid shopGuid, object policyType, object field1, object field2, object field3 = null, object field4 = null)
-        {
-            return _real == null ? Guid.Empty : _real.AddNewPurchasePolicy(userGuid, shopGuid, policyType, field1, field2, field3, field4);
-        }
-
-        public Guid AddNewDiscountPolicy(Guid userGuid, Guid shopGuid, object policyType, object field1, object field2, object field3 = null, object field4 = null, object field5 = null)
-        {
-            return _real == null ? Guid.Empty : _real.AddNewDiscountPolicy(userGuid, shopGuid, policyType, field1, field2, field3, field4, field5);
         }
     }
 }

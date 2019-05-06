@@ -3,7 +3,6 @@ using System.Collections.Generic;
 using NUnit.Framework;
 using ATBridge;
 using ApplicationCore.Exceptions;
-using ApplicationCore;
 
 namespace Tests
 {

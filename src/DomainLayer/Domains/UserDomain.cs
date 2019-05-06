@@ -10,7 +10,6 @@ using DomainLayer.Users.States;
 using DomainLaye.Users.States;
 using ApplicationCore.Entities.Users;
 using System.Collections.Generic;
-using DomainLayer.Data.Entitites.Users.States;
 
 namespace DomainLayer.Domains
 {

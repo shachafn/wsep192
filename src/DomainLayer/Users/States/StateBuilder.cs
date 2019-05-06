@@ -1,6 +1,5 @@
 ﻿using ApplicationCore.Data;
 using ApplicationCore.Entities.Users;
-using DomainLayer.Data.Entitites.Users.States;
 using DomainLayer.Extension_Methods;
 using DomainLayer.Users.States;
 using System;

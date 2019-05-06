@@ -3,7 +3,6 @@ using ApplicationCore.Entities.Users;
 using ApplicationCore.Entitites;
 using ApplicationCore.Exceptions;
 using DomainLayer.Extension_Methods;
-using DomainLayer.Policies;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -130,21 +129,6 @@ namespace DomainLayer.Users.States
         public override ICollection<Tuple<ShopProduct, Guid>> SearchProduct(ICollection<string> toMatch, string searchType)
         {
             throw new BadStateException($"Tried to invoke SearchProduct in Admin State");
-        }
-
-        public override bool PurchaseCart(Guid userGuid, Guid shopGuid)
-        {
-            throw new BadStateException($"Tried to invoke PurchaseCart in Admin State");
-        }
-
-        public override Guid AddNewPurchasePolicy(Guid userGuid, Guid shopGuid, IPurchasePolicy newPolicy)
-        {
-            throw new BadStateException($"Tried to invoke AddNewPurchasePolicy in Admin State");
-        }
-
-        public override Guid AddNewDiscountPolicy(Guid userGuid, Guid shopGuid, IDiscountPolicy newPolicy)
-        {
-            throw new BadStateException($"Tried to invoke AddNewDiscountPolicy in Admin State");
         }
     }
 }

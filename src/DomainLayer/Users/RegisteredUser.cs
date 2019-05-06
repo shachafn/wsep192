@@ -6,8 +6,6 @@ using ApplicationCore.Entities.Users;
 using ApplicationCore.Entitites;
 using DomainLaye.Users.States;
 using DomainLayer.Extension_Methods;
-using DomainLayer.Data.Entitites.Users.States;
-using DomainLayer.Policies;
 using DomainLayer.Users.States;
 
 namespace DomainLayer.Users
@@ -118,19 +116,9 @@ namespace DomainLayer.Users
             return State.SearchProduct(toMatch, searchType);
         }
 
-        public bool PurchaseCart(Guid userGuid,Guid shopGuid)
+        public ICollection<Tuple<Guid, Product, int>> GetPurchaseHistory()
         {
-            return State.PurchaseCart(userGuid,shopGuid);
-        }
-
-        public Guid AddNewPurchasePolicy(Guid userGuid, Guid shopGuid, IPurchasePolicy newPolicy)
-        {
-            return State.AddNewPurchasePolicy(userGuid, shopGuid, newPolicy);
-        }
-
-        public Guid AddNewDiscountPolicy(Guid userGuid, Guid shopGuid, IDiscountPolicy newPolicy)
-        {
-            return State.AddNewDiscountPolicy(userGuid, shopGuid, newPolicy);
+            return DomainData.ShopsCollection.SelectMany(shop => shop.GetPurchaseHistory(Guid)).ToList();
         }
     }
 }

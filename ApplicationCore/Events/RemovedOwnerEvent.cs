@@ -1,6 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Text;
+using ApplicationCore.Entities.Users;
 using ApplicationCore.Entitites;
 
 namespace ApplicationCore.Events
@@ -15,10 +17,11 @@ namespace ApplicationCore.Events
             RemovedOwnerGuid = removedOwnerGuid;
             ShopGuid = shopGuid;
         }
-        public ICollection<Guid> GetTargets(ICollection<Shop> shops)
+        public ICollection<Guid> GetTargets(ICollection<Shop> shops, ICollection<BaseUser> registeredUsers)
         {
             ICollection<Guid> result = new List<Guid>();
 
+            result.Add(shops.First(s => s.Guid.Equals(ShopGuid)).Creator.OwnerGuid);
             result.Add(RemovedOwnerGuid);
 
             return result;

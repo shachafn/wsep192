@@ -3,11 +3,13 @@ using ApplicationCore.Entities.Users;
 using ApplicationCore.Entitites;
 using ApplicationCore.Exceptions;
 using DomainLayer.Extension_Methods;
+using DomainLayer.Policies;
+using DomainLayer.Users.States;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 
-namespace DomainLayer.Users.States
+namespace DomainLayer.Data.Entitites.Users.States
 {
     public class BuyerUserState : AbstractUserState
     {
@@ -143,6 +145,27 @@ namespace DomainLayer.Users.States
                 CurrentBag.ShoppingCarts.Add(cart);
             }
             return CurrentBag.ShoppingCarts.First(c => c.ShopGuid.Equals(shopGuid));
+        }
+
+        public override bool PurchaseCart(Guid userGuid, Guid shopGuid)
+        {
+            ShoppingCart cart = GetCartAndCreateIfNeeded(userGuid, shopGuid);
+            //Checking discount policy. Pay attention that discount policies are not supposed to be exist, and changes
+            //on the cart may be occured.
+            ShoppingCart.CheckDiscountPolicy(ref cart);
+            cart.PurchaseCart(); //If there are problems with money exception should be handled.
+            //TODO: Get user and take money from his account
+            return true;
+        }
+
+        public override Guid AddNewPurchasePolicy(Guid userGuid, Guid shopGuid, IPurchasePolicy newPolicy)
+        {
+            throw new BadStateException($"Tried to invoke AddNewPurchasePolicy in Buyer State");
+        }
+
+        public override Guid AddNewDiscountPolicy(Guid userGuid, Guid shopGuid, IDiscountPolicy newPolicy)
+        {
+            throw new BadStateException($"Tried to invoke AddNewDiscountPolicy in Buyer State");
         }
     }
 }

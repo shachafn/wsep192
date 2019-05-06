@@ -12,6 +12,9 @@ using static ApplicationCore.Entitites.Shop;
 using DomainLayer.Users.States;
 using DomainLayer.Extension_Methods;
 using ApplicationCore.Entities.Users;
+using DomainLayer.Policies;
+using DomainLayer.Data.Entitites.Users.States;
+using DomainLayer.Operators;
 
 namespace DomainLayer.Facade
 {
@@ -36,7 +39,7 @@ namespace DomainLayer.Facade
             {
                 method.Invoke(this, parameters);
             }
-            catch (Exception ex) 
+            catch (Exception ex)
             {
                 var is1 = ex is AmbiguousMatchException;
                 var is2 = ex is ArgumentNullException;
@@ -46,7 +49,7 @@ namespace DomainLayer.Facade
                 var is6 = ex is MethodAccessException;
                 var is7 = ex is InvalidOperationException;
                 var is8 = ex is NotSupportedException;
-                if (is1 || is2 || is3 || is4 || is5 || is6  || is7 || is8)
+                if (is1 || is2 || is3 || is4 || is5 || is6 || is7 || is8)
                     throw new VerifierReflectionNotFound("Couldnt verify.", ex);
                 else
                     throw ex.InnerException;
@@ -107,6 +110,17 @@ namespace DomainLayer.Facade
             shop.VerifyShopIsActive();
         }
 
+        public void PurchaseCart(UserIdentifier userIdentifier, Guid shopGuid)
+        {
+            //TODO: Support guest state
+            var user = VerifyLoggedInUser(userIdentifier.Guid, new UserNotFoundException());
+            var shop = VerifyShopExists(shopGuid, new ShopNotFoundException());
+            var cart = GetCartExistsAndCreateIfNeeded(userIdentifier, shopGuid);
+            VerifyCart(cart, new BrokenConstraintException());
+
+        }
+
+
         /// <constraints>
         /// 1. checked
         /// 2. NOT IMPLEMENTED - SHOULD BE CHECKED HERE ----- If an admin user exists - username and password must match it.
@@ -117,7 +131,7 @@ namespace DomainLayer.Facade
         public void Initialize(UserIdentifier userIdentifier, string username, string password)
         {
             VerifyGuestUser(userIdentifier, new IllegalOperationException());
-            VerifyString(username, new IllegalArgumentException()); 
+            VerifyString(username, new IllegalArgumentException());
             VerifyString(password, new IllegalArgumentException());
         }
 
@@ -399,6 +413,101 @@ namespace DomainLayer.Facade
             VerifyIfChangeToAdminMustBeAdmin(user, newState, new IllegalOperationException());
         }
 
+        public void AddNewPurchasePolicy(ref IPurchasePolicy policy, UserIdentifier userIdentifier, Guid shopGuid, object policyType, object field1, object field2, object field3 = null, object field4 = null)
+        {
+            if (!(typeof(string) == policyType.GetType()))
+                throw new IllegalArgumentException("Wrong policy type");
+            string type = (string)policyType;
+            switch (type)
+            {
+                case "User purchase policy":
+                    VerifyUserShopPolicy(new IllegalArgumentException(), field1, field2, field3);
+                    policy = new UserPurchasePolicy((string)field1, field2, (string)field3);
+                    break;
+                case "Product purchase policy":
+                    VerifyProductPurchasePolicy(new IllegalArgumentException(), field1, field2, field3, field4);
+                    policy = new ProductPurchasePolicy((Guid)field1, GetArithmeticOperator((string)field2), (int)field3, (string)field4);
+
+                    break;
+                case "Cart purchase policy":
+                    if (!(typeof(int) == field2.GetType()))
+                        throw new IllegalArgumentException("Invalid sum of cart");
+                    policy = new CartPurchasePolicy((int)field2, GetArithmeticOperator((string)field1), (string)field3);
+                    break;
+                case "Compound purchase policy":
+                    /*
+                     field1 = p1 Guid
+                     field2 = logical operator
+                     field3 = p2 guid
+                     field4 = description
+                     */
+                    VerifyCompositePurchasePolicy(new IllegalArgumentException(), field1, field2, field3, field4);
+                    IPurchasePolicy p1 = VerifyPurchasePolicyExists(shopGuid, (Guid)field1, new PolicyNotFoundException());
+                    IPurchasePolicy p2 = VerifyPurchasePolicyExists(shopGuid, (Guid)field3, new PolicyNotFoundException());
+                    policy = new CompositePurchasePolicy(p1, GetLogicalOperator((string)field2), p2, (string)field4);
+
+                    break;
+                default:
+                    throw new IllegalArgumentException("Invalid policy type");
+            }
+        }
+
+
+        public void AddNewDiscountPolicy(ref IDiscountPolicy policy, UserIdentifier userIdentifier, Guid shopGuid, object policyType, object field1, object field2, object field3 = null, object field4 = null, object field5 = null)
+        {
+            if (!(typeof(string) == policyType.GetType()))
+                throw new IllegalArgumentException("Wrong policy type");
+            string type = (string)policyType;
+            switch (type)
+            {
+                case "Product discount policy":
+                    //field1 = product guid
+                    //field2 = operator
+                    //field3 = expected amount
+                    //field4 = discount percentage
+                    //field5 = description
+                    VerifyProductDiscountPolicy(new IllegalArgumentException(), field1, field2, field3, field4, field5);
+
+                    policy = new ProductDiscountPolicy((Guid)field1, GetArithmeticOperator((string)field2), (int)field3, (int)field4, (string)field5);
+
+                    break;
+                case "Cart discount policy":
+                    //field1 = Arithmetic operator
+                    //field2 = sum of cart
+                    //field3 = discount percentage
+                    //field4 = description
+                    VerifyCartDiscountPolicy(new IllegalArgumentException(), field1, field2, field3, field4);
+                    policy = new CartDiscountPolicy(GetArithmeticOperator((string)field1), (double)field2, (int)field3, (string)field4);
+                    break;
+                case "User discount policy":
+                    //field1 = field name
+                    //field2 = expected value
+                    //field3 = discount percentage
+                    //field4 = description
+                    VerifyUserShopPolicy(new IllegalArgumentException(), field1, field2, field3);
+                    policy = new UserDiscountPolicy((string)field1, field2, (int)field3, (string)field4);
+                    break;
+                case "Compound discount policy":
+                    /*
+                     field1 = p1 Guid
+                     field2 = logical operator
+                     field3 = p2 guid
+                     field4 = new discount percentage
+                     field5 = description
+                     */
+                    VerifyCompositeDiscountPolicy(new IllegalArgumentException(), field1, field2, field3, field4, field5);
+                    IDiscountPolicy p1 = VerifyDiscountPolicyExists(shopGuid, (Guid)field1, new PolicyNotFoundException());
+                    IDiscountPolicy p2 = VerifyDiscountPolicyExists(shopGuid, (Guid)field3, new PolicyNotFoundException());
+                    policy = new CompositeDiscountPolicy(p1, GetLogicalOperator((string)field2), p2, (int)field4, (string)field5);
+
+                    break;
+
+                default:
+                    throw new IllegalArgumentException("Invalid policy type");
+            }
+        }
+
+
         public void GetAllUsersExceptMe(UserIdentifier userIdentifier)
         {
             var user = VerifyLoggedInUser(userIdentifier.Guid, new UserNotFoundException());
@@ -410,7 +519,37 @@ namespace DomainLayer.Facade
         }
 
         #endregion
+        #region Operators
+        private IArithmeticOperator GetArithmeticOperator(string input)
+        {
+            switch (input)
+            {
+                case ">":
+                    return new BiggerThan();
+                case "<":
+                    return new SmallerThan();
+                default:
+                    return null;
+            }
+        }
 
+        private ILogicOperator GetLogicalOperator(string input)
+        {
+            switch (input)
+            {
+                case "&":
+                    return new And();
+                case "->":
+                    return new Implies();
+                case "|":
+                    return new Or();
+                case "^":
+                    return new Xor();
+                default:
+                    return null;
+            }
+        }
+        #endregion
         #region Private Verifiers
         private IUser VerifyLoggedInUser(Guid userGuid, ICloneableException<Exception> e)
         {
@@ -438,6 +577,17 @@ namespace DomainLayer.Facade
                 throw e.Clone(msg);
             }
             return shop;
+        }
+
+        private IPurchasePolicy VerifyPurchasePolicyExists(Guid shopGuid, Guid purchasePolicyGuid, ICloneableException<Exception> e)
+        {
+            var shop = DomainData.ShopsCollection[shopGuid];
+            foreach (IPurchasePolicy policy in shop.PurchasePolicies)
+            {
+                if (policy.Guid.Equals(purchasePolicyGuid))
+                    return policy;
+            }
+            throw new PolicyNotFoundException();
         }
 
 
@@ -494,7 +644,6 @@ namespace DomainLayer.Facade
                 throw e.Clone(msg);
             }
         }
-
 
         private void VerifyIntGreaterThan0(int toCheck, ICloneableException<Exception> e)
         {
@@ -621,6 +770,21 @@ namespace DomainLayer.Facade
             }
         }
 
+        private void VerifyCart(ShoppingCart cart, ICloneableException<Exception> e)
+        {
+            Shop shop = DomainData.ShopsCollection[cart.ShopGuid];
+            BaseUser user = DomainData.RegisteredUsersCollection[cart.UserGuid];
+            foreach (Tuple<Guid, int> record in cart.PurchasedProducts)
+            {
+                foreach (ProductPurchasePolicy policy in shop.PurchasePolicies)
+                {
+                    bool result = policy.CheckPolicy(cart, record.Item1, record.Item2, user);
+                    if (result == false)
+                        throw e.Clone("Broken constraint: " + policy.ToString());
+                }
+            }
+        }
+
         public void VerifyShopProductDoesNotExist(ShoppingCart cart, Guid shopProductGuid, ICloneableException<Exception> e)
         {
             var product = cart.PurchasedProducts.FirstOrDefault(prod => prod.Item1.Equals(shopProductGuid));
@@ -644,6 +808,127 @@ namespace DomainLayer.Facade
                 throw e.Clone(msg);
             }
         }
+
+        private void VerifyUserShopPolicy(ICloneableException<Exception> e, object field1, object field2, object field3 = null)
+        {
+            //Assumption: property is known and legal.
+            //Assumption : no operator is needed.
+            BaseUser b = new BaseUser("userDemo", "000000", false);
+            FieldInfo[] baseUserFields = b.GetType().GetFields();
+            foreach (FieldInfo baseUserField in baseUserFields)
+            {
+                if (baseUserField.Name == (string)field1 && baseUserField.FieldType != field3.GetType())
+                    e.Clone("Mismatch between property type");
+            }
+
+        }
+
+        private void VerifyProductPurchasePolicy(ICloneableException<Exception> e, object field1, object field2, object field3, object field4)
+        {
+            VerifyGuid(field1);
+            VerifyArithmeticOperator(field2);
+            VerifyInt(field3);
+            VerifyString((string)field4, e);
+        }
+
+        private void VerifyCompositePurchasePolicy(ICloneableException<Exception> e, object field1, object field2, object field3, object field4)
+        {
+            /*
+            field1 = p1 Guid
+            field2 = logical operator
+            field3 = p2 guid
+            field4 = description
+            */
+            VerifyGuid(field1);
+            VerifyLogicalOperator(field2);
+            VerifyGuid(field3);
+            VerifyString((string)field4, e);
+        }
+
+        private void VerifyCompositeDiscountPolicy(ICloneableException<Exception> e, object field1, object field2, object field3, object field4, object field5)
+        {
+            /*
+             field1 = p1 Guid
+             field2 = logical operator
+             field3 = p2 guid
+             field4 = new discount percentage
+             field5 = description
+                   */
+            VerifyGuid(field1);
+            VerifyLogicalOperator(field2);
+            VerifyGuid(field3);
+            VerifyInt(field4);
+            VerifyString((string)field5, e);
+
+        }
+        private IDiscountPolicy VerifyDiscountPolicyExists(Guid shopGuid, Guid discountPolicyGuid, PolicyNotFoundException policyNotFoundException)
+        {
+            var shop = DomainData.ShopsCollection[shopGuid];
+            foreach (IDiscountPolicy policy in shop.DiscountPolicies)
+            {
+                if (policy.Guid.Equals(discountPolicyGuid))
+                    return policy;
+            }
+            throw new PolicyNotFoundException();
+        }
+
+
+        private void VerifyCartDiscountPolicy(IllegalArgumentException e, object field1, object field2, object field3, object field4)
+        {
+            //field1 = Arithmetic operator
+            //field2 = sum of cart
+            //field3 = discount percentage
+            //field4 = description
+            VerifyArithmeticOperator(field1);
+            VerifyDoubleOrInt(field2);
+            VerifyInt(field3);
+            VerifyString((string)field4, e);
+
+        }
+
+        private void VerifyArithmeticOperator(object toCheck)
+        {
+            if (!(typeof(string) == toCheck.GetType()))
+                throw new IllegalArgumentException();
+            if (GetArithmeticOperator((string)toCheck) == null)
+                throw new IllegalArgumentException();
+        }
+
+        private void VerifyDoubleOrInt(object toCheck)
+        {
+            if (!(typeof(double) == toCheck.GetType() || typeof(int) == toCheck.GetType()))
+                throw new IllegalArgumentException();
+        }
+
+        private void VerifyProductDiscountPolicy(IllegalArgumentException e, object field1, object field2, object field3, object field4, object field5)
+        {
+            VerifyGuid(field1);
+            VerifyArithmeticOperator(field2);
+            VerifyInt(field3);
+            VerifyInt(field4);
+            VerifyString((string)field5, e);
+        }
+
+        private void VerifyGuid(object toCheck)
+        {
+            if (!(typeof(Guid) == toCheck.GetType()))
+                throw new IllegalArgumentException();
+        }
+
+        private void VerifyLogicalOperator(object toCheck)
+        {
+            if (!(typeof(string) == toCheck.GetType()))
+                throw new IllegalArgumentException();
+            if (GetLogicalOperator((string)toCheck) == null)
+                throw new IllegalArgumentException();
+        }
+
+        private void VerifyInt(object toCheck)
+        {
+            if (!(typeof(int) == toCheck.GetType()))
+                throw new IllegalArgumentException();
+        }
+
         #endregion
     }
 }

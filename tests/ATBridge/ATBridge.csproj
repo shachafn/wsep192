@@ -6,7 +6,10 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\..\ApplicationCore\ApplicationCore.csproj" />
+    <PackageReference Include="Microsoft.CodeAnalysis.Common" Version="3.0.0" />
+  </ItemGroup>
+
+  <ItemGroup>
     <ProjectReference Include="..\..\src\ServiceLayer\ServiceLayer.csproj" />
   </ItemGroup>
 

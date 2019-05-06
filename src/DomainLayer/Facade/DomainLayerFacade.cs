@@ -7,6 +7,7 @@ using ApplicationCore.Events;
 using ApplicationCore.Exceptions;
 using ApplicationCore.Interfaces.DomainLayer;
 using DomainLayer.Extension_Methods;
+using DomainLayer.Policies;
 using DomainLayer.Users.States;
 using Microsoft.Extensions.Logging;
 using System;
@@ -257,6 +258,15 @@ namespace DomainLayer.Facade
             return _userDomain.ChangeUserState(userIdentifier.Guid, newState);
         }
 
+        public bool PurchaseCart(UserIdentifier userIdentifier, Guid shopGuid)
+        {
+            VerifySystemIsInitialized();
+            _verifier.VerifyMe(MethodBase.GetCurrentMethod(), userIdentifier, shopGuid); //Verification of cart
+            // Need to actually pay for products
+            IUser user = _userDomain.GetUserObject(userIdentifier);
+            return user.PurchaseCart(user.Guid, shopGuid);
+        }
+
         public void ClearSystem()
         {
             DomainData.ClearAll();
@@ -300,6 +310,24 @@ namespace DomainLayer.Facade
                 }
             }
             return result;
+        }
+
+        public Guid AddNewDiscountPolicy(UserIdentifier userIdentifier, Guid shopGuid, object policyType, object field1, object field2, object field3, object field4,object field5)
+        {
+            VerifySystemIsInitialized();
+            IUser user = _userDomain.GetUserObject(userIdentifier);
+            IDiscountPolicy newPolicy = new UserDiscountPolicy();
+            _verifier.AddNewDiscountPolicy(ref newPolicy, userIdentifier,shopGuid, policyType, field1, field2, field3,field4,field5);
+            return user.AddNewDiscountPolicy(user.Guid, shopGuid, newPolicy);
+        }
+
+        public Guid AddNewPurchasePolicy(UserIdentifier userIdentifier, Guid shopGuid, object policyType, object field1, object field2, object field3, object field4)
+        {
+            VerifySystemIsInitialized();
+            IUser user = _userDomain.GetUserObject(userIdentifier);
+            IPurchasePolicy newPolicy = new UserPurchasePolicy();
+            _verifier.AddNewPurchasePolicy(ref newPolicy, userIdentifier,shopGuid, policyType, field1, field2, field3,field4);
+            return user.AddNewPurchasePolicy(user.Guid, shopGuid, newPolicy);
         }
     }
 }

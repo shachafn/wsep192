@@ -1,4 +1,5 @@
 ﻿using ApplicationCore.Entitites;
+using DomainLayer.Policies;
 using System;
 using System.Collections.Generic;
 
@@ -23,6 +24,10 @@ namespace ApplicationCore.Entities.Users
         bool RemoveProductFromShop(BaseUser baseUser, Guid shopGuid, Guid shopProductGuid);
         bool RemoveShopManager(BaseUser baseUser, Guid shopGuid, Guid managerToRemoveGuid);
         bool RemoveUser(Guid userToRemoveGuid);
+        ICollection<Guid> SearchProduct(ICollection<string> toMatch, string searchType);
+        bool PurchaseCart(Guid userGuid, Guid shopGuid);
+        Guid AddNewPurchasePolicy(Guid userGuid, Guid shopGuid, IPurchasePolicy newPolicy);
+        Guid AddNewDiscountPolicy(Guid userGuid, Guid shopGuid, IDiscountPolicy newPolicy);
         ICollection<Tuple<ShopProduct, Guid>> SearchProduct(ICollection<string> toMatch, string searchType);
     }
 }

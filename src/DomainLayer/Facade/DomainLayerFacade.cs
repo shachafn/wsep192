@@ -45,7 +45,10 @@ namespace DomainLayer.Facade
         {
             VerifySystemIsInitialized();
             _verifier.VerifyMe(MethodBase.GetCurrentMethod(), userIdentifier, username, password);
-            return _userDomain.Login(username, password);
+            var result = _userDomain.Login(username, password);
+            if (!result.Equals(Guid.Empty))
+                UpdateCenter.RaiseEvent(new UserLoggedInEvent(result));
+            return result;
         }
 
         public bool Logout(UserIdentifier userIdentifier)

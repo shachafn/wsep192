@@ -4,6 +4,7 @@ namespace DomainLayer
     {
         public PurchasePolicy()
         {
+
         }
 
     }

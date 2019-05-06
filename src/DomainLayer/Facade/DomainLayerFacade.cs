@@ -62,7 +62,10 @@ namespace DomainLayer.Facade
         {
             VerifySystemIsInitialized();
             _verifier.VerifyMe(MethodBase.GetCurrentMethod(), userIdentifier);
-            return _userDomain.GetUserObject(userIdentifier).OpenShop();
+            var shopGuid = _userDomain.GetUserObject(userIdentifier).OpenShop();
+            if (!shopGuid.Equals(Guid.Empty))
+                UpdateCenter.RaiseEvent(new OpenedShopEvent(userIdentifier.Guid, shopGuid));
+            return shopGuid;
         }
 
 

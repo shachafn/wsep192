@@ -10,6 +10,7 @@ namespace ApplicationCore.Events
     public class OpenedShopEvent : IUpdateEvent
     {
         public Guid OpenedUserGuid { get; private set; }
+        public string OpenedUserName { get; private set; }
         public Guid ShopGuid { get; private set; }
 
         public OpenedShopEvent(Guid openedShopGuid, Guid shopGuid)
@@ -20,13 +21,14 @@ namespace ApplicationCore.Events
 
         public string GetMessage()
         {
-            return string.Format("Shop {0} opened by {1}", ShopGuid, OpenedUserGuid);
+            return string.Format("Shop {0} opened by {1}", ShopGuid, OpenedUserName);
         }
 
         public ICollection<Guid> GetTargets(ICollection<Shop> shops, ICollection<BaseUser> registeredUsers)
         {
-            ICollection<Guid> result = shops.First(s => s.Guid.Equals(ShopGuid)).Owners.Select(owner=>owner.OwnerGuid).ToList();
+            ICollection<Guid> result = shops.First(s => s.Guid.Equals(ShopGuid)).Owners.Select(owner => owner.OwnerGuid).ToList();
             result.Add(OpenedUserGuid); // not sure if was added already
+            OpenedUserName = registeredUsers.First(user => user.Guid.Equals(OpenedUserGuid)).Username;
             return result;
         }
     }

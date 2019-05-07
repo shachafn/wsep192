@@ -70,7 +70,8 @@ namespace ATBridge
 
         /////Implements General Requirement 2.8. Not entirely, only purchase of the entier bag.
         /////////////// REDO CONSTRAINTS, CHANGED FROM CART TO BAG ////////////////////////
-        bool PurchaseCart(Guid cookie, Guid shopGuid);
+        bool PurchaseCart(Guid userGuid , Guid shopGuid);
+
 
         /////Implements General Requirement 1.1
         /// <summary>
@@ -458,6 +459,10 @@ namespace ATBridge
         /// <exception cref="IllegalOperationException">When user tries to change state to admin, but is not an admin"</exception>
         /// <returns></returns>
         bool ChangeUserState(Guid userGuid, string newState);
+
+
+        Guid AddNewPurchasePolicy(Guid userGuid, Guid shopGuid, object policyType, object field1, object field2, object field3 = null, object field4 = null);
+        Guid AddNewDiscountPolicy(Guid userGuid, Guid shopGuid, object policyType, object field1, object field2, object field3 = null, object field4 = null,object field5=null);
 
         /// <summary>
         /// Clears all data and requires the system to be Initialized to use it.

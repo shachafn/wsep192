@@ -35,6 +35,8 @@ namespace ApplicationCore.Interfaces.DomainLayer
         bool ChangeUserState(UserIdentifier userIdentifier, string newState);
         void ClearSystem();
         bool AddShopOwner(UserIdentifier userIdentifier, Guid shopGuid, Guid newShopOwnerGuid);
+        Guid AddNewPurchasePolicy(UserIdentifier userGuid, Guid shopGuid, object policyType, object field1, object field2, object field3, object field4);
+        Guid AddNewDiscountPolicy(UserIdentifier userGuid, Guid shopGuid, object policyType, object field1, object field2, object field3, object field4,object field5);
         ICollection<Tuple<Guid, Product, int>> GetPurchaseHistory(UserIdentifier userIdentifier);
         ICollection<BaseUser> GetAllUsersExceptMe(UserIdentifier userIdentifier);
         IEnumerable<ShopProduct> GetShopProducts(UserIdentifier userId, Guid shopGuid);

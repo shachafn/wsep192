@@ -6,6 +6,8 @@ using ApplicationCore.Entities.Users;
 using ApplicationCore.Entitites;
 using DomainLaye.Users.States;
 using DomainLayer.Extension_Methods;
+using DomainLayer.Data.Entitites.Users.States;
+using DomainLayer.Policies;
 using DomainLayer.Users.States;
 
 namespace DomainLayer.Users
@@ -114,6 +116,15 @@ namespace DomainLayer.Users
         public ICollection<Tuple<ShopProduct, Guid>> SearchProduct(ICollection<string> toMatch, string searchType)
         {
             return State.SearchProduct(toMatch, searchType);
+        }
+        public Guid AddNewPurchasePolicy(Guid userGuid, Guid shopGuid, IPurchasePolicy newPolicy)
+        {
+            return State.AddNewPurchasePolicy(userGuid, shopGuid, newPolicy);
+        }
+
+        public Guid AddNewDiscountPolicy(Guid userGuid, Guid shopGuid, IDiscountPolicy newPolicy)
+        {
+            return State.AddNewDiscountPolicy(userGuid, shopGuid, newPolicy);
         }
 
         public ICollection<Tuple<Guid, Product, int>> GetPurchaseHistory()

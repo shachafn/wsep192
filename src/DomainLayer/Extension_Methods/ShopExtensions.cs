@@ -1,5 +1,6 @@
 ﻿using ApplicationCore.Entitites;
 using ApplicationCore.Exceptions;
+using DomainLayer.Policies;
 using DomainLayer.Properties;
 using System;
 using System.Collections.Generic;
@@ -122,6 +123,26 @@ namespace DomainLayer.Extension_Methods
             }
             shop.Owners.Remove(ownerToRemove);// remove the owner from the owners list
             return true;
+        }
+
+        public static Guid AddNewPurchasePolicy(this Shop shop,IPurchasePolicy newPurchasePolicy)
+        {
+            if (shop.PurchasePolicies == null)
+            {
+                shop.PurchasePolicies = new List<IPurchasePolicy>();
+            }
+            shop.PurchasePolicies.Add(newPurchasePolicy);
+            return newPurchasePolicy.Guid;
+        }
+
+        public static Guid AddNewDiscountPolicy(this Shop shop, IDiscountPolicy newDiscountPolicy)
+        {
+            if (shop.DiscountPolicies == null)
+            {
+                shop.DiscountPolicies = new List<IDiscountPolicy>();
+            }
+            shop.DiscountPolicies.Add(newDiscountPolicy);
+            return newDiscountPolicy.Guid;
         }
 
         public static void PurchaseCart(this Shop shop, ShoppingCart cart)

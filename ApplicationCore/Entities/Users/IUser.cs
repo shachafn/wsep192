@@ -1,6 +1,7 @@
 ﻿using ApplicationCore.Entitites;
 using System;
 using System.Collections.Generic;
+using DomainLayer.Policies;
 
 namespace ApplicationCore.Entities.Users
 {
@@ -31,6 +32,8 @@ namespace ApplicationCore.Entities.Users
         bool RemoveUser(Guid userToRemoveGuid);
         ICollection<Tuple<ShopProduct, Guid>> SearchProduct(ICollection<string> toMatch, string searchType);
         bool SetState(IAbstractUserState newState);
+        Guid AddNewPurchasePolicy(Guid userGuid , Guid shopGuid, IPurchasePolicy newPolicy);
+        Guid AddNewDiscountPolicy(Guid userGuid ,Guid shopGuid, IDiscountPolicy newPolicy);
         ICollection<Tuple<Guid, Product, int>> GetPurchaseHistory();
         #endregion
     }

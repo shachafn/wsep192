@@ -9,6 +9,7 @@ using DomainLayer.Users;
 using DomainLayer.Users.States;
 using DomainLaye.Users.States;
 using ApplicationCore.Entities.Users;
+using DomainLayer.Data.Entitites.Users.States;
 using System.Collections.Generic;
 
 namespace DomainLayer.Domains

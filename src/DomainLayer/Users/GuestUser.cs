@@ -1,13 +1,14 @@
 ﻿using ApplicationCore.Data;
-using ApplicationCore.Entities.Users;
 using ApplicationCore.Entitites;
 using ApplicationCore.Exceptions;
+using DomainLayer;
 using DomainLayer.Extension_Methods;
+using DomainLayer.Policies;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 
-namespace DomainLayer.Users
+namespace ApplicationCore.Entities.Users
 {
     public class GuestUser : IUser
     {
@@ -150,7 +151,17 @@ namespace DomainLayer.Users
 
         public bool SetState(IAbstractUserState newState)
         {
-            throw new IllegalOperationException($"Can't change state of a Guestuser with Guid - {Guid}");
+            throw new BadStateException($"Tried to invoke AddShopOwner in GuestUser");
+        }
+
+        public Guid AddNewPurchasePolicy(Guid userGuid, Guid shopGuid, IPurchasePolicy newPolicy)
+        {
+            throw new BadStateException($"Tried to invoke AddNewPurchasePolicy in GuestUser");
+        }
+
+        public Guid AddNewDiscountPolicy(Guid userGuid, Guid shopGuid, IDiscountPolicy newPolicy)
+        {
+            throw new BadStateException($"Tried to invoke AddNewDiscountPolicy in GuestUser");
         }
 
         public ICollection<Tuple<Guid, Product, int>> GetPurchaseHistory()

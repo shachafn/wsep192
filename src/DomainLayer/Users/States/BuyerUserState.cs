@@ -3,11 +3,13 @@ using ApplicationCore.Entities.Users;
 using ApplicationCore.Entitites;
 using ApplicationCore.Exceptions;
 using DomainLayer.Extension_Methods;
+using DomainLayer.Policies;
+using DomainLayer.Users.States;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 
-namespace DomainLayer.Users.States
+namespace DomainLayer.Data.Entitites.Users.States
 {
     public class BuyerUserState : AbstractUserState
     {
@@ -32,6 +34,7 @@ namespace DomainLayer.Users.States
             var shop = DomainData.ShopsCollection[shopGuid];
             //Can implement RollBack, purchase is given a Guid, shop.PurchaseCart returns a Guid,
             // if the user fails to pay later, we can delete the purchase and revert the shop quantities and cart content
+            ShoppingCart.CheckDiscountPolicy(ref cart);
             shop.PurchaseCart(cart);
 
             //External payment pay, if not true ---- rollback
@@ -143,6 +146,16 @@ namespace DomainLayer.Users.States
                 CurrentBag.ShoppingCarts.Add(cart);
             }
             return CurrentBag.ShoppingCarts.First(c => c.ShopGuid.Equals(shopGuid));
+        }
+
+        public override Guid AddNewPurchasePolicy(Guid userGuid, Guid shopGuid, IPurchasePolicy newPolicy)
+        {
+            throw new BadStateException($"Tried to invoke AddNewPurchasePolicy in Buyer State");
+        }
+
+        public override Guid AddNewDiscountPolicy(Guid userGuid, Guid shopGuid, IDiscountPolicy newPolicy)
+        {
+            throw new BadStateException($"Tried to invoke AddNewDiscountPolicy in Buyer State");
         }
     }
 }

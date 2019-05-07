@@ -7,6 +7,7 @@ namespace ApplicationCore.Interfaces.Infastracture
 {
     public interface IUserNotifier
     {
-        Task SendMessage(ICollection<Guid> targets, string msg);
+        Task SendMessageAsync(ICollection<Guid> targets, string msg);
+        Task SendMessage(Guid target, string msg);
     }
 }

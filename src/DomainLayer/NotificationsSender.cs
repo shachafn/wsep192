@@ -27,7 +27,7 @@ namespace ServiceLayer
         public void HandleUpdate(IUpdateEvent updateEvent)
         {
             var targets = updateEvent.GetTargets(DomainData.ShopsCollection.Values);
-            _userNotifier.SendMessage(targets, updateEvent.GetMessage());
+            _userNotifier.SendMessageAsync(targets, updateEvent.GetMessage());
         }
     }
 }

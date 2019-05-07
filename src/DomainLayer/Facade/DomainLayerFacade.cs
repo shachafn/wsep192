@@ -74,7 +74,10 @@ namespace DomainLayer.Facade
             _verifier.VerifyMe(MethodBase.GetCurrentMethod(), userIdentifier, shopGuid);
             // Need to actually pay for products
             // if success clear all carts
-            return _userDomain.GetUserObject(userIdentifier).PurchaseCart(shopGuid);
+            bool result = _userDomain.GetUserObject(userIdentifier).PurchaseCart(shopGuid);
+            if (result)
+                UpdateCenter.RaiseEvent(new PurchasedCartEvent(shopGuid, userIdentifier.Guid));
+            return result;
         }
 
         public Guid Initialize(UserIdentifier userIdentifier, string username, string password)
@@ -284,7 +287,7 @@ namespace DomainLayer.Facade
 
         public IEnumerable<Tuple<ShoppingCart, IEnumerable<ShopProduct>>> getUserBag(UserIdentifier userIdentifier)
         {
-           var bag = DomainData.ShoppingBagsCollection[userIdentifier.Guid] ;
+            var bag = DomainData.ShoppingBagsCollection[userIdentifier.Guid];
             List<Tuple<ShoppingCart, IEnumerable<ShopProduct>>> result = new List<Tuple<ShoppingCart, IEnumerable<ShopProduct>>>();
             if (bag != null && bag.ShoppingCarts != null)
             {

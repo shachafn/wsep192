@@ -9,24 +9,24 @@ namespace ApplicationCore.Events
 {
     public class OpenedShopEvent : IUpdateEvent
     {
-        public Guid OpenedShopGuid { get; private set; }
+        public Guid OpenedUserGuid { get; private set; }
         public Guid ShopGuid { get; private set; }
 
         public OpenedShopEvent(Guid openedShopGuid, Guid shopGuid)
         {
-            OpenedShopGuid = openedShopGuid;
+            OpenedUserGuid = openedShopGuid;
             ShopGuid = shopGuid;
         }
 
         public string GetMessage()
         {
-            return "Shop opened by " + OpenedShopGuid.ToString();
+            return string.Format("Shop {0} opened by {1}", ShopGuid, OpenedUserGuid);
         }
 
         public ICollection<Guid> GetTargets(ICollection<Shop> shops, ICollection<BaseUser> registeredUsers)
         {
             ICollection<Guid> result = shops.First(s => s.Guid.Equals(ShopGuid)).Owners.Select(owner=>owner.OwnerGuid).ToList();
-            result.Add(OpenedShopGuid); // not sure if was added already
+            result.Add(OpenedUserGuid); // not sure if was added already
             return result;
         }
     }

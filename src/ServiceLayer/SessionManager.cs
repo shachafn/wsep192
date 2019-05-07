@@ -68,8 +68,8 @@ namespace ServiceLayer
 
         public Guid GetUserGuid(Guid sessionId)
         {
-            var result = SessionToUserDictionary.FirstOrDefault(s => s.Key.Equals(sessionId));
-            return result.Key;
+            SessionToUserDictionary.TryGetValue(sessionId, out var userGuid);
+            return userGuid;
         }
     }
 }

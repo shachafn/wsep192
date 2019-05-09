@@ -497,7 +497,16 @@ namespace DomainLayer.Facade
             }
         }
 
-
+        public void CloseShop(UserIdentifier userIdentifier, Guid shopGuid)
+        {
+            Shop shop = DomainData.ShopsCollection[shopGuid];
+            shop.VerifyShopIsActive();
+            bool res = shop.IsOwner(userIdentifier.Guid);
+            if(res == false)
+            {
+                throw new BadStateException("user is not the owner of this shop");
+            }
+        }
         public void GetAllUsersExceptMe(UserIdentifier userIdentifier)
         {
             var user = VerifyLoggedInUser(userIdentifier.Guid, new UserNotFoundException());
@@ -507,7 +516,23 @@ namespace DomainLayer.Facade
         {
             var user = VerifyLoggedInUser(userIdentifier.Guid, new UserNotFoundException());
         }
+        public void ActivateShop(UserIdentifier userIdentifier, Guid shopGuid)
+        {
+            Shop shop = DomainData.ShopsCollection[shopGuid];
+            shop.VerifyShopIsClosed();
+            bool res = shop.IsOwner(userIdentifier.Guid);
+            if (res == false)
+            {
+                throw new BadStateException("user is not the owner of this shop");
+            }
+        }
 
+        public void CloseShopPermanently(UserIdentifier userIdentifier, Guid shopGuid)
+        {
+            Shop shop = DomainData.ShopsCollection[shopGuid];
+            shop.VerifyShopIsActive();
+            VerifyStateString("AdminUserState", new BadStateException());
+        }
         #endregion
         #region Operators
         private IArithmeticOperator GetArithmeticOperator(string input)

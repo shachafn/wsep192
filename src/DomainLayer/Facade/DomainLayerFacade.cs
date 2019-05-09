@@ -271,13 +271,12 @@ namespace DomainLayer.Facade
             return shop.ShopProducts;
         }
 
-        public void CloseShopPermanently(UserIdentifier userIdentifier, Guid shopGuid)
+        public void CloseShop(UserIdentifier userIdentifier, Guid shopGuid)
         {
-            /*todo verofy constraints
-             * VerifySystemIsInitialized();
-            _verifier.VerifyMe(MethodBase.GetCurrentMethod(), userIdentifier, newState);*/
+            VerifySystemIsInitialized();
+            _verifier.VerifyMe(MethodBase.GetCurrentMethod(), userIdentifier,shopGuid);
             Shop shop = GetShop(shopGuid);
-            shop.AdminClose();
+            shop.Close();
         }
 
         public bool ChangeUserState(UserIdentifier userIdentifier, string newState)
@@ -348,6 +347,23 @@ namespace DomainLayer.Facade
                 }
             }
             return result;
+
+        }
+
+        public void ActivateShop(UserIdentifier userIdentifier, Guid shopGuid)
+        {
+            VerifySystemIsInitialized();
+            _verifier.VerifyMe(MethodBase.GetCurrentMethod(), userIdentifier, shopGuid);
+            Shop shop = GetShop(shopGuid);
+            shop.ActivateShop();
+        }
+
+        public void CloseShopPermanently(UserIdentifier userIdentifier, Guid shopGuid)
+        {
+            VerifySystemIsInitialized();
+            _verifier.VerifyMe(MethodBase.GetCurrentMethod(), userIdentifier, shopGuid);
+            Shop shop = GetShop(shopGuid);
+            shop.CloseShopPermanently();
         }
     }
 }

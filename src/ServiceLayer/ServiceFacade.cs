@@ -192,5 +192,14 @@ namespace ServiceLayer
             _domainLayerFacade.CloseShopPermanently(userIdentifier, shopGuid);
         }
 
+        internal void ActivateShop(UserIdentifier userIdentifier, Guid shopGuid)
+        {
+            _domainLayerFacade.ActivateShop(userIdentifier, shopGuid);
+        }
+
+        internal void CloseShop(UserIdentifier userIdentifier, Guid shopGuid)
+        {
+            _domainLayerFacade.CloseShop(userIdentifier, shopGuid);
+        }
     }
 }

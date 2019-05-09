@@ -96,7 +96,9 @@ namespace ApplicationCore.Interfaces.ServiceLayer
         Guid Initialize(Guid cookie, string username, string password);
         Guid AddNewPurchasePolicy(Guid userGuid, Guid shopGuid, object policyType, object field1, object field2, object field3, object field4);
         Guid AddNewDiscountPolicy(Guid userGuid, Guid shopGuid, object policyType, object field1, object field2, object field3, object field4,object field5);
-
+        void ActivateShop(Guid cookie, Guid shopGuid);
+        void CloseShop(Guid cookie, Guid shopGuid);
+        void CloseShopPermanently(Guid cookie, Guid shopGuid);
         /////Implements General Requirement 6.2
         /// <summary>
         /// Removes the user.
@@ -484,6 +486,6 @@ namespace ApplicationCore.Interfaces.ServiceLayer
         IEnumerable<ShopProduct> GetShopProducts(Guid id,Guid shopGuid);
         ICollection<Shop> GetAllShops(Guid cookie);
         IEnumerable<Tuple<ShoppingCart, IEnumerable<ShopProduct>>> getUserBag(Guid cookie);
-        void CloseShopPermanently(Guid cookie, Guid shopGuid);
+
     }
 }

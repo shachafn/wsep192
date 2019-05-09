@@ -13,19 +13,14 @@ namespace DomainLayer.Extension_Methods
     {
         public static void Close(this Shop shop)
         {
-            throw new NotImplementedException();
-            VerifyShopIsActive(shop); ////MOVE TO DOMAINLAYERFACADEVERIFIER WHEN A USE-CASE TO CHANGE SHOP STATUS IS IMPLEMENTED
             shop.ShopState = Shop.ShopStateEnum.Closed;
         }
-        public static void AdminClose(this Shop shop)
+        public static void CloseShopPermanently(this Shop shop)
         {
-            VerifyShopIsActiveOrClosed(shop);////TODO MOVE TO DOMAINLAYERFACADEVERIFIER WHEN A USE-CASE TO CHANGE SHOP STATUS IS IMPLEMENTED
             shop.ShopState = Shop.ShopStateEnum.PermanentlyClosed;
         }
-        public static void Open(this Shop shop)
+        public static void ActivateShop(this Shop shop)
         {
-            throw new NotImplementedException();
-            VerifyShopIsClosed(shop);////MOVE TO DOMAINLAYERFACADEVERIFIER WHEN A USE-CASE TO CHANGE SHOP STATUS IS IMPLEMENTED
             shop.ShopState = Shop.ShopStateEnum.Active;
         }
 
@@ -265,6 +260,7 @@ namespace DomainLayer.Extension_Methods
         #endregion
 
         #region Status Verifiers
+
         public static void VerifyShopIsActive(this Shop shop)
         {
             if (!shop.ShopState.Equals(Shop.ShopStateEnum.Active))

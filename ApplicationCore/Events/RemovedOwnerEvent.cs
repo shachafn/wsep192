@@ -10,30 +10,27 @@ namespace ApplicationCore.Events
     public class RemovedOwnerEvent : IUpdateEvent
     {
         public Guid RemovedOwnerGuid { get; private set; }
-        public string RemovedOwnerUsername { get; private set; }
         public Guid ShopGuid { get; private set; }
+        public Guid Initiator { get; private set; }
+        public ICollection<Guid> Targets { get; private set; }
+        public string Message { get; private set; }
 
-        public RemovedOwnerEvent(Guid removedOwnerGuid, Guid shopGuid)
+        public RemovedOwnerEvent(Guid removedOwnerGuid, Guid shopGuid, Guid initiator)
         {
             RemovedOwnerGuid = removedOwnerGuid;
             ShopGuid = shopGuid;
+            Initiator = initiator;
+            Targets = new List<Guid>();
+            Message = "UPDATE MESSAGE WAS NOT SET";
         }
-        public ICollection<Guid> GetTargets(ICollection<Shop> shops, ICollection<BaseUser> registeredUsers)
+        public void SetMessage(ICollection<Shop> shops, ICollection<BaseUser> registeredUsers)
         {
-            RemovedOwnerUsername = registeredUsers.First(user => user.Guid.Equals(RemovedOwnerGuid)).Username;
-
-            ICollection<Guid> result = new List<Guid>
-            {
-                shops.First(s => s.Guid.Equals(ShopGuid)).Creator.OwnerGuid
-            };
-            //result.Add(RemovedOwnerGuid);
-
-            return result;
+            Message = $"User {registeredUsers.First(u => u.Guid.Equals(RemovedOwnerGuid)).Username} is no longer an owner of shop {ShopGuid}";
         }
-
-        public string GetMessage()
+        public void SetTargets(ICollection<Shop> shops, ICollection<BaseUser> registeredUsers)
         {
-            return string.Format("You were removed from shop {0} by {1}", ShopGuid, RemovedOwnerUsername);
+            Targets.Add(shops.First(s => s.Guid.Equals(ShopGuid)).Creator.OwnerGuid);
+            Targets.Add(RemovedOwnerGuid);
         }
     }
 }

@@ -17,13 +17,32 @@
     </environment>
 </head>
 <body>
-    <script src="~/lib/signalr/signalr.js"></script>
-    <script src="~/lib/jquery/dist/jquery.js"></script>
 
+    <!--SIGNALR-->
     <link rel="stylesheet" href="~/lib/notify/notifications.css">
     <script src="~/lib/notify/notifications.js"></script>
+    <script src="~/js/myNotifications.js"></script>
+    <!--SIGNALR-->
 
-    <script src="~/js/signalR.js"></script>
+    <script>
+        var socket;
+        var connectionUrl = "wss://localhost:5001/notifications";
+        socket = new WebSocket(connectionUrl);
+        socket.onopen = function (event) {
+            console.log('Websocket opened');
+        };
+        socket.onclose = function (event) {
+            console.log('Websocket closed');
+
+        };
+        socket.onerror = function (event) {
+            console.log('Websocket error' + event.data);
+        };
+        socket.onmessage = function (event) {
+            ShowPopUp(event.data)
+        };
+    </script>
+
     <nav class="navbar navbar-inverse navbar-fixed-top">
         <div class="container">
             <div class="navbar-header">
@@ -36,7 +55,7 @@
                 <a asp-area="" asp-controller="Home" asp-action="Index" class="navbar-brand">PressentaitionLayer</a>
             </div>
             <div class="navbar-collapse collapse">
-                
+
                 <partial name="_LoginPartial" />
             </div>
         </div>

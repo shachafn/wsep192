@@ -47,7 +47,12 @@ namespace DomainLayer.Facade
             _verifier.VerifyMe(MethodBase.GetCurrentMethod(), userIdentifier, username, password);
             var result = _userDomain.Login(username, password);
             if (!result.Equals(Guid.Empty))
-                UpdateCenter.RaiseEvent(new UserLoggedInEvent(result));
+            {
+                var newEvent = new UserLoggedInEvent(result);
+                newEvent.SetTargets(DomainData.ShopsCollection.Values, DomainData.RegisteredUsersCollection.Values);
+                newEvent.SetMessage(DomainData.ShopsCollection.Values, DomainData.RegisteredUsersCollection.Values);
+                UpdateCenter.RaiseEvent(newEvent);
+            }
             return result;
         }
 
@@ -64,7 +69,12 @@ namespace DomainLayer.Facade
             _verifier.VerifyMe(MethodBase.GetCurrentMethod(), userIdentifier);
             var shopGuid = _userDomain.GetUserObject(userIdentifier).OpenShop();
             if (!shopGuid.Equals(Guid.Empty))
-                UpdateCenter.RaiseEvent(new OpenedShopEvent(userIdentifier.Guid, shopGuid));
+            {
+                var newEvent = new OpenedShopEvent(userIdentifier.Guid, shopGuid);
+                newEvent.SetTargets(DomainData.ShopsCollection.Values, DomainData.RegisteredUsersCollection.Values);
+                newEvent.SetMessage(DomainData.ShopsCollection.Values, DomainData.RegisteredUsersCollection.Values);
+                UpdateCenter.RaiseEvent(newEvent);
+            }
             return shopGuid;
         }
 
@@ -77,7 +87,12 @@ namespace DomainLayer.Facade
             // if success clear all carts
             bool result = _userDomain.GetUserObject(userIdentifier).PurchaseCart(shopGuid);
             if (result)
-                UpdateCenter.RaiseEvent(new PurchasedCartEvent(shopGuid, userIdentifier.Guid));
+            {
+                var newEvent = new PurchasedCartEvent(shopGuid, userIdentifier.Guid);
+                newEvent.SetTargets(DomainData.ShopsCollection.Values, DomainData.RegisteredUsersCollection.Values);
+                newEvent.SetMessage(DomainData.ShopsCollection.Values, DomainData.RegisteredUsersCollection.Values);
+                UpdateCenter.RaiseEvent(newEvent);
+            }
             return result;
         }
 
@@ -167,7 +182,12 @@ namespace DomainLayer.Facade
             _verifier.VerifyMe(MethodBase.GetCurrentMethod(), userIdentifier, shopGuid, ownerToRemoveGuid);
             var result = _userDomain.GetUserObject(userIdentifier).CascadeRemoveShopOwner(shopGuid, ownerToRemoveGuid);
             if (result) //Maybe change CascadeRemoveShopOwner in IUser to return a collection of all removed owners.
-                UpdateCenter.RaiseEvent(new RemovedOwnerEvent(ownerToRemoveGuid, shopGuid));
+            {
+                var newEvent = new RemovedOwnerEvent(ownerToRemoveGuid, shopGuid, userIdentifier.Guid);
+                newEvent.SetTargets(DomainData.ShopsCollection.Values, DomainData.RegisteredUsersCollection.Values);
+                newEvent.SetMessage(DomainData.ShopsCollection.Values, DomainData.RegisteredUsersCollection.Values);
+                UpdateCenter.RaiseEvent(newEvent);
+            }
             return result;
         }
 

@@ -4,32 +4,32 @@ using System.Text;
 using System.Linq;
 using ApplicationCore.Entities.Users;
 using ApplicationCore.Entitites;
+using Utils;
 
 namespace ApplicationCore.Events
 {
     public class OpenedShopEvent : IUpdateEvent
     {
-        public Guid OpenedUserGuid { get; private set; }
-        public string OpenedUserName { get; private set; }
         public Guid ShopGuid { get; private set; }
+        public Guid Initiator { get; private set; }
+        public ICollection<Guid> Targets { get; private set; }
+        public string Message { get; private set; }
 
-        public OpenedShopEvent(Guid openedShopGuid, Guid shopGuid)
+        public OpenedShopEvent(Guid openedShopGuid, Guid initiator)
         {
-            OpenedUserGuid = openedShopGuid;
-            ShopGuid = shopGuid;
+            ShopGuid = openedShopGuid;
+            Initiator = initiator;
+            Targets = new List<Guid>();
+            Message = "UPDATE MESSAGE WAS NOT SET";
         }
 
-        public string GetMessage()
+        public void SetMessage(ICollection<Shop> shops, ICollection<BaseUser> registeredUsers)
         {
-            return string.Format("Shop {0} opened by {1}", ShopGuid, OpenedUserName);
+            Message = "A new shop was opened successfully!";
         }
-
-        public ICollection<Guid> GetTargets(ICollection<Shop> shops, ICollection<BaseUser> registeredUsers)
+        public void SetTargets(ICollection<Shop> shops, ICollection<BaseUser> registeredUsers)
         {
-            ICollection<Guid> result = shops.First(s => s.Guid.Equals(ShopGuid)).Owners.Select(owner => owner.OwnerGuid).ToList();
-            result.Add(OpenedUserGuid); // not sure if was added already
-            OpenedUserName = registeredUsers.First(user => user.Guid.Equals(OpenedUserGuid)).Username;
-            return result;
+            Targets.Add(Initiator);
         }
     }
 }

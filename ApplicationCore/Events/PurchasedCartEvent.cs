@@ -4,33 +4,36 @@ using System.Text;
 using System.Linq;
 using ApplicationCore.Entities.Users;
 using ApplicationCore.Entitites;
+using Utils;
 
 namespace ApplicationCore.Events
 {
     public class PurchasedCartEvent : IUpdateEvent
     {
         public Guid ShopGuid { get; set; }
+        public Guid Initiator { get; private set; }
+        public ICollection<Guid> Targets { get; private set; }
+        public string Message { get; private set; }
 
-        public Guid BuyerGuid { get; private set; }
-        public string BuyerUsername { get; private set; }
-
-        public PurchasedCartEvent(Guid shopGuid, Guid buyerGuid)
+        public PurchasedCartEvent(Guid shopGuid, Guid initiator)
         {
             ShopGuid = shopGuid;
-            BuyerGuid = buyerGuid;
+            Initiator = initiator;
+            Targets = new List<Guid>();
+            Message = "UPDATE MESSAGE WAS NOT SET";
         }
 
-        public string GetMessage()
+        public void SetMessage(ICollection<Shop> shops, ICollection<BaseUser> registeredUsers)
         {
-            return string.Format("{0} bought from your shop {1}", BuyerUsername, ShopGuid);
+            Message = $"{registeredUsers.First(u => u.Guid.Equals(Initiator)).Username} bought from your shop {ShopGuid}";
         }
 
-        public ICollection<Guid> GetTargets(ICollection<Shop> shops, ICollection<BaseUser> registeredUsers)
+        public void SetTargets(ICollection<Shop> shops, ICollection<BaseUser> registeredUsers)
         {
-            ICollection<Guid> result = shops.First(shop => shop.Guid.Equals(ShopGuid)).Owners.Select(owner => owner.OwnerGuid).ToList();
-            result.Add(shops.First(shop => shop.Guid.Equals(ShopGuid)).Creator.OwnerGuid);
-            BuyerUsername = registeredUsers.First(user => user.Guid.Equals(BuyerGuid)).Username;
-            return result;
+            var shop = shops.First(s => s.Guid.Equals(ShopGuid));
+            var owners = shop.Owners.Select(owner => owner.OwnerGuid).ToList();
+            Targets.Add(shop.Creator.OwnerGuid);
+            Targets.AddRange(owners);
         }
     }
 }

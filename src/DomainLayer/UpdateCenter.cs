@@ -2,12 +2,13 @@
 using System;
 using System.Collections.Generic;
 using System.Text;
+using System.Threading.Tasks;
 
 namespace DomainLayer
 {
     public static class UpdateCenter
     {
-        public delegate void UpdateEventHandler(IUpdateEvent updateEvent);
+        public delegate Task UpdateEventHandler(IUpdateEvent updateEvent);
 
         static public event UpdateEventHandler SubscribersHandlers;
 

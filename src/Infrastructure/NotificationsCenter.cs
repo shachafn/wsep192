@@ -1,14 +1,17 @@
 ﻿using ApplicationCore.Data;
 using ApplicationCore.Events;
 using ApplicationCore.Interfaces.DomainLayer;
+using ApplicationCore.Interfaces.Infastracture;
 using ApplicationCore.Interfaces.ServiceLayer;
 using DomainLayer;
 using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.SignalR;
 using Microsoft.Extensions.Logging;
 using System;
 using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Text;
+using System.Threading.Tasks;
 using Utils;
 
 namespace Infrastructure
@@ -16,35 +19,18 @@ namespace Infrastructure
     public class NotificationsCenter
     {
         readonly ILogger<NotificationsCenter> _logger;
-        readonly ISessionManager _sessionManager;
+        readonly IUserNotifier _notifier;
 
-        private static Dictionary<Guid, ConcurrentQueue<string>> _userGuidToNotificationsQueue = new Dictionary<Guid, ConcurrentQueue<string>>();
-
-        public NotificationsCenter(ILogger<NotificationsCenter> logger, ISessionManager sessionManager)
+        public NotificationsCenter(ILogger<NotificationsCenter> logger, IUserNotifier notifier)
         {
             _logger = logger;
-            _sessionManager = sessionManager;
+            _notifier = notifier;
         }
 
-        public ConcurrentQueue<string> CheckForNotifications(HttpContext httpContext)
+        public async Task HandleUpdate(IUpdateEvent updateEvent)
         {
-            var sessionId = httpContext.GetSessionID();
-            var userGuid = _sessionManager.GetUserGuid(sessionId);
-            if (userGuid == null) return new ConcurrentQueue<string>();
-            if (!_userGuidToNotificationsQueue.ContainsKey(userGuid)) return new ConcurrentQueue<string>();
-            return _userGuidToNotificationsQueue[userGuid];
+            await _notifier.NotifyEvent(updateEvent);
         }
 
-        public void HandleUpdate(IUpdateEvent updateEvent)
-        {
-            var targets = updateEvent.GetTargets(DomainData.ShopsCollection.Values, DomainData.RegisteredUsersCollection.Values);
-            var msg = updateEvent.GetMessage();
-            foreach (var target in targets)
-            {
-                if (!_userGuidToNotificationsQueue.ContainsKey(target))
-                    _userGuidToNotificationsQueue.Add(target, new ConcurrentQueue<string>());
-                _userGuidToNotificationsQueue[target].Enqueue(msg);
-            }
-        }
     }
 }

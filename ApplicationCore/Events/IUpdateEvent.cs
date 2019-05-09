@@ -8,7 +8,10 @@ namespace ApplicationCore.Events
 {
     public interface IUpdateEvent
     {
-        string GetMessage();
-        ICollection<Guid> GetTargets(ICollection<Shop> shops, ICollection<BaseUser> registeredUsers);
+        Guid Initiator { get; }
+        ICollection<Guid> Targets { get; }
+        string Message { get; }
+        void SetMessage(ICollection<Shop> shops, ICollection<BaseUser> registeredUsers);
+        void SetTargets(ICollection<Shop> shops, ICollection<BaseUser> registeredUsers);
     }
 }

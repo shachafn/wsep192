@@ -9,27 +9,24 @@ namespace ApplicationCore.Events
 {
     public class UserLoggedInEvent : IUpdateEvent
     {
-        public Guid UserGuid { get; private set; }
-        public string Username { get; private set; }
+        public Guid Initiator { get; private set; }
+        public ICollection<Guid> Targets { get; private set; }
+        public string Message { get; private set; }
 
-        public UserLoggedInEvent(Guid userGuid)
+        public UserLoggedInEvent(Guid initiator)
         {
-            UserGuid = userGuid;
+            Initiator = initiator;
+            Targets = new List<Guid>();
+            Message = "UPDATE MESSAGE WAS NOT SET";
         }
 
-        public string GetMessage()
+        public void SetMessage(ICollection<Shop> shops, ICollection<BaseUser> registeredUsers)
         {
-            return string.Format("Welcome {0} !", Username);
+            Message = $"Welcome {registeredUsers.First(u => u.Guid.Equals(Initiator)).Username}!";
         }
-
-        public ICollection<Guid> GetTargets(ICollection<Shop> shops, ICollection<BaseUser> registeredUsers)
+        public void SetTargets(ICollection<Shop> shops, ICollection<BaseUser> registeredUsers)
         {
-            Username = registeredUsers.First(user => user.Guid.Equals(UserGuid)).Username;
-            ICollection<Guid> result = new List<Guid>
-            {
-                UserGuid
-            };
-            return result;
+            Targets.Add(Initiator);
         }
     }
 }

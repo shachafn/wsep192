@@ -1,5 +1,7 @@
 ﻿using System;
+using System.Net.WebSockets;
 using System.Threading;
+using ApplicationCore.Interfaces.Infastracture;
 using ApplicationCore.Interfaces.ServiceLayer;
 using DomainLayer;
 using Infrastructure;
@@ -20,14 +22,16 @@ namespace PressentaitionLayer
         IServiceFacade _facade;
         ILogger<Startup> _logger;
         NotificationsCenter _notificationsCenter;
+        PipelineManager _pipelineManager;
 
         public Startup(IConfiguration configuration, IServiceFacade facade, ILogger<Startup> logger,
-            NotificationsCenter notificationsCenter)
+            NotificationsCenter notificationsCenter, PipelineManager pipelineManager)
         {
             Configuration = configuration;
             _facade = facade;
             _logger = logger;
             _notificationsCenter = notificationsCenter;
+            _pipelineManager = pipelineManager;
         }
 
         public IConfiguration Configuration { get; }
@@ -60,10 +64,11 @@ namespace PressentaitionLayer
             });
             services.AddSession();
             //services.AddAuthorization(options=> options.AddPolicy("BuyerOnly",policy=>policy.RequireRole("Buyer")));
-            services.AddSignalR();  // maybe Core
 
             var g = Guid.NewGuid();
             _facade.Initialize(g, "meni", "moni");
+            _facade.Register(Guid.NewGuid(), "ooo", "1111");
+            _logger.LogDebug(_facade.Register(Guid.NewGuid(), "myUser", "1111").ToString());
             _facade.Logout(g);
             UpdateCenter.Subscribe(_notificationsCenter.HandleUpdate);
         }
@@ -92,9 +97,18 @@ namespace PressentaitionLayer
                     name: "default",
                     template: "{controller=Home}/{action=Index}/{id?}");
             });
-            app.UseSignalR(route =>
+
+            var webSocketOptions = new WebSocketOptions()
             {
-                route.MapHub<StronglyTypedNotificationHub>("/notificationHub");
+                KeepAliveInterval = TimeSpan.FromSeconds(120),
+                ReceiveBufferSize = 4 * 1024
+            };
+
+            app.UseWebSockets(webSocketOptions);
+
+            app.Use(async (context, next) =>
+            {
+                await _pipelineManager.HandleHttpRequest(context, next);
             });
         }
     }

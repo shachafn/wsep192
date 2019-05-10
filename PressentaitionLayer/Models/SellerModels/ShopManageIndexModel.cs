@@ -11,6 +11,7 @@ namespace PressentaitionLayer.Models.SellerModels
         public ShopManageIndexModel(Shop shop)
         {
             Shop = shop;
+
         }
 
         public ShopManageIndexModel()

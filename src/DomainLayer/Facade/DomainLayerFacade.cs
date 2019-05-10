@@ -78,6 +78,38 @@ namespace DomainLayer.Facade
             return shopGuid;
         }
 
+        public void ReopenShop(UserIdentifier userIdentifier, Guid shopGuid)
+        {
+            VerifySystemIsInitialized();
+            _verifier.VerifyMe(MethodBase.GetCurrentMethod(), userIdentifier);
+            _userDomain.GetUserObject(userIdentifier).ReopenShop(shopGuid);
+            var newEvent = new ReopenedShopEvent(userIdentifier.Guid, shopGuid);
+            newEvent.SetTargets(DomainData.ShopsCollection.Values, DomainData.RegisteredUsersCollection.Values);
+            newEvent.SetMessage(DomainData.ShopsCollection.Values, DomainData.RegisteredUsersCollection.Values);
+            UpdateCenter.RaiseEvent(newEvent);
+        }
+
+        public void CloseShop(UserIdentifier userIdentifier, Guid shopGuid)
+        {
+            VerifySystemIsInitialized();
+            _verifier.VerifyMe(MethodBase.GetCurrentMethod(), userIdentifier);
+            _userDomain.GetUserObject(userIdentifier).CloseShop(shopGuid);
+            var newEvent = new ClosedShopEvent(userIdentifier.Guid, shopGuid);
+            newEvent.SetTargets(DomainData.ShopsCollection.Values, DomainData.RegisteredUsersCollection.Values);
+            newEvent.SetMessage(DomainData.ShopsCollection.Values, DomainData.RegisteredUsersCollection.Values);
+            UpdateCenter.RaiseEvent(newEvent);
+        }
+
+        public void CloseShopPermanently(UserIdentifier userIdentifier, Guid shopGuid)
+        {
+            VerifySystemIsInitialized();
+            _verifier.VerifyMe(MethodBase.GetCurrentMethod(), userIdentifier);
+            _userDomain.GetUserObject(userIdentifier).CloseShopPermanently(shopGuid);
+            var newEvent = new ClosedShopPermanentlyEvent(userIdentifier.Guid, shopGuid);
+            newEvent.SetTargets(DomainData.ShopsCollection.Values, DomainData.RegisteredUsersCollection.Values);
+            newEvent.SetMessage(DomainData.ShopsCollection.Values, DomainData.RegisteredUsersCollection.Values);
+            UpdateCenter.RaiseEvent(newEvent);
+        }
 
         public bool PurchaseCart(UserIdentifier userIdentifier, Guid shopGuid)
         {
@@ -254,7 +286,7 @@ namespace DomainLayer.Facade
             return DomainData.ShopsCollection.ToList();
         }
 
-        public IEnumerable<Shop> getUserShops(UserIdentifier userId)
+        public IEnumerable<Shop> GetUserShops(UserIdentifier userId)
         {
             /*todo verofy constraints
              * VerifySystemIsInitialized();
@@ -269,15 +301,6 @@ namespace DomainLayer.Facade
             _verifier.VerifyMe(MethodBase.GetCurrentMethod(), userIdentifier, newState);*/
             Shop shop = GetShop(shopGuid);
             return shop.ShopProducts;
-        }
-
-        public void CloseShopPermanently(UserIdentifier userIdentifier, Guid shopGuid)
-        {
-            /*todo verofy constraints
-             * VerifySystemIsInitialized();
-            _verifier.VerifyMe(MethodBase.GetCurrentMethod(), userIdentifier, newState);*/
-            Shop shop = GetShop(shopGuid);
-            shop.AdminClose();
         }
 
         public bool ChangeUserState(UserIdentifier userIdentifier, string newState)

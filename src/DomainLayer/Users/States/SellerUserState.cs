@@ -13,7 +13,6 @@ namespace DomainLayer.Users.States
     {
         public const string SellerUserStateString = "SellerUserState";
 
-
         public ICollection<Shop> ShopsOwned { get; set; }
 
         public override ICollection<Guid> GetShoppingHistory()
@@ -27,6 +26,23 @@ namespace DomainLayer.Users.States
             ShopsOwned.Add(shop);
             DomainData.ShopsCollection.Add(shop.Guid, shop);
             return shop.Guid;
+        }
+        public override void ReopenShop(Guid shopGuid)
+        {
+            var shop = DomainData.ShopsCollection[shopGuid];
+            shop.Reopen();
+        }
+
+        public override void CloseShop(Guid shopGuid)
+        {
+            var shop = DomainData.ShopsCollection[shopGuid];
+            shop.Close();
+        }
+
+        public override void CloseShopPermanently(Guid shopGuid)
+        {
+            var shop = DomainData.ShopsCollection[shopGuid];
+            shop.ClosePermanently();
         }
 
         public override bool PurchaseCart(BaseUser baseUser, Guid shopGuid)

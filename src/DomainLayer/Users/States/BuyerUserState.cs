@@ -46,6 +46,21 @@ namespace DomainLayer.Data.Entitites.Users.States
             throw new BadStateException($"Tried to invoke OpenShop in Buyer State");
         }
 
+        public override void ReopenShop(Guid shopGuid)
+        {
+            throw new BadStateException($"Tried to invoke ReopenShop in Buyer State");
+        }
+
+        public override void CloseShop(Guid shopGuid)
+        {
+            throw new BadStateException($"Tried to invoke CloseShop in Buyer State");
+        }
+
+        public override void CloseShopPermanently(Guid shopGuid)
+        {
+            throw new BadStateException($"Tried to invoke CloseShopPermanently in Buyer State");
+        }
+
         public override bool RemoveUser(Guid userToRemoveGuid)
         {
             throw new BadStateException($"Tried to invoke RemoveUser in Buyer State");
@@ -157,5 +172,7 @@ namespace DomainLayer.Data.Entitites.Users.States
         {
             throw new BadStateException($"Tried to invoke AddNewDiscountPolicy in Buyer State");
         }
+
+
     }
 }

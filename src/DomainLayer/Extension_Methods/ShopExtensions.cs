@@ -13,19 +13,16 @@ namespace DomainLayer.Extension_Methods
     {
         public static void Close(this Shop shop)
         {
-            throw new NotImplementedException();
+            //throw new NotImplementedException();
             VerifyShopIsActive(shop); ////MOVE TO DOMAINLAYERFACADEVERIFIER WHEN A USE-CASE TO CHANGE SHOP STATUS IS IMPLEMENTED
             shop.ShopState = Shop.ShopStateEnum.Closed;
         }
-        public static void AdminClose(this Shop shop)
+        public static void ClosePermanently(this Shop shop)
         {
-            VerifyShopIsActiveOrClosed(shop);////TODO MOVE TO DOMAINLAYERFACADEVERIFIER WHEN A USE-CASE TO CHANGE SHOP STATUS IS IMPLEMENTED
             shop.ShopState = Shop.ShopStateEnum.PermanentlyClosed;
         }
-        public static void Open(this Shop shop)
+        public static void Reopen(this Shop shop)
         {
-            throw new NotImplementedException();
-            VerifyShopIsClosed(shop);////MOVE TO DOMAINLAYERFACADEVERIFIER WHEN A USE-CASE TO CHANGE SHOP STATUS IS IMPLEMENTED
             shop.ShopState = Shop.ShopStateEnum.Active;
         }
 

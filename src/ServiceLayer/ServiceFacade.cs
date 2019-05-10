@@ -118,7 +118,7 @@ namespace ServiceLayer
         #region Utils
         public IEnumerable<Shop> getUserShops(UserIdentifier userId)
         {
-            return _domainLayerFacade.getUserShops(userId);
+            return _domainLayerFacade.GetUserShops(userId);
         }
 
         public IEnumerable<ShopProduct> getShopProducts(UserIdentifier userId,Guid shopGuid)

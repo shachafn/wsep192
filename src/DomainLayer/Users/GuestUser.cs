@@ -31,6 +31,21 @@ namespace ApplicationCore.Entities.Users
             throw new BadStateException($"Tried to invoke OpenShop in GuestUser");
         }
 
+        public void ReopenShop(Guid shopGuid)
+        {
+            throw new BadStateException($"Tried to invoke ReopenShop in GuestUser");
+        }
+
+        public void CloseShop(Guid shopGuid)
+        {
+            throw new BadStateException($"Tried to invoke CloseShop in GuestUser");
+        }
+
+        public void CloseShopPermanently(Guid shopGuid)
+        {
+            throw new BadStateException($"Tried to invoke CloseShopPermanently in GuestUser");
+        }
+
         public bool PurchaseCart(Guid shopGuid)
         {
             var cart = DomainData.ShoppingBagsCollection
@@ -168,5 +183,7 @@ namespace ApplicationCore.Entities.Users
         {
             return DomainData.ShopsCollection.SelectMany(shop => shop.GetPurchaseHistory(Guid)).ToList();
         }
+
+
     }
 }

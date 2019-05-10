@@ -42,7 +42,13 @@ namespace DomainLayer.Users
             return State.PurchaseCart(_baseUser, shopGuid);
         }
 
-        public Guid OpenShop() => State.OpenShop(_baseUser);        
+        public Guid OpenShop() => State.OpenShop(_baseUser);
+
+        public void ReopenShop(Guid shopGuid) => State.ReopenShop(shopGuid);
+
+        public void CloseShop(Guid shopGuid) => State.CloseShop(shopGuid);
+
+        public void CloseShopPermanently(Guid shopGuid) => State.CloseShopPermanently(shopGuid);
 
         public bool RemoveUser(Guid userToRemoveGuid)
         {
@@ -131,5 +137,7 @@ namespace DomainLayer.Users
         {
             return DomainData.ShopsCollection.SelectMany(shop => shop.GetPurchaseHistory(Guid)).ToList();
         }
+
+
     }
 }

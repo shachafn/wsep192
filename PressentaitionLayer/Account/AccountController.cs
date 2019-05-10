@@ -123,7 +123,7 @@ namespace PressentaitionLayer.Account
                 {
                     _serviceFacade.Logout(new Guid(HttpContext.Session.Id));
                 }
-                catch(Exception ex)
+                catch (Exception)
                 {
 
                 }

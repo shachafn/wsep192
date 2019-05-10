@@ -24,6 +24,21 @@ namespace DomainLayer.Users.States
             throw new BadStateException($"Tried to invoke OpenShop in Admin State");
         }
 
+        public override void ReopenShop(Guid shopGuid)
+        {
+            throw new BadStateException($"Tried to invoke ReopenShop in Admin State");
+        }
+
+        public override void CloseShop(Guid shopGuid)
+        {
+            throw new BadStateException($"Tried to invoke CloseShop in Admin State");
+        }
+
+        public override void CloseShopPermanently(Guid shopGuid)
+        {
+            throw new BadStateException($"Tried to invoke CloseShopPermanently in Admin State");
+        }
+
         public override bool PurchaseCart(BaseUser baseUser, Guid shopGuid)
         {
             throw new BadStateException($"Tried to invoke PurchaseBag in Admin State");
@@ -141,5 +156,7 @@ namespace DomainLayer.Users.States
         {
             throw new BadStateException($"Tried to invoke AddNewDiscountPolicy in Admin State");
         }
+
+
     }
 }

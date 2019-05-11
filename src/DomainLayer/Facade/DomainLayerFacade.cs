@@ -103,6 +103,7 @@ namespace DomainLayer.Facade
             VerifySystemIsInitialized();
             _verifier.VerifyMe(MethodBase.GetCurrentMethod(), userIdentifier);
             _userDomain.GetUserObject(userIdentifier).ReopenShop(shopGuid);
+
             var newEvent = new ReopenedShopEvent(userIdentifier.Guid, shopGuid);
             //newEvent.SetTargets(DomainData.ShopsCollection.Values, DomainData.RegisteredUsersCollection.Values);
             //newEvent.SetMessage(DomainData.ShopsCollection.Values, DomainData.RegisteredUsersCollection.Values);
@@ -115,6 +116,7 @@ namespace DomainLayer.Facade
             VerifySystemIsInitialized();
             _verifier.VerifyMe(MethodBase.GetCurrentMethod(), userIdentifier);
             _userDomain.GetUserObject(userIdentifier).CloseShop(shopGuid);
+
             var newEvent = new ClosedShopEvent(userIdentifier.Guid, shopGuid);
             //newEvent.SetTargets(DomainData.ShopsCollection.Values, DomainData.RegisteredUsersCollection.Values);
             //newEvent.SetMessage(DomainData.ShopsCollection.Values, DomainData.RegisteredUsersCollection.Values);
@@ -122,11 +124,13 @@ namespace DomainLayer.Facade
             UpdateCenter.RaiseEvent(newEvent);
         }
 
+
         public void CloseShopPermanently(UserIdentifier userIdentifier, Guid shopGuid)
         {
             VerifySystemIsInitialized();
             _verifier.VerifyMe(MethodBase.GetCurrentMethod(), userIdentifier);
             _userDomain.GetUserObject(userIdentifier).CloseShopPermanently(shopGuid);
+
             var newEvent = new ClosedShopPermanentlyEvent(userIdentifier.Guid, shopGuid);
             //newEvent.SetTargets(DomainData.ShopsCollection.Values, DomainData.RegisteredUsersCollection.Values);
             //newEvent.SetMessage(DomainData.ShopsCollection.Values, DomainData.RegisteredUsersCollection.Values);
@@ -230,7 +234,7 @@ namespace DomainLayer.Facade
             VerifySystemIsInitialized();
             _verifier.VerifyMe(MethodBase.GetCurrentMethod(), userIdentifier, shopGuid, newShopOwnerGuid);
             bool result = _userDomain.GetUserObject(userIdentifier).AddShopOwner(shopGuid, newShopOwnerGuid);
-            if(result)
+            if (result)
             {
                 var newEvent = new AddedOwnerEvent(newShopOwnerGuid, userIdentifier.Guid, shopGuid);
                 newEvent.SetMessages(DomainData.ShopsCollection.Values, DomainData.RegisteredUsersCollection.Values);
@@ -324,7 +328,7 @@ namespace DomainLayer.Facade
              * VerifySystemIsInitialized();
             _verifier.VerifyMe(MethodBase.GetCurrentMethod(), userIdentifier, newState);*/
             List<Shop> shops = ApplicationCore.Data.DomainData.ShopsCollection.Where(shop => shop.Creator.OwnerGuid.Equals(userId.Guid)).ToList<Shop>();//created
-            shops.AddRange(ApplicationCore.Data.DomainData.ShopsCollection.Where(shop =>shop.Owners.Any(owner => owner.OwnerGuid.Equals(userId.Guid))));
+            shops.AddRange(ApplicationCore.Data.DomainData.ShopsCollection.Where(shop => shop.Owners.Any(owner => owner.OwnerGuid.Equals(userId.Guid))));
             shops.AddRange(ApplicationCore.Data.DomainData.ShopsCollection.Where(shop => shop.Managers.Any(owner => owner.OwnerGuid.Equals(userId.Guid))));
             return shops;
         }
@@ -364,12 +368,12 @@ namespace DomainLayer.Facade
             }
         }
 
-        public Guid AddNewDiscountPolicy(UserIdentifier userIdentifier, Guid shopGuid, object policyType, object field1, object field2, object field3, object field4,object field5)
+        public Guid AddNewDiscountPolicy(UserIdentifier userIdentifier, Guid shopGuid, object policyType, object field1, object field2, object field3, object field4, object field5)
         {
             VerifySystemIsInitialized();
             IUser user = _userDomain.GetUserObject(userIdentifier);
             IDiscountPolicy newPolicy = new UserDiscountPolicy();
-            _verifier.AddNewDiscountPolicy(ref newPolicy, userIdentifier,shopGuid, policyType, field1, field2, field3,field4,field5);
+            _verifier.AddNewDiscountPolicy(ref newPolicy, userIdentifier, shopGuid, policyType, field1, field2, field3, field4, field5);
             return user.AddNewDiscountPolicy(user.Guid, shopGuid, newPolicy);
         }
 
@@ -378,7 +382,7 @@ namespace DomainLayer.Facade
             VerifySystemIsInitialized();
             IUser user = _userDomain.GetUserObject(userIdentifier);
             IPurchasePolicy newPolicy = new UserPurchasePolicy();
-            _verifier.AddNewPurchasePolicy(ref newPolicy, userIdentifier,shopGuid, policyType, field1, field2, field3,field4);
+            _verifier.AddNewPurchasePolicy(ref newPolicy, userIdentifier, shopGuid, policyType, field1, field2, field3, field4);
             return user.AddNewPurchasePolicy(user.Guid, shopGuid, newPolicy);
         }
 
@@ -415,9 +419,9 @@ namespace DomainLayer.Facade
 
         public Guid GetUserName(string userName)
         {
-            foreach(BaseUser user in DomainData.RegisteredUsersCollection)
+            foreach (BaseUser user in DomainData.RegisteredUsersCollection)
             {
-                if(user.Username.Equals(userName))
+                if (user.Username.Equals(userName))
                 {
                     return user.Guid;
                 }

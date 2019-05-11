@@ -31,7 +31,7 @@ namespace PressentaitionLayer.Controllers
         }
         public IActionResult openShop()
         {
-            _serviceFacade.OpenShop(new Guid(HttpContext.Session.Id));
+            _serviceFacade.OpenShop(new Guid(HttpContext.Session.Id), string.Empty);
             return RedirectToAction("MyShops", "Seller");
         }
 

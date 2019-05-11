@@ -1,5 +1,7 @@
 ﻿using ApplicationCore.Entitites;
 using ApplicationCore.Exceptions;
+using ApplicationCore.Events;
+using ApplicationCore.Data;
 using DomainLayer.Policies;
 using DomainLayer.Properties;
 using System;
@@ -116,7 +118,12 @@ namespace DomainLayer.Extension_Methods
             foreach (var otherOwner in shop.Owners)
             {
                 if (otherOwner.AppointerGuid.Equals(toRemoveOwnerGuid))
+                {
                     shop.RemoveOwner(otherOwner.OwnerGuid);
+                    var newEvent = new RemovedOwnerEvent(otherOwner.OwnerGuid, toRemoveOwnerGuid, shop.Guid);
+                    newEvent.SetMessages(DomainData.ShopsCollection.Values, DomainData.RegisteredUsersCollection.Values);
+                    UpdateCenter.RaiseEvent(newEvent);
+                }
             }
             shop.Owners.Remove(ownerToRemove);// remove the owner from the owners list
             return true;

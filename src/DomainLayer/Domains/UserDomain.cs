@@ -34,7 +34,8 @@ namespace DomainLayer.Domains
             if (IsUsernameTaken(username))
                 return Guid.Empty;
 
-            var newUser = new BaseUser(username.ToLower(), password, isAdmin);
+            //var newUser = new BaseUser(username.ToLower(), password, isAdmin);
+            var newUser = new BaseUser(username, password, isAdmin);
             DomainData.RegisteredUsersCollection.Add(newUser.Guid, newUser);
             return newUser.Guid;
         }

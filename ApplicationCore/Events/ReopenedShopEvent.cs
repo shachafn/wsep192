@@ -18,7 +18,7 @@ namespace ApplicationCore.Events
 
         public string Message { get; private set; }
 
-        public ReopenedShopEvent(Guid shopGuid, Guid initiator)
+        public ReopenedShopEvent(Guid initiator, Guid shopGuid)
         {
             ShopGuid = shopGuid;
             Initiator = initiator;

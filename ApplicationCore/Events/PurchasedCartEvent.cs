@@ -15,7 +15,7 @@ namespace ApplicationCore.Events
         public ICollection<Guid> Targets { get; private set; }
         public string Message { get; private set; }
 
-        public PurchasedCartEvent(Guid shopGuid, Guid initiator)
+        public PurchasedCartEvent(Guid initiator, Guid shopGuid)
         {
             ShopGuid = shopGuid;
             Initiator = initiator;

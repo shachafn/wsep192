@@ -120,7 +120,7 @@ namespace DomainLayer.Facade
             bool result = _userDomain.GetUserObject(userIdentifier).PurchaseCart(shopGuid);
             if (result)
             {
-                var newEvent = new PurchasedCartEvent(shopGuid, userIdentifier.Guid);
+                var newEvent = new PurchasedCartEvent(userIdentifier.Guid, shopGuid);
                 newEvent.SetTargets(DomainData.ShopsCollection.Values, DomainData.RegisteredUsersCollection.Values);
                 newEvent.SetMessage(DomainData.ShopsCollection.Values, DomainData.RegisteredUsersCollection.Values);
                 UpdateCenter.RaiseEvent(newEvent);

@@ -15,7 +15,7 @@ namespace ApplicationCore.Events
         public ICollection<Guid> Targets { get; private set; }
         public string Message { get; private set; }
 
-        public OpenedShopEvent(Guid openedShopGuid, Guid initiator)
+        public OpenedShopEvent(Guid initiator, Guid openedShopGuid)
         {
             ShopGuid = openedShopGuid;
             Initiator = initiator;
@@ -25,7 +25,7 @@ namespace ApplicationCore.Events
 
         public void SetMessage(ICollection<Shop> shops, ICollection<BaseUser> registeredUsers)
         {
-            Message = "A new shop was opened successfully!";
+            Message = $"A new shop {ShopGuid} was opened successfully!";
         }
         public void SetTargets(ICollection<Shop> shops, ICollection<BaseUser> registeredUsers)
         {

@@ -70,15 +70,17 @@ namespace Infrastructure
             var msg = updateEvent.Message;
             var initiatorGuid = updateEvent.Initiator;
             //For Initiator we dont want to send immediately because its page will be refreshed
-            if (!_userGuidToNotificationsQueue.ContainsKey(initiatorGuid))
-                _userGuidToNotificationsQueue.Add(initiatorGuid, new ConcurrentQueue<string>());
-            _userGuidToNotificationsQueue[initiatorGuid].Enqueue(msg);
-            if (targets.Contains(initiatorGuid)) targets.Remove(initiatorGuid);
-
+            if (targets.Contains(initiatorGuid))
+            {
+                if (!_userGuidToNotificationsQueue.ContainsKey(initiatorGuid))
+                    _userGuidToNotificationsQueue.Add(initiatorGuid, new ConcurrentQueue<string>());
+                _userGuidToNotificationsQueue[initiatorGuid].Enqueue(msg);
+                targets.Remove(initiatorGuid);
+            }
             foreach (var target in targets)
             {
                 var targetSessionid = _sessionManager.GetSessionId(target);
-                if (targetSessionid != null)
+                if (!targetSessionid.Equals(Guid.Empty))
                 {
                     if (_sessionIdToWebSocket.ContainsKey(targetSessionid))
                     {
@@ -98,7 +100,7 @@ namespace Infrastructure
         public async Task SendMessage(WebSocket webSocket, string msg)
         {
             var msgBytes = Encoding.UTF8.GetBytes(msg);
-            var buffer = new ArraySegment<Byte>(msgBytes, 0, msgBytes.Length);
+            var buffer = new ArraySegment<byte>(msgBytes, 0, msgBytes.Length);
             await webSocket.SendAsync(buffer, WebSocketMessageType.Text, true, CancellationToken.None);
         }
     }

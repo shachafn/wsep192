@@ -102,6 +102,12 @@ namespace DomainLayer.Facade
             VerifyLoggedInUser(userIdentifier.Guid, new UserNotFoundException());
         }
 
+        public void OpenShop(UserIdentifier userIdentifier, string shopName)
+        {
+            VerifyLoggedInUser(userIdentifier.Guid, new UserNotFoundException());
+            VerifyShopNameString(shopName, new IllegalArgumentException());
+        }
+
         public void ReopenShop(UserIdentifier userIdentifier, Guid shopGuid)
         {
             VerifyLoggedInUser(userIdentifier.Guid, new UserNotFoundException());
@@ -578,7 +584,6 @@ namespace DomainLayer.Facade
             return user;
         }
 
-
         private Shop VerifyShopExists(Guid shopGuid, ICloneableException<Exception> e)
         {
             var shop = DomainData.ShopsCollection[shopGuid];
@@ -602,7 +607,6 @@ namespace DomainLayer.Facade
             }
             throw new PolicyNotFoundException();
         }
-
 
         private void VerifyGuestUser(UserIdentifier userIdentifier, ICloneableException<Exception> e)
         {
@@ -631,6 +635,17 @@ namespace DomainLayer.Facade
             {
                 StackTrace stackTrace = new StackTrace();
                 var msg = $"String is null, empty or whitespace." +
+        $"Cant complete {stackTrace.GetFrame(1).GetMethod().Name}";
+                throw e.Clone(msg);
+            }
+        }
+
+        private void VerifyShopNameString(string str, ICloneableException<Exception> e)
+        {
+            if (str == null)
+            {
+                StackTrace stackTrace = new StackTrace();
+                var msg = $"String is null." +
         $"Cant complete {stackTrace.GetFrame(1).GetMethod().Name}";
                 throw e.Clone(msg);
             }

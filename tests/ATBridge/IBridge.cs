@@ -67,6 +67,7 @@ namespace ATBridge
         /// <exception cref="BadStateException">When the user is not in seller state</exception>
         /// <returns>Guid of the created shop.</returns>
         Guid OpenShop(Guid userGuid);
+        Guid OpenShop(Guid userGuid, string shopName);
 
         /////Implements General Requirement 2.8. Not entirely, only purchase of the entier bag.
         /////////////// REDO CONSTRAINTS, CHANGED FROM CART TO BAG ////////////////////////

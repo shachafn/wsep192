@@ -31,6 +31,11 @@ namespace ApplicationCore.Entities.Users
             throw new BadStateException($"Tried to invoke OpenShop in GuestUser");
         }
 
+        public Guid OpenShop(string shopName)
+        {
+            throw new BadStateException($"Tried to invoke OpenShop in GuestUser");
+        }
+
         public void ReopenShop(Guid shopGuid)
         {
             throw new BadStateException($"Tried to invoke ReopenShop in GuestUser");

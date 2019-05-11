@@ -44,6 +44,8 @@ namespace DomainLayer.Users
 
         public Guid OpenShop() => State.OpenShop(_baseUser);
 
+        public Guid OpenShop(string shopName) => State.OpenShop(_baseUser, shopName);
+
         public void ReopenShop(Guid shopGuid) => State.ReopenShop(shopGuid);
 
         public void CloseShop(Guid shopGuid) => State.CloseShop(shopGuid);

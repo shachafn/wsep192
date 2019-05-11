@@ -16,6 +16,7 @@ namespace ApplicationCore.Interfaces.DomainLayer
         Guid Login(UserIdentifier userIdentifier, string username, string password);
         bool Logout(UserIdentifier userIdentifier);
         Guid OpenShop(UserIdentifier userIdentifier);
+        Guid OpenShop(UserIdentifier userIdentifier, string shopName);
         void ReopenShop(UserIdentifier userIdentifier, Guid shopGuid);
         bool PurchaseCart(UserIdentifier userIdentifier, Guid shopGuid);
         Guid Initialize(UserIdentifier userIdentifier, string username, string password);

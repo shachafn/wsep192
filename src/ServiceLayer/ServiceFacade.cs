@@ -145,6 +145,11 @@ namespace ServiceLayer
             return _domainLayerFacade.OpenShop(userIdentifier);
         }
 
+        public Guid OpenShop(UserIdentifier userIdentifier, string shopName)
+        {
+            return _domainLayerFacade.OpenShop(userIdentifier, shopName);
+        }
+
         public bool PurchaseCart(UserIdentifier userIdentifier, Guid shopGuid)
         {
             return _domainLayerFacade.PurchaseCart(userIdentifier, shopGuid);

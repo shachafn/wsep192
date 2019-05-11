@@ -27,6 +27,15 @@ namespace DomainLayer.Users.States
             DomainData.ShopsCollection.Add(shop.Guid, shop);
             return shop.Guid;
         }
+
+        public override Guid OpenShop(BaseUser baseUser, string shopName)
+        {
+            var shop = new Shop(baseUser.Guid, shopName);
+            ShopsOwned.Add(shop);
+            DomainData.ShopsCollection.Add(shop.Guid, shop);
+            return shop.Guid;
+        }
+
         public override void ReopenShop(Guid shopGuid)
         {
             var shop = DomainData.ShopsCollection[shopGuid];

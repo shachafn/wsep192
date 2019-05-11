@@ -45,8 +45,8 @@ namespace ApplicationCore.Events
             var owners = shop.Owners.Select(owner => owner.OwnerGuid).ToList();
             owners.Add(shop.Creator.OwnerGuid);
             owners.Remove(Initiator);
-            string ownersMsg = $"{registeredUsers.First(u => u.Guid.Equals(Initiator)).Username} bought from your shop {ShopGuid}";
-            string initiatorMsg = $"You bought from shop {ShopGuid}";
+            string ownersMsg = $"{registeredUsers.First(u => u.Guid.Equals(Initiator)).Username} bought from your shop {shop.ShopName}";
+            string initiatorMsg = $"You bought from shop {shop.ShopName}";
             Messages.Add(owners, ownersMsg);
             Messages.Add(new List<Guid> { Initiator }, initiatorMsg);
         }

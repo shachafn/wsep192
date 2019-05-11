@@ -33,7 +33,8 @@ namespace ApplicationCore.Events
 
         public void SetMessages(ICollection<Shop> shops, ICollection<BaseUser> registeredUsers)
         {
-            string initiatorMsg = $"A new shop {ShopGuid} was opened successfully!";
+            string shopName = shops.FirstOrDefault(shop => shop.Guid.Equals(ShopGuid)).ShopName;
+            string initiatorMsg = $"A new shop {shopName} was opened successfully!";
             Messages.Add(new List<Guid> { Initiator }, initiatorMsg);
         }
 

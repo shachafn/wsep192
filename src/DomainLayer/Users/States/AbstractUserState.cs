@@ -10,6 +10,7 @@ namespace DomainLayer.Users.States
     {
         public abstract ICollection<Guid> GetShoppingHistory();
         public abstract Guid OpenShop(BaseUser baseUser);
+        public abstract Guid OpenShop(BaseUser baseUser, string shopName);
         public abstract void ReopenShop(Guid shopGuid);
         public abstract void CloseShop(Guid shopGuid);
         public abstract void CloseShopPermanently(Guid shopGuid);

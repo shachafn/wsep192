@@ -24,6 +24,11 @@ namespace DomainLayer.Users.States
             throw new BadStateException($"Tried to invoke OpenShop in Admin State");
         }
 
+        public override Guid OpenShop(BaseUser baseUser, string shopName)
+        {
+            throw new BadStateException($"Tried to invoke OpenShop in Buyer State");
+        }
+
         public override void ReopenShop(Guid shopGuid)
         {
             throw new BadStateException($"Tried to invoke ReopenShop in Admin State");

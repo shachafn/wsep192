@@ -106,6 +106,7 @@ namespace DomainLayer.Facade
         {
             VerifyLoggedInUser(userIdentifier.Guid, new UserNotFoundException());
             VerifyShopNameString(shopName, new IllegalArgumentException());
+            VeriffyShopAlreadyExists(userIdentifier.Guid, shopName, new IllegalArgumentException());
         }
 
         public void ReopenShop(UserIdentifier userIdentifier, Guid shopGuid)
@@ -399,6 +400,7 @@ namespace DomainLayer.Facade
             shop.VerifyShopIsActive();
             shop.VerifyOwnerOrCreator(userIdentifier.Guid, new NoPriviligesException());
             VerifyRegisteredUser(ownerToRemoveGuid, new UserNotFoundException());
+            VerifyNotOwnerAppointer(userIdentifier.Guid, ownerToRemoveGuid, shopGuid, new IllegalArgumentException());
         }
 
         /// <constraints>
@@ -653,6 +655,19 @@ namespace DomainLayer.Facade
             }
         }
 
+        private void VeriffyShopAlreadyExists(Guid userGuid, string shopName, ICloneableException<Exception> e)
+        {
+            var constraint = DomainData.ShopsCollection.Where(shop => shop.Creator.OwnerGuid.Equals(userGuid)
+                || shop.Owners.Select(owner => owner.OwnerGuid).Contains(userGuid)).Select(shop => shop.ShopName).Contains(shopName);
+            if (constraint)
+            {
+                StackTrace stackTrace = new StackTrace();
+                var msg = $"User with Guid - {userGuid} is already an owner of shop {shopName}." +
+        $"Cant complete {stackTrace.GetFrame(1).GetMethod().Name}";
+                throw e.Clone(msg);
+            }
+        }
+
         private void VerifyDoubleGreaterThan0(double toCheck, ICloneableException<Exception> e)
         {
             if (toCheck <= 0)
@@ -695,6 +710,19 @@ namespace DomainLayer.Facade
             {
                 StackTrace stackTrace = new StackTrace();
                 var msg = $"User with Guid - {userGuid} is the not an owner of the shop {shop.ShopName}." +
+        $"Cant complete {stackTrace.GetFrame(1).GetMethod().Name}";
+                throw e.Clone(msg);
+            }
+        }
+
+        private void VerifyNotOwnerAppointer(Guid userGuid, Guid ownerToRemoveGuid, Guid shopGuid, ICloneableException<Exception> e)
+        {
+            var shop = DomainData.ShopsCollection.FirstOrDefault(s => s.Guid.Equals(shopGuid));
+            var constraint = shop.Owners.FirstOrDefault(owner => owner.OwnerGuid.Equals(userGuid)).AppointerGuid.Equals(ownerToRemoveGuid);
+            if (constraint)
+            {
+                StackTrace stackTrace = new StackTrace();
+                var msg = $"User with Guid - {userGuid} cannot remove user with Guid - {ownerToRemoveGuid} from {shop.ShopName} because this user is it's appointer ." +
         $"Cant complete {stackTrace.GetFrame(1).GetMethod().Name}";
                 throw e.Clone(msg);
             }

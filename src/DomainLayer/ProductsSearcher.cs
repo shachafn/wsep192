@@ -23,7 +23,7 @@ namespace DomainLayer
                     {
                         //Product and shopGuid
                         ICollection<Tuple<ShopProduct, Guid>> output = new List<Tuple<ShopProduct, Guid>>();
-                        foreach (var shop in DomainData.ShopsCollection)
+                        foreach (var shop in DomainData.ShopsCollection.Where(s=>s.ShopState.Equals(Shop.ShopStateEnum.Active)))
                         {
                             var filteredProducts = shop.ShopProducts.
                                 Where(product => product.Product.Name.ToLower().Contains(toMatch.First().ToLower()));
@@ -36,7 +36,7 @@ namespace DomainLayer
                 case "Category":
                     {
                         ICollection<Tuple<ShopProduct, Guid>> output = new List<Tuple<ShopProduct, Guid>>();
-                        foreach (var shop in DomainData.ShopsCollection)
+                        foreach (var shop in DomainData.ShopsCollection.Where(s => s.ShopState.Equals(Shop.ShopStateEnum.Active)))
                         {
                             var filteredProducts = shop.ShopProducts.
                                 Where(prod => prod.Product.Category.ToLower().Equals(toMatch.First().ToLower()));
@@ -49,7 +49,7 @@ namespace DomainLayer
                 case "Keywords":
                     {
                         ICollection<Tuple<ShopProduct, Guid>> output = new List<Tuple<ShopProduct, Guid>>();
-                        foreach (var shop in DomainData.ShopsCollection)
+                        foreach (var shop in DomainData.ShopsCollection.Where(s => s.ShopState.Equals(Shop.ShopStateEnum.Active)))
                         {
                             var filteredProducts = shop.ShopProducts.
                                 Where(prod => toMatch.All(keyword => prod.Product.Keywords.Contains(keyword)));

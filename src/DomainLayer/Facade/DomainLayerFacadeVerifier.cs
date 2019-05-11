@@ -113,6 +113,7 @@ namespace DomainLayer.Facade
             VerifyLoggedInUser(userIdentifier.Guid, new UserNotFoundException());
             var user = VerifyLoggedInUser(userIdentifier.Guid, new UserNotFoundException());
             var shop = VerifyShopExists(shopGuid, new ShopNotFoundException());
+            VerifyOwnerOfShop(userIdentifier.Guid, shopGuid, new OwnerNotFoundException());
             shop.VerifyShopIsActive();
         }
 
@@ -121,6 +122,7 @@ namespace DomainLayer.Facade
             VerifyLoggedInUser(userIdentifier.Guid, new UserNotFoundException());
             var user = VerifyLoggedInUser(userIdentifier.Guid, new UserNotFoundException());
             var shop = VerifyShopExists(shopGuid, new ShopNotFoundException());
+            VerifyOwnerOfShop(userIdentifier.Guid, shopGuid, new OwnerNotFoundException());
             shop.VerifyShopIsClosed();
         }
 
@@ -684,6 +686,20 @@ namespace DomainLayer.Facade
             }
         }
 
+        private void VerifyOwnerOfShop(Guid userGuid, Guid shopGuid, ICloneableException<Exception> e)
+        {
+            var shop = DomainData.ShopsCollection.FirstOrDefault(s => s.Guid.Equals(shopGuid));
+            var constraint = shop.Owners.Select(owner => owner.OwnerGuid).Contains(userGuid)
+                || shop.Creator.OwnerGuid.Equals(userGuid);
+            if (!constraint)
+            {
+                StackTrace stackTrace = new StackTrace();
+                var msg = $"User with Guid - {userGuid} is the not an owner of the shop {shop.ShopName}." +
+        $"Cant complete {stackTrace.GetFrame(1).GetMethod().Name}";
+                throw e.Clone(msg);
+            }
+        }
+
         private void VerifyNotOnlyOwnerOfAnActiveShop(Guid userGuid, ICloneableException<Exception> e)
         {
             var constraint = DomainData.ShopsCollection.Any(shop =>
@@ -899,7 +915,6 @@ namespace DomainLayer.Facade
             }
             throw new PolicyNotFoundException();
         }
-
 
         private void VerifyCartDiscountPolicy(IllegalArgumentException e, object field1, object field2, object field3, object field4)
         {

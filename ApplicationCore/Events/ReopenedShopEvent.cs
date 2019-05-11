@@ -26,6 +26,7 @@ namespace ApplicationCore.Events
             Initiator = initiator;
             Targets = new List<Guid>();
             Message = "UPDATE MESSAGE WAS NOT SET";
+            Messages = new Dictionary<ICollection<Guid>, string>();
         }
 
         public void SetMessage(ICollection<Shop> shops, ICollection<BaseUser> registeredUsers)

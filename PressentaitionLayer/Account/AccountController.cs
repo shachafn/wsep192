@@ -148,8 +148,6 @@ namespace PressentaitionLayer.Account
                 var (isValid, user) = await _userServices.ValidateUserRegisterAsync(model.UserName, model.Password,new Guid(HttpContext.Session.Id));
                 if (isValid)
                 {
-                    await Response.WriteAsync("success");
-
                     return RedirectToAction("Index", "Home");
                 }
                 ModelState.AddModelError("InvalidCredentials", "Invalid credentials.");

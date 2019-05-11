@@ -47,9 +47,10 @@
 }
     </tbody>
 </table>
-<labe>
+<div class="form-inline">
     <form asp-action="OpenShop" method="post">
-        <input type="text" class="form-control" value="(Guid by default)" id="ShopName" />
-        <input type="submit" class="btn" value="Open New Shop"/>
+        new shop name:
+        <input type="text" name="ShopName" class="pull-left" placeholder="(Guid by default)" />
+        <input type="submit" class="btn pull-left" value="Open New Shop" />
     </form>
-</labe>
+</div>

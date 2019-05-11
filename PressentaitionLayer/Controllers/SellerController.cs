@@ -31,20 +31,20 @@ namespace PressentaitionLayer.Controllers
         }
 
         [HttpPost]
-        public IActionResult OpenShop(string name)
+        public IActionResult OpenShop(string ShopName)
         {
-            _serviceFacade.OpenShop(new Guid(HttpContext.Session.Id),name);
+            _serviceFacade.OpenShop(new Guid(HttpContext.Session.Id),ShopName);
             return RedirectToAction("MyShops", "Seller");
         }
 
         public IActionResult ReOpenShop(string shopId)
         {
-            _serviceFacade.
+            _serviceFacade.ReopenShop(new Guid(HttpContext.Session.Id), new Guid(shopId));
             return RedirectToAction("MyShops", "Seller");
         }
         public IActionResult CloseShop(string shopId)
         {
-            _serviceFacade.OpenShop(new Guid(HttpContext.Session.Id), name);
+            _serviceFacade.CloseShop(new Guid(HttpContext.Session.Id), new Guid(shopId));
             return RedirectToAction("MyShops", "Seller");
         }
         // [HttpPost]

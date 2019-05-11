@@ -15,12 +15,15 @@ namespace ApplicationCore.Events
         public ICollection<Guid> Targets { get; private set; }
         public string Message { get; private set; }
 
+        public Dictionary<ICollection<Guid>, string> Messages { get; private set; }
+
         public PurchasedCartEvent(Guid initiator, Guid shopGuid)
         {
             ShopGuid = shopGuid;
             Initiator = initiator;
             Targets = new List<Guid>();
             Message = "UPDATE MESSAGE WAS NOT SET";
+            Messages = new Dictionary<ICollection<Guid>, string>();
         }
 
         public void SetMessage(ICollection<Shop> shops, ICollection<BaseUser> registeredUsers)
@@ -34,6 +37,18 @@ namespace ApplicationCore.Events
             var owners = shop.Owners.Select(owner => owner.OwnerGuid).ToList();
             Targets.Add(shop.Creator.OwnerGuid);
             Targets.AddRange(owners);
+        }
+
+        public void SetMessages(ICollection<Shop> shops, ICollection<BaseUser> registeredUsers)
+        {
+            var shop = shops.First(s => s.Guid.Equals(ShopGuid));
+            var owners = shop.Owners.Select(owner => owner.OwnerGuid).ToList();
+            owners.Add(shop.Creator.OwnerGuid);
+            owners.Remove(Initiator);
+            string ownersMsg = $"{registeredUsers.First(u => u.Guid.Equals(Initiator)).Username} bought from your shop {ShopGuid}";
+            string initiatorMsg = $"You bought from shop {ShopGuid}";
+            Messages.Add(owners, ownersMsg);
+            Messages.Add(new List<Guid> { Initiator }, initiatorMsg);
         }
     }
 }

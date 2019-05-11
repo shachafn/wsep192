@@ -18,6 +18,8 @@ namespace ApplicationCore.Events
 
         public string Message { get; private set; }
 
+        public Dictionary<ICollection<Guid>, string> Messages { get; }
+
         public ReopenedShopEvent(Guid initiator, Guid shopGuid)
         {
             ShopGuid = shopGuid;
@@ -29,7 +31,20 @@ namespace ApplicationCore.Events
         public void SetMessage(ICollection<Shop> shops, ICollection<BaseUser> registeredUsers)
         {
             string username = registeredUsers.FirstOrDefault(user => user.Guid.Equals(Initiator)).Username;
-            Message = string.Format("Shop {0} reopend by {1}", ShopGuid, username);
+            Message = string.Format("Shop {0} reopened by {1}", ShopGuid, username);
+        }
+    
+        public void SetMessages(ICollection<Shop> shops, ICollection<BaseUser> registeredUsers)
+        {
+            Shop reopenedShop = shops.FirstOrDefault(shop => shop.Guid.Equals(ShopGuid));
+            ICollection<Guid> shopOwners = reopenedShop.Owners.Select(owner => owner.OwnerGuid).ToList();
+            shopOwners.Add(reopenedShop.Creator.OwnerGuid);
+            shopOwners.Remove(Initiator);
+            string username = registeredUsers.FirstOrDefault(user => user.Guid.Equals(Initiator)).Username;
+            string ownersMsg = string.Format("Shop {0} reopened by {1}", ShopGuid, username);
+            string initiatorMsg = $"You reopend your shop {ShopGuid}";
+            Messages.Add(shopOwners, ownersMsg);
+            Messages.Add(new List<Guid> { Initiator }, initiatorMsg);
         }
 
         public void SetTargets(ICollection<Shop> shops, ICollection<BaseUser> registeredUsers)

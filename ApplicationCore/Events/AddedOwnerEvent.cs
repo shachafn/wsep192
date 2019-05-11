@@ -46,9 +46,9 @@ namespace ApplicationCore.Events
             otherOwners.Remove(AddedOwnerGuid);
             string addedOwnerUsername = registeredUsers.First(u => u.Guid.Equals(AddedOwnerGuid)).Username;
             string initiatorUsername = registeredUsers.First(u => u.Guid.Equals(Initiator)).Username;
-            string otherOwnersMsg = $"{addedOwnerUsername} is now an owner of shop {ShopGuid}";
-            string initiatorMsg = $"You added {addedOwnerUsername} as a owner of your shop {ShopGuid}";
-            string addedOwnerMsg = $"{initiatorUsername} added you as an owner of shop {ShopGuid}";
+            string otherOwnersMsg = $"{addedOwnerUsername} is now an owner of shop {shop.ShopName}";
+            string initiatorMsg = $"You added {addedOwnerUsername} as a owner of your shop {shop.ShopName}";
+            string addedOwnerMsg = $"{initiatorUsername} added you as an owner of shop {shop.ShopName}";
             Messages.Add(new List<Guid> { Initiator }, initiatorMsg);
             Messages.Add(new List<Guid> { AddedOwnerGuid }, addedOwnerMsg);
             Messages.Add(otherOwners, otherOwnersMsg);

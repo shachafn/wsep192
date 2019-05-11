@@ -70,6 +70,8 @@ namespace ApplicationCore.Interfaces.ServiceLayer
         /// <returns>Guid of the created shop.</returns>
         Guid OpenShop(Guid cookie);
 
+        Guid OpenShop(Guid cookie, string shopName);
+
         /////Implements General Requirement 2.8. Not entirely, only purchase of the entier bag.
         /////////////// REDO CONSTRAINTS, CHANGED FROM CART TO BAG ////////////////////////
         bool PurchaseCart(Guid cookie, Guid shopGuid);

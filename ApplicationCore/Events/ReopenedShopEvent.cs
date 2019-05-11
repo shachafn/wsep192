@@ -41,8 +41,8 @@ namespace ApplicationCore.Events
             shopOwners.Add(reopenedShop.Creator.OwnerGuid);
             shopOwners.Remove(Initiator);
             string username = registeredUsers.FirstOrDefault(user => user.Guid.Equals(Initiator)).Username;
-            string ownersMsg = string.Format("Shop {0} reopened by {1}", ShopGuid, username);
-            string initiatorMsg = $"You reopend your shop {ShopGuid}";
+            string ownersMsg = $"Shop {reopenedShop.ShopName} reopened by {username}";
+            string initiatorMsg = $"You reopend your shop {reopenedShop.ShopName}";
             Messages.Add(shopOwners, ownersMsg);
             Messages.Add(new List<Guid> { Initiator }, initiatorMsg);
         }

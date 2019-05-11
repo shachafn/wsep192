@@ -37,14 +37,14 @@ namespace ApplicationCore.Events
 
         public void SetMessages(ICollection<Shop> shops, ICollection<BaseUser> registeredUsers)
         {
-            Shop reopenedShop = shops.FirstOrDefault(shop => shop.Guid.Equals(ShopGuid));
-            ICollection<Guid> shopOwnersAndAdmins = reopenedShop.Owners.Select(owner => owner.OwnerGuid).ToList();
-            shopOwnersAndAdmins.Add(reopenedShop.Creator.OwnerGuid);
+            Shop closedShop = shops.FirstOrDefault(shop => shop.Guid.Equals(ShopGuid));
+            ICollection<Guid> shopOwnersAndAdmins = closedShop.Owners.Select(owner => owner.OwnerGuid).ToList();
+            shopOwnersAndAdmins.Add(closedShop.Creator.OwnerGuid);
             shopOwnersAndAdmins.AddRange(registeredUsers.Where(user => user.IsAdmin).Select(user => user.Guid).ToList());
             shopOwnersAndAdmins.Remove(Initiator);
             string username = registeredUsers.FirstOrDefault(user => user.Guid.Equals(Initiator)).Username;
-            string ownersAndAdminsMsg = string.Format("Shop {0} closed by {1}", ShopGuid, username);
-            string initiatorMsg = $"You closed your shop {ShopGuid}";
+            string ownersAndAdminsMsg = $"Shop {closedShop.ShopName} closed by {username}";
+            string initiatorMsg = $"You closed your shop {closedShop.ShopName}";
             Messages.Add(shopOwnersAndAdmins, ownersAndAdminsMsg);
             Messages.Add(new List<Guid> { Initiator }, initiatorMsg);
         }

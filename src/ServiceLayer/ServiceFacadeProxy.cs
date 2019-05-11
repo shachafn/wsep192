@@ -36,7 +36,6 @@ namespace ServiceLayer
             return false;
         }
 
-
         public bool Logout(Guid cookie)
         {
             var userGuid = _sessionManager.ResolveCookie(cookie);
@@ -136,6 +135,12 @@ namespace ServiceLayer
         {
             var userGuid = _sessionManager.ResolveCookie(cookie);
             return _serviceFacade.OpenShop(userGuid);
+        }
+
+        public Guid OpenShop(Guid cookie, string shopName)
+        {
+            var userGuid = _sessionManager.ResolveCookie(cookie);
+            return _serviceFacade.OpenShop(userGuid, shopName);
         }
 
         public bool PurchaseCart(Guid cookie, Guid shopGuid)

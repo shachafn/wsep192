@@ -80,6 +80,24 @@ namespace DomainLayer.Facade
             return shopGuid;
         }
 
+        public Guid OpenShop(UserIdentifier userIdentifier, string shopName)
+        {
+            VerifySystemIsInitialized();
+            if (shopName == null || shopName.Length == 0)
+                return OpenShop(userIdentifier);
+            _verifier.VerifyMe(MethodBase.GetCurrentMethod(), userIdentifier);
+            var shopGuid = _userDomain.GetUserObject(userIdentifier).OpenShop(shopName);
+            if (!shopGuid.Equals(Guid.Empty))
+            {
+                var newEvent = new OpenedShopEvent(userIdentifier.Guid, shopGuid);
+                //newEvent.SetTargets(DomainData.ShopsCollection.Values, DomainData.RegisteredUsersCollection.Values);
+                //newEvent.SetMessage(DomainData.ShopsCollection.Values, DomainData.RegisteredUsersCollection.Values);
+                newEvent.SetMessages(DomainData.ShopsCollection.Values, DomainData.RegisteredUsersCollection.Values);
+                UpdateCenter.RaiseEvent(newEvent);
+            }
+            return shopGuid;
+        }
+
         public void ReopenShop(UserIdentifier userIdentifier, Guid shopGuid)
         {
             VerifySystemIsInitialized();

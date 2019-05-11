@@ -101,6 +101,11 @@ namespace ATBridge
             return _serviceFacade.OpenShop(userGuid);
         }
 
+        public Guid OpenShop(Guid userGuid, string shopName)
+        {
+            return _serviceFacade.OpenShop(userGuid, shopName);
+        }
+
         public bool PurchaseCart(Guid userGuid, Guid shopGuid)
         {
             return _serviceFacade.PurchaseCart(userGuid, shopGuid);
@@ -156,5 +161,7 @@ namespace ATBridge
         {
             return _serviceFacade.AddNewDiscountPolicy(userGuid, shopGuid, policyType, field1, field2, field3, field4, field5);
         }
+
+
     }
 }

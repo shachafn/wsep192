@@ -14,6 +14,7 @@ namespace ApplicationCore.Entitites
         public ICollection<Tuple<Guid,Product,int>> UsersPurchaseHistory { get; set; }
         public ICollection<IPurchasePolicy> PurchasePolicies { get; set; }
         public ICollection<IDiscountPolicy> DiscountPolicies { get; set; }
+        public string ShopName { get; }
         public Shop(Guid ownerGuid)
         {
             Creator = new ShopOwner(ownerGuid, Guid);
@@ -24,6 +25,13 @@ namespace ApplicationCore.Entitites
             UsersPurchaseHistory = new List<Tuple<Guid, Product, int>>();
             PurchasePolicies = new List<IPurchasePolicy>();
             DiscountPolicies = new List<IDiscountPolicy>();
+            ShopName = ownerGuid.ToString();
+        }
+
+        public Shop(Guid ownerGuid, string name) : this (ownerGuid)
+        {
+            if (name != null && name.Length > 0)
+                ShopName = name;
         }
     }
 }

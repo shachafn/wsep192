@@ -46,6 +46,11 @@ namespace DomainLayer.Data.Entitites.Users.States
             throw new BadStateException($"Tried to invoke OpenShop in Buyer State");
         }
 
+        public override Guid OpenShop(BaseUser baseUser, string shopName)
+        {
+            throw new BadStateException($"Tried to invoke OpenShop in Buyer State");
+        }
+
         public override void ReopenShop(Guid shopGuid)
         {
             throw new BadStateException($"Tried to invoke ReopenShop in Buyer State");

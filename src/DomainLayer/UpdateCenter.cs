@@ -16,8 +16,7 @@ namespace DomainLayer
 
         public static void RaiseEvent(IUpdateEvent updateEvent)
         {
-            if (SubscribersHandlers != null)
-                SubscribersHandlers(updateEvent);
+            SubscribersHandlers?.Invoke(updateEvent);
         }
 
         public static void Subscribe(UpdateEventHandler eventHandler)

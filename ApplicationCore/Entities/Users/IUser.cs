@@ -25,6 +25,9 @@ namespace ApplicationCore.Entities.Users
         ICollection<Guid> GetAllProductsInCart(Guid shopGuid);
         ICollection<Guid> GetShoppingHistory();
         Guid OpenShop();
+        void ReopenShop(Guid shopGuid);
+        void CloseShop(Guid shopGuid);
+        void CloseShopPermanently(Guid shopGuid);
         bool PurchaseCart(Guid shopGuid);
         bool RemoveProductFromCart(Guid shopGuid, Guid shopProductGuid);
         bool RemoveProductFromShop(Guid shopGuid, Guid shopProductGuid);

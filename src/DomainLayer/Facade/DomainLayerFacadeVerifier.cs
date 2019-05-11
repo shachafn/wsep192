@@ -102,6 +102,30 @@ namespace DomainLayer.Facade
             VerifyLoggedInUser(userIdentifier.Guid, new UserNotFoundException());
         }
 
+        public void ReopenShop(UserIdentifier userIdentifier, Guid shopGuid)
+        {
+            VerifyLoggedInUser(userIdentifier.Guid, new UserNotFoundException());
+            var user = VerifyLoggedInUser(userIdentifier.Guid, new UserNotFoundException());
+            var shop = VerifyShopExists(shopGuid, new ShopNotFoundException());
+            shop.VerifyShopIsActive();
+        }
+
+        public void CloseShop(UserIdentifier userIdentifier, Guid shopGuid)
+        {
+            VerifyLoggedInUser(userIdentifier.Guid, new UserNotFoundException());
+            var user = VerifyLoggedInUser(userIdentifier.Guid, new UserNotFoundException());
+            var shop = VerifyShopExists(shopGuid, new ShopNotFoundException());
+            shop.VerifyShopIsClosed();
+        }
+
+        public void CloseShopPermanently(UserIdentifier userIdentifier, Guid shopGuid)
+        {
+            VerifyLoggedInUser(userIdentifier.Guid, new UserNotFoundException());
+            var user = VerifyLoggedInUser(userIdentifier.Guid, new UserNotFoundException());
+            var shop = VerifyShopExists(shopGuid, new ShopNotFoundException());
+            shop.VerifyShopIsActiveOrClosed();
+        }
+
         /////////// REDO CONSTRAINTS, CHANGED FROM CART TO BAG ////////////////
         public void PurchaseCart(UserIdentifier userIdentifier, Guid shopGuid)
         {
@@ -109,7 +133,6 @@ namespace DomainLayer.Facade
             var shop = VerifyShopExists(shopGuid, new ShopNotFoundException());
             shop.VerifyShopIsActive();
         }
-
 
         /// <constraints>
         /// 1. checked

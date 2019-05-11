@@ -1,5 +1,5 @@
 ﻿using ApplicationCore.Entitites;
-﻿using DomainLayer.Policies;
+using DomainLayer.Policies;
 using System;
 using System.Collections.Generic;
 
@@ -19,6 +19,9 @@ namespace ApplicationCore.Entities.Users
         ICollection<Guid> GetAllProductsInCart(BaseUser baseUser, Guid shopGuid);
         ICollection<Guid> GetShoppingHistory();
         Guid OpenShop(BaseUser baseUser);
+        void ReopenShop(Guid shopGuid);
+        void CloseShop(Guid shopGuid);
+        void CloseShopPermanently(Guid shopGuid);
         bool PurchaseCart(BaseUser baseUser, Guid shopGuid);
         bool RemoveProductFromCart(BaseUser baseUser, Guid shopGuid, Guid shopProductGuid);
         bool RemoveProductFromShop(BaseUser baseUser, Guid shopGuid, Guid shopProductGuid);

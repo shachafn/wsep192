@@ -1,24 +1,25 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
 using System.Text;
+using System.Linq;
 using ApplicationCore.Entities.Users;
 using ApplicationCore.Entitites;
+using Utils;
 
 namespace ApplicationCore.Events
 {
-    public class RemovedOwnerEvent : IUpdateEvent
+    public class AddedOwnerEvent : IUpdateEvent
     {
-        public Guid RemovedOwnerGuid { get; private set; }
+        public Guid AddedOwnerGuid { get; private set; }
         public Guid ShopGuid { get; private set; }
         public Guid Initiator { get; private set; }
         public ICollection<Guid> Targets { get; private set; }
         public string Message { get; private set; }
         public Dictionary<ICollection<Guid>, string> Messages { get; private set; }
 
-        public RemovedOwnerEvent(Guid removedOwnerGuid, Guid initiator, Guid shopGuid)
+        public AddedOwnerEvent(Guid addedOwnerGuid, Guid initiator, Guid shopGuid)
         {
-            RemovedOwnerGuid = removedOwnerGuid;
+            AddedOwnerGuid = addedOwnerGuid;
             ShopGuid = shopGuid;
             Initiator = initiator;
             Targets = new List<Guid>();
@@ -27,12 +28,13 @@ namespace ApplicationCore.Events
         }
         public void SetMessage(ICollection<Shop> shops, ICollection<BaseUser> registeredUsers)
         {
-            Message = $"User {registeredUsers.First(u => u.Guid.Equals(RemovedOwnerGuid)).Username} is no longer an owner of shop {ShopGuid}";
+            Message = $"User {registeredUsers.First(u => u.Guid.Equals(AddedOwnerGuid)).Username} is now an owner of shop {ShopGuid}";
         }
+
         public void SetTargets(ICollection<Shop> shops, ICollection<BaseUser> registeredUsers)
         {
             Targets.Add(shops.First(s => s.Guid.Equals(ShopGuid)).Creator.OwnerGuid);
-            Targets.Add(RemovedOwnerGuid);
+            Targets.Add(AddedOwnerGuid);
         }
 
         public void SetMessages(ICollection<Shop> shops, ICollection<BaseUser> registeredUsers)
@@ -41,14 +43,14 @@ namespace ApplicationCore.Events
             var otherOwners = shop.Owners.Select(owner => owner.OwnerGuid).ToList();
             otherOwners.Add(shop.Creator.OwnerGuid);
             otherOwners.Remove(Initiator);
-            otherOwners.Remove(RemovedOwnerGuid);
-            string addedOwnerUsername = registeredUsers.First(u => u.Guid.Equals(RemovedOwnerGuid)).Username;
+            otherOwners.Remove(AddedOwnerGuid);
+            string addedOwnerUsername = registeredUsers.First(u => u.Guid.Equals(AddedOwnerGuid)).Username;
             string initiatorUsername = registeredUsers.First(u => u.Guid.Equals(Initiator)).Username;
-            string otherOwnersMsg = $"{addedOwnerUsername} is no longer an owner of shop {ShopGuid}";
-            string initiatorMsg = $"You removed {initiatorUsername} from the owners of your shop {ShopGuid}";
-            string removedOwnerMsg = $"{initiatorUsername} removed you from the owners of shop {ShopGuid}";
+            string otherOwnersMsg = $"{addedOwnerUsername} is now an owner of shop {ShopGuid}";
+            string initiatorMsg = $"You added {addedOwnerUsername} as a owner of your shop {ShopGuid}";
+            string addedOwnerMsg = $"{initiatorUsername} added you as an owner of shop {ShopGuid}";
             Messages.Add(new List<Guid> { Initiator }, initiatorMsg);
-            Messages.Add(new List<Guid> { RemovedOwnerGuid }, removedOwnerMsg);
+            Messages.Add(new List<Guid> { AddedOwnerGuid }, addedOwnerMsg);
             Messages.Add(otherOwners, otherOwnersMsg);
         }
     }

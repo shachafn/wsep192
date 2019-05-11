@@ -10,6 +10,9 @@ namespace DomainLayer.Users.States
     {
         public abstract ICollection<Guid> GetShoppingHistory();
         public abstract Guid OpenShop(BaseUser baseUser);
+        public abstract void ReopenShop(Guid shopGuid);
+        public abstract void CloseShop(Guid shopGuid);
+        public abstract void CloseShopPermanently(Guid shopGuid);
         public abstract bool PurchaseCart(BaseUser baseUser, Guid shopGuid);
         public abstract bool RemoveUser(Guid userToRemoveGuid);
         public abstract bool ConnectToPaymentSystem();
@@ -27,7 +30,7 @@ namespace DomainLayer.Users.States
         public abstract bool AddShopOwner(BaseUser baseUser, Guid shopGuid, Guid newManagaerGuid);
         public abstract Guid AddNewPurchasePolicy(Guid userGuid, Guid shopGuid, IPurchasePolicy newPolicy);
         public abstract Guid AddNewDiscountPolicy(Guid userGuid, Guid shopGuid, IDiscountPolicy newPolicy);
-
         public abstract ICollection<Tuple<ShopProduct, Guid>> SearchProduct(ICollection<string> toMatch, string searchType);
+
     }
 }

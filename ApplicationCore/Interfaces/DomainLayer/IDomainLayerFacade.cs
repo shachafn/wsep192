@@ -16,6 +16,7 @@ namespace ApplicationCore.Interfaces.DomainLayer
         Guid Login(UserIdentifier userIdentifier, string username, string password);
         bool Logout(UserIdentifier userIdentifier);
         Guid OpenShop(UserIdentifier userIdentifier);
+        void ReopenShop(UserIdentifier userIdentifier, Guid shopGuid);
         bool PurchaseCart(UserIdentifier userIdentifier, Guid shopGuid);
         Guid Initialize(UserIdentifier userIdentifier, string username, string password);
         bool RemoveUser(UserIdentifier userIdentifier, Guid userToRemoveGuid);
@@ -40,8 +41,9 @@ namespace ApplicationCore.Interfaces.DomainLayer
         ICollection<Tuple<Guid, Product, int>> GetPurchaseHistory(UserIdentifier userIdentifier);
         ICollection<BaseUser> GetAllUsersExceptMe(UserIdentifier userIdentifier);
         IEnumerable<ShopProduct> GetShopProducts(UserIdentifier userId, Guid shopGuid);
-        IEnumerable<Shop> getUserShops(UserIdentifier userId);
+        IEnumerable<Shop> GetUserShops(UserIdentifier userId);
         ICollection<Shop> GetAllShops(UserIdentifier userIdentifier);
+        void CloseShop(UserIdentifier userIdentifier, Guid shopGuid);
         void CloseShopPermanently(UserIdentifier userIdentifier, Guid shopGuid);
         IEnumerable<Tuple<ShoppingCart, IEnumerable<ShopProduct>>> getUserBag(UserIdentifier userIdentifier);
         string GetUserName(Guid userGuid);

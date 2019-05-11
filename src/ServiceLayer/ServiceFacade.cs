@@ -140,14 +140,14 @@ namespace ServiceLayer
         }
         #endregion
 
-        public Guid OpenShop(UserIdentifier userIdentifier)
-        {
-            return _domainLayerFacade.OpenShop(userIdentifier);
-        }
-
         public Guid OpenShop(UserIdentifier userIdentifier, string shopName)
         {
             return _domainLayerFacade.OpenShop(userIdentifier, shopName);
+        }
+
+        public void ReopenShop(UserIdentifier userIdentifier, Guid shopGuid)
+        {
+            _domainLayerFacade.ReopenShop(userIdentifier, shopGuid);
         }
 
         public bool PurchaseCart(UserIdentifier userIdentifier, Guid shopGuid)
@@ -199,6 +199,11 @@ namespace ServiceLayer
         public ICollection<Shop> GetAllShops(UserIdentifier userIdentifier)
         {
             return _domainLayerFacade.GetAllShops(userIdentifier);
+        }
+
+        public void CloseShop(UserIdentifier userIdentifier, Guid shopGuid)
+        {
+            _domainLayerFacade.CloseShop(userIdentifier, shopGuid);
         }
 
         public void CloseShopPermanently(UserIdentifier userIdentifier, Guid shopGuid)

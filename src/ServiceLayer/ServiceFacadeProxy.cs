@@ -131,12 +131,6 @@ namespace ServiceLayer
             return _serviceFacade.GetAllProductsInCart(userGuid, shopGuid);
         }
 
-        public Guid OpenShop(Guid cookie)
-        {
-            var userGuid = _sessionManager.ResolveCookie(cookie);
-            return _serviceFacade.OpenShop(userGuid);
-        }
-
         public Guid OpenShop(Guid cookie, string shopName)
         {
             var userGuid = _sessionManager.ResolveCookie(cookie);
@@ -153,6 +147,24 @@ namespace ServiceLayer
         {
             var userGuid = _sessionManager.ResolveCookie(cookie);
             return _serviceFacade.Register(userGuid, username, password);
+        }
+
+        public void CloseShop(Guid cookie, Guid shopGuid)
+        {
+            var userGuid = _sessionManager.ResolveCookie(cookie);
+            _serviceFacade.CloseShop(userGuid, shopGuid);
+        }
+
+        public void CloseShopPermanently(Guid cookie, Guid shopGuid)
+        {
+            var userGuid = _sessionManager.ResolveCookie(cookie);
+            _serviceFacade.CloseShopPermanently(userGuid, shopGuid);
+        }
+
+        public void ReopenShop(Guid cookie, Guid shopGuid)
+        {
+            var userGuid = _sessionManager.ResolveCookie(cookie);
+            _serviceFacade.ReopenShop(userGuid, shopGuid);
         }
 
         public bool RemoveProductFromCart(Guid cookie, Guid shopGuid, Guid shopProductGuid)
@@ -219,12 +231,6 @@ namespace ServiceLayer
         {
             var userIdentifier = _sessionManager.ResolveCookie(cookie);
             return _serviceFacade.GetAllShops(userIdentifier);
-        }
-
-        public void CloseShopPermanently(Guid cookie, Guid shopGuid)
-        {
-            var userIdentifier = _sessionManager.ResolveCookie(cookie);
-            _serviceFacade.CloseShopPermanently(userIdentifier, shopGuid);
         }
 
         public IEnumerable<Tuple<ShoppingCart, IEnumerable<ShopProduct>>> getUserBag(Guid cookie)

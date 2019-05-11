@@ -68,9 +68,53 @@ namespace ApplicationCore.Interfaces.ServiceLayer
         /// <exception cref="UserNotFoundException">When cookie does not match any logged-in user's guid.</exception>
         /// <exception cref="BadStateException">When the user is not in seller state</exception>
         /// <returns>Guid of the created shop.</returns>
-        Guid OpenShop(Guid cookie);
 
         Guid OpenShop(Guid cookie, string shopName);
+
+        /////Implements General Requirement 4.7
+        /// <summary>
+        /// Closes a shop for the (logged-in) user.
+        /// </summary>
+        /// <constraints>
+        /// 0. System must be Initialized.
+        /// 1. User must exist
+        /// 2. User must be logged in.
+        /// 3. User must be in seller state.
+        /// </constraints>
+        /// <exception cref="SystemNotInitializedException">When system has not yet been initialized.</exception>
+        /// <exception cref="UserNotFoundException">When cookie does not match any logged-in user's guid.</exception>
+        /// <exception cref="BadStateException">When the user is not in seller state</exception>
+        void CloseShop(Guid coolie, Guid shopGuid);
+
+        /////Implements General Requirement 6.1
+        /// <summary>
+        /// Closes a shop for the (logged-in) user permanently.
+        /// </summary>
+        /// <constraints>
+        /// 0. System must be Initialized.
+        /// 1. User must exist
+        /// 2. User must be logged in.
+        /// 3. User must be in Admin state.
+        /// </constraints>
+        /// <exception cref="SystemNotInitializedException">When system has not yet been initialized.</exception>
+        /// <exception cref="UserNotFoundException">When cookie does not match any logged-in user's guid.</exception>
+        /// <exception cref="BadStateException">When the user is not in Admin state</exception>
+        void CloseShopPermanently(Guid cookie, Guid shopGuid);
+
+        /// <summary>
+        /// Ropens a shop for the (logged-in) user.
+        /// </summary>
+        /// <constraints>
+        /// 0. System must be Initialized.
+        /// 1. User must exist
+        /// 2. User must be logged in.
+        /// 3. User must be in seller state.
+        /// </constraints>
+        /// <exception cref="SystemNotInitializedException">When system has not yet been initialized.</exception>
+        /// <exception cref="UserNotFoundException">When cookie does not match any logged-in user's guid.</exception>
+        /// <exception cref="BadStateException">When the user is not in seller state</exception>
+        void ReopenShop(Guid cookie, Guid shopGuid);
+
 
         /////Implements General Requirement 2.8. Not entirely, only purchase of the entier bag.
         /////////////// REDO CONSTRAINTS, CHANGED FROM CART TO BAG ////////////////////////
@@ -488,6 +532,5 @@ namespace ApplicationCore.Interfaces.ServiceLayer
         IEnumerable<ShopProduct> GetShopProducts(Guid id,Guid shopGuid);
         ICollection<Shop> GetAllShops(Guid cookie);
         IEnumerable<Tuple<ShoppingCart, IEnumerable<ShopProduct>>> getUserBag(Guid cookie);
-        void CloseShopPermanently(Guid cookie, Guid shopGuid);
     }
 }

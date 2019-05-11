@@ -6,17 +6,14 @@
 
 <h2>MyShops</h2>
 
-<p>
-    <a asp-action="Create">Create New</a>
-</p>
 <table class="table">
     <thead>
         <tr>
             <th>
-                @Html.DisplayNameFor(model => model.ShopState)
+                @Html.DisplayNameFor(model => model.ShopName)
             </th>
             <th>
-                @Html.DisplayNameFor(model => model.Guid)
+                @Html.DisplayNameFor(model => model.ShopState)
             </th>
             <th></th>
         </tr>
@@ -25,20 +22,35 @@
 @foreach (var item in Model) {
         <tr>
             <td>
-                @Html.DisplayFor(modelItem => item.ShopState)
+                @Html.DisplayFor(modelItem => item.ShopName)
             </td>
             <td>
-                @Html.DisplayFor(modelItem => item.Guid)
+                @Html.DisplayFor(modelItem => item.ShopState)
             </td>
             <td>
                 @* <form asp-action="Manage" method="post">
             <input type="hidden" name="shopId" value=" @Html.DisplayFor(modelItem => item.Guid)" />
             <input type="submit" value="Manage" class="btn" />
         </form>*@
-                <input type="button" class="btn" value="Manage" onclick="location.href='@Url.Action("Manage","Seller",new { ShopId=item.Guid})'" />
+                @if (item.ShopState == ApplicationCore.Entitites.Shop.ShopStateEnum.Active)
+                {
+                    <input type="button" class="btn" value="Close Shop" onclick="location.href='@Url.Action("CloseShop","Seller",new { ShopId=item.Guid})'" />
+                    <input type="button" class="btn" value="Manage" onclick="location.href='@Url.Action("Manage","Seller",new { ShopId=item.Guid})'" />
+                }
+                else if (item.ShopState == ApplicationCore.Entitites.Shop.ShopStateEnum.Closed)
+                {
+                    <input type="button" class="btn" value="Reopen Shop" onclick="location.href='@Url.Action("ReOpenShop","Seller",new { ShopId=item.Guid})'" />
+                    <input type="button" class="btn" value="Manage" onclick="location.href='@Url.Action("Manage","Seller",new { ShopId=item.Guid})'" />
+                }
             </td>
         </tr>
 }
     </tbody>
 </table>
-<input type="button" class="btn" value="Open New Shop" onclick="location.href='@Url.Action("OpenShop","Seller")'" />
+<div class="form-inline">
+    <form asp-action="OpenShop" method="post">
+        new shop name:
+        <input type="text" name="ShopName" class="pull-left" placeholder="(Guid by default)" />
+        <input type="submit" class="btn pull-left" value="Open New Shop" />
+    </form>
+</div>

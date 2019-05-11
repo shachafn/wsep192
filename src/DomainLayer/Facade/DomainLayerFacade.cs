@@ -85,7 +85,7 @@ namespace DomainLayer.Facade
             VerifySystemIsInitialized();
             if (shopName == null || shopName.Length == 0)
                 return OpenShop(userIdentifier);
-            _verifier.VerifyMe(MethodBase.GetCurrentMethod(), userIdentifier);
+            _verifier.VerifyMe(MethodBase.GetCurrentMethod(), userIdentifier,shopName);
             var shopGuid = _userDomain.GetUserObject(userIdentifier).OpenShop(shopName);
             if (!shopGuid.Equals(Guid.Empty))
             {
@@ -101,7 +101,7 @@ namespace DomainLayer.Facade
         public void ReopenShop(UserIdentifier userIdentifier, Guid shopGuid)
         {
             VerifySystemIsInitialized();
-            _verifier.VerifyMe(MethodBase.GetCurrentMethod(), userIdentifier);
+           // _verifier.VerifyMe(MethodBase.GetCurrentMethod(), userIdentifier); should create a verifier first
             _userDomain.GetUserObject(userIdentifier).ReopenShop(shopGuid);
 
             var newEvent = new ReopenedShopEvent(userIdentifier.Guid, shopGuid);
@@ -114,7 +114,7 @@ namespace DomainLayer.Facade
         public void CloseShop(UserIdentifier userIdentifier, Guid shopGuid)
         {
             VerifySystemIsInitialized();
-            _verifier.VerifyMe(MethodBase.GetCurrentMethod(), userIdentifier);
+           // _verifier.VerifyMe(MethodBase.GetCurrentMethod(), userIdentifier); should create a verifier first
             _userDomain.GetUserObject(userIdentifier).CloseShop(shopGuid);
 
             var newEvent = new ClosedShopEvent(userIdentifier.Guid, shopGuid);

@@ -140,11 +140,6 @@ namespace ServiceLayer
         }
         #endregion
 
-        public Guid OpenShop(UserIdentifier userIdentifier)
-        {
-            return _domainLayerFacade.OpenShop(userIdentifier);
-        }
-
         public Guid OpenShop(UserIdentifier userIdentifier, string shopName)
         {
             return _domainLayerFacade.OpenShop(userIdentifier, shopName);

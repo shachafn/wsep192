@@ -131,12 +131,6 @@ namespace ServiceLayer
             return _serviceFacade.GetAllProductsInCart(userGuid, shopGuid);
         }
 
-        public Guid OpenShop(Guid cookie)
-        {
-            var userGuid = _sessionManager.ResolveCookie(cookie);
-            return _serviceFacade.OpenShop(userGuid);
-        }
-
         public Guid OpenShop(Guid cookie, string shopName)
         {
             var userGuid = _sessionManager.ResolveCookie(cookie);

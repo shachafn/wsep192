@@ -68,7 +68,6 @@ namespace ApplicationCore.Interfaces.ServiceLayer
         /// <exception cref="UserNotFoundException">When cookie does not match any logged-in user's guid.</exception>
         /// <exception cref="BadStateException">When the user is not in seller state</exception>
         /// <returns>Guid of the created shop.</returns>
-        Guid OpenShop(Guid cookie);
 
         Guid OpenShop(Guid cookie, string shopName);
 

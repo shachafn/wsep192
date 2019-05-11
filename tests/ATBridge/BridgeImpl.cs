@@ -98,7 +98,7 @@ namespace ATBridge
 
         public Guid OpenShop(Guid userGuid)
         {
-            return _serviceFacade.OpenShop(userGuid);
+            return _serviceFacade.OpenShop(userGuid, string.Empty);
         }
 
         public Guid OpenShop(Guid userGuid, string shopName)

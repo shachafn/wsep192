@@ -6,6 +6,7 @@ using ApplicationCore.Interfaces.ServiceLayer;
 using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
 using PressentaitionLayer.Models;
@@ -147,6 +148,8 @@ namespace PressentaitionLayer.Account
                 var (isValid, user) = await _userServices.ValidateUserRegisterAsync(model.UserName, model.Password,new Guid(HttpContext.Session.Id));
                 if (isValid)
                 {
+                    await Response.WriteAsync("success");
+
                     return RedirectToAction("Index", "Home");
                 }
                 ModelState.AddModelError("InvalidCredentials", "Invalid credentials.");

@@ -29,13 +29,25 @@ namespace PressentaitionLayer.Controllers
             var shops = _serviceFacade.GetUserShops(new Guid(HttpContext.Session.Id));
             return View(shops);
         }
-        public IActionResult openShop()
+
+        [HttpPost]
+        public IActionResult OpenShop(string name)
         {
-            _serviceFacade.OpenShop(new Guid(HttpContext.Session.Id));
+            _serviceFacade.OpenShop(new Guid(HttpContext.Session.Id),name);
             return RedirectToAction("MyShops", "Seller");
         }
 
-       // [HttpPost]
+        public IActionResult ReOpenShop(string shopId)
+        {
+            _serviceFacade.
+            return RedirectToAction("MyShops", "Seller");
+        }
+        public IActionResult CloseShop(string shopId)
+        {
+            _serviceFacade.OpenShop(new Guid(HttpContext.Session.Id), name);
+            return RedirectToAction("MyShops", "Seller");
+        }
+        // [HttpPost]
         public IActionResult Manage(string shopId)
         {
             ViewData["ShopId"] = shopId;

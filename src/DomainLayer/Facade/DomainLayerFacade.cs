@@ -305,7 +305,10 @@ namespace DomainLayer.Facade
             /*todo verofy constraints
              * VerifySystemIsInitialized();
             _verifier.VerifyMe(MethodBase.GetCurrentMethod(), userIdentifier, newState);*/
-            return ApplicationCore.Data.DomainData.ShopsCollection.Where(shop => shop.Creator.OwnerGuid.Equals(userId.Guid)).ToList<Shop>();
+            List<Shop> shops = ApplicationCore.Data.DomainData.ShopsCollection.Where(shop => shop.Creator.OwnerGuid.Equals(userId.Guid)).ToList<Shop>();//created
+            shops.AddRange(ApplicationCore.Data.DomainData.ShopsCollection.Where(shop =>shop.Owners.Any(owner => owner.OwnerGuid.Equals(userId.Guid))));
+            shops.AddRange(ApplicationCore.Data.DomainData.ShopsCollection.Where(shop => shop.Managers.Any(owner => owner.OwnerGuid.Equals(userId.Guid))));
+            return shops;
         }
 
         public IEnumerable<ShopProduct> GetShopProducts(UserIdentifier userIdentifier, Guid shopGuid)

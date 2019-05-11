@@ -73,6 +73,7 @@ namespace ApplicationCore.Interfaces.ServiceLayer
         /////Implements General Requirement 2.8. Not entirely, only purchase of the entier bag.
         /////////////// REDO CONSTRAINTS, CHANGED FROM CART TO BAG ////////////////////////
         bool PurchaseCart(Guid cookie, Guid shopGuid);
+        Guid GetUserGuid(string ownerName);
 
         /////Implements General Requirement 1.1
         /// <summary>
@@ -481,6 +482,7 @@ namespace ApplicationCore.Interfaces.ServiceLayer
          */
 
         IEnumerable<Shop> GetUserShops(Guid id);
+        string GetUserName(Guid userGuid);
         IEnumerable<ShopProduct> GetShopProducts(Guid id,Guid shopGuid);
         ICollection<Shop> GetAllShops(Guid cookie);
         IEnumerable<Tuple<ShoppingCart, IEnumerable<ShopProduct>>> getUserBag(Guid cookie);

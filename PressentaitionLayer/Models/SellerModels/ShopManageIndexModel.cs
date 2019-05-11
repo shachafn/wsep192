@@ -11,14 +11,16 @@ namespace PressentaitionLayer.Models.SellerModels
         public ShopManageIndexModel(Shop shop)
         {
             Shop = shop;
-
         }
+
 
         public ShopManageIndexModel()
         {
 
         }
         public Shop Shop { get; set; }
-
+        public string creatorName { get; set; }
+        public List<(string, string,Guid)> Owners { get; set;}
+        public List<(string, string,int)> Managers { get; set; } // each tuple is owner name, appointer name, and and index for retriving  permissions
     }
 }

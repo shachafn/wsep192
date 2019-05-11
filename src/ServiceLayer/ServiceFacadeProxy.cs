@@ -238,5 +238,15 @@ namespace ServiceLayer
             var userGuid = _sessionManager.ResolveCookie(cookie);
             return _serviceFacade.AddNewDiscountPolicy(userGuid, shopGuid, policyType, field1, field2, field3, field4,field5);
         }
+
+        public string GetUserName(Guid userGuid)
+        {
+            return _serviceFacade.GetUserName(userGuid);
+        }
+
+        public Guid GetUserGuid(string ownerName)
+        {
+            return _serviceFacade.GetUserGuid(ownerName);
+        }
     }
 }

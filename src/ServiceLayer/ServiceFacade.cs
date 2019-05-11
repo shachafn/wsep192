@@ -121,6 +121,15 @@ namespace ServiceLayer
             return _domainLayerFacade.getUserShops(userId);
         }
 
+        public string GetUserName(Guid userGuid)
+        {
+            return _domainLayerFacade.GetUserName(userGuid);
+        }
+
+        public Guid GetUserGuid(string ownerName)
+        {
+            return _domainLayerFacade.GetUserName(ownerName);
+        }
         public IEnumerable<ShopProduct> getShopProducts(UserIdentifier userId,Guid shopGuid)
         {
             return _domainLayerFacade.GetShopProducts(userId, shopGuid);
@@ -192,5 +201,6 @@ namespace ServiceLayer
             _domainLayerFacade.CloseShopPermanently(userIdentifier, shopGuid);
         }
 
+        
     }
 }

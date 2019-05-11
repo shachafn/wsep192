@@ -41,10 +41,24 @@ namespace PressentaitionLayer.Controllers
             ViewData["ShopId"] = shopId;
             var shops = _serviceFacade.GetUserShops(new Guid(HttpContext.Session.Id));
             var shop = shops.FirstOrDefault(currshop => currshop.Guid.Equals(new Guid(shopId)));
-
-            return View(new ShopManageIndexModel(shop));
+            ShopManageIndexModel model = new ShopManageIndexModel(shop);
+            model.Owners = getOwnerNames(shop);
+            model.creatorName = _serviceFacade.GetUserName(shop.Creator.OwnerGuid);
+            return View(model);
         }
-
+        private List<(string, string,Guid)> getOwnerNames(Shop shop)
+        {
+            List<(string, string,Guid)> owners = new List<(string, string,Guid)>();
+            foreach (ShopOwner owner in shop.Owners)
+            {
+                owners.Add((_serviceFacade.GetUserName(owner.OwnerGuid),_serviceFacade.GetUserName(owner.AppointerGuid),owner.OwnerGuid) );
+            }
+            return owners;
+        }
+        private List<Tuple<string, string, int>> getManagerNames(Shop shop)
+        {
+            throw new NotImplementedException();
+        }
         public IActionResult Products(string ShopId)
         {
             var products = _serviceFacade.GetShopProducts(new Guid(HttpContext.Session.Id), new Guid(ShopId));
@@ -86,9 +100,10 @@ namespace PressentaitionLayer.Controllers
             return RedirectToAction("Manage", "Seller", new { ShopId = ShopId });
         }
         [HttpPost]
-        public IActionResult AddOwner(string OwnerId, string ShopId)
+        public IActionResult AddOwner(string OwnerName, string ShopId)
         {
-            _serviceFacade.AddShopOwner(new Guid(HttpContext.Session.Id), new Guid(ShopId), new Guid(OwnerId));
+            Guid OwnerId = _serviceFacade.GetUserGuid(OwnerName); //need to adress the empty guid thingy
+            _serviceFacade.AddShopOwner(new Guid(HttpContext.Session.Id), new Guid(ShopId), OwnerId);
             return RedirectToAction("Manage", "Seller", new { ShopId = ShopId });
         }
         /*public IActionResult Roles(string ShopId)

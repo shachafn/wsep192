@@ -349,5 +349,22 @@ namespace DomainLayer.Facade
             }
             return result;
         }
+
+        public string GetUserName(Guid userGuid)
+        {
+            return DomainData.RegisteredUsersCollection[userGuid].Username;
+        }
+
+        public Guid GetUserName(string userName)
+        {
+            foreach(BaseUser user in DomainData.RegisteredUsersCollection)
+            {
+                if(user.Username.Equals(userName))
+                {
+                    return user.Guid;
+                }
+            }
+            return Guid.Empty;
+        }
     }
 }

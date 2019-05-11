@@ -129,7 +129,7 @@ namespace DomainLayer.Extension_Methods
             return true;
         }
 
-        public static Guid AddNewPurchasePolicy(this Shop shop,IPurchasePolicy newPurchasePolicy)
+        public static Guid AddNewPurchasePolicy(this Shop shop, IPurchasePolicy newPurchasePolicy)
         {
             if (shop.PurchasePolicies == null)
             {
@@ -151,7 +151,7 @@ namespace DomainLayer.Extension_Methods
 
         public static void PurchaseCart(this Shop shop, ShoppingCart cart)
         {
-            foreach(var productAndAmountBought in cart.PurchasedProducts)
+            foreach (var productAndAmountBought in cart.PurchasedProducts)
             {
                 var userGuid = cart.UserGuid;
                 var actualProduct = shop.ShopProducts.First(p => p.Guid.Equals(productAndAmountBought.Item1));
@@ -290,6 +290,15 @@ namespace DomainLayer.Extension_Methods
         public static void VerifyShopIsActiveOrClosed(this Shop shop)
         {
             if (!(shop.ShopState.Equals(Shop.ShopStateEnum.Closed) || shop.ShopState.Equals(Shop.ShopStateEnum.Active)))
+            {
+                StackTrace stackTrace = new StackTrace();
+                throw new ShopStateException($"Shop is not closed or active. Cant complete method {stackTrace.GetFrame(1).GetMethod().Name}");
+            }
+        }
+
+        public static void VerifyShopIsPermanentlyClosed(this Shop shop)
+        {
+            if (!(shop.ShopState.Equals(Shop.ShopStateEnum.PermanentlyClosed)))
             {
                 StackTrace stackTrace = new StackTrace();
                 throw new ShopStateException($"Shop is not closed or active. Cant complete method {stackTrace.GetFrame(1).GetMethod().Name}");

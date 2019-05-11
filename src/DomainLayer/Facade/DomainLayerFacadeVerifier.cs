@@ -129,7 +129,7 @@ namespace DomainLayer.Facade
             VerifyLoggedInUser(userIdentifier.Guid, new UserNotFoundException());
             var user = VerifyLoggedInUser(userIdentifier.Guid, new UserNotFoundException());
             var shop = VerifyShopExists(shopGuid, new ShopNotFoundException());
-            shop.VerifyShopIsActiveOrClosed();
+            shop.VerifyShopIsPermanentlyClosed();
         }
 
         /////////// REDO CONSTRAINTS, CHANGED FROM CART TO BAG ////////////////

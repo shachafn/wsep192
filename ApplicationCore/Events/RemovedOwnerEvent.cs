@@ -42,10 +42,10 @@ namespace ApplicationCore.Events
             otherOwners.Add(shop.Creator.OwnerGuid);
             otherOwners.Remove(Initiator);
             otherOwners.Remove(RemovedOwnerGuid);
-            string addedOwnerUsername = registeredUsers.First(u => u.Guid.Equals(RemovedOwnerGuid)).Username;
+            string removedOwnerUsername = registeredUsers.First(u => u.Guid.Equals(RemovedOwnerGuid)).Username;
             string initiatorUsername = registeredUsers.First(u => u.Guid.Equals(Initiator)).Username;
-            string otherOwnersMsg = $"{addedOwnerUsername} is no longer an owner of shop {ShopGuid}";
-            string initiatorMsg = $"You removed {initiatorUsername} from the owners of your shop {ShopGuid}";
+            string otherOwnersMsg = $"{removedOwnerUsername} is no longer an owner of shop {ShopGuid}";
+            string initiatorMsg = $"You removed {removedOwnerUsername} from the owners of your shop {ShopGuid}";
             string removedOwnerMsg = $"{initiatorUsername} removed you from the owners of shop {ShopGuid}";
             Messages.Add(new List<Guid> { Initiator }, initiatorMsg);
             Messages.Add(new List<Guid> { RemovedOwnerGuid }, removedOwnerMsg);

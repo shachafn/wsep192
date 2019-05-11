@@ -206,13 +206,13 @@ namespace ServiceLayer
         public IEnumerable<Shop> GetUserShops(Guid cookie)
         {
             var userGuid = _sessionManager.ResolveCookie(cookie);
-            return _serviceFacade.getUserShops(userGuid);
+            return _serviceFacade.GetUserShops(userGuid);
         }
 
         public IEnumerable<ShopProduct> GetShopProducts(Guid cookie, Guid shopGuid)
         {
             var userGuid= _sessionManager.ResolveCookie(cookie);
-            return _serviceFacade.getShopProducts(userGuid, shopGuid);
+            return _serviceFacade.GetShopProducts(userGuid, shopGuid);
         }
 
         public ICollection<Tuple<Guid, Product, int>> GetPurchaseHistory(Guid cookie)
@@ -236,7 +236,7 @@ namespace ServiceLayer
         public IEnumerable<Tuple<ShoppingCart, IEnumerable<ShopProduct>>> getUserBag(Guid cookie)
         {
             var userIdentifier = _sessionManager.ResolveCookie(cookie);
-            return _serviceFacade.getUserBag(userIdentifier);
+            return _serviceFacade.GetUserBag(userIdentifier);
         }
         public Guid AddNewPurchasePolicy(Guid cookie, Guid shopGuid, object policyType, object field1, object field2, object field3 = null, object field4 = null)
         {

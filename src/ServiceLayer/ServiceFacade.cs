@@ -50,6 +50,11 @@ namespace ServiceLayer
         {
             return _domainLayerFacade.ConnectToSupplySystem(userIdentifier);
         }
+
+        public bool RemoveUser(UserIdentifier userIdentifier, Guid userToRemoveGuid)
+        {
+            return _domainLayerFacade.RemoveUser(userIdentifier, userToRemoveGuid);
+        }
         #endregion
 
         #region Shop Products
@@ -90,6 +95,36 @@ namespace ServiceLayer
         {
             return _domainLayerFacade.CascadeRemoveShopOwner(userIdentifier, shopGuid, ownerToRemoveGuid);
         }
+
+        public void CloseShop(UserIdentifier userIdentifier, Guid shopGuid)
+        {
+            _domainLayerFacade.CloseShop(userIdentifier, shopGuid);
+        }
+
+        public void CloseShopPermanently(UserIdentifier userIdentifier, Guid shopGuid)
+        {
+            _domainLayerFacade.CloseShopPermanently(userIdentifier, shopGuid);
+        }
+
+        public Guid OpenShop(UserIdentifier userIdentifier, string shopName)
+        {
+            return _domainLayerFacade.OpenShop(userIdentifier, shopName);
+        }
+
+        public void ReopenShop(UserIdentifier userIdentifier, Guid shopGuid)
+        {
+            _domainLayerFacade.ReopenShop(userIdentifier, shopGuid);
+        }
+
+        internal Guid AddNewDiscountPolicy(UserIdentifier userGuid, Guid shopGuid, object policyType, object field1, object field2, object field3, object field4, object field5)
+        {
+            return _domainLayerFacade.AddNewDiscountPolicy(userGuid, shopGuid, policyType, field1, field2, field3, field4, field5);
+        }
+
+        internal Guid AddNewPurchasePolicy(UserIdentifier userGuid, Guid shopGuid, object policyType, object field1, object field2, object field3, object field4)
+        {
+            return _domainLayerFacade.AddNewPurchasePolicy(userGuid, shopGuid, policyType, field1, field2, field3, field4);
+        }
         #endregion
 
         #region Shopping Cart
@@ -113,10 +148,15 @@ namespace ServiceLayer
         {
             return _domainLayerFacade.GetAllProductsInCart(userIdentifier, shopGuid);
         }
+
+                public bool PurchaseCart(UserIdentifier userIdentifier, Guid shopGuid)
+        {
+            return _domainLayerFacade.PurchaseCart(userIdentifier, shopGuid);
+        }
         #endregion
 
         #region Utils
-        public IEnumerable<Shop> getUserShops(UserIdentifier userId)
+        public IEnumerable<Shop> GetUserShops(UserIdentifier userId)
         {
             return _domainLayerFacade.GetUserShops(userId);
         }
@@ -130,35 +170,15 @@ namespace ServiceLayer
         {
             return _domainLayerFacade.GetUserName(ownerName);
         }
-        public IEnumerable<ShopProduct> getShopProducts(UserIdentifier userId,Guid shopGuid)
+        public IEnumerable<ShopProduct> GetShopProducts(UserIdentifier userId,Guid shopGuid)
         {
             return _domainLayerFacade.GetShopProducts(userId, shopGuid);
         }
-        public IEnumerable<Tuple<ShoppingCart, IEnumerable<ShopProduct>>> getUserBag(UserIdentifier userIdentifier)
+        public IEnumerable<Tuple<ShoppingCart, IEnumerable<ShopProduct>>> GetUserBag(UserIdentifier userIdentifier)
         {
             return _domainLayerFacade.getUserBag(userIdentifier);
         }
         #endregion
-
-        public Guid OpenShop(UserIdentifier userIdentifier, string shopName)
-        {
-            return _domainLayerFacade.OpenShop(userIdentifier, shopName);
-        }
-
-        public void ReopenShop(UserIdentifier userIdentifier, Guid shopGuid)
-        {
-            _domainLayerFacade.ReopenShop(userIdentifier, shopGuid);
-        }
-
-        public bool PurchaseCart(UserIdentifier userIdentifier, Guid shopGuid)
-        {
-            return _domainLayerFacade.PurchaseCart(userIdentifier, shopGuid);
-        }
-
-        public bool RemoveUser(UserIdentifier userIdentifier, Guid userToRemoveGuid)
-        {
-            return _domainLayerFacade.RemoveUser(userIdentifier, userToRemoveGuid);
-        }
 
         //Product and shopGuid
         public ICollection<Tuple<ShopProduct, Guid>> SearchProduct(UserIdentifier userIdentifier, ICollection<string> toMatch, string searchType)
@@ -176,16 +196,6 @@ namespace ServiceLayer
             _domainLayerFacade.ClearSystem();
         }
 
-        internal Guid AddNewDiscountPolicy(UserIdentifier userGuid, Guid shopGuid, object policyType, object field1, object field2, object field3, object field4, object field5)
-        {
-            return _domainLayerFacade.AddNewDiscountPolicy(userGuid, shopGuid, policyType, field1, field2, field3, field4, field5);
-        }
-
-        internal Guid AddNewPurchasePolicy(UserIdentifier userGuid, Guid shopGuid, object policyType, object field1, object field2, object field3, object field4)
-        {
-            return _domainLayerFacade.AddNewPurchasePolicy(userGuid, shopGuid, policyType, field1, field2, field3, field4);
-        }
-
         public ICollection<Tuple<Guid, Product, int>> GetPurchaseHistory(UserIdentifier userIdentifier)
         {
             return _domainLayerFacade.GetPurchaseHistory(userIdentifier);
@@ -201,15 +211,7 @@ namespace ServiceLayer
             return _domainLayerFacade.GetAllShops(userIdentifier);
         }
 
-        public void CloseShop(UserIdentifier userIdentifier, Guid shopGuid)
-        {
-            _domainLayerFacade.CloseShop(userIdentifier, shopGuid);
-        }
 
-        public void CloseShopPermanently(UserIdentifier userIdentifier, Guid shopGuid)
-        {
-            _domainLayerFacade.CloseShopPermanently(userIdentifier, shopGuid);
-        }
 
         
     }

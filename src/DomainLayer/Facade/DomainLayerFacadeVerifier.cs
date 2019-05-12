@@ -502,7 +502,7 @@ namespace DomainLayer.Facade
             Shop shop = DomainData.ShopsCollection[shopGuid];
             shop.VerifyShopIsActive();
             bool res = shop.IsOwner(userIdentifier.Guid);
-            if(res == false)
+            if (res == false)
             {
                 throw new BadStateException("user is not the owner of this shop");
             }
@@ -529,9 +529,10 @@ namespace DomainLayer.Facade
 
         public void CloseShopPermanently(UserIdentifier userIdentifier, Guid shopGuid)
         {
-            Shop shop = DomainData.ShopsCollection[shopGuid];
-            shop.VerifyShopIsActive();
-            VerifyStateString("AdminUserState", new BadStateException());
+            if (!DomainData.RegisteredUsersCollection[userIdentifier.Guid].IsAdmin)
+            {
+                throw new BadStateException("This user is not an admin");
+            }
         }
         #endregion
         #region Operators
@@ -720,6 +721,17 @@ namespace DomainLayer.Facade
             {
                 StackTrace stackTrace = new StackTrace();
                 var msg = $"State string doesnt not match any state." +
+        $"Cant complete {stackTrace.GetFrame(1).GetMethod().Name}";
+                throw e.Clone(msg);
+            }
+        }
+
+        private void VerifyAdminStateString(string newState, ICloneableException<Exception> e)
+        {
+            if (!(newState.Equals(AdminUserState.AdminUserStateString)))
+            {
+                StackTrace stackTrace = new StackTrace();
+                var msg = $"State string doesnt not match to admin state." +
         $"Cant complete {stackTrace.GetFrame(1).GetMethod().Name}";
                 throw e.Clone(msg);
             }

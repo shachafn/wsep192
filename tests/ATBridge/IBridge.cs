@@ -463,7 +463,9 @@ namespace ATBridge
 
         Guid AddNewPurchasePolicy(Guid userGuid, Guid shopGuid, object policyType, object field1, object field2, object field3 = null, object field4 = null);
         Guid AddNewDiscountPolicy(Guid userGuid, Guid shopGuid, object policyType, object field1, object field2, object field3 = null, object field4 = null,object field5=null);
-
+        void ActivateShop(Guid cookie, Guid shopGuid);
+        void CloseShop(Guid cookie, Guid shopGuid);
+        void CloseShopPermanently(Guid cookie, Guid shopGuid);
         /// <summary>
         /// Clears all data and requires the system to be Initialized to use it.
         /// </summary>

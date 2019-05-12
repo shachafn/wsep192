@@ -42,6 +42,45 @@ namespace Tests
 
         #endregion
 
+        #region GR 6.1 Close shop permunantly by admin
+        [Test]
+        public static void CloseShopPermunantlyAT1()
+        {
+            UserAT.GenerateRandoms(out var cookie, out var username, out var password);
+            UserAT.RegisterUser(cookie, username, password);
+            UserAT.LoginUser(cookie, username, password);
+            Tester.PBridge.ChangeUserState(cookie, "SellerUserState");
+            Guid shopGuid = Tester.PBridge.OpenShop(cookie);
+            try
+            {
+                Tester.PBridge.CloseShopPermanently(Tester.AdminGuid, shopGuid);
+            }
+            catch
+            {
+                Assert.Fail();
+            }
+            Assert.Pass();
+        }
+        [Test]
+        public static void CloseShopPermunantlyAT2()
+        {
+            UserAT.GenerateRandoms(out var cookie, out var username, out var password);
+            UserAT.RegisterUser(cookie, username, password);
+            UserAT.LoginUser(cookie, username, password);
+            Tester.PBridge.ChangeUserState(cookie, "SellerUserState");
+            Guid shopGuid = Tester.PBridge.OpenShop(cookie);
+            try
+            {
+                Tester.PBridge.CloseShopPermanently(cookie, shopGuid);
+            }
+            catch
+            {
+                Assert.Pass();
+            }
+            Assert.Fail();
+
+        }
+        #endregion
         #region GR 6.2 - Removing of a registered user
 
         [Test]

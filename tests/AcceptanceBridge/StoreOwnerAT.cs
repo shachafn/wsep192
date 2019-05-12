@@ -473,10 +473,87 @@ namespace Tests
 
         #endregion
 
+        #region GR 4.7.1 Store's owner can close his store
+        [Test]
+        public static void CloseShopAT1()
+        {
+            UserAT.GenerateRandoms(out var cookie, out var username, out var password);
+            UserAT.RegisterUser(cookie, username, password);
+            UserAT.LoginUser(cookie, username, password);
+            Tester.PBridge.ChangeUserState(cookie, "SellerUserState");
+            var shopGuid = Tester.PBridge.OpenShop(cookie);
+            Assert.DoesNotThrow(() => Tester.PBridge.CloseShop(cookie, shopGuid));
+        }
+        [Test]
+        public static void CloseShopAT2()
+        {
+            UserAT.GenerateRandoms(out var cookie, out var username, out var password);
+            UserAT.GenerateRandoms(out var cookie1, out var username1, out var password1);
+            UserAT.RegisterUser(cookie1, username1, password1);
+            UserAT.LoginUser(cookie1, username1, password1);
+            UserAT.RegisterUser(cookie, username, password);
+            UserAT.LoginUser(cookie, username, password);
+            Tester.PBridge.ChangeUserState(cookie, "SellerUserState");
+            var shopGuid = Tester.PBridge.OpenShop(cookie);
+            Assert.Throws<BadStateException>(() => Tester.PBridge.CloseShop(cookie1, shopGuid));
+        }
+        [Test]
+        public static void CloseShopAT3()
+        {
+            UserAT.GenerateRandoms(out var cookie, out var username, out var password);
+            UserAT.RegisterUser(cookie, username, password);
+            UserAT.LoginUser(cookie, username, password);
+            Tester.PBridge.ChangeUserState(cookie, "SellerUserState");
+            var shopGuid = Tester.PBridge.OpenShop(cookie);
+            Tester.PBridge.CloseShop(cookie, shopGuid);
+            Assert.Throws<ShopStateException>(() => Tester.PBridge.CloseShop(cookie, shopGuid));
+        }
+        #endregion
+        #region GR 4.7.2 Store's owner can activate his store
+        [Test]
+        public static void ActivateShopAT1()
+        {
+            UserAT.GenerateRandoms(out var cookie, out var username, out var password);
+            UserAT.RegisterUser(cookie, username, password);
+            UserAT.LoginUser(cookie, username, password);
+            Tester.PBridge.ChangeUserState(cookie, "SellerUserState");
+            var shopGuid = Tester.PBridge.OpenShop(cookie);
+            Tester.PBridge.CloseShop(cookie, shopGuid);
+            Assert.DoesNotThrow(() => Tester.PBridge.ActivateShop(cookie, shopGuid));
+        }
+        [Test]
+        public static void ActivateShopAT2()
+        {
+            UserAT.GenerateRandoms(out var cookie, out var username, out var password);
+            UserAT.GenerateRandoms(out var cookie1, out var username1, out var password1);
+            UserAT.RegisterUser(cookie1, username1, password1);
+            UserAT.LoginUser(cookie1, username1, password1);
+            UserAT.RegisterUser(cookie, username, password);
+            UserAT.LoginUser(cookie, username, password);
+            Tester.PBridge.ChangeUserState(cookie, "SellerUserState");
+            var shopGuid = Tester.PBridge.OpenShop(cookie);
+            Tester.PBridge.CloseShop(cookie, shopGuid);
+            Assert.Throws<BadStateException>(() => Tester.PBridge.ActivateShop(cookie1, shopGuid));
+        }
+        [Test]
+        public static void ActivateShopAT3()
+        {
+            UserAT.GenerateRandoms(out var cookie, out var username, out var password);
+            UserAT.GenerateRandoms(out var cookie1, out var username1, out var password1);
+            UserAT.RegisterUser(cookie1, username1, password1);
+            UserAT.LoginUser(cookie1, username1, password1);
+            UserAT.RegisterUser(cookie, username, password);
+            UserAT.LoginUser(cookie, username, password);
+            Tester.PBridge.ChangeUserState(cookie, "SellerUserState");
+            var shopGuid = Tester.PBridge.OpenShop(cookie);
+            Assert.Throws<ShopStateException>(() => Tester.PBridge.ActivateShop(cookie1, shopGuid));
+        }
+        #endregion
         public static Guid AddProductToShop(Guid cookie, Guid shopGuid, string name = "name", string category = "category"
             , double price = 2, int quantity = 2)
         {
             return Tester.PBridge.AddProductToShop(cookie, shopGuid, name, category, price, quantity);
         }
+
     }
 }

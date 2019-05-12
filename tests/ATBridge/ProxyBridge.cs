@@ -143,5 +143,20 @@ namespace ATBridge
         {
             return _real == null ? Guid.Empty : _real.AddNewDiscountPolicy(userGuid, shopGuid, policyType, field1, field2, field3, field4, field5);
         }
+
+        public void ActivateShop(Guid cookie, Guid shopGuid)
+        {
+            if (_real != null) _real.ActivateShop(cookie, shopGuid);
+        }
+
+        public void CloseShop(Guid cookie, Guid shopGuid)
+        {
+            if (_real != null) _real.CloseShop(cookie, shopGuid);
+        }
+
+        public void CloseShopPermanently(Guid cookie, Guid shopGuid)
+        {
+            if (_real != null) _real.CloseShopPermanently(cookie, shopGuid);
+        }
     }
 }

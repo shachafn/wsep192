@@ -156,5 +156,20 @@ namespace ATBridge
         {
             return _serviceFacade.AddNewDiscountPolicy(userGuid, shopGuid, policyType, field1, field2, field3, field4, field5);
         }
+
+        public void ActivateShop(Guid cookie, Guid shopGuid)
+        {
+            _serviceFacade.ActivateShop(cookie, shopGuid);
+        }
+
+        public void CloseShop(Guid cookie, Guid shopGuid)
+        {
+            _serviceFacade.CloseShop(cookie, shopGuid);
+        }
+
+        public void CloseShopPermanently(Guid cookie, Guid shopGuid)
+        {
+            _serviceFacade.CloseShopPermanently(cookie, shopGuid);
+        }
     }
 }

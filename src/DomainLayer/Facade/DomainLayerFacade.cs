@@ -417,13 +417,30 @@ namespace DomainLayer.Facade
             return DomainData.RegisteredUsersCollection[userGuid].Username;
         }
 
-        public Guid GetUserName(string userName)
+        public Guid GetUserGuid(string userName)
         {
             foreach (BaseUser user in DomainData.RegisteredUsersCollection)
             {
                 if (user.Username.Equals(userName))
                 {
                     return user.Guid;
+                }
+            }
+            return Guid.Empty;
+        }
+
+        public string GetShopName(Guid shopGuid)
+        {
+            return DomainData.ShopsCollection[shopGuid].ShopName;
+        }
+
+        public Guid GetShopGuid(string shopName)
+        {
+            foreach (Shop shop in DomainData.ShopsCollection)
+            {
+                if (shop.ShopName.Equals(shopName))
+                {
+                    return shop.Guid;
                 }
             }
             return Guid.Empty;

@@ -259,5 +259,15 @@ namespace ServiceLayer
         {
             return _serviceFacade.GetUserGuid(ownerName);
         }
+
+        public string GetShopName(Guid userGuid)
+        {
+            return _serviceFacade.GetShopName(userGuid);
+        }
+
+        public Guid GetShoprGuid(string ownerName)
+        {
+            return _serviceFacade.GetShopGuid(ownerName);
+        }
     }
 }

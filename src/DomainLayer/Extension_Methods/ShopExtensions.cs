@@ -64,7 +64,12 @@ namespace DomainLayer.Extension_Methods
             foreach (var owner in shop.Owners.ToList())
             {
                 if (owner.AppointerGuid.Equals(ownerToRemoveGuid))
+                {
+                    var newEvent = new RemovedOwnerEvent(owner.OwnerGuid, ownerToRemoveGuid, shop.Guid);
+                    newEvent.SetMessages(DomainData.ShopsCollection.Values, DomainData.RegisteredUsersCollection.Values);
+                    UpdateCenter.RaiseEvent(newEvent);
                     CascadeRemoveShopOwner(shop, ownerToRemoveGuid, owner.OwnerGuid);
+                }
             }
             shop.Owners.Remove(shop.Owners.FirstOrDefault(o => o.OwnerGuid.Equals(ownerToRemoveGuid)));
             return true;

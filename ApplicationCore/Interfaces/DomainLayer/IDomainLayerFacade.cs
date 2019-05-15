@@ -48,6 +48,8 @@ namespace ApplicationCore.Interfaces.DomainLayer
         void CloseShopPermanently(UserIdentifier userIdentifier, Guid shopGuid);
         IEnumerable<Tuple<ShoppingCart, IEnumerable<ShopProduct>>> getUserBag(UserIdentifier userIdentifier);
         string GetUserName(Guid userGuid);
-        Guid GetUserName(string userName);
+        Guid GetUserGuid(string userName);
+        string GetShopName(Guid shopGuid);
+        Guid GetShopGuid(string shopName);
     }
 }

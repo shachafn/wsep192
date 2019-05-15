@@ -168,8 +168,19 @@ namespace ServiceLayer
 
         public Guid GetUserGuid(string ownerName)
         {
-            return _domainLayerFacade.GetUserName(ownerName);
+            return _domainLayerFacade.GetUserGuid(ownerName);
         }
+
+        public string GetShopName(Guid shopGuid)
+        {
+            return _domainLayerFacade.GetShopName(shopGuid);
+        }
+
+        public Guid GetShopGuid(string shopName)
+        {
+            return _domainLayerFacade.GetShopGuid(shopName);
+        }
+
         public IEnumerable<ShopProduct> GetShopProducts(UserIdentifier userId,Guid shopGuid)
         {
             return _domainLayerFacade.GetShopProducts(userId, shopGuid);

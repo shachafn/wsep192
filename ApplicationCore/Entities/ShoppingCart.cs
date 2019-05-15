@@ -27,6 +27,7 @@ namespace ApplicationCore.Entitites
             try
             {
                 //TODO:Sum the value of the products in the cart and call to external service of payment
+                PurchasedProducts = new List<Tuple<Guid, int>>();
             }
             catch
             {

@@ -70,7 +70,20 @@ namespace PressentaitionLayer
             _facade.Register(Guid.NewGuid(), "ooo", "1111");
             _logger.LogDebug(_facade.Register(Guid.NewGuid(), "myUser", "1111").ToString());
             _facade.Logout(g);
+            init_data();
             UpdateCenter.Subscribe(_notificationsCenter.HandleUpdate);
+        }
+
+        private void init_data()
+        {
+            var dummySession = new Guid();
+            _facade.Register(dummySession, "ben", "ben");
+            _facade.Login(dummySession, "ben", "ben");
+            _facade.ChangeUserState(dummySession, "SellerUserState");
+            var shop_guid = _facade.OpenShop(dummySession, "Ben's groceries");
+            _facade.AddProductToShop(dummySession, shop_guid, "Banana", "good things", 3.0, 120);
+            _facade.AddProductToShop(dummySession, shop_guid, "Mango", "nice things", 12.0, 30);
+            _facade.Logout(dummySession);
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.

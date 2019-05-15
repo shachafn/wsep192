@@ -166,7 +166,7 @@ namespace ServiceLayer
             var userGuid = _sessionManager.ResolveCookie(cookie);
             _serviceFacade.ReopenShop(userGuid, shopGuid);
         }
-
+         
         public bool RemoveProductFromCart(Guid cookie, Guid shopGuid, Guid shopProductGuid)
         {
             var userGuid = _sessionManager.ResolveCookie(cookie);

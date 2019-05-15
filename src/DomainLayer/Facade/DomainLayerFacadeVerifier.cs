@@ -718,7 +718,7 @@ namespace DomainLayer.Facade
         private void VerifyNotOwnerAppointer(Guid userGuid, Guid ownerToRemoveGuid, Guid shopGuid, ICloneableException<Exception> e)
         {
             var shop = DomainData.ShopsCollection.FirstOrDefault(s => s.Guid.Equals(shopGuid));
-            var constraint = shop.Owners.FirstOrDefault(owner => owner.OwnerGuid.Equals(userGuid)).AppointerGuid.Equals(ownerToRemoveGuid);
+            var constraint = !(shop.Creator.OwnerGuid.Equals(userGuid)) && shop.Owners.FirstOrDefault(owner => owner.OwnerGuid.Equals(userGuid)).AppointerGuid.Equals(ownerToRemoveGuid);
             if (constraint)
             {
                 StackTrace stackTrace = new StackTrace();

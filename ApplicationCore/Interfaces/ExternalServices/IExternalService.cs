@@ -1,4 +1,4 @@
-﻿namespace DomainLayer.External_Services.Interfaces
+﻿namespace ApplicationCore.Interfaces.ExternalServices
 {
     public interface IExternalService
     {

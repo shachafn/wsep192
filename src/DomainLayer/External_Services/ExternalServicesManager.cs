@@ -1,11 +1,17 @@
-﻿using DomainLayer.External_Services.Adapters;
-using DomainLayer.External_Services.Interfaces;
+﻿using ApplicationCore.Interfaces.ExternalServices;
+using DomainLayer.External_Services.Adapters;
 
 namespace DomainLayer.External_Services
 {
-    public static class ExternalServicesManager
+    public class ExternalServicesManager
     {
-        public static ISupplySystem _supplySystem = new SupplySystemAdapter();
-        public static IPaymentSystem _paymentSystem = new PaymentSystemAdapter();
+        public ISupplySystem SupplySystem { get; set; }
+        public IPaymentSystem PaymentSystem { get; set; }
+
+        public ExternalServicesManager(IPaymentSystem paymentSystem)
+        {
+            SupplySystem = new SupplySystemAdapter();
+            PaymentSystem = paymentSystem;
+        }
     }
 }

@@ -7,6 +7,7 @@ using ApplicationCore.Events;
 using ApplicationCore.Exceptions;
 using ApplicationCore.Interfaces.DomainLayer;
 using DomainLayer.Extension_Methods;
+using DomainLayer.External_Services;
 using DomainLayer.Policies;
 using DomainLayer.Users.States;
 using Microsoft.Extensions.Logging;
@@ -23,12 +24,14 @@ namespace DomainLayer.Facade
         IUserDomain _userDomain;
         DomainLayerFacadeVerifier _verifier;
         ILogger<DomainLayerFacade> _logger;
+        ExternalServicesManager _externalServicesManager;
 
         public DomainLayerFacade(IUserDomain userDomain, DomainLayerFacadeVerifier verifier
-            , ILogger<DomainLayerFacade> logger)
+            , ILogger<DomainLayerFacade> logger, ExternalServicesManager externalServicesManager)
         {
             _userDomain = userDomain;
             _verifier = verifier;
+            _externalServicesManager = externalServicesManager;
             _logger = logger;
         }
 
@@ -162,9 +165,10 @@ namespace DomainLayer.Facade
 
             if (_isSystemInitialized)
                 throw new SystemAlreadyInitializedException($"Cannot initialize the system again.");
-            if (!External_Services.ExternalServicesManager._paymentSystem.IsAvailable())
-                throw new ServiceUnReachableException($"Payment System Service is unreachable.");
-            if (!External_Services.ExternalServicesManager._supplySystem.IsAvailable())
+            if (!_externalServicesManager.PaymentSystem.IsAvailable())
+                //throw new ServiceUnReachableException($"Payment System Service is unreachable.");
+                _logger.LogDebug("Payment System is not available!");
+            if (!_externalServicesManager.SupplySystem.IsAvailable())
                 throw new ServiceUnReachableException($"Supply System Service is unreachable.");
 
             var res = Guid.Empty;

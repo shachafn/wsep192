@@ -15,6 +15,9 @@ using Serilog;
 using Infrastructure;
 using Microsoft.AspNetCore.SignalR;
 using ApplicationCore.Interfaces.Infastracture;
+using ApplicationCore.Interfaces.ExternalServices;
+using Infrastructure.gRPC.services;
+using DomainLayer.External_Services;
 
 namespace PressentaitionLayer
 {
@@ -49,6 +52,8 @@ namespace PressentaitionLayer
             //Notice, the order of adding is crucial
             services.AddSingleton<IUserDomain, UserDomain>();
             services.AddSingleton<DomainLayerFacadeVerifier>();
+            services.AddSingleton<IPaymentSystem, GRPCPaymentService>();
+            services.AddSingleton<ExternalServicesManager>();
             services.AddSingleton<IDomainLayerFacade, DomainLayerFacade>();
             services.AddSingleton<ISessionManager, SessionManager>();
 

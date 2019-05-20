@@ -84,12 +84,14 @@ namespace DomainLayer.Users.States
 
         public override bool ConnectToPaymentSystem()
         {
-            return External_Services.ExternalServicesManager._paymentSystem.IsAvailable();
+            return true;
+            //return External_Services.ExternalServicesManager._paymentSystem.IsAvailable();
         }
 
         public override bool ConnectToSupplySystem()
         {
-            return External_Services.ExternalServicesManager._supplySystem.IsAvailable();
+            return true;
+            //return External_Services.ExternalServicesManager._supplySystem.IsAvailable();
         }
 
         public override Guid AddProductToShop(BaseUser baseUser, Guid shopGuid, string name, string category, double price, int quantity)

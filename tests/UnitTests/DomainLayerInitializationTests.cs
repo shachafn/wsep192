@@ -20,7 +20,8 @@ namespace UnitTests
         IDomainLayerFacade facade = new DomainLayerFacade(
                                     new UserDomain(NullLogger<UserDomain>.Instance),
                                     new DomainLayerFacadeVerifier(),
-                                    NullLogger<DomainLayerFacade>.Instance
+                                    NullLogger<DomainLayerFacade>.Instance,
+                                    new DefaultExternalServicesManager()
                                 );
 
         [Test]

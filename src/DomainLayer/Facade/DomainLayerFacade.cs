@@ -24,10 +24,10 @@ namespace DomainLayer.Facade
         IUserDomain _userDomain;
         DomainLayerFacadeVerifier _verifier;
         ILogger<DomainLayerFacade> _logger;
-        ExternalServicesManager _externalServicesManager;
+        IExternalServicesManager _externalServicesManager;
 
         public DomainLayerFacade(IUserDomain userDomain, DomainLayerFacadeVerifier verifier
-            , ILogger<DomainLayerFacade> logger, ExternalServicesManager externalServicesManager)
+            , ILogger<DomainLayerFacade> logger, IExternalServicesManager externalServicesManager)
         {
             _userDomain = userDomain;
             _verifier = verifier;

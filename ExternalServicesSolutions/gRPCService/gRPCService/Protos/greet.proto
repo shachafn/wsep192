@@ -1,0 +1,33 @@
+syntax = "proto3";
+
+package Payment;
+
+service Payer {
+  rpc IsAvailable (IsAvailableRequest) returns (IsAvailableReply) {}
+  rpc GetUserBalanace (GetUserBalanaceRequest) returns (GetUserBalanaceReply) {}
+  rpc PayForUser (PayForUserRequest) returns (PayForUserReply) {}
+}
+
+message IsAvailableRequest {
+}
+
+message IsAvailableReply {
+  bool result = 1;
+}
+
+message GetUserBalanaceRequest {
+  string userGuid = 1;
+}
+
+message GetUserBalanaceReply {
+  double balance = 1;
+}
+
+message PayForUserRequest {
+  string userGuid = 1;
+  double amount = 2;
+}
+
+message PayForUserReply {
+  bool isSuccess = 1;
+}

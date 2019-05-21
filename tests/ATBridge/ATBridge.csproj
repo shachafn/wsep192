@@ -10,6 +10,7 @@
   </ItemGroup>
 
   <ItemGroup>
+    <ProjectReference Include="..\..\..\..\Ext Services\wsep192\src\ApplicationCore\ApplicationCore.csproj" />
     <ProjectReference Include="..\..\src\ServiceLayer\ServiceLayer.csproj" />
   </ItemGroup>
 

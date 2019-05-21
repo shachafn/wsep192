@@ -1,5 +1,5 @@
 ﻿
-using ApplicationCore.Interfaces.ExternalServices;
+using DomainLayer.External_Services.Interfaces;
 
 namespace DomainLayer.External_Services.Adapters
 {

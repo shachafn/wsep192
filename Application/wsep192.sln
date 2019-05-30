@@ -26,6 +26,11 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ApplicationCore", "src\Appl
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "PresentaitionLayer", "src\PresentaitionLayer\PresentaitionLayer.csproj", "{E89AC2AB-6954-4B00-874F-ECF1E8F23BC9}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DataAccessLayer", "DataAccessLayer\DataAccessLayer.csproj", "{74C317BD-7AEE-467A-99B9-45F7571A8E1A}"
+	ProjectSection(ProjectDependencies) = postProject
+		{7B6B0639-C8B9-4A9D-B202-94F14E8AA207} = {7B6B0639-C8B9-4A9D-B202-94F14E8AA207}
+	EndProjectSection
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -72,6 +77,10 @@ Global
 		{E89AC2AB-6954-4B00-874F-ECF1E8F23BC9}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{E89AC2AB-6954-4B00-874F-ECF1E8F23BC9}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{E89AC2AB-6954-4B00-874F-ECF1E8F23BC9}.Release|Any CPU.Build.0 = Release|Any CPU
+		{74C317BD-7AEE-467A-99B9-45F7571A8E1A}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{74C317BD-7AEE-467A-99B9-45F7571A8E1A}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{74C317BD-7AEE-467A-99B9-45F7571A8E1A}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{74C317BD-7AEE-467A-99B9-45F7571A8E1A}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -87,6 +96,7 @@ Global
 		{437478EF-A3EF-4FCD-AEC3-928190D7BCA7} = {419A6ACE-0419-4315-A6FB-B0E63D39432E}
 		{7B6B0639-C8B9-4A9D-B202-94F14E8AA207} = {419A6ACE-0419-4315-A6FB-B0E63D39432E}
 		{E89AC2AB-6954-4B00-874F-ECF1E8F23BC9} = {419A6ACE-0419-4315-A6FB-B0E63D39432E}
+		{74C317BD-7AEE-467A-99B9-45F7571A8E1A} = {419A6ACE-0419-4315-A6FB-B0E63D39432E}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {49813262-5DA3-4D61-ABD3-493C74CE8C2B}

@@ -1,14 +1,20 @@
 ﻿using ApplicationCore.Entitites;
+using Microsoft.EntityFrameworkCore;
 using System;
+using System.ComponentModel.DataAnnotations;
 
 namespace ApplicationCore.Entities.Users
 {
+   
     public class BaseUser : BaseEntity
     {
+        [Key]
         public string Username { get; private set; }
         // We only keep the password's hash, you can check if a password is
         // this user's password using the CheckPass function
+        [Required(ErrorMessage = "Message is required")]
         private string _passHash;
+        [Required(ErrorMessage = "IsAdmin is required")]
         public bool IsAdmin { get; private set; }
 
         public BaseUser(string username, string password, bool isAdmin)

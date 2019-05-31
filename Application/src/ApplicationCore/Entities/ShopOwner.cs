@@ -1,14 +1,23 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations.Schema;
 
 namespace ApplicationCore.Entitites
 {
+    [Table("ShopOwners")]
     public class ShopOwner
     {
+        [Key]
+        [Column(Order=2)]
         public Guid OwnerGuid { get; set; }
 
+        [Key]
+        [Column(Order = 2)]
         public Guid AppointerGuid { get; set; } // Guid.Empty for the creator of the shop.
 
+        [Key]
+        [Column(Order = 3)]
         public Guid ShopGuid { get; set; }
 
         public ICollection<string> Priviliges { get; set; }

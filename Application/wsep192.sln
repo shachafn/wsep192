@@ -26,7 +26,7 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ApplicationCore", "src\Appl
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "PresentaitionLayer", "src\PresentaitionLayer\PresentaitionLayer.csproj", "{E89AC2AB-6954-4B00-874F-ECF1E8F23BC9}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DataAccessLayer", "DataAccessLayer\DataAccessLayer.csproj", "{74C317BD-7AEE-467A-99B9-45F7571A8E1A}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "DataAccessLayer", "DataAccessLayer\DataAccessLayer.csproj", "{74C317BD-7AEE-467A-99B9-45F7571A8E1A}"
 	ProjectSection(ProjectDependencies) = postProject
 		{7B6B0639-C8B9-4A9D-B202-94F14E8AA207} = {7B6B0639-C8B9-4A9D-B202-94F14E8AA207}
 	EndProjectSection

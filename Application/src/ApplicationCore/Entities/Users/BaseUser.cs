@@ -2,13 +2,15 @@
 using Microsoft.EntityFrameworkCore;
 using System;
 using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations.Schema;
 
 namespace ApplicationCore.Entities.Users
 {
-   
+   [Table("Users")]
     public class BaseUser : BaseEntity
     {
         [Key]
+        [Column(Order =2)]
         public string Username { get; private set; }
         // We only keep the password's hash, you can check if a password is
         // this user's password using the CheckPass function

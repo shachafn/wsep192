@@ -15,14 +15,10 @@ namespace DataAccessLayer
         public DbSet<ShopOwner> Owners { get; set; }
         public DbSet<BaseUser> Users { get; set; }
         public DbSet<ShopProduct> ShopProducts { get; set; }
-        public RepositoryContext(DbContextOptions options)
-            : base(options)
-        {
-        }
 
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
         {
-            optionsBuilder.UseSqlServer("Data Source=DESKTOP-3MH7VAJ\\SQLEXPRESS;Initial Catalog=WSEP192;Integrated Security=True;Connect Timeout=30;Encrypt=False;TrustServerCertificate=False;ApplicationIntent=ReadWrite;MultiSubnetFailover=False");
+            optionsBuilder.UseSqlServer("Data Source=DESKTOP-KRHRPTB;Initial Catalog=Wsep192_2;Integrated Security=True;Connect Timeout=30;Encrypt=False;TrustServerCertificate=False;ApplicationIntent=ReadWrite;MultiSubnetFailover=False");
         }
 
         //Connection String

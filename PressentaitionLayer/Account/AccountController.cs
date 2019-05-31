@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Security.Claims;
 using System.Threading.Tasks;
 using ApplicationCore.Interfaces.ServiceLayer;
@@ -7,6 +8,7 @@ using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
 using PressentaitionLayer.Models;
@@ -154,6 +156,60 @@ namespace PressentaitionLayer.Account
             }
 
             return View(model);
+        }
+
+        [Route("NewState")]
+        public async Task<IActionResult> NewStateAsync(string userType)
+        {
+            
+            switch (userType)
+            {
+                case "Buyer":
+                    if (!User.IsInRole("Buyer") && _serviceFacade.ChangeUserState(new Guid(HttpContext.Session.Id), "BuyerUserState"))
+                    {
+                        await changeRoleAsync(userType);
+                        return RedirectToAction("Index", "Buyer");
+                    }
+                    return User.IsInRole("Seller") ? RedirectToAction("Index", "Seller") : RedirectToAction("Index", "Admin");
+                case "Seller":
+                    if (!User.IsInRole("Seller") && _serviceFacade.ChangeUserState(new Guid(HttpContext.Session.Id), "SellerUserState"))
+                    {
+                        await changeRoleAsync(userType);
+                        return RedirectToAction("Index", "Seller");
+                    }
+                    return User.IsInRole("Buyer") ? RedirectToAction("Index", "Buyer") : RedirectToAction("Index", "Admin");
+                case "Admin":
+                    if (!User.IsInRole("Admin") && _serviceFacade.ChangeUserState(new Guid(HttpContext.Session.Id), "AdminUserState"))
+                    {
+                        await changeRoleAsync(userType);
+                        return RedirectToAction("Index", "Admin");
+                    }
+                    return User.IsInRole("Seller") ? RedirectToAction("Index", "Seller") : RedirectToAction("Index", "Buyer");
+                default:
+                    return RedirectToAction("Index", "Home");
+            }
+
+        }
+
+        private async Task changeRoleAsync(string userType)
+        {
+            await HttpContext.SignOutAsync(CookieAuthenticationDefaults.AuthenticationScheme);
+            var properties = new AuthenticationProperties
+            {
+                //AllowRefresh = false,
+                IsPersistent = true,
+                //ExpiresUtc = DateTimeOffset.UtcNow.AddSeconds(10)
+            };
+            var claims = new List<Claim>
+            {
+                new Claim(ClaimTypes.NameIdentifier, User.Claims.First(c=>c.Type==ClaimTypes.NameIdentifier).Value),
+                new Claim(ClaimTypes.Name,User.Claims.First(c=>c.Type==ClaimTypes.Name).Value),
+                new Claim(ClaimTypes.Role,userType)
+            };
+
+            var identity = new ClaimsIdentity(claims, CookieAuthenticationDefaults.AuthenticationScheme);
+            var principal = new ClaimsPrincipal(identity);
+            await HttpContext.SignInAsync(principal, properties);
         }
     }
 }

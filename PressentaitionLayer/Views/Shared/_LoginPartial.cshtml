@@ -3,6 +3,19 @@
 
 @if (User.Identity.IsAuthenticated)
 {
+    <script>
+        var x = 1;
+
+        function dropDown() {
+            if (x == 0) {
+                document.getElementById("dropdown").style.display = "none";
+                x = 1;
+            } else {
+                document.getElementById("dropdown").style.display = "block";
+                x = 0;
+            }
+        }
+    </script>
     <form asp-area="Identity" asp-page="/Account/Logout" asp-route-returnUrl="@Url.Action("Index", "Home", new { area = "" })" method="post" id="logoutForm" class="navbar-right">
         <ul class="nav navbar-nav navbar-right">
             <partial name="_ProfilePartial" />
@@ -13,6 +26,14 @@
     </form>
     @if (User.IsInRole("Buyer"))
     {
+        <ul class="nav navbar-nav navbar-right">
+            <li class="btn btn-link navbar-btn navbar-link" onclick="dropDown()">Buyer</li>
+        </ul>
+        <div class="dropdown-menu dropdown-menu-right" id="dropdown" style="margin: 0px 100px; display:none;">
+            <a class="btn btn-link" style="text-align:left; color:black"  onclick="location.href='@Url.Action("NewState","Account",new {userType="Seller"})'" >Change to: Seller</a>
+            <br />
+            <a class="btn btn-link"  style="text-align:left; color:black">Change to: Admin</a>
+        </div>
         <ul class="nav navbar-nav">
             <li><a asp-area="" asp-controller="Home" asp-action="Index">Home</a></li>
             <li><a asp-area="" asp-controller="Home" asp-action="About">About</a></li>

@@ -10,7 +10,9 @@ namespace DataAccessLayer.DAOs
     public class ShopOwnerDAO
     {
         //[ForeignKey("Users")]
-        public BaseUserDAO Owner { get; set; }
+        [Key]
+        public Guid OwnerGuid { get; set; }
+        public BaseUserDAO OwnerBaseUser { get; set; }
 
         [ForeignKey("ShpOwners")]
         public ShopOwnerDAO Appointer { get; set; } // Guid.Empty for the creator of the shop.
@@ -20,14 +22,17 @@ namespace DataAccessLayer.DAOs
         [Timestamp]
         public byte[] RowVersion { get; set; }
 
-        public ICollection<string> Priviliges { get; set; }
+        //public ICollection<string> Priviliges { get; set; }
+
+        public ShopOwnerDAO()
+        { }
 
         public ShopOwnerDAO(ShopOwner owner)
         {
             //Call db to find object of owner
             //Call db to find object of appointer
             //Call db to find object of shop
-             Priviliges = owner.Priviliges;
+             //Priviliges = owner.Priviliges;
         }
     }
 }

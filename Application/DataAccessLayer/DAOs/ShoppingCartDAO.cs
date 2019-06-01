@@ -13,16 +13,21 @@ namespace DataAccessLayer.DAOs
     [Table("Carts")]
     public class ShoppingCartDAO
     {
-       // [ForeignKey("Users")]
-        public BaseUserDAO UserGuid { get; set; }
+        public Guid UserGuid { get; set; }
+        public BaseUserDAO BaseUser { get; set; }
 
-        //[ForeignKey("Shops")]
-        public ShopDAO ShopGuid { get; set; }
+        public Guid ShopGuid { get; set; }
+        public ShopDAO Shop { get; set; }
 
         //[ForeignKey("CartRecords")]
         public ICollection<RecordsPerCartDAO> PurchasedProducts { get; set; } // Shop product and quantity that was purchased.
         [Timestamp]
         public byte[] RowVersion { get; set; }
+
+        public ShoppingCartDAO()
+        {
+
+        }
 
         public ShoppingCartDAO(ShoppingCart cart)
         {

@@ -6,6 +6,13 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <Compile Remove="Migrations\20190601173300_initial.cs" />
+    <Compile Remove="Migrations\20190601173716_initial.cs" />
+    <Compile Remove="Migrations\20190601173850_initial.cs" />
+    <Compile Remove="Migrations\20190601174248_initial.cs" />
+  </ItemGroup>
+
+  <ItemGroup>
     <PackageReference Include="Microsoft.EntityFrameworkCore.SqlServer" Version="2.2.4" />
     <PackageReference Include="Microsoft.Extensions.Logging" Version="2.2.0" />
     <PackageReference Include="Pomelo.EntityFrameworkCore.MySql" Version="2.1.1" />
@@ -13,6 +20,10 @@
 
   <ItemGroup>
     <ProjectReference Include="..\src\ApplicationCore\ApplicationCore.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Folder Include="Migrations\" />
   </ItemGroup>
 
 </Project>

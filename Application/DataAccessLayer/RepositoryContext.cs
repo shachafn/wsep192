@@ -20,9 +20,20 @@ namespace DataAccessLayer
 
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
         {
-            optionsBuilder.UseSqlServer("Data Source=DESKTOP-KRHRPTB;Initial Catalog=Wsep192_2;Integrated Security=True;Connect Timeout=30;Encrypt=False;TrustServerCertificate=False;ApplicationIntent=ReadWrite;MultiSubnetFailover=False");
+            optionsBuilder.UseSqlServer("Data Source=DESKTOP-KRHRPTB;Initial Catalog=Wsep;Integrated Security=True;Connect Timeout=30;Encrypt=False;TrustServerCertificate=False;ApplicationIntent=ReadWrite;MultiSubnetFailover=False");
         }
 
+        protected override void OnModelCreating(ModelBuilder modelBuilder)
+        {
+            modelBuilder.Entity<ShopDAO>().HasMany(shop => shop.Owners);
+            modelBuilder.Entity<ShopDAO>().HasMany(shop => shop.Managers);
+            modelBuilder.Entity<ShopOwnerDAO>().HasOne(owner => owner.Shop);
+            modelBuilder.Entity<ShoppingCartDAO>().HasKey(cart => new { cart.UserGuid, cart.ShopGuid });
+            modelBuilder.Entity<RecordsPerCartDAO>().HasKey(rec => new { rec.CartGuid, rec.ProductGuid });
+
+            modelBuilder.Entity<ShoppingBagDAO>().HasKey(bag => bag.UserGuid);
+            modelBuilder.Entity<ShoppingBagDAO>().HasMany(bag => bag.ShoppingCarts);
+        }
         //Connection String
         //Data Source=DESKTOP-3MH7VAJ\SQLEXPRESS;Initial Catalog=WSEP192;Integrated Security=True;Connect Timeout=30;Encrypt=False;TrustServerCertificate=False;ApplicationIntent=ReadWrite;MultiSubnetFailover=False
         //TODO: After the installation in whole the app,

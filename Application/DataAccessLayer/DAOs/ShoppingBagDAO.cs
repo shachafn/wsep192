@@ -10,13 +10,15 @@ namespace DataAccessLayer.DAOs
     [Table("ShoppingBags")]
     public class ShoppingBagDAO
     {
-        //[ForeignKey("Users")]
+        public Guid UserGuid { get; set; }
         public BaseUserDAO User { get; set; }
-
-        //[ForeignKey("Carts")]
         public ICollection<ShoppingCartDAO> ShoppingCarts { get; set; }
         [Timestamp]
         public byte[] RowVersion { get; set; }
+
+
+        public ShoppingBagDAO()  { }
+
         public ShoppingBagDAO(ShoppingBag shoppingBag)
         {
             //find user with db

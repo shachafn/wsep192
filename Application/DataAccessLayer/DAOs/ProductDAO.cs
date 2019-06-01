@@ -2,7 +2,10 @@
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
+using System.Linq;
 using ApplicationCore.Entitites;
+using DataAccessLayer.DAOs.Wrappers;
+
 namespace DataAccessLayer.DAOs
 {
     [Table("Products")]
@@ -16,14 +19,17 @@ namespace DataAccessLayer.DAOs
         public string Category { get; set; }
         [Timestamp]
         public byte[] RowVersion { get; set; }
-        public ICollection<string> Keywords { get; set; }
+        public ICollection<StringWrapper> Keywords { get; set; }
+        public ProductDAO()
+        {
 
+        }
         public ProductDAO(Product product)
         {
             Guid = product.GetGuid();
             Name = product.Name;
             Category = product.Category;
-            Keywords = product.Keywords;
+            Keywords = product.Keywords.Select(s => new StringWrapper() { Id = Guid.NewGuid(), Text = s }).ToList();
         }
 
         public override string ToString()

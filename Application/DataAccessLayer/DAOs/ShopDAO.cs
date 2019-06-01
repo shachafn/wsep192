@@ -23,12 +23,15 @@ namespace DataAccessLayer.DAOs
         [Required]
         public ShopStateEnum ShopState { get; set; }
 
-        public ICollection<Tuple<Guid,ProductDAO,int>> UsersPurchaseHistory { get; set; }
+        public ICollection<RecordsPerCartDAO> UsersPurchaseHistory { get; set; }
 
-        public ICollection<IPurchasePolicy> PurchasePolicies { get; set; }
+       // public ICollection<IPurchasePolicy> PurchasePolicies { get; set; }
         
-        public ICollection<IDiscountPolicy> DiscountPolicies { get; set; }
+        //public ICollection<IDiscountPolicy> DiscountPolicies { get; set; }
         public string ShopName { get; }
+
+        public ShopDAO()
+        { }
 
         public ShopDAO(Shop shop)
         {
@@ -38,7 +41,7 @@ namespace DataAccessLayer.DAOs
             foreach (ShopOwner o in shop.Managers)
                 Managers.Add(new ShopOwnerDAO(o));
             foreach (ShopProduct sp in shop.ShopProducts)
-                ShopProducts.Add(new ShopProductDAO(sp));
+                ShopProducts.Add(new ShopProductDAO(sp.Guid,null,sp.Quantity,sp.Price));
             if(shop.ShopState == Shop.ShopStateEnum.Active)
             {
                 ShopState = ShopStateEnum.Active;

@@ -8,13 +8,16 @@ namespace DataAccessLayer.DAOs
     [Table("CartRecords")]
     public class RecordsPerCartDAO
     {
-        //[ForeignKey("Carts")]
+        public Guid CartGuid { get; set; }
         public ShoppingCartDAO Cart { get; set; }
-        //[ForeignKey("Products")]
+
+        public Guid ProductGuid { get; set; }
         public ProductDAO Product { get; set; }
+
         [Required(ErrorMessage = "Quantity is required")]
         public int PurchasedQuantity { get; set; }
-
+        public RecordsPerCartDAO()
+        { }
         public RecordsPerCartDAO(ShoppingCartDAO cart, ProductDAO product, int purchasedQuantity)
         {
             Cart = cart;

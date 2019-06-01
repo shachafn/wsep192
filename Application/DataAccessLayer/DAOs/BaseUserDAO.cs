@@ -25,6 +25,10 @@ namespace DataAccessLayer.DAOs
         [Timestamp]
         public byte[] RowVersion { get; set; }
 
+        public BaseUserDAO()
+        {
+
+        }
         public BaseUserDAO(BaseUser user)
         {
             Guid = user.GetGuid();

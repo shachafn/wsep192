@@ -70,13 +70,15 @@ namespace PressentaitionLayer
             _facade.Register(Guid.NewGuid(), "ooo", "1111");
             _logger.LogDebug(_facade.Register(Guid.NewGuid(), "myUser", "1111").ToString());
             _facade.Logout(g);
-            init_data();
+            SystemInitializer init = new SystemInitializer(_facade);
+            init.InitSystemWithFile();
+           // init_data();
             UpdateCenter.Subscribe(_notificationsCenter.HandleUpdate);
         }
 
         private void init_data()
         {
-            var dummySession = new Guid();
+            var dummySession = Guid.NewGuid();
             _facade.Register(dummySession, "ben", "ben");
             _facade.Login(dummySession, "ben", "ben");
             _facade.ChangeUserState(dummySession, "SellerUserState");

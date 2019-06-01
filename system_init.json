@@ -1,0 +1,6 @@
+[
+  {
+    "operationName": "register",
+    "args": [ "yakov", "123" ]
+  }
+]

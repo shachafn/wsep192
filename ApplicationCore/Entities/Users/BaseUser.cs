@@ -40,5 +40,10 @@ namespace ApplicationCore.Entities.Users
         {
             return _passHash.Equals(GetStringSha256Hash(password));
         }
+
+        public void makeAdmin()
+        {
+            IsAdmin = true;
+        }
     }
 }

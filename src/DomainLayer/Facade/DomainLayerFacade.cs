@@ -318,7 +318,7 @@ namespace DomainLayer.Facade
         public ICollection<Shop> GetAllShops(UserIdentifier userIdentifier)
         {
             VerifySystemIsInitialized();
-            _verifier.VerifyMe(MethodBase.GetCurrentMethod(), userIdentifier);
+          //  _verifier.VerifyMe(MethodBase.GetCurrentMethod(), userIdentifier); also guests can ask for shops
             return DomainData.ShopsCollection.ToList();
         }
 

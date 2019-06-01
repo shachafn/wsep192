@@ -5,21 +5,22 @@ using System.ComponentModel.DataAnnotations.Schema;
 
 namespace ApplicationCore.Entitites
 {
-    [Table("ShopOwners")]
+    //[Table("ShopOwners")]
     public class ShopOwner
     {
-        [Key]
-        [Column(Order=2)]
+        //[Key]
+       // [Column(Order=2)]
         public Guid OwnerGuid { get; set; }
 
-        [Key]
-        [Column(Order = 2)]
+        //[Key]
+       // [Column(Order = 2)]
         public Guid AppointerGuid { get; set; } // Guid.Empty for the creator of the shop.
 
-        [Key]
-        [Column(Order = 3)]
+        //[Key]
+        //[Column(Order = 3)]
         public Guid ShopGuid { get; set; }
-
+        //[Timestamp]
+        public byte[] RowVersion { get; set; }
         public ICollection<string> Priviliges { get; set; }
 
         public ShopOwner(Guid ownerGuid, Guid appointerGuid, Guid shopGuid, ICollection<string> priviliges = null)

@@ -8,16 +8,16 @@ namespace ApplicationCore.Entitites
 {
 
     
-    [Table("Shops")]
+    //[Table("Shops")]
     public class Shop : BaseEntity
     {
-        [ForeignKey("ShopOwners")]
+        //[ForeignKey("ShopOwners")]
         public ShopOwner Creator { get; }
         public ICollection<ShopOwner> Owners { get; set; }
         public ICollection<ShopOwner> Managers { get; set; }
         public ICollection<ShopProduct> ShopProducts { get; set; }
         public enum ShopStateEnum { Active, Closed, PermanentlyClosed };
-        [Required]
+        //[Required]
         public ShopStateEnum ShopState { get; set; }
 
         public ICollection<Tuple<Guid,Product,int>> UsersPurchaseHistory { get; set; }

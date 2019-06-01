@@ -2,10 +2,12 @@
 using System.Collections.Generic;
 using System.Text;
 using ApplicationCore.Entitites;
+using DataAccessLayer.DAOs;
+using DataAccessLayer.IRepositories;
 
 namespace DataAccessLayer.Repositories
 {
-    class ShoppingBagRepository : RepositoryBase<ShoppingBag>, IShoppingBagRepository
+    class ShoppingBagRepository : RepositoryBase<ShoppingBagDAO>, IShoppingBagRepository
     {
         public ShoppingBagRepository(RepositoryContext context) : base(context)
         {

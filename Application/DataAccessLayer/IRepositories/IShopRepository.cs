@@ -3,7 +3,7 @@ using System;
 using System.Collections.Generic;
 using System.Text;
 
-namespace DataAccessLayer
+namespace DataAccessLayer.IRepositories
 {
     public interface IShopRepository : IRepositoryBase<Shop>
     {

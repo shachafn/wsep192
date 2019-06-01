@@ -5,7 +5,7 @@ using System.Linq.Expressions;
 using System.Text;
 using ApplicationCore.Entities;
 
-namespace DataAccessLayer
+namespace DataAccessLayer.IRepositories
 {
     public interface IRepositoryBase<T>
     {

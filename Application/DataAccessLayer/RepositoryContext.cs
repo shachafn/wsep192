@@ -4,17 +4,19 @@ using System.Text;
 using Microsoft.EntityFrameworkCore;
 using ApplicationCore.Entitites;
 using ApplicationCore.Entities.Users;
+using DataAccessLayer.DAOs;
 
 namespace DataAccessLayer
 {
     public class RepositoryContext : DbContext
     {
-        public DbSet<Product> Products { get; set; }
-        public DbSet<ShoppingBag> ShoppingBags { get; set; }
-        public DbSet<ShoppingCart> ShoppingCarts { get; set; }
-        public DbSet<ShopOwner> Owners { get; set; }
-        public DbSet<BaseUser> Users { get; set; }
-        public DbSet<ShopProduct> ShopProducts { get; set; }
+        //public DbSet<BaseEntity> Entities { get; set; }
+        public DbSet<ProductDAO> Products { get; set; }
+        public DbSet<ShoppingBagDAO> ShoppingBags { get; set; }
+        public DbSet<ShoppingCartDAO> ShoppingCarts { get; set; }
+        public DbSet<ShopOwnerDAO> Owners { get; set; }
+        public DbSet<BaseUserDAO> Users { get; set; }
+        public DbSet<ShopProductDAO> ShopProducts { get; set; }
 
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
         {

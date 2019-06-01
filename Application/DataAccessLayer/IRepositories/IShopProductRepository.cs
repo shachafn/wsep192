@@ -6,7 +6,7 @@ using ApplicationCore.Entitites;
 
 namespace DataAccessLayer.IRepositories
 {
-    interface IShopProductRepository : IRepositoryBase<ShopProduct>
+    interface IShopProductRepository : IRepositoryBase<ShopProductDAO>
     {
     }
 }

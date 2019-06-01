@@ -6,12 +6,13 @@ using System.ComponentModel.DataAnnotations.Schema;
 
 namespace ApplicationCore.Entitites
 {
-    [Table("ShoppingBags")]
+    //[Table("ShoppingBags")]
     public class ShoppingBag : BaseEntity
     {
-        [ForeignKey("Users")]
+        //[ForeignKey("Users")]
         public Guid UserGuid { get; set; }
-
+       // [Timestamp]
+        public byte[] RowVersion { get; set; }
         public ICollection<ShoppingCart> ShoppingCarts { get; set; }
 
         public ShoppingBag(Guid userGuid)

@@ -1,29 +1,38 @@
-﻿using ApplicationCore.Entitites;
+﻿using ApplicationCore.Entities.Users;
 using Microsoft.EntityFrameworkCore;
 using System;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 
-namespace ApplicationCore.Entities.Users
+
+namespace DataAccessLayer.DAOs
 {
-   //[Table("Users")]
-    public class BaseUser : BaseEntity
+   [Table("Users")]
+    public class BaseUserDAO
     {
 
         //not sure
-        //[Key,Column(Order = 0)]
-        public Guid thisGuid;
+        [Key, Column(Order = 0)]
+        public Guid Guid { get; set; }
         //[Key,Column(Order = 1)]
         public string Username { get; private set; }
         // We only keep the password's hash, you can check if a password is
         // this user's password using the CheckPass function
-        //[Required(ErrorMessage = "Message is required")]
+        [Required(ErrorMessage = "Message is required")]
         private string _passHash;
-        //[Required(ErrorMessage = "IsAdmin is required")]
+        [Required(ErrorMessage = "IsAdmin is required")]
         public bool IsAdmin { get; private set; }
-        //[Timestamp]
+        [Timestamp]
         public byte[] RowVersion { get; set; }
-        public BaseUser(Guid thisGuid, string username, string passHash, bool isAdmin)
+
+        public BaseUserDAO(BaseUser user)
+        {
+            Guid = user.GetGuid();
+            Username = user.Username;
+            _passHash = user.get_hash();
+            IsAdmin = user.IsAdmin;
+        }
+        /*public BaseUserDAO(Guid thisGuid, string username, string passHash, bool isAdmin)
         {
             this.thisGuid = thisGuid;
             Username = username;
@@ -31,13 +40,13 @@ namespace ApplicationCore.Entities.Users
             IsAdmin = isAdmin;
         }
 
-        public BaseUser(string username, string password, bool isAdmin)
+        public BaseUserDAO(string username, string password, bool isAdmin)
         {
-            thisGuid = base.GetGuid();
+            //thisGuid = base.GetGuid();
             Username = username;
             _passHash = GetStringSha256Hash(password);
             IsAdmin = isAdmin;
-        }
+        }*/
 
         /// <summary>
         /// A method that is used to hash the password
@@ -55,11 +64,6 @@ namespace ApplicationCore.Entities.Users
                 byte[] hash = sha.ComputeHash(textData);
                 return BitConverter.ToString(hash).Replace("-", string.Empty);
             }
-        }
-
-        public string get_hash()
-        {
-            return this._passHash;
         }
 
         public bool CheckPass(string password)

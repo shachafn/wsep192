@@ -1,14 +1,20 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Text;
 using ApplicationCore.Entitites;
+using DataAccessLayer.DAOs;
+using DataAccessLayer.IRepositories;
+using System.Linq;
+using System.Linq.Expressions;
 
 namespace DataAccessLayer.Repositories
 {
-    class ShoppingCartRepository : RepositoryBase<ShoppingCart>, IShoppingCartRepository
+    public class ShoppingCartRepository : RepositoryBase<ShoppingCartDAO>, IShoppingCartRepository
     {
         public ShoppingCartRepository(RepositoryContext context) : base(context)
         {
         }
+
     }
 }

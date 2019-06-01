@@ -2,27 +2,28 @@
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
-
-namespace ApplicationCore.Entitites
+using ApplicationCore.Entitites;
+namespace DataAccessLayer.DAOs
 {
-    //[Table("Products")]
-    public class Product : BaseEntity
+    [Table("Products")]
+    public class ProductDAO 
     {
-        //[Key, Column(Order = 0)]
-        public Guid thisGuid;
+        [Key, Column(Order = 0)]
+        public Guid Guid { get; set; }
         //[Key,Column(Order =1)]
         public string Name { get; set; }
-        //[Required(ErrorMessage = "Category is required")]
+        [Required(ErrorMessage = "Category is required")]
         public string Category { get; set; }
-       // [Timestamp]
+        [Timestamp]
         public byte[] RowVersion { get; set; }
         public ICollection<string> Keywords { get; set; }
 
-        public Product(string name, string category)
+        public ProductDAO(Product product)
         {
-            thisGuid = base.GetGuid();
-            Name = name;
-            Category = category;
+            Guid = product.GetGuid();
+            Name = product.Name;
+            Category = product.Category;
+            Keywords = product.Keywords;
         }
 
         public override string ToString()

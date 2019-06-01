@@ -4,6 +4,7 @@ using ApplicationCore.Exceptions;
 using DomainLayer.Policies;
 using System;
 using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations;
 
 namespace ApplicationCore.Entitites
 {
@@ -14,7 +15,8 @@ namespace ApplicationCore.Entitites
         public Guid ShopGuid { get; set; }
 
         public ICollection<Tuple<Guid,int>> PurchasedProducts { get; set; } // Shop product and quantity that was purchased.
-
+        //[Timestamp]
+        public byte[] RowVersion { get; set; }
         public ShoppingCart(Guid userGuid, Guid shopGuid)
         {
             UserGuid = userGuid;

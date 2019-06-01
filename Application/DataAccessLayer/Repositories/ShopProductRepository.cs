@@ -6,7 +6,7 @@ using System.Text;
 
 namespace DataAccessLayer.Repositories
 {
-    public class ShopProductRepository : RepositoryBase<ShopProduct>, IShopProductRepository
+    public class ShopProductRepository : RepositoryBase<ShopProductDAO>, IShopProductRepository
     {
         public ShopProductRepository(RepositoryContext context) : base(context)
         {

@@ -10,7 +10,7 @@ namespace DataAccessLayer.Repositories
 {
     public class ShopRepositorycs : RepositoryBase<Shop>, IShopRepository
     {
-        public ShopRepositorycs(RepositoryContext context) : base(context)
+        public ShopRepositorycs(ApplicationContext context) : base(context)
         {
         }
     }

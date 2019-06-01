@@ -18,6 +18,8 @@ using ApplicationCore.Interfaces.Infastracture;
 using ApplicationCore.Interfaces.ExternalServices;
 using Infrastructure.gRPC.services;
 using DomainLayer.External_Services;
+using DataAccessLayer;
+using Microsoft.EntityFrameworkCore;
 
 namespace PresentaitionLayer
 {
@@ -49,6 +51,10 @@ namespace PresentaitionLayer
 
         private static void BuildApplicationServices(IServiceCollection services)
         {
+            var connection = @"Data Source=DESKTOP-KRHRPTB;Initial Catalog=Wsep;Integrated Security=True;Connect Timeout=30;Encrypt=False;TrustServerCertificate=False;ApplicationIntent=ReadWrite;MultiSubnetFailover=False";
+            services.AddDbContext<ApplicationContext>
+                (options => options.UseSqlServer(connection));
+
             //Notice, the order of adding is crucial
             services.AddSingleton<IUserDomain, UserDomain>();
             services.AddSingleton<DomainLayerFacadeVerifier>();

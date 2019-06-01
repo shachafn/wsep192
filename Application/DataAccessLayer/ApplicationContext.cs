@@ -8,8 +8,12 @@ using DataAccessLayer.DAOs;
 
 namespace DataAccessLayer
 {
-    public class RepositoryContext : DbContext
+    public class ApplicationContext : DbContext
     {
+        public ApplicationContext(DbContextOptions<ApplicationContext> options)
+        {
+
+        }
         //public DbSet<BaseEntity> Entities { get; set; }
         public DbSet<ProductDAO> Products { get; set; }
         public DbSet<ShoppingBagDAO> ShoppingBags { get; set; }
@@ -17,11 +21,6 @@ namespace DataAccessLayer
         public DbSet<ShopOwnerDAO> Owners { get; set; }
         public DbSet<BaseUserDAO> Users { get; set; }
         public DbSet<ShopProductDAO> ShopProducts { get; set; }
-
-        protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
-        {
-            optionsBuilder.UseSqlServer("Data Source=DESKTOP-KRHRPTB;Initial Catalog=Wsep;Integrated Security=True;Connect Timeout=30;Encrypt=False;TrustServerCertificate=False;ApplicationIntent=ReadWrite;MultiSubnetFailover=False");
-        }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {

@@ -11,7 +11,7 @@ namespace DataAccessLayer.Repositories
 {
     public class UserRepository : RepositoryBase<BaseUserDAO>, IUserRepository
     {
-        public UserRepository(RepositoryContext context) : base(context)
+        public UserRepository(ApplicationContext context) : base(context)
         {
         }
     }

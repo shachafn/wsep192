@@ -8,7 +8,7 @@ namespace DataAccessLayer.Repositories
 {
     public class ShopProductRepository : RepositoryBase<ShopProductDAO>, IShopProductRepository
     {
-        public ShopProductRepository(RepositoryContext context) : base(context)
+        public ShopProductRepository(ApplicationContext context) : base(context)
         {
         }
     }

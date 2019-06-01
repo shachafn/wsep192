@@ -9,7 +9,7 @@ namespace DataAccessLayer.Repositories
 {
     class ShoppingBagRepository : RepositoryBase<ShoppingBagDAO>, IShoppingBagRepository
     {
-        public ShoppingBagRepository(RepositoryContext context) : base(context)
+        public ShoppingBagRepository(ApplicationContext context) : base(context)
         {
         }
     }

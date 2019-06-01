@@ -12,7 +12,7 @@ namespace DataAccessLayer.Repositories
 {
     public class ShoppingCartRepository : RepositoryBase<ShoppingCartDAO>, IShoppingCartRepository
     {
-        public ShoppingCartRepository(RepositoryContext context) : base(context)
+        public ShoppingCartRepository(ApplicationContext context) : base(context)
         {
         }
 

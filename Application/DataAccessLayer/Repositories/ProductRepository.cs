@@ -11,7 +11,7 @@ namespace DataAccessLayer
 {
     public class ProductRepository : RepositoryBase<ProductDAO>,IProductRepository
     {
-        public ProductRepository(RepositoryContext context) : base(context)
+        public ProductRepository(ApplicationContext context) : base(context)
         {
         }
     }

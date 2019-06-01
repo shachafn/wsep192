@@ -8,9 +8,9 @@ using System.Linq.Expressions;
 
 namespace DataAccessLayer.Repositories
 {
-    public class ShopRepositorycs : RepositoryBase<Shop>, IShopRepository
+    public class ShopRepository : RepositoryBase<Shop>, IShopRepository
     {
-        public ShopRepositorycs(ApplicationContext context) : base(context)
+        public ShopRepository(ApplicationContext context) : base(context)
         {
         }
     }

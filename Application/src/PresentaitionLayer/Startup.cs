@@ -1,8 +1,11 @@
 ﻿using System;
 using System.Net.WebSockets;
 using System.Threading;
+using ApplicationCore.Entities.Users;
 using ApplicationCore.Interfaces.Infastracture;
 using ApplicationCore.Interfaces.ServiceLayer;
+using DataAccessLayer;
+using DataAccessLayer.DAOs;
 using DomainLayer;
 using Infrastructure;
 using Microsoft.AspNetCore.Authentication.Cookies;
@@ -23,15 +26,19 @@ namespace PresentaitionLayer
         ILogger<Startup> _logger;
         NotificationsCenter _notificationsCenter;
         PipelineManager _pipelineManager;
+        UnitOfWork _unitOfWork;
 
         public Startup(IConfiguration configuration, IServiceFacade facade, ILogger<Startup> logger,
-            NotificationsCenter notificationsCenter, PipelineManager pipelineManager)
+            NotificationsCenter notificationsCenter, PipelineManager pipelineManager, UnitOfWork unitOfWork)
         {
             Configuration = configuration;
             _facade = facade;
             _logger = logger;
             _notificationsCenter = notificationsCenter;
             _pipelineManager = pipelineManager;
+            _unitOfWork = unitOfWork;
+            //_unitOfWork.UserRepository.Create(new BaseUserDAO(new BaseUser("user", "213", false)));
+            //_unitOfWork.Save();
         }
 
         public IConfiguration Configuration { get; }

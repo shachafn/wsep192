@@ -10,10 +10,10 @@ namespace DataAccessLayer
 {
     public class ApplicationContext : DbContext
     {
-        public ApplicationContext(DbContextOptions<ApplicationContext> options)
+        public ApplicationContext(DbContextOptions<ApplicationContext> options) : base(options)
         {
-
         }
+
         //public DbSet<BaseEntity> Entities { get; set; }
         public DbSet<ProductDAO> Products { get; set; }
         public DbSet<ShoppingBagDAO> ShoppingBags { get; set; }
@@ -22,6 +22,15 @@ namespace DataAccessLayer
         public DbSet<BaseUserDAO> Users { get; set; }
         public DbSet<ShopProductDAO> ShopProducts { get; set; }
 
+        /*
+         * To run migrations, uncomment this block and comment the ctor above^^ 
+         * Dont forget to revert so the application can run
+        protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
+        {
+            var connection = @"Data Source=DESKTOP-KRHRPTB;Initial Catalog=Wsep;Integrated Security=True;Connect Timeout=30;Encrypt=False;TrustServerCertificate=False;ApplicationIntent=ReadWrite;MultiSubnetFailover=False";
+            optionsBuilder.UseSqlServer(connection);
+        }
+        */
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
             modelBuilder.Entity<ShopDAO>().HasMany(shop => shop.Owners);

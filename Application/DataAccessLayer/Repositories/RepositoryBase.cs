@@ -10,7 +10,6 @@ namespace DataAccessLayer
 {
     public abstract class RepositoryBase<T> : IRepositoryBase<T> where T : class
     {
-        //private RepositoryContext _context;
         protected ApplicationContext Context { get; set; }
 
         public RepositoryBase(ApplicationContext context) => Context = context;

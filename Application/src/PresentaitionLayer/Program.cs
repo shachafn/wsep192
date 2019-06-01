@@ -54,6 +54,7 @@ namespace PresentaitionLayer
             var connection = @"Data Source=DESKTOP-KRHRPTB;Initial Catalog=Wsep;Integrated Security=True;Connect Timeout=30;Encrypt=False;TrustServerCertificate=False;ApplicationIntent=ReadWrite;MultiSubnetFailover=False";
             services.AddDbContext<ApplicationContext>
                 (options => options.UseSqlServer(connection));
+            services.AddScoped<UnitOfWork>();
 
             //Notice, the order of adding is crucial
             services.AddSingleton<IUserDomain, UserDomain>();

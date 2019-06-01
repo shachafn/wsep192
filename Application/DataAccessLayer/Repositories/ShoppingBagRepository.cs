@@ -7,7 +7,7 @@ using DataAccessLayer.IRepositories;
 
 namespace DataAccessLayer.Repositories
 {
-    class ShoppingBagRepository : RepositoryBase<ShoppingBagDAO>, IShoppingBagRepository
+    public class ShoppingBagRepository : RepositoryBase<ShoppingBagDAO>, IShoppingBagRepository
     {
         public ShoppingBagRepository(ApplicationContext context) : base(context)
         {

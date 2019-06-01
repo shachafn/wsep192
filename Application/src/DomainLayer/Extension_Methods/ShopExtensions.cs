@@ -8,6 +8,7 @@ using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
+using ApplicationCore.Entities.Users;
 
 namespace DomainLayer.Extension_Methods
 {
@@ -154,8 +155,24 @@ namespace DomainLayer.Extension_Methods
             return newDiscountPolicy.Guid;
         }
 
-        public static void PurchaseCart(this Shop shop, ShoppingCart cart)
+        public static bool PurchaseCart(this Shop shop, ShoppingCart cart)
         {
+            bool canPurchaseCart = true;
+
+            foreach (var productAndAmountBought in cart.PurchasedProducts)
+            {
+                var userGuid = cart.UserGuid;
+                var actualProduct = shop.ShopProducts.First(p => p.Guid.Equals(productAndAmountBought.Item1));
+                BaseUser user = DomainData.RegisteredUsersCollection[userGuid];
+                //check purchase policies
+                var quantity = productAndAmountBought.Item2;
+                foreach(IPurchasePolicy policy in shop.PurchasePolicies)
+                    if (!policy.CheckPolicy(cart, productAndAmountBought.Item1, quantity, user))
+                        canPurchaseCart = false;
+            }
+            if (!canPurchaseCart)
+                return false;
+            
             foreach (var productAndAmountBought in cart.PurchasedProducts)
             {
                 var userGuid = cart.UserGuid;
@@ -166,6 +183,7 @@ namespace DomainLayer.Extension_Methods
                 shop.UsersPurchaseHistory.Add(new Tuple<Guid, Product, int>(userGuid, actualProduct.Product, quantity));
             }
             cart.PurchaseCart();
+            return true;
         }
 
         #region Creator/Owner/Manager Verifiers

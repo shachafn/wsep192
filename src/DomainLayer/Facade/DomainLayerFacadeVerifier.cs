@@ -15,11 +15,19 @@ using ApplicationCore.Entities.Users;
 using DomainLayer.Policies;
 using DomainLayer.Data.Entitites.Users.States;
 using DomainLayer.Operators;
+using Microsoft.Extensions.Logging;
 
 namespace DomainLayer.Facade
 {
     public class DomainLayerFacadeVerifier
     {
+        readonly ILogger<DomainLayerFacadeVerifier> _logger;
+
+        public DomainLayerFacadeVerifier(ILogger<DomainLayerFacadeVerifier> logger)
+        {
+            _logger = logger;
+        }
+        
         #region VerifyMe
         public void VerifyMe(MethodBase methodInfo, params object[] parameters)
         {
@@ -475,7 +483,6 @@ namespace DomainLayer.Facade
             }
         }
 
-
         public void AddNewDiscountPolicy(ref IDiscountPolicy policy, UserIdentifier userIdentifier, Guid shopGuid, object policyType, object field1, object field2, object field3 = null, object field4 = null, object field5 = null)
         {
             if (!(typeof(string) == policyType.GetType()))
@@ -530,7 +537,6 @@ namespace DomainLayer.Facade
             }
         }
 
-
         public void GetAllUsersExceptMe(UserIdentifier userIdentifier)
         {
             var user = VerifyLoggedInUser(userIdentifier.Guid, new UserNotFoundException());
@@ -542,6 +548,7 @@ namespace DomainLayer.Facade
         }
 
         #endregion
+
         #region Operators
         private IArithmeticOperator GetArithmeticOperator(string input)
         {
@@ -573,6 +580,7 @@ namespace DomainLayer.Facade
             }
         }
         #endregion
+        
         #region Private Verifiers
         private IUser VerifyLoggedInUser(Guid userGuid, ICloneableException<Exception> e)
         {

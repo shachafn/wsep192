@@ -49,5 +49,10 @@ namespace DataAccessLayer.Repositories
         {
             return base.FindAll().Select(b => _baseMapingManager.Map<BaseUserDAO,BaseUser>(b));
         }
+
+        BaseUser IRepositoryBase<BaseUser>.FindById(Guid id)
+        {
+            return _baseMapingManager.Map<BaseUserDAO, BaseUser>(base.FindById(id));
+        }
     }
 }

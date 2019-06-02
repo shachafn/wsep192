@@ -2,6 +2,7 @@
 using ApplicationCore.Entities.Users;
 using ApplicationCore.Entitites;
 using ApplicationCore.Exceptions;
+using ApplicationCore.Interfaces.DAL;
 using DomainLayer.Extension_Methods;
 using DomainLayer.Policies;
 using System;
@@ -14,6 +15,13 @@ namespace DomainLayer.Users.States
     public class AdminUserState : AbstractUserState
     {
         public const string AdminUserStateString = "AdminUserState";
+
+        public IUnitOfWork _unitOfWork;
+        public AdminUserState(IUnitOfWork unitOfWork)
+        {
+            _unitOfWork = unitOfWork;
+        }
+
         public override ICollection<Guid> GetShoppingHistory()
         {
             throw new BadStateException($"Tried to invoke GetShoppingHistory in Admin State");
@@ -64,10 +72,10 @@ namespace DomainLayer.Users.States
                 shop.RemoveOwner(userToRemoveGuid);
             }
             //Clear user's bag if exsits from the list 
-            DomainData.ShoppingBagsCollection.Remove(userToRemoveGuid);
+            _unitOfWork.ShoppingBagRepository.DeleteById(userToRemoveGuid);
             //Clear shop products--->>???
             //Clear user registration
-            DomainData.RegisteredUsersCollection.Remove(userToRemoveGuid);
+            _unitOfWork.UserRepository.DeleteById(userToRemoveGuid);
             //Clear user from logged in - Maybe block this operation if the user is logged in, or its a real pain to cut him off.
             DomainData.LoggedInUsersEntityCollection.Remove(userToRemoveGuid);
             return true;
@@ -75,7 +83,7 @@ namespace DomainLayer.Users.States
 
         private ICollection<Shop> GetShopsOwnedByUser(Guid userToRemoveGuid)
         {
-            return DomainData.ShopsCollection.Where
+            return _unitOfWork.ShopRepository.FindAll().Where
                 (shop => shop.ShopState.Equals(ShopStateEnum.Active) &&
                     (shop.Owners.Any(sOwner => sOwner.OwnerGuid.Equals(userToRemoveGuid))
                     ||

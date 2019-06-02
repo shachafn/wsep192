@@ -1,76 +1,28 @@
-﻿using DataAccessLayer.Repositories;
+﻿using ApplicationCore.Interfaces.DAL;
+using ApplicationCore.IRepositories;
+using ApplicationCore.Mapping;
+using DataAccessLayer.Repositories;
 using System;
 using System.Collections.Generic;
 using System.Text;
 
 namespace DataAccessLayer
 {
-    public class UnitOfWork : IDisposable
+    public class UnitOfWork : IUnitOfWork, IDisposable
     {
         ApplicationContext _context;
 
-        private UserRepository _userRepository;
-        private ShoppingBagRepository _shoppingBagRepository;
-        private ShopProductRepository _shopProductRepository;
-        private ShopRepository _shopRepository;
+        public IUserRepository UserRepository { get; set; }
+        public IShoppingBagRepository ShoppingBagRepository { get; set; }
+        public IShopRepository ShopRepository { get; set; }
 
-        public UnitOfWork(ApplicationContext context)
+        public UnitOfWork(ApplicationContext context, BaseMapingManager baseMapingManager)
         {
             _context = context;
+            UserRepository = new UserRepository(context, baseMapingManager);
+            ShoppingBagRepository = new ShoppingBagRepository(context, baseMapingManager);
+            ShopRepository = new ShopRepository(context, baseMapingManager); ;
         }
-
-        public UserRepository UserRepository
-        {
-            get
-            {
-
-                if (_userRepository == null)
-                {
-                    _userRepository = new UserRepository(_context);
-                }
-                return _userRepository;
-            }
-        }
-
-        public ShoppingBagRepository ShoppingBagRepository
-        {
-            get
-            {
-
-                if (_shoppingBagRepository == null)
-                {
-                    _shoppingBagRepository = new ShoppingBagRepository(_context);
-                }
-                return _shoppingBagRepository;
-            }
-        }
-
-        public ShopProductRepository ShopProductRepository
-        {
-            get
-            {
-
-                if (_shopProductRepository == null)
-                {
-                    _shopProductRepository = new ShopProductRepository(_context);
-                }
-                return _shopProductRepository;
-            }
-        }
-
-        public ShopRepository ShopRepository
-        {
-            get
-            {
-
-                if (_shopRepository == null)
-                {
-                    _shopRepository = new ShopRepository(_context);
-                }
-                return _shopRepository;
-            }
-        }
-        
 
         public void Save()
         {

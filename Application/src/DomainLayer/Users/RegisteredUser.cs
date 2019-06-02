@@ -9,6 +9,7 @@ using DomainLayer.Extension_Methods;
 using DomainLayer.Data.Entitites.Users.States;
 using DomainLayer.Policies;
 using DomainLayer.Users.States;
+using ApplicationCore.Interfaces.DAL;
 
 namespace DomainLayer.Users
 {
@@ -18,15 +19,17 @@ namespace DomainLayer.Users
         public bool IsAdmin { get => _baseUser.IsAdmin; }
         private BaseUser _baseUser { get; set; }
         private IAbstractUserState State { get; set; }
+        private IUnitOfWork _unitOfWork { get; set; }
 
         /// <summary>
         /// Default constructor, creates the user with a default Guest state.
         /// </summary>
-        public RegisteredUser(BaseUser baseUser)
+        public RegisteredUser(BaseUser baseUser, IUnitOfWork unitOfWork)
         {
             _baseUser = baseUser;
-            var builder = new StateBuilder();
-            State = builder.BuildState(BuyerUserState.BuyerUserStateString, this);
+            var builder = new StateBuilder(_unitOfWork);
+            State = builder.BuildState(BuyerUserState.BuyerUserStateString, this, unitOfWork);
+            _unitOfWork = unitOfWork;
         }
 
         public bool SetState(IAbstractUserState newState)
@@ -137,7 +140,7 @@ namespace DomainLayer.Users
 
         public ICollection<Tuple<Guid, Product, int>> GetPurchaseHistory()
         {
-            return DomainData.ShopsCollection.SelectMany(shop => shop.GetPurchaseHistory(Guid)).ToList();
+            return _unitOfWork.ShopRepository.FindAll().SelectMany(shop => shop.GetPurchaseHistory(Guid)).ToList();
         }
 
 

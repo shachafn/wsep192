@@ -2,6 +2,7 @@
 using ApplicationCore.Entities.Users;
 using ApplicationCore.Entitites;
 using ApplicationCore.Exceptions;
+using ApplicationCore.Interfaces.DAL;
 using DomainLayer.Extension_Methods;
 using DomainLayer.Policies;
 using System;
@@ -15,6 +16,12 @@ namespace DomainLayer.Users.States
 
         public ICollection<Shop> ShopsOwned { get; set; }
 
+        private IUnitOfWork _unitOfWork;
+        public SellerUserState(IUnitOfWork unitOfWork)
+        {
+            _unitOfWork = unitOfWork;
+        }
+
         public override ICollection<Guid> GetShoppingHistory()
         {
             throw new BadStateException($"Tried to invoke GetShoppingHistory in Seller State");
@@ -24,7 +31,7 @@ namespace DomainLayer.Users.States
         {
             var shop = new Shop(baseUser.Guid);
             ShopsOwned.Add(shop);
-            DomainData.ShopsCollection.Add(shop.Guid, shop);
+            _unitOfWork.ShopRepository.Create(shop);
             return shop.Guid;
         }
 
@@ -32,25 +39,25 @@ namespace DomainLayer.Users.States
         {
             var shop = new Shop(baseUser.Guid, shopName);
             ShopsOwned.Add(shop);
-            DomainData.ShopsCollection.Add(shop.Guid, shop);
+            _unitOfWork.ShopRepository.Create(shop);
             return shop.Guid;
         }
 
         public override void ReopenShop(Guid shopGuid)
         {
-            var shop = DomainData.ShopsCollection[shopGuid];
+            var shop = _unitOfWork.ShopRepository.FindById(shopGuid);
             shop.Reopen();
         }
 
         public override void CloseShop(Guid shopGuid)
         {
-            var shop = DomainData.ShopsCollection[shopGuid];
+            var shop = _unitOfWork.ShopRepository.FindById(shopGuid);
             shop.Close();
         }
 
         public override void CloseShopPermanently(Guid shopGuid)
         {
-            var shop = DomainData.ShopsCollection[shopGuid];
+            var shop = _unitOfWork.ShopRepository.FindById(shopGuid);
             shop.ClosePermanently();
         }
 
@@ -77,17 +84,17 @@ namespace DomainLayer.Users.States
         public override Guid AddProductToShop(BaseUser baseUser, Guid shopGuid, 
             string name, string category, double price, int quantity)
         {
-            return DomainData.ShopsCollection[shopGuid].AddProductToShop(baseUser.Guid, new Product(name, category), price, quantity);
+            return _unitOfWork.ShopRepository.FindById(shopGuid).AddProductToShop(baseUser.Guid, new Product(name, category), price, quantity);
         }
 
         public override void EditProductInShop(BaseUser baseUser,Guid shopGuid, Guid productGuid, double newPrice, int newQuantity)
         {
-            DomainData.ShopsCollection[shopGuid].EditProductInShop(baseUser.Guid, productGuid, newPrice, newQuantity);
+            _unitOfWork.ShopRepository.FindById(shopGuid).EditProductInShop(baseUser.Guid, productGuid, newPrice, newQuantity);
         }
 
         public override bool RemoveProductFromShop(BaseUser baseUser, Guid shopGuid, Guid shopProductGuid)
         {
-            DomainData.ShopsCollection[shopGuid].RemoveProductFromShop(baseUser.Guid, shopProductGuid);
+            _unitOfWork.ShopRepository.FindById(shopGuid).RemoveProductFromShop(baseUser.Guid, shopProductGuid);
             return true;
         }
 
@@ -98,13 +105,13 @@ namespace DomainLayer.Users.States
 
         public override bool AddShopManager(BaseUser baseUser, Guid shopGuid, Guid newManagaerGuid, List<string> priviliges)
         {
-            DomainData.ShopsCollection[shopGuid].AddShopManager(baseUser.Guid, newManagaerGuid, priviliges);
+            _unitOfWork.ShopRepository.FindById(shopGuid).AddShopManager(baseUser.Guid, newManagaerGuid, priviliges);
             return true;
         }
 
         public override bool CascadeRemoveShopOwner(BaseUser baseUser, Guid shopGuid, Guid ownerToRemoveGuid)
         {
-            return DomainData.ShopsCollection[shopGuid].CascadeRemoveShopOwner(baseUser.Guid, ownerToRemoveGuid);
+            return _unitOfWork.ShopRepository.FindById(shopGuid).CascadeRemoveShopOwner(baseUser.Guid, ownerToRemoveGuid);
         }
 
         public override bool EditProductInCart(BaseUser baseUser, Guid shopGuid, Guid shopProductGuid, int newAmount)
@@ -124,12 +131,12 @@ namespace DomainLayer.Users.States
 
         public override bool RemoveShopManager(BaseUser baseUser, Guid shopGuid, Guid managerToRemoveGuid)
         {
-            return DomainData.ShopsCollection[shopGuid].RemoveShopManager(baseUser.Guid, managerToRemoveGuid);
+            return _unitOfWork.ShopRepository.FindById(shopGuid).RemoveShopManager(baseUser.Guid, managerToRemoveGuid);
         }
 
         public override bool AddShopOwner(BaseUser baseUser, Guid shopGuid, Guid newOwnerGuid)
         {
-            var shop = DomainData.ShopsCollection[shopGuid];
+            var shop = _unitOfWork.ShopRepository.FindById(shopGuid);
             return shop.AddOwner(baseUser.Guid, newOwnerGuid);
         }
         public override ICollection<Tuple<ShopProduct, Guid>> SearchProduct(ICollection<string> toMatch, string searchType)
@@ -139,7 +146,7 @@ namespace DomainLayer.Users.States
 
         public override Guid AddNewPurchasePolicy(Guid userGuid, Guid shopGuid, IPurchasePolicy newPolicy)
         {
-            var shop = DomainData.ShopsCollection[shopGuid];
+            var shop = _unitOfWork.ShopRepository.FindById(shopGuid);
             if (!shop.IsOwner(userGuid))
             {
                 throw new IllegalOperationException("Tried to add new purchase policy to a shop that doesn't belong to him");
@@ -149,7 +156,7 @@ namespace DomainLayer.Users.States
 
         public override Guid AddNewDiscountPolicy(Guid userGuid, Guid shopGuid, IDiscountPolicy newPolicy)
         {
-            var shop = DomainData.ShopsCollection[shopGuid];
+            var shop = _unitOfWork.ShopRepository.FindById(shopGuid);
             if (!shop.IsOwner(userGuid))
             {
                 throw new IllegalOperationException("Tried to add new discount policy to a shop that doesn't belong to him");

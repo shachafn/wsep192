@@ -51,5 +51,10 @@ namespace DataAccessLayer.Repositories
         {
             return base.FindAll().Select(b => _baseMapingManager.Map<ShoppingBagDAO, ShoppingBag>(b));
         }
+
+        ShoppingBag IRepositoryBase<ShoppingBag>.FindById(Guid id)
+        {
+            return _baseMapingManager.Map<ShoppingBagDAO, ShoppingBag>(base.FindById(id));
+        }
     }
 }

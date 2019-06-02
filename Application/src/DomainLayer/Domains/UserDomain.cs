@@ -11,6 +11,7 @@ using DomainLaye.Users.States;
 using ApplicationCore.Entities.Users;
 using DomainLayer.Data.Entitites.Users.States;
 using System.Collections.Generic;
+using ApplicationCore.Interfaces.DAL;
 
 namespace DomainLayer.Domains
 {
@@ -20,13 +21,13 @@ namespace DomainLayer.Domains
     public class UserDomain : IUserDomain
     {
         private static LoggedInUsersEntityCollection LoggedInUsers = DomainData.LoggedInUsersEntityCollection;
-        private static ShopsEntityCollection Shops = DomainData.ShopsCollection;
-
+        private IUnitOfWork _unitOfWork;
 
         ILogger<UserDomain> _logger;
-        public UserDomain(ILogger<UserDomain> logger)
+        public UserDomain(ILogger<UserDomain> logger, IUnitOfWork unitOfWork)
         {
             _logger = logger;
+            _unitOfWork = unitOfWork;
         }
 
         public Guid Register(string username, string password, bool isAdmin)
@@ -36,7 +37,7 @@ namespace DomainLayer.Domains
 
             //var newUser = new BaseUser(username.ToLower(), password, isAdmin);
             var newUser = new BaseUser(username, password, isAdmin);
-            DomainData.RegisteredUsersCollection.Add(newUser.Guid, newUser);
+            _unitOfWork.UserRepository.Create(newUser);
             return newUser.Guid;
         }
 
@@ -53,7 +54,7 @@ namespace DomainLayer.Domains
             return DomainData.LoggedInUsersEntityCollection[userIdentifier.Guid];
         }
 
-        private bool IsUsernameTaken(string username) => DomainData.RegisteredUsersCollection.Any(bUser => bUser.Username.ToLower().Equals(username.ToLower()));
+        private bool IsUsernameTaken(string username) => _unitOfWork.UserRepository.FindAll().Any(bUser => bUser.Username.ToLower().Equals(username.ToLower()));
 
 
         public Guid Login(string username, string password)
@@ -61,7 +62,7 @@ namespace DomainLayer.Domains
             if (IsAdminCredentials(username, password)) return LoginAdmin(username, password);
 
             BaseUser baseUser = GetRegisteredUserByUsername(username);
-            var user = new RegisteredUser(baseUser);
+            var user = new RegisteredUser(baseUser, _unitOfWork);
             LoggedInUsers.Add(user.Guid, user);
             ChangeUserState(user.Guid, BuyerUserState.BuyerUserStateString);
             return user.Guid;
@@ -69,7 +70,7 @@ namespace DomainLayer.Domains
 
         private bool IsAdminCredentials(string username, string password)
         {
-            var admin = DomainData.RegisteredUsersCollection.First(bU => bU.IsAdmin);
+            var admin = _unitOfWork.UserRepository.FindAll().First(bU => bU.IsAdmin);
             if (admin.Username.Equals(username.ToLower()) && admin.CheckPass(password))
                 return true;
             return false;
@@ -80,16 +81,16 @@ namespace DomainLayer.Domains
             if (!DomainData.LoggedInUsersEntityCollection.Any(u => u.IsAdmin))
             {
                 BaseUser baseUser = GetRegisteredUserByUsername(username);
-                var user = new RegisteredUser(baseUser);
+                var user = new RegisteredUser(baseUser, _unitOfWork);
                 LoggedInUsers.Add(user.Guid, user);
                 return baseUser.Guid;
             }
-            return DomainData.RegisteredUsersCollection.First(bU => bU.IsAdmin).Guid;
+            return _unitOfWork.UserRepository.FindAll().First(bU => bU.IsAdmin).Guid;
         }
 
         private BaseUser GetRegisteredUserByUsername(string username)
         {
-            return DomainData.RegisteredUsersCollection.First(r => string.Equals(r.Username.ToLower(), username.ToLower()));
+            return _unitOfWork.UserRepository.FindAll().First(r => string.Equals(r.Username.ToLower(), username.ToLower()));
         }
 
         public bool LogoutUser(UserIdentifier userIdentifier)
@@ -101,16 +102,17 @@ namespace DomainLayer.Domains
         public bool ChangeUserState(Guid userGuid, string newStateString)
         {
             var user = DomainData.LoggedInUsersEntityCollection[userGuid];
-            var builder = new StateBuilder();
-            var newState = builder.BuildState(newStateString, user);
+            var builder = new StateBuilder(_unitOfWork);
+            var newState = builder.BuildState(newStateString, user, _unitOfWork);
             return user.SetState(newState);
         }
 
-        public bool IsAdminExists() => DomainData.RegisteredUsersCollection.Any(u => u.IsAdmin);
+        public bool IsAdminExists() => _unitOfWork.UserRepository.FindAll().Any(u => u.IsAdmin);
 
         public ICollection<BaseUser> GetAllUsersExceptMe(UserIdentifier userIdentifier)
         {
-            return DomainData.RegisteredUsersCollection
+            return _unitOfWork.UserRepository
+                .FindAll()
                 .Where(reg => !reg.Guid.Equals(userIdentifier.Guid))
                 .ToList();
         }

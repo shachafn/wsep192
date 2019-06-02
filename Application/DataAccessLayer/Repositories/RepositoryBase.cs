@@ -43,5 +43,16 @@ namespace DataAccessLayer
         {
             throw new NotImplementedException();
         }
+
+        public T FindById(Guid id)
+        {
+            return this.Context.Set<T>().Find(id);
+        }
+
+        public void DeleteById(params Guid[] ids)
+        {
+            var entity = this.Context.Find<T>(ids);
+            this.Context.RemoveRange(entity);
+        }
     }
 }

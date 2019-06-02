@@ -2,6 +2,7 @@
 using ApplicationCore.Entities.Users;
 using ApplicationCore.Entitites;
 using ApplicationCore.Exceptions;
+using ApplicationCore.Interfaces.DAL;
 using DomainLayer.Extension_Methods;
 using DomainLayer.Policies;
 using DomainLayer.Users.States;
@@ -18,6 +19,11 @@ namespace DomainLayer.Data.Entitites.Users.States
         public ICollection<Guid> PurchaseHistory { get; set; }
         public ShoppingBag CurrentBag { get; set; }
 
+        private IUnitOfWork _unitOfWork;
+        public BuyerUserState(IUnitOfWork unitOfWork)
+        {
+            _unitOfWork = unitOfWork;
+        }
 
         public override ICollection<Guid> GetShoppingHistory()
         {
@@ -26,12 +32,13 @@ namespace DomainLayer.Data.Entitites.Users.States
 
         public override bool PurchaseCart(BaseUser baseUser, Guid shopGuid)
         {
-            var cart = DomainData.ShoppingBagsCollection
+            var cart = _unitOfWork.ShoppingBagRepository
+                .FindAll()
                 .First(bag => bag.UserGuid.Equals(baseUser.Guid))
                 .ShoppingCarts
                 .First(c => c.ShopGuid.Equals(shopGuid));
 
-            var shop = DomainData.ShopsCollection[shopGuid];
+            var shop = _unitOfWork.ShopRepository.FindById(shopGuid);
             //Can implement RollBack, purchase is given a Guid, shop.PurchaseCart returns a Guid,
             // if the user fails to pay later, we can delete the purchase and revert the shop quantities and cart content
             ShoppingCart.CheckDiscountPolicy(ref cart);
@@ -151,13 +158,14 @@ namespace DomainLayer.Data.Entitites.Users.States
         {
             if (CurrentBag == null)
             {
-                if (!DomainData.ShoppingBagsCollection.ContainsKey(userGuid))
+                var bag = _unitOfWork.ShoppingBagRepository.FindById(userGuid);
+                if (bag != null)
                 {
                     CurrentBag = new ShoppingBag(userGuid);
-                    DomainData.ShoppingBagsCollection.Add(userGuid, CurrentBag);
+                    _unitOfWork.ShoppingBagRepository.Create(CurrentBag);
                 }
                 else
-                    CurrentBag = DomainData.ShoppingBagsCollection[userGuid];
+                    CurrentBag = bag;
             }
             ShoppingCart cart = null;
             if (!CurrentBag.ShoppingCarts.Any(c => c.ShopGuid.Equals(shopGuid)))

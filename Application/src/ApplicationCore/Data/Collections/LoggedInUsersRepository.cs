@@ -28,6 +28,12 @@ namespace ApplicationCore.Data.Collections
 
         }
 
+        public void DeleteById(params Guid[] ids)
+        {
+            if (_loggedInUsersEntityCollection.ContainsKey(ids.First()))
+                _loggedInUsersEntityCollection.Remove(ids.First());
+        }
+
         public IQueryable<IUser> FindAll()
         {
             return _loggedInUsersEntityCollection.Values.AsQueryable();
@@ -36,6 +42,13 @@ namespace ApplicationCore.Data.Collections
         public IQueryable<IUser> FindByCondition(Expression<Func<IUser, bool>> expression)
         {
             return _loggedInUsersEntityCollection.AsQueryable().Where(expression);
+        }
+
+        public IUser FindById(Guid id)
+        {
+            if (_loggedInUsersEntityCollection.ContainsKey(id))
+                return _loggedInUsersEntityCollection[id];
+            return null;
         }
 
         public void Update(IUser entity)

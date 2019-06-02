@@ -51,7 +51,7 @@ namespace PresentaitionLayer
 
         private static void BuildApplicationServices(IServiceCollection services)
         {
-            var connection = @"Data Source=DESKTOP-KRHRPTB;Initial Catalog=Wsep;Integrated Security=True;Connect Timeout=30;Encrypt=False;TrustServerCertificate=False;ApplicationIntent=ReadWrite;MultiSubnetFailover=False";
+            var connection = @"Data Source=DESKTOP-3MH7VAJ\SQLEXPRESS;Initial Catalog=WSEP192;Integrated Security=True;Connect Timeout=30;Encrypt=False;TrustServerCertificate=False;ApplicationIntent=ReadWrite;MultiSubnetFailover=False";
             services.AddDbContext<ApplicationContext>
                 (options => options.UseSqlServer(connection));
             services.AddScoped<UnitOfWork>();

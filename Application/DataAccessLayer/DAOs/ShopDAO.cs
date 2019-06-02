@@ -28,7 +28,7 @@ namespace DataAccessLayer.DAOs
        // public ICollection<IPurchasePolicy> PurchasePolicies { get; set; }
         
         //public ICollection<IDiscountPolicy> DiscountPolicies { get; set; }
-        public string ShopName { get; }
+        public string ShopName { get; set; }
 
         public ShopDAO()
         { }
@@ -40,8 +40,8 @@ namespace DataAccessLayer.DAOs
                 Owners.Add(new ShopOwnerDAO(o));
             foreach (ShopOwner o in shop.Managers)
                 Managers.Add(new ShopOwnerDAO(o));
-            foreach (ShopProduct sp in shop.ShopProducts)
-                ShopProducts.Add(new ShopProductDAO(sp.Guid,null,sp.Quantity,sp.Price));
+            //foreach (ShopProduct sp in shop.ShopProducts)
+              //  ShopProducts.Add(new ShopProductDAO(sp.Guid,null,sp.Quantity,sp.Price));
             if(shop.ShopState == Shop.ShopStateEnum.Active)
             {
                 ShopState = ShopStateEnum.Active;

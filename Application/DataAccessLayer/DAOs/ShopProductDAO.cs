@@ -11,8 +11,8 @@ namespace ApplicationCore.Entitites
         [Key, Column(Order = 0)]
         public Guid Id { get; set; }
 
-        //[ForeignKey("Products")]
-        public ProductDAO Product { get; set; }
+        [ForeignKey("Products")]
+        public Guid ProductGuid { get; set; }
 
         [Required(ErrorMessage = "Quantity required")]
         public int Quantity { get; set; }
@@ -22,17 +22,17 @@ namespace ApplicationCore.Entitites
         public byte[] RowVersion { get; set; }
         public ShopProductDAO() { }
 
-        public ShopProductDAO(Guid thisGuid, ProductDAO product, int quantity, double price)
+        public ShopProductDAO(Guid thisGuid, Guid productGuid, int quantity, double price)
         {
-            this.Id = thisGuid;
-            Product = product;
+            Id = thisGuid;
+            ProductGuid = productGuid;
             Quantity = quantity;
             Price = price;
         }
 
-        public override string ToString()
+       /* public override string ToString()
         {
             return $"Guid - {Id}, Product - {Product}, Price - {Price}, Quantity - {Quantity}";
-        }
+        }*/
     }
 }

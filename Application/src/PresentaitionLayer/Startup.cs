@@ -2,6 +2,7 @@
 using System.Net.WebSockets;
 using System.Threading;
 using ApplicationCore.Entities.Users;
+using ApplicationCore.Entitites;
 using ApplicationCore.Interfaces.Infastracture;
 using ApplicationCore.Interfaces.ServiceLayer;
 using DataAccessLayer;
@@ -37,8 +38,14 @@ namespace PresentaitionLayer
             _notificationsCenter = notificationsCenter;
             _pipelineManager = pipelineManager;
             _unitOfWork = unitOfWork;
-            //_unitOfWork.UserRepository.Create(new BaseUserDAO(new BaseUser("user", "213", false)));
-            //_unitOfWork.Save();
+            BaseUser u1 = new BaseUser("user1", "213", false);
+            BaseUser u2 = new BaseUser("user2", "214", false);
+            Shop shop = new Shop(u1.Guid, "Groisman");
+            
+            _unitOfWork.UserRepository.Create(u1);
+            _unitOfWork.UserRepository.Create(u2);
+            _unitOfWork.ShopRepository.Create(shop);
+            _unitOfWork.Save();
         }
 
         public IConfiguration Configuration { get; }

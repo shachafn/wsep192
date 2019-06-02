@@ -10,8 +10,11 @@ namespace DataAccessLayer.DAOs
     [Table("ShoppingBags")]
     public class ShoppingBagDAO
     {
+        [Key]
+        public Guid BagGuid { get; set; }
+        [ForeignKey("Users")]
         public Guid UserGuid { get; set; }
-        public BaseUserDAO User { get; set; }
+        [ForeignKey("Carts")]
         public ICollection<ShoppingCartDAO> ShoppingCarts { get; set; }
         [Timestamp]
         public byte[] RowVersion { get; set; }
@@ -19,11 +22,11 @@ namespace DataAccessLayer.DAOs
 
         public ShoppingBagDAO()  { }
 
-        public ShoppingBagDAO(ShoppingBag shoppingBag)
+        /*public ShoppingBagDAO(ShoppingBag shoppingBag)
         {
             //find user with db
             foreach (ShoppingCart cart in shoppingBag.ShoppingCarts)
                 ShoppingCarts.Add(new ShoppingCartDAO(cart));
-        }
+        }*/
     }
 }

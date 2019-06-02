@@ -53,7 +53,7 @@ namespace DomainLayer.Facade
                 //newEvent.SetMessage(DomainData.ShopsCollection.Values, DomainData.RegisteredUsersCollection.Values);
                 newEvent.SetMessages(DomainData.ShopsCollection.Values, DomainData.RegisteredUsersCollection.Values);
                 UpdateCenter.RaiseEvent(newEvent);
-                _logger.Log(LogLevel.Information, $"{username} logged in successfuly");
+                _logger.LogInformation($"{username} logged in successfuly.");
             }
             return result;
         }
@@ -62,7 +62,7 @@ namespace DomainLayer.Facade
         {
             VerifySystemIsInitialized();
             _verifier.VerifyMe(MethodBase.GetCurrentMethod(), userIdentifier);
-            _logger.Log(LogLevel.Information, $"{GetUserName(userIdentifier.Guid)} logged out successfuly");
+            _logger.LogInformation($"{GetUserName(userIdentifier.Guid)} logged out successfuly.");
             return _userDomain.LogoutUser(userIdentifier);
         }
 
@@ -74,10 +74,8 @@ namespace DomainLayer.Facade
             if (!shopGuid.Equals(Guid.Empty))
             {
                 var newEvent = new OpenedShopEvent(userIdentifier.Guid, shopGuid);
-                //newEvent.SetTargets(DomainData.ShopsCollection.Values, DomainData.RegisteredUsersCollection.Values);
-                //newEvent.SetMessage(DomainData.ShopsCollection.Values, DomainData.RegisteredUsersCollection.Values);
                 newEvent.SetMessages(DomainData.ShopsCollection.Values, DomainData.RegisteredUsersCollection.Values);
-                _logger.Log(LogLevel.Information, $"{GetUserName(userIdentifier.Guid)} opened shop successfuly");
+                _logger.LogInformation($"{GetUserName(userIdentifier.Guid)} opened shop successfuly.");
                 UpdateCenter.RaiseEvent(newEvent);
             }
             return shopGuid;
@@ -88,13 +86,13 @@ namespace DomainLayer.Facade
             VerifySystemIsInitialized();
             if (shopName == null || shopName.Length == 0)
                 return OpenShop(userIdentifier);
-            _verifier.VerifyMe(MethodBase.GetCurrentMethod(), userIdentifier,shopName);
+            _verifier.VerifyMe(MethodBase.GetCurrentMethod(), userIdentifier, shopName);
             var shopGuid = _userDomain.GetUserObject(userIdentifier).OpenShop(shopName);
             if (!shopGuid.Equals(Guid.Empty))
             {
                 var newEvent = new OpenedShopEvent(userIdentifier.Guid, shopGuid);
                 newEvent.SetMessages(DomainData.ShopsCollection.Values, DomainData.RegisteredUsersCollection.Values);
-                _logger.Log(LogLevel.Information, $"{GetUserName(userIdentifier.Guid)} opened shop {shopName} successfuly");
+                _logger.LogInformation($"{GetUserName(userIdentifier.Guid)} opened shop {shopName} successfuly.");
                 UpdateCenter.RaiseEvent(newEvent);
             }
             return shopGuid;
@@ -107,7 +105,7 @@ namespace DomainLayer.Facade
             _userDomain.GetUserObject(userIdentifier).ReopenShop(shopGuid);
             var newEvent = new ReopenedShopEvent(userIdentifier.Guid, shopGuid);
             newEvent.SetMessages(DomainData.ShopsCollection.Values, DomainData.RegisteredUsersCollection.Values);
-            _logger.Log(LogLevel.Information, $"{GetUserName(userIdentifier.Guid)} reopened shop {GetShopName(shopGuid)} successfuly");
+            _logger.LogInformation($"{GetUserName(userIdentifier.Guid)} reopened shop {GetShopName(shopGuid)} successfuly.");
             UpdateCenter.RaiseEvent(newEvent);
         }
 
@@ -118,7 +116,7 @@ namespace DomainLayer.Facade
             _userDomain.GetUserObject(userIdentifier).CloseShop(shopGuid);
             var newEvent = new ClosedShopEvent(userIdentifier.Guid, shopGuid);
             newEvent.SetMessages(DomainData.ShopsCollection.Values, DomainData.RegisteredUsersCollection.Values);
-            _logger.Log(LogLevel.Information, $"{GetUserName(userIdentifier.Guid)} closed shop {GetShopName(shopGuid)} successfuly");
+            _logger.LogInformation($"{GetUserName(userIdentifier.Guid)} closed shop {GetShopName(shopGuid)} successfuly.");
             UpdateCenter.RaiseEvent(newEvent);
         }
 
@@ -130,7 +128,7 @@ namespace DomainLayer.Facade
             _userDomain.GetUserObject(userIdentifier).CloseShopPermanently(shopGuid);
             var newEvent = new ClosedShopPermanentlyEvent(userIdentifier.Guid, shopGuid);
             newEvent.SetMessages(DomainData.ShopsCollection.Values, DomainData.RegisteredUsersCollection.Values);
-            _logger.Log(LogLevel.Information, $"{GetUserName(userIdentifier.Guid)} closed shop {GetShopName(shopGuid)} permanently successfuly");
+            _logger.LogInformation($"{GetUserName(userIdentifier.Guid)} closed shop {GetShopName(shopGuid)} permanently successfuly.");
             UpdateCenter.RaiseEvent(newEvent);
         }
 
@@ -143,11 +141,13 @@ namespace DomainLayer.Facade
             bool result = _userDomain.GetUserObject(userIdentifier).PurchaseCart(shopGuid);
             if (result)
             {
-                _logger.Log(LogLevel.Information, $"{GetUserName(userIdentifier.Guid)} purchased cart from shop {GetShopName(shopGuid)} successfuly");
+                _logger.LogInformation($"{GetUserName(userIdentifier.Guid)} purchased cart from shop {GetShopName(shopGuid)} successfuly.");
                 var newEvent = new PurchasedCartEvent(userIdentifier.Guid, shopGuid);
                 newEvent.SetMessages(DomainData.ShopsCollection.Values, DomainData.RegisteredUsersCollection.Values);
                 UpdateCenter.RaiseEvent(newEvent);
             }
+            else
+                _logger.LogInformation($"{GetUserName(userIdentifier.Guid)} failed to purchase cart from shop {GetShopName(shopGuid)}.");
             return result;
         }
 
@@ -178,28 +178,49 @@ namespace DomainLayer.Facade
         {
             VerifySystemIsInitialized();
             _verifier.VerifyMe(MethodBase.GetCurrentMethod(), userIdentifier);
-            return _userDomain.GetUserObject(userIdentifier).ConnectToPaymentSystem();
+            bool res = _userDomain.GetUserObject(userIdentifier).ConnectToPaymentSystem();
+            if (res)
+                _logger.LogCritical("The system connected to the payment system successfuly.");
+            else
+                _logger.LogCritical("The system connected to the payment system unsuccessfuly.");
+            return res;
         }
 
         public bool ConnectToSupplySystem(UserIdentifier userIdentifier)
         {
             VerifySystemIsInitialized();
             _verifier.VerifyMe(MethodBase.GetCurrentMethod(), userIdentifier);
-            return _userDomain.GetUserObject(userIdentifier).ConnectToSupplySystem();
+            bool res = _userDomain.GetUserObject(userIdentifier).ConnectToSupplySystem();
+            if (res)
+                _logger.Log(LogLevel.Critical, "The system failed to connect to the supply system.");
+            else
+                _logger.Log(LogLevel.Critical, "The system failed to connect to the supply system.");
+            return res;
         }
 
         public Guid AddProductToShop(UserIdentifier userIdentifier, Guid shopGuid, string name, string category, double price, int quantity)
         {
             VerifySystemIsInitialized();
             _verifier.VerifyMe(MethodBase.GetCurrentMethod(), userIdentifier, shopGuid, name, category, price, quantity);
-            return _userDomain.GetUserObject(userIdentifier).AddProductToShop(shopGuid, name, category, price, quantity);
+            Guid res = _userDomain.GetUserObject(userIdentifier).AddProductToShop(shopGuid, name, category, price, quantity);
+            if (!res.Equals(Guid.Empty))
+                _logger.LogInformation($"{GetUserName(userIdentifier.Guid)} added {name} " +
+                    $"to shop {GetShopName(shopGuid)} successfuly.\n Category: {category}\nPrice: {price}\nQuantity: {quantity}.");
+            else
+                _logger.LogInformation($"{GetUserName(userIdentifier.Guid)} failed to add {name} to shop {GetShopName(shopGuid)} successfuly.");
+            return res;
         }
 
         public bool EditProductInShop(UserIdentifier userIdentifier, Guid shopGuid, Guid productGuid, double newPrice, int newQuantity)
         {
             VerifySystemIsInitialized();
             _verifier.VerifyMe(MethodBase.GetCurrentMethod(), userIdentifier, shopGuid, productGuid, newPrice, newQuantity);
+            ShopProduct product = GetShopProduct(shopGuid, productGuid);
+            double oldPrice = product.Price;
+            int oldQuantity = product.Quantity;
             _userDomain.GetUserObject(userIdentifier).EditProductInShop(shopGuid, productGuid, newPrice, newQuantity);
+            _logger.LogInformation($"{GetUserName(userIdentifier.Guid)} edited {product.Product.Name} in shop {GetShopName(shopGuid)} successfuly.\n" +
+                $"Old Price: {oldPrice}\tNew Price: {product.Price}\nOld Quantity: {oldQuantity}\tNew Quantity: {product.Quantity}.");
             return true;
         }
 
@@ -207,21 +228,43 @@ namespace DomainLayer.Facade
         {
             VerifySystemIsInitialized();
             _verifier.VerifyMe(MethodBase.GetCurrentMethod(), userIdentifier, shopGuid, shopProductGuid);
-            return _userDomain.GetUserObject(userIdentifier).RemoveProductFromShop(shopGuid, shopProductGuid);
+            bool res = _userDomain.GetUserObject(userIdentifier).RemoveProductFromShop(shopGuid, shopProductGuid);
+            if (res)
+                _logger.LogInformation($"{GetUserName(userIdentifier.Guid)} removed" +
+                    $" {GetShopProductName(shopGuid, shopProductGuid)} from shop {GetShopName(shopGuid)} successfuly.");
+            else
+                _logger.LogInformation($"{GetUserName(userIdentifier.Guid)} failed to remove" +
+                    $" {GetShopProductName(shopGuid, shopProductGuid)} from shop {GetShopName(shopGuid)}.");
+            return res;
         }
 
         public bool AddProductToCart(UserIdentifier userIdentifier, Guid shopGuid, Guid shopProductGuid, int quantity)
         {
             VerifySystemIsInitialized();
             _verifier.VerifyMe(MethodBase.GetCurrentMethod(), userIdentifier, shopGuid, shopProductGuid, quantity);
-            return _userDomain.GetUserObject(userIdentifier).AddProductToCart(shopGuid, shopProductGuid, quantity);
+            bool res = _userDomain.GetUserObject(userIdentifier).AddProductToCart(shopGuid, shopProductGuid, quantity);
+            if (res)
+                _logger.LogInformation($"{GetUserName(userIdentifier.Guid)} added {quantity} " +
+                    $" {GetShopProductName(shopGuid, shopProductGuid)} from shop {GetShopName(shopGuid)} to cart.");
+            else
+                _logger.LogInformation($"{GetUserName(userIdentifier.Guid)} failed to add {quantity}" +
+                    $" {GetShopProductName(shopGuid, shopProductGuid)} from shop {GetShopName(shopGuid)} to cart.");
+            return res;
         }
 
         public bool AddShopManager(UserIdentifier userIdentifier, Guid shopGuid, Guid newManagaerGuid, List<string> priviliges)
         {
             VerifySystemIsInitialized();
             _verifier.VerifyMe(MethodBase.GetCurrentMethod(), userIdentifier, shopGuid, newManagaerGuid, priviliges);
-            return _userDomain.GetUserObject(userIdentifier).AddShopManager(shopGuid, newManagaerGuid, priviliges);
+            bool res = _userDomain.GetUserObject(userIdentifier).AddShopManager(shopGuid, newManagaerGuid, priviliges);
+            string newManagerPriviliges = priviliges.Count == 0 ? "None" : string.Join('\n', priviliges);
+            if (res)
+                _logger.LogInformation($"{GetUserName(userIdentifier.Guid)} added {GetUserName(newManagaerGuid)} " +
+                    $" as a new manager of shop {GetShopName(shopGuid)} with priviliges: {newManagerPriviliges}.");
+            else
+                _logger.LogInformation($"{GetUserName(userIdentifier.Guid)} failed to add {GetUserName(newManagaerGuid)}" +
+                    $" as a new manager of shop {GetShopName(shopGuid)}.");
+            return res;
         }
 
         public bool AddShopOwner(UserIdentifier userIdentifier, Guid shopGuid, Guid newShopOwnerGuid)
@@ -231,10 +274,15 @@ namespace DomainLayer.Facade
             bool result = _userDomain.GetUserObject(userIdentifier).AddShopOwner(shopGuid, newShopOwnerGuid);
             if (result)
             {
+                _logger.LogInformation($"{GetUserName(userIdentifier.Guid)} added {GetUserName(newShopOwnerGuid)} " +
+                    $" as a new owner of shop {GetShopName(shopGuid)}");
                 var newEvent = new AddedOwnerEvent(newShopOwnerGuid, userIdentifier.Guid, shopGuid);
                 newEvent.SetMessages(DomainData.ShopsCollection.Values, DomainData.RegisteredUsersCollection.Values);
                 UpdateCenter.RaiseEvent(newEvent);
             }
+            else
+                _logger.LogInformation($"{GetUserName(userIdentifier.Guid)} failed to add {GetUserName(newShopOwnerGuid)}" +
+                    $" as a new owner of shop {GetShopName(shopGuid)}.");
             return result;
         }
 
@@ -245,10 +293,16 @@ namespace DomainLayer.Facade
             var result = _userDomain.GetUserObject(userIdentifier).CascadeRemoveShopOwner(shopGuid, ownerToRemoveGuid);
             if (result) //Maybe change CascadeRemoveShopOwner in IUser to return a collection of all removed owners.
             {
-                _logger.Log(LogLevel.Information, $"{GetUserName(userIdentifier.Guid)} removed {GetUserName(ownerToRemoveGuid)} from shop {GetShopName(shopGuid)} successfuly");
+                _logger.Log(LogLevel.Information, $"{GetUserName(userIdentifier.Guid)} removed" +
+                    $" {GetUserName(ownerToRemoveGuid)} as a shop owner from shop {GetShopName(shopGuid)} successfuly.");
                 var newEvent = new RemovedOwnerEvent(ownerToRemoveGuid, userIdentifier.Guid, shopGuid);
                 newEvent.SetMessages(DomainData.ShopsCollection.Values, DomainData.RegisteredUsersCollection.Values);
                 UpdateCenter.RaiseEvent(newEvent);
+            }
+            else
+            {
+                _logger.Log(LogLevel.Information, $"{GetUserName(userIdentifier.Guid)} failed to remove" +
+                    $" {GetUserName(ownerToRemoveGuid)} as a shop owner from shop {GetShopName(shopGuid)}.");
             }
             return result;
         }
@@ -257,14 +311,30 @@ namespace DomainLayer.Facade
         {
             VerifySystemIsInitialized();
             _verifier.VerifyMe(MethodBase.GetCurrentMethod(), userIdentifier, shopGuid, shopProductGuid, newAmount);
-            return _userDomain.GetUserObject(userIdentifier).EditProductInCart(shopGuid, shopProductGuid, newAmount);
+            ShopProduct product = GetShopProduct(shopGuid, shopProductGuid);
+            bool res = _userDomain.GetUserObject(userIdentifier).EditProductInCart(shopGuid, shopProductGuid, newAmount);
+            if (res)
+                _logger.LogInformation($"{GetUserName(userIdentifier.Guid)} edited {product.Product.Name} " +
+                    $" in {GetShopName(shopGuid)} cart. new amount: {newAmount}");
+            else
+                _logger.LogInformation($"{GetUserName(userIdentifier.Guid)} failed to edit {product.Product.Name} " +
+                    $" in {GetShopName(shopGuid)} cart.");
+            return res;
         }
 
         public bool RemoveProductFromCart(UserIdentifier userIdentifier, Guid shopGuid, Guid shopProductGuid)
         {
             VerifySystemIsInitialized();
             _verifier.VerifyMe(MethodBase.GetCurrentMethod(), userIdentifier, shopGuid, shopProductGuid);
-            return _userDomain.GetUserObject(userIdentifier).RemoveProductFromCart(shopGuid, shopProductGuid);
+            bool res = _userDomain.GetUserObject(userIdentifier).RemoveProductFromCart(shopGuid, shopProductGuid);
+            string productName = GetShopProductName(shopGuid, shopProductGuid);
+            if (res)
+                _logger.LogInformation($"{GetUserName(userIdentifier.Guid)} removed {productName} " +
+                    $" from {GetShopName(shopGuid)} cart.");
+            else
+                _logger.LogInformation($"{GetUserName(userIdentifier.Guid)} failed to remove {productName} " +
+                    $" from {GetShopName(shopGuid)} cart.");
+            return res;
         }
 
         public ICollection<Guid> GetAllProductsInCart(UserIdentifier userIdentifier, Guid shopGuid)
@@ -278,7 +348,14 @@ namespace DomainLayer.Facade
         {
             VerifySystemIsInitialized();
             _verifier.VerifyMe(MethodBase.GetCurrentMethod(), userIdentifier, userToRemoveGuid);
-            return _userDomain.GetUserObject(userIdentifier).RemoveUser(userToRemoveGuid);
+            bool res = _userDomain.GetUserObject(userIdentifier).RemoveUser(userToRemoveGuid);
+            if (res)
+                _logger.LogInformation($"{GetUserName(userIdentifier.Guid)} removed {GetUserName(userToRemoveGuid)} " +
+                    $" from the system.");
+            else
+                _logger.LogInformation($"{GetUserName(userIdentifier.Guid)} failed to remove {GetUserName(userToRemoveGuid)} " +
+                    $" from the system.");
+            return res;
         }
 
         public ICollection<Tuple<ShopProduct, Guid>> SearchProduct(UserIdentifier userIdentifier, ICollection<string> toMatch, string searchType)
@@ -292,13 +369,21 @@ namespace DomainLayer.Facade
         {
             VerifySystemIsInitialized();
             _verifier.VerifyMe(MethodBase.GetCurrentMethod(), userIdentifier, shopGuid, managerToRemoveGuid);
-            return _userDomain.GetUserObject(userIdentifier).RemoveShopManager(shopGuid, managerToRemoveGuid);
+            bool res = _userDomain.GetUserObject(userIdentifier).RemoveShopManager(shopGuid, managerToRemoveGuid);
+            if (res)
+                _logger.LogInformation($"{GetUserName(userIdentifier.Guid)} removed {GetUserName(managerToRemoveGuid)} " +
+                    $" as a manager from shop {GetShopName(shopGuid)}.");
+            else
+                _logger.LogInformation($"{GetUserName(userIdentifier.Guid)} failed to remove {GetUserName(managerToRemoveGuid)} " +
+                    $" as a manager from shop {GetShopName(shopGuid)}.");
+            return res;
         }
 
         public ICollection<Tuple<Guid, Product, int>> GetPurchaseHistory(UserIdentifier userIdentifier)
         {
             VerifySystemIsInitialized();
             _verifier.VerifyMe(MethodBase.GetCurrentMethod(), userIdentifier);
+            _logger.LogInformation($"Got purchase history for {GetUserName(userIdentifier.Guid)}.");
             return _userDomain.GetUserObject(userIdentifier).GetPurchaseHistory();
         }
 
@@ -312,7 +397,7 @@ namespace DomainLayer.Facade
         public ICollection<Shop> GetAllShops(UserIdentifier userIdentifier)
         {
             VerifySystemIsInitialized();
-          //  _verifier.VerifyMe(MethodBase.GetCurrentMethod(), userIdentifier); also guests can ask for shops
+            //  _verifier.VerifyMe(MethodBase.GetCurrentMethod(), userIdentifier); also guests can ask for shops
             return DomainData.ShopsCollection.ToList();
         }
 
@@ -321,9 +406,10 @@ namespace DomainLayer.Facade
             /*todo verofy constraints
              * VerifySystemIsInitialized();
             _verifier.VerifyMe(MethodBase.GetCurrentMethod(), userIdentifier, newState);*/
-            List<Shop> shops = ApplicationCore.Data.DomainData.ShopsCollection.Where(shop => shop.Creator.OwnerGuid.Equals(userId.Guid)).ToList<Shop>();//created
+            List<Shop> shops = ApplicationCore.Data.DomainData.ShopsCollection.Where(shop => shop.Creator.OwnerGuid.Equals(userId.Guid)).ToList();//created
             shops.AddRange(ApplicationCore.Data.DomainData.ShopsCollection.Where(shop => shop.Owners.Any(owner => owner.OwnerGuid.Equals(userId.Guid))));
             shops.AddRange(ApplicationCore.Data.DomainData.ShopsCollection.Where(shop => shop.Managers.Any(owner => owner.OwnerGuid.Equals(userId.Guid))));
+            _logger.LogDebug($"Got all shops of user {GetUserName(userId.Guid)}.");
             return shops;
         }
 
@@ -333,6 +419,7 @@ namespace DomainLayer.Facade
             * VerifySystemIsInitialized();
             _verifier.VerifyMe(MethodBase.GetCurrentMethod(), userIdentifier, newState);*/
             Shop shop = GetShop(shopGuid);
+            _logger.LogDebug($"{GetUserName(userIdentifier.Guid)} got all products of shop {shop.ShopName}.");
             return shop.ShopProducts;
         }
 
@@ -340,7 +427,12 @@ namespace DomainLayer.Facade
         {
             VerifySystemIsInitialized();
             _verifier.VerifyMe(MethodBase.GetCurrentMethod(), userIdentifier, newState);
-            return _userDomain.ChangeUserState(userIdentifier.Guid, newState);
+            bool res = _userDomain.ChangeUserState(userIdentifier.Guid, newState);
+            if (res)
+                _logger.LogInformation($"{GetUserName(userIdentifier.Guid)} changed to {newState} state.");
+            else
+                _logger.LogInformation($"{GetUserName(userIdentifier.Guid)} faield to change to {newState} state.");
+            return res;
         }
 
         public void ClearSystem()
@@ -358,6 +450,7 @@ namespace DomainLayer.Facade
                 StackTrace stackTrace = new StackTrace();
                 var msg = $"System has not been initialized." +
         $"Cant complete {stackTrace.GetFrame(1).GetMethod().Name}";
+                _logger.LogError(msg);
                 throw new SystemNotInitializedException(msg);
             }
         }
@@ -368,7 +461,14 @@ namespace DomainLayer.Facade
             IUser user = _userDomain.GetUserObject(userIdentifier);
             IDiscountPolicy newPolicy = new UserDiscountPolicy();
             _verifier.AddNewDiscountPolicy(ref newPolicy, userIdentifier, shopGuid, policyType, field1, field2, field3, field4, field5);
-            return user.AddNewDiscountPolicy(user.Guid, shopGuid, newPolicy);
+            Guid discountPolicyGuid = user.AddNewDiscountPolicy(user.Guid, shopGuid, newPolicy);
+            if (!discountPolicyGuid.Equals(Guid.Empty))
+                _logger.LogInformation($"{GetUserName(userIdentifier.Guid)} added new discount policy " +
+                    $"of type {policyType.GetType()} to {GetShopName(shopGuid)}.");
+            else
+                _logger.LogInformation($"{GetUserName(userIdentifier.Guid)} failed to add new discount policy " +
+                    $"of type {policyType.GetType()} to {GetShopName(shopGuid)}.");
+            return discountPolicyGuid;
         }
 
         public Guid AddNewPurchasePolicy(UserIdentifier userIdentifier, Guid shopGuid, object policyType, object field1, object field2, object field3, object field4)
@@ -377,7 +477,14 @@ namespace DomainLayer.Facade
             IUser user = _userDomain.GetUserObject(userIdentifier);
             IPurchasePolicy newPolicy = new UserPurchasePolicy();
             _verifier.AddNewPurchasePolicy(ref newPolicy, userIdentifier, shopGuid, policyType, field1, field2, field3, field4);
-            return user.AddNewPurchasePolicy(user.Guid, shopGuid, newPolicy);
+            Guid purchasePoicyGuid = user.AddNewPurchasePolicy(user.Guid, shopGuid, newPolicy);
+            if (!purchasePoicyGuid.Equals(Guid.Empty))
+                _logger.LogInformation($"{GetUserName(userIdentifier.Guid)} added new purchase policy " +
+                    $"of type {policyType.GetType()} to {GetShopName(shopGuid)}.");
+            else
+                _logger.LogInformation($"{GetUserName(userIdentifier.Guid)} failed to add new purchase policy " +
+                    $"of type {policyType.GetType()} to {GetShopName(shopGuid)}.");
+            return purchasePoicyGuid;
         }
 
         public IEnumerable<Tuple<ShoppingCart, IEnumerable<ShopProduct>>> getUserBag(UserIdentifier userIdentifier)
@@ -403,6 +510,7 @@ namespace DomainLayer.Facade
                     result.Add(new Tuple<ShoppingCart, IEnumerable<ShopProduct>>(cart, products));
                 }
             }
+            _logger.LogDebug($"Got the bag of user {GetUserName(userIdentifier.Guid)}.");
             return result;
         }
 
@@ -426,6 +534,16 @@ namespace DomainLayer.Facade
         public string GetShopName(Guid shopGuid)
         {
             return DomainData.ShopsCollection[shopGuid].ShopName;
+        }
+
+        public ShopProduct GetShopProduct(Guid shopGuid, Guid productGuid)
+        {
+            return DomainData.ShopsCollection[shopGuid].ShopProducts.FirstOrDefault(p => p.Guid.Equals(productGuid));
+        }
+
+        public string GetShopProductName(Guid shopGuid, Guid productGuid)
+        {
+            return GetShopProduct(shopGuid, productGuid).Product.Name;
         }
 
         public Guid GetShopGuid(string shopName)

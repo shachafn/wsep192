@@ -1,0 +1,185 @@
+﻿
+@model PresentaitionLayer.Models.SellerModels.ShopManageIndexModel
+@{
+    ViewData["Title"] = "Manage";
+}
+
+<h2>Manage your shop</h2>
+<h4>shop @Model.Shop.ShopName</h4>
+<h4>Current Shop state: @Model.Shop.ShopState </h4>
+<h4>Shop creator: @Model.creatorName</h4>
+<div class="col-md-5" style="margin-bottom:20px;">
+    manage products
+    <input type="button" class="btn-lg" value="Products" onclick="location.href='@Url.Action("Products","Seller",new { ShopId=ViewData["ShopId"]})'" />
+    @*
+        todo : add shop history
+         <input type="button" class="btn-lg" value="Owners & Managers" onclick="location.href='@Url.Action("History","Seller",new { ShopId=ViewData["ShopId"]})'" />
+    *@
+</div>
+@if (Model.Shop.candidate != null)
+{
+    <br />
+    <br />
+    <br />
+    <br />
+    <div style="border:dashed;">
+        <h4 style="color:darkred;" align="center">current ownership candidate</h4>
+        <table class="table">
+            <thead>
+                <tr>
+                    <th>
+                        candidate name
+                    </th>
+                    <th>
+                        appointer name
+                    </th>
+                    <th>
+                        status
+                    </th>
+                </tr>
+            </thead>
+            <tr>
+                <td>
+                    @Model.ownerCandidate.Item1
+                </td>
+                <td>
+                    @Model.ownerCandidate.Item2
+                </td>
+                <td>
+                    <div class="img-responsive list-inline">
+                        @for (int i = 0; i < Model.Shop.candidate.signature_target; i++)
+                        {
+                            @if (i > Model.Shop.candidate.Signatures.Count() - 1)
+                            {
+                                <img src="~/images/personIcon.png" alt="this is moti" style="height:20px; width:20px;" />
+                            }
+                            else
+                            {
+                                <img src="~/images/approvedpersonIcon.png" alt="this is moti" style="height:20px; width:20px;" />
+                            }
+
+                        }
+                    </div>
+                </td>
+                <td>
+                    @if (!Model.Shop.candidate.Signatures.Keys.Contains(ViewData["UserName"]))
+                    {
+                        <form asp-action="AddOwner" method="post">
+                            <input type="hidden" value="@Model.ownerCandidate.Item1" name="OwnerName" required />
+                            <input type="hidden" name="shopId" value="@ViewData["ShopId"]" />
+                            <input type="submit" value="sign" class="form-control" />
+                        </form>
+                        <input type="button" class="form-control" value="cancel assignment" onclick="location.href='@Url.Action("CancelOwnerAssignment","Seller",new { ShopId=ViewData["ShopId"]})'" />
+                    }
+                    else
+                    {
+                        <div>already signed</div>
+                        <br/>
+                        <input type="button" class="form-control" value="cancel assignment" onclick="location.href='@Url.Action("CancelOwnerAssignment","Seller",new { ShopId=ViewData["ShopId"]})'" />
+                    }
+                </td>
+            </tr>
+        </table>
+    </div>
+}
+<h4 class="text-center">Shop Owners</h4>
+<table class="table">
+    <thead>
+        <tr>
+            <th></th>
+            <th>
+                Owner Name
+            </th>
+            <th>
+                Appointer Name
+            </th>
+            <th></th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var item in Model.Owners)
+        {
+            <tr>
+                <td>
+                    @*<img src=@getRandomImage() alt="should be product's name" />*@
+                    <img src="~/images/personIcon.png" alt="this is moti" style="height:80px; width:80px;" />
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Item1)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Item2)
+                </td>
+                <td>
+                    <form asp-action="DeleteRole" method="post">
+                        <input type="hidden" name="OwnerId" value=" @Html.DisplayFor(modelItem => item.Item3)" />
+                        <input type="hidden" name="ShopId" value="@ViewData["ShopId"]" />
+                        <input type="submit" value="Delete" class="form-control" />
+                    </form>
+                </td>
+            </tr>
+        }
+        @if (Model.Shop.candidate == null)
+        {
+            <tr>
+                <td class="form-inline">
+                    <form asp-action="AddOwner" method="post">
+                        <input type="text" placeholder="new owner name" name="OwnerName" required />
+                        <input type="hidden" name="shopId" value="@ViewData["ShopId"]" />
+                        <input type="submit" value="Add Owner" class="form-control" />
+                    </form>
+                </td>
+            </tr>
+        }
+    </tbody>
+</table>
+
+<h4 class="text-center">Shop Managers</h4>
+<table class="table">
+    <thead>
+        <tr>
+            <th></th>
+            <th>
+                Manager Name
+            </th>
+            <th>
+                Appointer Guid
+            </th>
+            <th>
+                Privileges
+            </th>
+            <th></th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var item in Model.Shop.Managers)
+        {
+            <tr>
+                <td>
+                    @*<img src=@getRandomImage() alt="should be product's name" />*@
+                    <img src="~/images/personIcon.png" alt="should be the product's name" style="height:80px; width:80px;" />
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.OwnerGuid)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.AppointerGuid)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Priviliges.ToString())
+                </td>
+                <td>
+                    <form asp-action="DeleteOwner" method="post">
+                        <input type="hidden" name="OwnerId" value=" @Html.DisplayFor(modelItem => item.OwnerGuid)" />
+                        <input type="hidden" name="shopId" value="@ViewData["ShopId"]" />
+                        <input type="submit" value="Delete" class="form-control" />
+                    </form>
+                </td>
+            </tr>
+        }
+    </tbody>
+</table>
+
+
+
+

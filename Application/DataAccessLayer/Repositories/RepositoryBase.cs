@@ -1,4 +1,4 @@
-﻿using DataAccessLayer.IRepositories;
+﻿using ApplicationCore.IRepositories;
 using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;

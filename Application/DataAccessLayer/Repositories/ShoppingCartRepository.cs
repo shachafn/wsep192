@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text;
 using ApplicationCore.Entitites;
 using DataAccessLayer.DAOs;
-using DataAccessLayer.IRepositories;
+using ApplicationCore.IRepositories;
 using System.Linq;
 using System.Linq.Expressions;
 
@@ -16,5 +16,29 @@ namespace DataAccessLayer.Repositories
         {
         }
 
+        public void Create(ShoppingCart entity)
+        {
+            throw new NotImplementedException();
+        }
+
+        public void Delete(ShoppingCart entity)
+        {
+            throw new NotImplementedException();
+        }
+
+        public IQueryable<ShoppingCart> FindByCondition(Expression<Func<ShoppingCart, bool>> expression)
+        {
+            throw new NotImplementedException();
+        }
+
+        public void Update(ShoppingCart entity)
+        {
+            throw new NotImplementedException();
+        }
+
+        IQueryable<ShoppingCart> IRepositoryBase<ShoppingCart>.FindAll()
+        {
+            throw new NotImplementedException();
+        }
     }
 }

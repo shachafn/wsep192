@@ -6,39 +6,48 @@ using System.Text;
 using System.Linq;
 using System.Linq.Expressions;
 using ApplicationCore.IRepositories;
-
+using ApplicationCore.Mapping;
 
 namespace DataAccessLayer.Repositories
 {
     public class UserRepository : RepositoryBase<BaseUserDAO>, IUserRepository
     {
-        public UserRepository(ApplicationContext context) : base(context)
+        readonly BaseMapingManager _baseMapingManager;
+        public UserRepository(ApplicationContext context, BaseMapingManager baseMapingManager) : base(context)
         {
+            _baseMapingManager = baseMapingManager;
         }
 
         public void Create(BaseUser entity)
         {
-            throw new NotImplementedException();
+            var dto = _baseMapingManager.Map<BaseUser, BaseUserDAO>(entity);
+            base.Create(dto);
         }
 
         public void Delete(BaseUser entity)
         {
-            throw new NotImplementedException();
+            var dto = _baseMapingManager.Map<BaseUser, BaseUserDAO>(entity);
+            base.Delete(dto);
+        }
+        public override void DeleteAll()
+        {
+            base.Context.Users.RemoveRange(base.Context.Users);
         }
 
         public IQueryable<BaseUser> FindByCondition(Expression<Func<BaseUser, bool>> expression)
         {
-            throw new NotImplementedException();
+            throw new NotImplementedException("DEPRECATED, USE FindAll and query it.");
         }
 
         public void Update(BaseUser entity)
         {
-            throw new NotImplementedException();
+            var dto = _baseMapingManager.Map<BaseUser, BaseUserDAO>(entity);
+            base.Update(dto);
         }
 
         IQueryable<BaseUser> IRepositoryBase<BaseUser>.FindAll()
         {
-            throw new NotImplementedException();
+            return base.FindAll().Select(b => _baseMapingManager.Map<BaseUserDAO,BaseUser>(b));
         }
     }
 }

@@ -1,5 +1,6 @@
 ﻿using ApplicationCore.Entitites;
 using ApplicationCore.IRepositories;
+using ApplicationCore.Mapping;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -10,33 +11,44 @@ namespace DataAccessLayer.Repositories
 {
     public class ShopProductRepository : RepositoryBase<ShopProductDAO>, IShopProductRepository
     {
-        public ShopProductRepository(ApplicationContext context) : base(context)
+        readonly BaseMapingManager _baseMapingManager;
+
+        public ShopProductRepository(ApplicationContext context, BaseMapingManager baseMapingManager) : base(context)
         {
+            _baseMapingManager = baseMapingManager;
         }
 
         public void Create(ShopProduct entity)
         {
-            throw new NotImplementedException();
+            var dto = _baseMapingManager.Map<ShopProduct, ShopProductDAO>(entity);
+            base.Create(dto);
         }
 
         public void Delete(ShopProduct entity)
         {
-            throw new NotImplementedException();
+            var dto = _baseMapingManager.Map<ShopProduct, ShopProductDAO>(entity);
+            base.Delete(dto);
+        }
+
+        public override void DeleteAll()
+        {
+            base.Context.ShopProducts.RemoveRange(base.Context.ShopProducts);
         }
 
         public IQueryable<ShopProduct> FindByCondition(Expression<Func<ShopProduct, bool>> expression)
         {
-            throw new NotImplementedException();
+            throw new NotImplementedException("DEPRECATED, USE FindAll and query it.");
         }
 
         public void Update(ShopProduct entity)
         {
-            throw new NotImplementedException();
+            var dto = _baseMapingManager.Map<ShopProduct, ShopProductDAO>(entity);
+            base.Update(dto);
         }
 
         IQueryable<ShopProduct> IRepositoryBase<ShopProduct>.FindAll()
         {
-            throw new NotImplementedException();
+            return base.FindAll().Select(b => _baseMapingManager.Map<ShopProductDAO, ShopProduct>(b));
         }
     }
 }

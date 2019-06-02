@@ -14,29 +14,34 @@ namespace DataAccessLayer
 
         public RepositoryBase(ApplicationContext context) => Context = context;
 
-        public void Create(T entity)
+        public virtual void Create(T entity)
         {
             this.Context.Set<T>().Add(entity);
         }
 
-        public void Delete(T entity)
+        public virtual void Delete(T entity)
         {
             this.Context.Set<T>().Remove(entity);
         }
 
-        public IQueryable<T> FindAll()
+        public virtual  IQueryable<T> FindAll()
         {
             return Context.Set<T>().AsNoTracking();
         }
 
-        public IQueryable<T> FindByCondition(Expression<Func<T, bool>> expression)
+        public virtual IQueryable<T> FindByCondition(Expression<Func<T, bool>> expression)
         {
             return Context.Set<T>().Where(expression).AsNoTracking();
         }
 
-        public void Update(T entity)
+        public virtual void Update(T entity)
         {
             this.Context.Set<T>().Update(entity);
+        }
+
+        public virtual void DeleteAll()
+        {
+            throw new NotImplementedException();
         }
     }
 }

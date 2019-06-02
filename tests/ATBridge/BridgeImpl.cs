@@ -20,7 +20,7 @@ namespace ATBridge
                             new ServiceFacade(
                                 new DomainLayerFacade(
                                     new UserDomain(NullLogger<UserDomain>.Instance),
-                                    new DomainLayerFacadeVerifier(),
+                                    new DomainLayerFacadeVerifier(NullLogger<DomainLayerFacadeVerifier>.Instance),
                                     NullLogger<DomainLayerFacade>.Instance
                                 ),
                                 NullLogger<ServiceFacade>.Instance

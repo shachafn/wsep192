@@ -138,38 +138,40 @@ namespace DomainLayer.Facade
             _verifier.VerifyMe(MethodBase.GetCurrentMethod(), userIdentifier, shopGuid);
             // Need to actually pay for products
             // if success clear all carts
-            bool result = _userDomain.GetUserObject(userIdentifier).PurchaseCart(shopGuid);
-            if (result)
-            {
-                _logger.LogInformation($"{GetUserName(userIdentifier.Guid)} purchased cart from shop {GetShopName(shopGuid)} successfuly.");
-                var newEvent = new PurchasedCartEvent(userIdentifier.Guid, shopGuid);
-                newEvent.SetMessages(DomainData.ShopsCollection.Values, DomainData.RegisteredUsersCollection.Values);
-                UpdateCenter.RaiseEvent(newEvent);
-            }
-            else
-                _logger.LogInformation($"{GetUserName(userIdentifier.Guid)} failed to purchase cart from shop {GetShopName(shopGuid)}.");
-            return result;
+            _logger.LogInformation($"{GetUserName(userIdentifier.Guid)} purchased cart from shop {GetShopName(shopGuid)} successfuly.");
+            var newEvent = new PurchasedCartEvent(userIdentifier.Guid, shopGuid);
+            newEvent.SetMessages(DomainData.ShopsCollection.Values, DomainData.RegisteredUsersCollection.Values);
+            UpdateCenter.RaiseEvent(newEvent);
+            return _userDomain.GetUserObject(userIdentifier).PurchaseCart(shopGuid); ;
         }
 
         public Guid Initialize(UserIdentifier userIdentifier, string username, string password)
         {
             _verifier.VerifyMe(MethodBase.GetCurrentMethod(), userIdentifier, username, password);
-
+            string msg;
             if (_isSystemInitialized)
-                throw new SystemAlreadyInitializedException($"Cannot initialize the system again.");
+            {
+                msg = $"Cannot initialize the system again.";
+                _logger.LogError(msg);
+                throw new SystemAlreadyInitializedException(msg);
+            }
             if (!External_Services.ExternalServicesManager._paymentSystem.IsAvailable())
-                throw new ServiceUnReachableException($"Payment System Service is unreachable.");
+            {
+                msg = $"Payment System Service is unreachable.";
+                _logger.LogError(msg);
+                throw new ServiceUnReachableException(msg);
+            }
             if (!External_Services.ExternalServicesManager._supplySystem.IsAvailable())
-                throw new ServiceUnReachableException($"Supply System Service is unreachable.");
-
+            {
+                msg = $"Supply System Service is unreachable.";
+                _logger.LogError(msg);
+                throw new ServiceUnReachableException(msg);
+            }
             var res = Guid.Empty;
-
             if (!_userDomain.IsAdminExists())
                 _userDomain.Register(username, password, true);
-
             res = _userDomain.Login(username, password);
             _userDomain.ChangeUserState(res, AdminUserState.AdminUserStateString);
-
             _isSystemInitialized = res.Equals(Guid.Empty) ? false : true;
             return res;
         }
@@ -182,7 +184,7 @@ namespace DomainLayer.Facade
             if (res)
                 _logger.LogCritical("The system connected to the payment system successfuly.");
             else
-                _logger.LogCritical("The system connected to the payment system unsuccessfuly.");
+                _logger.LogCritical("The system failed to connect to the payment system.");
             return res;
         }
 
@@ -192,7 +194,7 @@ namespace DomainLayer.Facade
             _verifier.VerifyMe(MethodBase.GetCurrentMethod(), userIdentifier);
             bool res = _userDomain.GetUserObject(userIdentifier).ConnectToSupplySystem();
             if (res)
-                _logger.Log(LogLevel.Critical, "The system failed to connect to the supply system.");
+                _logger.Log(LogLevel.Critical, "The system connected to the supply system successfuly.");
             else
                 _logger.Log(LogLevel.Critical, "The system failed to connect to the supply system.");
             return res;
@@ -205,7 +207,7 @@ namespace DomainLayer.Facade
             Guid res = _userDomain.GetUserObject(userIdentifier).AddProductToShop(shopGuid, name, category, price, quantity);
             if (!res.Equals(Guid.Empty))
                 _logger.LogInformation($"{GetUserName(userIdentifier.Guid)} added {name} " +
-                    $"to shop {GetShopName(shopGuid)} successfuly.\n Category: {category}\nPrice: {price}\nQuantity: {quantity}.");
+                    $"to shop {GetShopName(shopGuid)} successfuly. Category: {category}   Price: {price}   Quantity: {quantity}.");
             else
                 _logger.LogInformation($"{GetUserName(userIdentifier.Guid)} failed to add {name} to shop {GetShopName(shopGuid)} successfuly.");
             return res;
@@ -219,8 +221,8 @@ namespace DomainLayer.Facade
             double oldPrice = product.Price;
             int oldQuantity = product.Quantity;
             _userDomain.GetUserObject(userIdentifier).EditProductInShop(shopGuid, productGuid, newPrice, newQuantity);
-            _logger.LogInformation($"{GetUserName(userIdentifier.Guid)} edited {product.Product.Name} in shop {GetShopName(shopGuid)} successfuly.\n" +
-                $"Old Price: {oldPrice}\tNew Price: {product.Price}\nOld Quantity: {oldQuantity}\tNew Quantity: {product.Quantity}.");
+            _logger.LogInformation($"{GetUserName(userIdentifier.Guid)} edited {product.Product.Name} in shop {GetShopName(shopGuid)} successfuly. " +
+                $"Old Price: {oldPrice}   New Price: {product.Price}   Old Quantity: {oldQuantity}   New Quantity: {product.Quantity}.");
             return true;
         }
 
@@ -228,13 +230,14 @@ namespace DomainLayer.Facade
         {
             VerifySystemIsInitialized();
             _verifier.VerifyMe(MethodBase.GetCurrentMethod(), userIdentifier, shopGuid, shopProductGuid);
+            string productName = GetShopProductName(shopGuid, shopProductGuid);
             bool res = _userDomain.GetUserObject(userIdentifier).RemoveProductFromShop(shopGuid, shopProductGuid);
             if (res)
                 _logger.LogInformation($"{GetUserName(userIdentifier.Guid)} removed" +
-                    $" {GetShopProductName(shopGuid, shopProductGuid)} from shop {GetShopName(shopGuid)} successfuly.");
+                    $" {productName} from shop {GetShopName(shopGuid)} successfuly.");
             else
                 _logger.LogInformation($"{GetUserName(userIdentifier.Guid)} failed to remove" +
-                    $" {GetShopProductName(shopGuid, shopProductGuid)} from shop {GetShopName(shopGuid)}.");
+                    $" {productName} from shop {GetShopName(shopGuid)}.");
             return res;
         }
 
@@ -348,12 +351,13 @@ namespace DomainLayer.Facade
         {
             VerifySystemIsInitialized();
             _verifier.VerifyMe(MethodBase.GetCurrentMethod(), userIdentifier, userToRemoveGuid);
+            string username = GetUserName(userToRemoveGuid);
             bool res = _userDomain.GetUserObject(userIdentifier).RemoveUser(userToRemoveGuid);
             if (res)
-                _logger.LogInformation($"{GetUserName(userIdentifier.Guid)} removed {GetUserName(userToRemoveGuid)} " +
+                _logger.LogInformation($"{GetUserName(userIdentifier.Guid)} removed {username} " +
                     $" from the system.");
             else
-                _logger.LogInformation($"{GetUserName(userIdentifier.Guid)} failed to remove {GetUserName(userToRemoveGuid)} " +
+                _logger.LogInformation($"{GetUserName(userIdentifier.Guid)} failed to remove {username} " +
                     $" from the system.");
             return res;
         }
@@ -429,9 +433,9 @@ namespace DomainLayer.Facade
             _verifier.VerifyMe(MethodBase.GetCurrentMethod(), userIdentifier, newState);
             bool res = _userDomain.ChangeUserState(userIdentifier.Guid, newState);
             if (res)
-                _logger.LogInformation($"{GetUserName(userIdentifier.Guid)} changed to {newState} state.");
+                _logger.LogInformation($"{GetUserName(userIdentifier.Guid)} changed to {newState}.");
             else
-                _logger.LogInformation($"{GetUserName(userIdentifier.Guid)} faield to change to {newState} state.");
+                _logger.LogInformation($"{GetUserName(userIdentifier.Guid)} faield to change to {newState}.");
             return res;
         }
 

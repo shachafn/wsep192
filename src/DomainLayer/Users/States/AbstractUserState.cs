@@ -3,11 +3,13 @@ using DomainLayer.Policies;
 using ApplicationCore.Entitites;
 using System;
 using System.Collections.Generic;
+using Microsoft.Extensions.Logging;
 
 namespace DomainLayer.Users.States
 {
     public abstract class AbstractUserState : IAbstractUserState
     {
+        //private ILogger<AbstractUserState> _logger;
         public abstract ICollection<Guid> GetShoppingHistory();
         public abstract Guid OpenShop(BaseUser baseUser);
         public abstract Guid OpenShop(BaseUser baseUser, string shopName);

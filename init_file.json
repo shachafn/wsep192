@@ -1,0 +1,30 @@
+[
+  {
+    "operationName": "register",
+    "args": [ "u1", "u1" ]
+  },
+  {
+    "operationName": "register",
+    "args": [ "u2", "u2" ]
+  },
+  {
+    "operationName": "register",
+    "args": [ "u3", "u3" ]
+  },
+  {
+    "operationName": "register",
+    "args": [ "u4", "u4" ]
+  },
+  {
+    "operationName": "register",
+    "args": [ "u5", "u5" ]
+  },
+  {
+    "operationName": "openshop",
+    "args": [ "r2", "s1" ]
+  },
+  {
+    "operationName": "addproduct",
+    "args": [ "r2", "r6", "diapers", "undergarments", "30.0", "20" ]
+  }
+]

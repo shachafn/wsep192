@@ -4,11 +4,10 @@ using System.Collections.Generic;
 using System.Text;
 using System.Linq;
 using System.Linq.Expressions;
-using DataAccessLayer.DAOs;
 
-namespace DataAccessLayer.IRepositories
+namespace ApplicationCore.IRepositories
 {
-    interface IUserRepository : IRepositoryBase<BaseUserDAO>
+    public interface IUserRepository : IRepositoryBase<BaseUser>
     {
     }
 }

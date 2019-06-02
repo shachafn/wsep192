@@ -4,9 +4,9 @@ using System.Text;
 using ApplicationCore.Entitites;
 
 
-namespace DataAccessLayer.IRepositories
+namespace ApplicationCore.IRepositories
 {
-    interface IShopProductRepository : IRepositoryBase<ShopProductDAO>
+    public interface IShopProductRepository : IRepositoryBase<ShopProduct>
     {
     }
 }

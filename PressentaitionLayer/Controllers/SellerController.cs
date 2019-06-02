@@ -51,10 +51,15 @@ namespace PressentaitionLayer.Controllers
         public IActionResult Manage(string shopId)
         {
             ViewData["ShopId"] = shopId;
+            ViewData["UserName"] = User.Identity.Name;
             var shops = _serviceFacade.GetUserShops(new Guid(HttpContext.Session.Id));
             var shop = shops.FirstOrDefault(currshop => currshop.Guid.Equals(new Guid(shopId)));
             ShopManageIndexModel model = new ShopManageIndexModel(shop);
             model.Owners = getOwnerNames(shop);
+            if (shop.candidate != null)
+            {
+                model.ownerCandidate = (_serviceFacade.GetUserName(shop.candidate.OwnerGuid), _serviceFacade.GetUserName(shop.candidate.AppointerGuid));
+            }
             model.creatorName = _serviceFacade.GetUserName(shop.Creator.OwnerGuid);
             return View(model);
         }
@@ -106,16 +111,30 @@ namespace PressentaitionLayer.Controllers
         }
 
         [HttpPost]
+        public IActionResult Policies(string ProductId, string ShopId)
+        {
+            //ViewData["ShopId"] = ShopId;
+            //_serviceFacade.EditProductInShop(new Guid(HttpContext.Session.Id), new Guid(ShopId), product.Guid, product.Price, product.Quantity);
+            return RedirectToAction("Products", "Seller", new { ShopId = ShopId });
+        }
+        [HttpPost]
         public IActionResult DeleteRole(string OwnerId, string ShopId)
         {
             _serviceFacade.CascadeRemoveShopOwner(new Guid(HttpContext.Session.Id), new Guid(ShopId), new Guid(OwnerId));
             return RedirectToAction("Manage", "Seller", new { ShopId = ShopId });
         }
+
         [HttpPost]
         public IActionResult AddOwner(string OwnerName, string ShopId)
         {
             Guid OwnerId = _serviceFacade.GetUserGuid(OwnerName); //need to adress the empty guid thingy
             _serviceFacade.AddShopOwner(new Guid(HttpContext.Session.Id), new Guid(ShopId), OwnerId);
+            return RedirectToAction("Manage", "Seller", new { ShopId = ShopId });
+        }
+
+        public IActionResult CancelOwnerAssignment(string ShopId)
+        {
+            _serviceFacade.cancelOwnerAssignment(new Guid(HttpContext.Session.Id), new Guid(ShopId));
             return RedirectToAction("Manage", "Seller", new { ShopId = ShopId });
         }
         /*public IActionResult Roles(string ShopId)

@@ -445,5 +445,11 @@ namespace DomainLayer.Facade
             }
             return Guid.Empty;
         }
+
+        public void cancelOwnerAssignment(UserIdentifier userIdentifier, Guid shopGuid)
+        {
+            _verifier.VerifyMe(MethodBase.GetCurrentMethod(), userIdentifier, shopGuid);
+            DomainData.ShopsCollection[shopGuid].candidate = null;
+        }
     }
 }

@@ -269,5 +269,11 @@ namespace ServiceLayer
         {
             return _serviceFacade.GetShopGuid(ownerName);
         }
+
+        public void cancelOwnerAssignment(Guid cookie, Guid shopId)
+        {
+            var userIdentifier = _sessionManager.ResolveCookie(cookie);
+            _serviceFacade.cancelOwnerAssignment(userIdentifier,shopId);
+        }
     }
 }

@@ -532,5 +532,6 @@ namespace ApplicationCore.Interfaces.ServiceLayer
         IEnumerable<ShopProduct> GetShopProducts(Guid id,Guid shopGuid);
         ICollection<Shop> GetAllShops(Guid cookie);
         IEnumerable<Tuple<ShoppingCart, IEnumerable<ShopProduct>>> getUserBag(Guid cookie);
+        void cancelOwnerAssignment(Guid cookie,Guid shopId);
     }
 }

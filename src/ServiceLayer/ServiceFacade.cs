@@ -222,8 +222,9 @@ namespace ServiceLayer
             return _domainLayerFacade.GetAllShops(userIdentifier);
         }
 
-
-
-        
+        public void cancelOwnerAssignment(UserIdentifier userIdentifier, Guid shopId)
+        {
+             _domainLayerFacade.cancelOwnerAssignment(userIdentifier,shopId);
+        }
     }
 }

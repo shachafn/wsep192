@@ -1,4 +1,5 @@
-﻿using System;
+﻿using ApplicationCore.Data;
+using System;
 using System.Collections.Generic;
 
 namespace ApplicationCore.Entitites
@@ -11,7 +12,7 @@ namespace ApplicationCore.Entitites
 
         public Guid ShopGuid { get; set; }
 
-        public List<Guid> Signatures { get; set; }
+        public Dictionary<string,Guid> Signatures { get; set; }
 
         public int signature_target { get; }
         public OwnerCandidate(Guid ownerGuid,Guid shopGuid,Guid appointer,int signatures_required)
@@ -20,8 +21,8 @@ namespace ApplicationCore.Entitites
             shopGuid = ShopGuid;
             AppointerGuid = appointer;
             signature_target = signatures_required;
-            Signatures = new List<Guid>();
-            Signatures.Add(appointer);
+            Signatures = new Dictionary<string, Guid>();
+            Signatures.Add(DomainData.RegisteredUsersCollection[appointer].Username, appointer);
         }
     }
 }

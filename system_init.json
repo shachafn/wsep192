@@ -2,5 +2,38 @@
   {
     "operationName": "register",
     "args": [ "yakov", "123" ]
+  },
+  {
+    "operationName": "register",
+    "args": [ "ben", "ben" ]
+  },
+  {
+    "operationName": "register",
+    "args": [ "liron", "liron" ]
+  },
+  {
+    "operationName": "register",
+    "args": [ "avi", "avi" ]
+  },
+  {
+    "operationName": "register",
+    "args": [ "moti", "123" ]
+  },
+  {
+    "operationName": "admin",
+    "args": [ "r5" ]
+  },
+  {
+    "operationName": "openshop",
+    "args": [ "r2", "Ben's groceries" ]
+  },
+  {
+    "operationName": "addproduct",
+    "args": [ "r2","r7","Banana","groceries","12.0","999"]
+  },
+  {
+    "operationName": "addproduct",
+    "args": [ "r2", "r7", "Manago", "groceries", "19.0", "200" ]
   }
+
 ]

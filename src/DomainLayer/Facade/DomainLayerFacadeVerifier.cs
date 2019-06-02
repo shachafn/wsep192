@@ -541,6 +541,12 @@ namespace DomainLayer.Facade
             var user = VerifyLoggedInUser(userIdentifier.Guid, new UserNotFoundException());
         }
 
+        public void cancelOwnerAssignment (UserIdentifier userIdentifier,Guid shopGuid)
+        {
+            var user = VerifyLoggedInUser(userIdentifier.Guid, new UserNotFoundException());
+            var shop = VerifyShopExists(shopGuid, new ShopNotFoundException());
+            shop.VerifyCreatorOrOwner(userIdentifier.Guid, new NoPriviligesException());
+        }
         #endregion
         #region Operators
         private IArithmeticOperator GetArithmeticOperator(string input)

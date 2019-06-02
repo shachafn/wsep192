@@ -77,30 +77,8 @@ namespace DomainLayer.Extension_Methods
 
         public static void AddShopOwner(this Shop shop, Guid userGuid, Guid newOwnerGuid)
         {
-            int signatures_required = shop.Owners.Count();
-            if (shop.candidate == null && signatures_required > 1) // a new candidate
-            {
-                var newCandidate = new OwnerCandidate(newOwnerGuid, shop.Guid, userGuid, signatures_required);
-                shop.candidate = newCandidate;
-            }
-            else if (shop.candidate != null) // there is a candidate, sign it if possible
-            {
-                var candidate = shop.candidate;
-                if(candidate.signature_target-candidate.Signatures.Count()==1) // last sign , promote the candidate to a shop owner
-                {
-                    var newOwner = new ShopOwner(newOwnerGuid, candidate.AppointerGuid, shop.Guid);
-                    shop.Owners.Add(newOwner);
-                }
-                else if(!candidate.Signatures.Contains(userGuid)) //if not already signed , sign the candidate
-                {
-                    candidate.Signatures.Add(userGuid);
-                }
-            }
-            else// in the case: adding the second shopowner
-            {
-                var newOwner = new ShopOwner(newOwnerGuid, userGuid, shop.Guid);
-                shop.Owners.Add(newOwner);
-            }
+            var newOwner = new ShopOwner(newOwnerGuid, userGuid, shop.Guid);
+            shop.Owners.Add(newOwner);
         }
 
         public static bool RemoveShopManager(this Shop shop, Guid userGuid, Guid managerToRemoveGuid)
@@ -132,8 +110,31 @@ namespace DomainLayer.Extension_Methods
 
         public static bool AddOwner(this Shop shop, Guid appointerGuid, Guid newOwnerGuid)
         {
-            var newOwner = new ShopOwner(newOwnerGuid, appointerGuid, shop.Guid);
-            shop.Owners.Add(newOwner);
+            int signatures_required = shop.Owners.Count()+1;//+1 for the shop creator
+            if (shop.candidate == null && signatures_required > 1) // a new candidate
+            {
+                var newCandidate = new OwnerCandidate(newOwnerGuid, shop.Guid, appointerGuid, signatures_required);
+                shop.candidate = newCandidate;
+            }
+            else if (shop.candidate != null) // there is a candidate, sign it if possible
+            {
+                var candidate = shop.candidate;
+                if (candidate.signature_target - candidate.Signatures.Count() == 1) // last sign , promote the candidate to a shop owner
+                {
+                    var newOwner = new ShopOwner(newOwnerGuid, candidate.AppointerGuid, shop.Guid);
+                    shop.Owners.Add(newOwner);
+                    shop.candidate = null;
+                }
+                else if (!candidate.Signatures.Values.Contains(appointerGuid)) //if not already signed , sign the candidate
+                {
+                    candidate.Signatures.Add(DomainData.RegisteredUsersCollection[appointerGuid].Username, appointerGuid);
+                }
+            }
+            else// in the case: adding the second shopowner
+            {
+                var newOwner = new ShopOwner(newOwnerGuid, appointerGuid, shop.Guid);
+                shop.Owners.Add(newOwner);
+            }
             return true;
         }
 

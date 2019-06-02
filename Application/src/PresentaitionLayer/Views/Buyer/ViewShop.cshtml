@@ -1,0 +1,59 @@
+﻿@model IEnumerable<ApplicationCore.Entitites.ShopProduct>
+
+@{
+
+    ViewData["Title"] = "Search";
+
+}
+
+<h2>Search</h2>
+
+<table class="table">
+    <thead>
+        <tr>
+            <th></th>
+            <th>
+                Product Name
+            </th>
+
+            <th>
+                Product Category
+            </th>
+            <th>
+                Price
+            </th>
+            <th></th>
+        </tr
+    </thead>
+
+    <tbody>
+        @foreach (var item in Model)
+        {
+            <tr>
+                <td>
+                    <img src="~/images/Random/23.jpg" alt="@Html.DisplayFor(modelItem => item.Product.Name)" style="width:80px; height:80px;" />
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Product.Name)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Product.Category)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Price)
+                </td>
+                <td>
+                    <form asp-action="AddToCart" class="form-control" style="height:44px; padding:6px 12px">
+                        <label>
+                            Quantity
+                            <input type="number" name="Quantity" placeholder="0" />
+                        </label>
+                        <input type="hidden" name="ShopId" value="@ViewData["ShopId"]" />
+                        <input type="hidden" name="ItemId" value="@item.Guid" />
+                        <input type="submit" value="Add items to cart" class="input-sm" />
+                    </form>
+                </td>
+            </tr>
+        }
+    </tbody>
+</table>

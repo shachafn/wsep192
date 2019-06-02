@@ -1,11 +1,11 @@
 dist: xenial
 language: csharp
-solution: "wsep192.sln"
+solution: Application/wsep192.sln
 mono: none
 dotnet: 2.2
 script:
-  - dotnet restore
-  - dotnet build
-  - dotnet test tests/UnitTests/UnitTests.csproj
-  - dotnet test tests/IntegrationTests/IntegrationTests.csproj
-  - dotnet test tests/AcceptanceBridge/AcceptanceTests.csproj
+  - dotnet restore Application
+  - dotnet build Application
+  - dotnet test Application/tests/UnitTests/UnitTests.csproj
+  - dotnet test Application/tests/IntegrationTests/IntegrationTests.csproj
+  - dotnet test Application/tests/AcceptanceBridge/AcceptanceTests.csproj

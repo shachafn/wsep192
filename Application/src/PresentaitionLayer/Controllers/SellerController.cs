@@ -111,10 +111,9 @@ namespace PresentaitionLayer.Controllers
         }
 
         [HttpPost]
-        public IActionResult Policies(string ProductId, string ShopId)
+        public IActionResult Policies( string ShopId)
         {
-            //ViewData["ShopId"] = ShopId;
-            //_serviceFacade.EditProductInShop(new Guid(HttpContext.Session.Id), new Guid(ShopId), product.Guid, product.Price, product.Quantity);
+            
             return RedirectToAction("Products", "Seller", new { ShopId = ShopId });
         }
         [HttpPost]

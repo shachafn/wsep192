@@ -1,0 +1,82 @@
+﻿@model IEnumerable<ApplicationCore.Entitites.Shop>
+@{
+    ViewData["Title"] = "MyShops";
+}
+
+<h1>Our Shops</h1>
+
+<table class="table">
+
+    <thead>
+
+        <tr>
+
+            <th>
+
+                @Html.DisplayNameFor(model => model.ShopName)
+
+            </th>
+
+            <th></th>
+
+        </tr>
+
+    </thead>
+
+    <tbody>
+
+        @foreach (var item in Model)
+
+        {
+
+            @if (item.ShopState == ApplicationCore.Entitites.Shop.ShopStateEnum.Active)
+
+            {
+
+                <tr>
+
+                    <td>
+
+                        @Html.DisplayFor(modelItem => item.ShopName)
+
+                    </td>
+
+                    <td>
+
+                        @* <form asp-action="Manage" method="post">
+
+                                <input type="hidden" name="shopId" value=" @Html.DisplayFor(modelItem => item.Guid)" />
+
+                                <input type="submit" value="Manage" class="btn" />
+
+                            </form>*@
+
+                        <input type="button" class="btn" value="view" onclick="location.href='@Url.Action("ViewShop", "Buyer", new { ShopId = item.Guid })'" />
+
+
+
+                    </td>
+
+                </tr>
+
+            }
+
+        }
+
+    </tbody>
+
+</table>
+
+<div class="form-inline">
+
+    <form asp-action="OpenShop" method="post">
+
+        new shop name:
+
+        <input type="text" name="ShopName" class="form-control" placeholder="(Guid by default)" style="margin-left: 10px;" />
+
+        <input type="submit" class="btn pull-left" value="Open New Shop" style="margin-right: 15px;" />
+
+    </form>
+
+</div>

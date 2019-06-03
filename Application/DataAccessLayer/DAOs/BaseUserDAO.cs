@@ -19,7 +19,7 @@ namespace DataAccessLayer.DAOs
         // We only keep the password's hash, you can check if a password is
         // this user's password using the CheckPass function
         [Required(ErrorMessage = "Message is required")]
-        private string _passHash;
+        private string _passHash { get; }
         [Required(ErrorMessage = "IsAdmin is required")]
         public bool IsAdmin { get; private set; }
         [Timestamp]
@@ -73,6 +73,10 @@ namespace DataAccessLayer.DAOs
         public bool CheckPass(string password)
         {
             return _passHash.Equals(GetStringSha256Hash(password));
+        }
+        public string Get_hash()
+        {
+            return _passHash;
         }
     }
 }

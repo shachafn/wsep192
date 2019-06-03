@@ -15,13 +15,17 @@ namespace ApplicationCore.Entitites
         public Guid ShopGuid { get; set; }
 
         public ICollection<Tuple<Guid,int>> PurchasedProducts { get; set; } // Shop product and quantity that was purchased.
-        //[Timestamp]
+        [Timestamp]
         public byte[] RowVersion { get; set; }
         public ShoppingCart(Guid userGuid, Guid shopGuid)
         {
             UserGuid = userGuid;
             ShopGuid = shopGuid;
             PurchasedProducts = new List<Tuple<Guid, int>>();
+        }
+
+        public ShoppingCart()
+        {
         }
 
         public void PurchaseCart()

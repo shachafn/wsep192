@@ -25,6 +25,10 @@ namespace ApplicationCore.Entitites
             Category = category;
         }
 
+        public Product()
+        {
+        }
+
         public override string ToString()
         {
             return $"Guid - {Guid}, Name - {Name}, Category - {Category} ";

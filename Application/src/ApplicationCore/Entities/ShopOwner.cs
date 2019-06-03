@@ -38,5 +38,9 @@ namespace ApplicationCore.Entitites
             ShopGuid = shopGuid;
             Priviliges = priviliges ?? new List<string>();
         }
+
+        public ShopOwner()
+        {
+        }
     }
 }

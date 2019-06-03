@@ -12,7 +12,7 @@ namespace ApplicationCore.Entities.Users
 
         //not sure
         //[Key,Column(Order = 0)]
-        public Guid thisGuid;
+        public Guid thisGuid { get; set; }
         //[Key,Column(Order = 1)]
         public string Username { get; private set; }
         // We only keep the password's hash, you can check if a password is
@@ -37,6 +37,10 @@ namespace ApplicationCore.Entities.Users
             Username = username;
             _passHash = GetStringSha256Hash(password);
             IsAdmin = isAdmin;
+        }
+
+        public BaseUser()
+        {
         }
 
         /// <summary>

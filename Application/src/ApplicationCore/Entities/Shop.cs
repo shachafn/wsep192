@@ -25,7 +25,7 @@ namespace ApplicationCore.Entitites
         public ICollection<IPurchasePolicy> PurchasePolicies { get; set; }
         
         public ICollection<IDiscountPolicy> DiscountPolicies { get; set; }
-        public string ShopName { get; }
+        public string ShopName { get; set; }
 
 
         public Shop(Guid ownerGuid)
@@ -45,6 +45,10 @@ namespace ApplicationCore.Entitites
         {
             if (name != null && name.Length > 0)
                 ShopName = name;
+        }
+
+        public Shop()
+        {
         }
     }
 }

@@ -21,6 +21,10 @@ namespace ApplicationCore.Entitites
             ShoppingCarts = new List<ShoppingCart>();
         }
 
+        public ShoppingBag()
+        {
+        }
+
         public bool IsEmpty()
         {
             return ShoppingCarts.Count==0;

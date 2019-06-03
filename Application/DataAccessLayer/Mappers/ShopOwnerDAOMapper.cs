@@ -9,6 +9,13 @@ namespace DataAccessLayer.Mappers
 {
     public class ShopOwnerDAOMapper : IGenericMapper<ShopOwnerDAO, ShopOwner>
     {
+        BaseMapingManager _baseMapingManager;
+
+        public ShopOwnerDAOMapper(BaseMapingManager baseMapingManager)
+        {
+            _baseMapingManager = baseMapingManager;
+            _baseMapingManager.AddMapper<ShopOwnerDAO, ShopOwner>(this);
+        }
         ShopOwner IGenericMapper<ShopOwnerDAO, ShopOwner>.Map(ShopOwnerDAO fromObject)
         {
             ShopOwner toReturn = new ShopOwner();

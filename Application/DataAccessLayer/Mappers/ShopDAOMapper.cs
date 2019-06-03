@@ -7,18 +7,25 @@ using System.Text;
 
 namespace DataAccessLayer.Mappers
 {
-    class ShopDAOMapper : IGenericMapper<ShopDAO, Shop>
+    public class ShopDAOMapper : IGenericMapper<ShopDAO, Shop>
     {
+        BaseMapingManager _baseMapingManager;
+
+        public ShopDAOMapper(BaseMapingManager baseMapingManager)
+        {
+            _baseMapingManager = baseMapingManager;
+            _baseMapingManager.AddMapper<ShopDAO, Shop>(this);
+        }
         Shop IGenericMapper<ShopDAO, Shop>.Map(ShopDAO fromObject)
         {
             Shop mappedObject = new Shop();
             mappedObject.Guid = fromObject.Guid;
             foreach (ShopOwnerDAO owner in fromObject.Owners)
-                mappedObject.Owners.Add(null);  //map owner in ShopOwnerMapperDAO
+                mappedObject.Owners.Add(_baseMapingManager.Map<ShopOwnerDAO, ShopOwner>(owner));  //map owner in ShopOwnerMapperDAO
             foreach (ShopOwnerDAO manager in fromObject.Managers)
-                mappedObject.Owners.Add(null);  //map owner in ShopOwnerMapperDAO
+                mappedObject.Owners.Add(_baseMapingManager.Map<ShopOwnerDAO, ShopOwner>(manager));  //map owner in ShopOwnerMapperDAO
             foreach (ShopProductDAO shopProduct in fromObject.ShopProducts)
-                mappedObject.ShopProducts.Add(null); //map shopProduct with shopProductmaapperDAO
+                mappedObject.ShopProducts.Add(_baseMapingManager.Map<ShopProductDAO, ShopProduct>(shopProduct)); //map shopProduct with shopProductmaapperDAO
             switch (fromObject.ShopState)
             {
                 case ShopDAO.ShopStateEnum.Active:

@@ -9,6 +9,14 @@ namespace DataAccessLayer.Mappers
 {
     public class BaseUserDAOMapper : IGenericMapper<BaseUserDAO,BaseUser>
     {
+        BaseMapingManager _baseMapingManager;
+
+        public BaseUserDAOMapper(BaseMapingManager baseMapingManager)
+        {
+            _baseMapingManager = baseMapingManager;
+            _baseMapingManager.AddMapper<BaseUserDAO,BaseUser>(this);
+        }
+
         BaseUser IGenericMapper<BaseUserDAO, BaseUser>.Map(BaseUserDAO fromObject)
         {
             BaseUser mappedObject = new BaseUser(fromObject.Username, fromObject.Get_hash(), fromObject.IsAdmin);

@@ -7,8 +7,15 @@ using System.Text;
 
 namespace DataAccessLayer.Mappers
 {
-    class BaseUserMapper : IGenericMapper<BaseUser, BaseUserDAO>
+    public class BaseUserMapper : IGenericMapper<BaseUser, BaseUserDAO>
     {
+        BaseMapingManager _baseMapingManager;
+
+        public BaseUserMapper(BaseMapingManager baseMapingManager)
+        {
+            _baseMapingManager = baseMapingManager;
+            _baseMapingManager.AddMapper<BaseUser, BaseUserDAO>(this);
+        }
         BaseUserDAO IGenericMapper<BaseUser, BaseUserDAO>.Map(BaseUser fromObject)
         {
             BaseUserDAO mappedObject = new BaseUserDAO(fromObject);

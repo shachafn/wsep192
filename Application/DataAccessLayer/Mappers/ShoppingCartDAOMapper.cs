@@ -9,6 +9,13 @@ namespace DataAccessLayer.Mappers
 {
     public class ShoppingCartDAOMapper : IGenericMapper<ShoppingCartDAO, ShoppingCart>
     {
+        BaseMapingManager _baseMapingManager;
+
+        public ShoppingCartDAOMapper(BaseMapingManager baseMapingManager)
+        {
+            _baseMapingManager = baseMapingManager;
+            _baseMapingManager.AddMapper<ShoppingCartDAO, ShoppingCart>(this);
+        }
         ShoppingCart IGenericMapper<ShoppingCartDAO, ShoppingCart>.Map(ShoppingCartDAO fromObject)
         {
             ShoppingCart shoppingCart = new ShoppingCart();
@@ -16,7 +23,7 @@ namespace DataAccessLayer.Mappers
             shoppingCart.ShopGuid = fromObject.ShopGuid;
             shoppingCart.UserGuid = fromObject.UserGuid;
             foreach (RecordsPerCartDAO record in fromObject.RecordsGuids)
-                shoppingCart.PurchasedProducts.Add(null); //mapper of tuple and records.
+                shoppingCart.PurchasedProducts.Add(new Tuple<Guid, int>(record.ProductGuid,record.PurchasedQuantity)); //mapper of tuple and records.
             return shoppingCart;
         }
 

@@ -21,6 +21,7 @@ using DomainLayer.External_Services;
 using DataAccessLayer;
 using Microsoft.EntityFrameworkCore;
 using ApplicationCore.Mapping;
+using DataAccessLayer.Mappers;
 
 namespace PresentaitionLayer
 {
@@ -54,6 +55,20 @@ namespace PresentaitionLayer
         {
             var connection = @"Data Source=DESKTOP-3MH7VAJ\SQLEXPRESS;Initial Catalog=WSEP192;Integrated Security=True;Connect Timeout=30;Encrypt=False;TrustServerCertificate=False;ApplicationIntent=ReadWrite;MultiSubnetFailover=False";
             services.AddSingleton<BaseMapingManager>();
+
+            services.AddSingleton<BaseUserMapper>();
+            services.AddSingleton<BaseUserDAOMapper>();
+            services.AddSingleton<ProductMapper>();
+            services.AddSingleton<PrdoductDAOMapper>();
+            services.AddSingleton<ShoppingCartMapper>();
+            services.AddSingleton<ShoppingCartDAOMapper>();
+            services.AddSingleton<ShopOwnerDAOMapper>();
+            services.AddSingleton<ShopOwnerMapper>();
+            services.AddSingleton<ShopProductMapper>();
+            services.AddSingleton<ShopProductDAOMapper>();
+            services.AddSingleton<ShopMapper>();
+            services.AddSingleton<ShopDAOMapper>();
+
             services.AddDbContext<ApplicationContext>
                 (options => options.UseSqlServer(connection));
             services.AddScoped<UnitOfWork>();

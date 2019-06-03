@@ -9,6 +9,13 @@ namespace DataAccessLayer.Mappers
 {
     public class ShoppingBagMapper : IGenericMapper<ShoppingBag, ShoppingBagDAO>
     {
+        BaseMapingManager _baseMapingManager;
+
+        public ShoppingBagMapper(BaseMapingManager baseMapingManager)
+        {
+            _baseMapingManager = baseMapingManager;
+            _baseMapingManager.AddMapper<ShoppingBag, ShoppingBagDAO>(this);
+        }
         ShoppingBagDAO IGenericMapper<ShoppingBag, ShoppingBagDAO>.Map(ShoppingBag fromObject)
         {
             ShoppingBagDAO toReturn = new ShoppingBagDAO();

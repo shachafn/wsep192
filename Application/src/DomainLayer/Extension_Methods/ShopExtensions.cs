@@ -99,7 +99,7 @@ namespace DomainLayer.Extension_Methods
             if (shop.Creator.OwnerGuid.Equals(userGuid))
                 return shop.Creator;
             var otherOwner = shop.Owners.FirstOrDefault(o => o.OwnerGuid.Equals(userGuid));
-            if (otherOwner == null) throw new OwnerNotFoundException($"There is no owner with guid {userGuid} of shop with {shop.Guid}.");
+            if (otherOwner == null) throw new OwnerNotFoundException($"User with Guid - {userGuid} is not an owner of shop {shop.ShopName}.");
             return otherOwner;
         }
         public static bool IsOwner(this Shop shop, Guid userGuid)
@@ -314,7 +314,7 @@ namespace DomainLayer.Extension_Methods
             if (!shop.ShopState.Equals(Shop.ShopStateEnum.Active))
             {
                 StackTrace stackTrace = new StackTrace();
-                throw new ShopStateException($"Shop is not active. Cant complete method {stackTrace.GetFrame(1).GetMethod().Name}");
+                throw new ShopStateException($"Shop {shop.ShopName} is not active. Cant complete method {stackTrace.GetFrame(1).GetMethod().Name}");
             }
         }
 
@@ -323,7 +323,7 @@ namespace DomainLayer.Extension_Methods
             if (!shop.ShopState.Equals(Shop.ShopStateEnum.Closed))
             {
                 StackTrace stackTrace = new StackTrace();
-                throw new ShopStateException($"Shop is not closed. Cant complete method {stackTrace.GetFrame(1).GetMethod().Name}");
+                throw new ShopStateException($"Shop {shop.ShopName} is not closed. Cant complete method {stackTrace.GetFrame(1).GetMethod().Name}");
             }
         }
 
@@ -332,7 +332,7 @@ namespace DomainLayer.Extension_Methods
             if (!(shop.ShopState.Equals(Shop.ShopStateEnum.Closed) || shop.ShopState.Equals(Shop.ShopStateEnum.Active)))
             {
                 StackTrace stackTrace = new StackTrace();
-                throw new ShopStateException($"Shop is not closed or active. Cant complete method {stackTrace.GetFrame(1).GetMethod().Name}");
+                throw new ShopStateException($"Shop {shop.ShopName} is not closed or active. Cant complete method {stackTrace.GetFrame(1).GetMethod().Name}");
             }
         }
 
@@ -341,7 +341,7 @@ namespace DomainLayer.Extension_Methods
             if (!(shop.ShopState.Equals(Shop.ShopStateEnum.PermanentlyClosed)))
             {
                 StackTrace stackTrace = new StackTrace();
-                throw new ShopStateException($"Shop is not closed or active. Cant complete method {stackTrace.GetFrame(1).GetMethod().Name}");
+                throw new ShopStateException($"Shop {shop.ShopName} is not closed or active. Cant complete method {stackTrace.GetFrame(1).GetMethod().Name}");
             }
         }
 

@@ -36,13 +36,27 @@ namespace PresentaitionLayer.Controllers
             return View(results);
         }
 
-      /*  [AllowAnonymous]
-        public IActionResult Details(Guid ItemId,Guid)
+        [AllowAnonymous]
+        public IActionResult Shops()
         {
-            //model 
-            return View();// need to pass a product according to id
-        }*/
-        
+            var shops = _serviceFacade.GetAllShops(new Guid(HttpContext.Session.Id));
+            return View(shops);
+        }
+
+        [AllowAnonymous]
+        public IActionResult ViewShop(string ShopId)
+        {
+            var products = _serviceFacade.GetShopProducts(new Guid(HttpContext.Session.Id), new Guid(ShopId));
+            ViewData["ShopId"] = ShopId;
+            return View(products);
+        }
+        /*  [AllowAnonymous]
+          public IActionResult Details(Guid ItemId,Guid)
+          {
+              //model 
+              return View();// need to pass a product according to id
+          }*/
+
         [AllowAnonymous]
         [HttpPost]
         public IActionResult AddToCart( int Quantity,string ShopId,string ItemId)

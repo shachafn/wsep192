@@ -12,6 +12,7 @@ using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Text;
 using System.Threading.Tasks;
+using System.Linq;
 using Utils;
 
 namespace Infrastructure
@@ -29,6 +30,7 @@ namespace Infrastructure
 
         public async Task HandleUpdate(IUpdateEvent updateEvent)
         {
+            //_logger.Log(LogLevel.Information, string.Join('\n', updateEvent.Messages.Values));
             await _notifier.NotifyEvent(updateEvent);
         }
 

@@ -22,8 +22,7 @@ namespace ATBridge
                                 new DomainLayerFacade(
                                     new UserDomain(NullLogger<UserDomain>.Instance),
                                     new DomainLayerFacadeVerifier(),
-                                    NullLogger<DomainLayerFacade>.Instance,
-                                    new DefaultExternalServicesManager()
+                                    NullLogger<DomainLayerFacade>.Instance
                                 ),
                                 NullLogger<ServiceFacade>.Instance
                             ),

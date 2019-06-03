@@ -164,9 +164,9 @@ namespace DomainLayer.Facade
             _verifier.VerifyMe(MethodBase.GetCurrentMethod(), userIdentifier, username, password);
 
             if (_isSystemInitialized)
-                throw new SystemAlreadyInitializedException($"Cannot initialize the system again.");
+                throw new SystemAlreadyInitializedException($"Cannot initialize the system twice.");
             if (!_externalServicesManager.PaymentSystem.IsAvailable())
-                //throw new ServiceUnReachableException($"Payment System Service is unreachable.");
+                throw new ServiceUnReachableException($"Payment System Service is unreachable.");
                 _logger.LogDebug("Payment System is not available!");
             if (!_externalServicesManager.SupplySystem.IsAvailable())
                 throw new ServiceUnReachableException($"Supply System Service is unreachable.");

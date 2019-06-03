@@ -13,11 +13,18 @@ namespace ApplicationCore.Interfaces.DomainLayer
 
         internal class DefaultPaymentSystem : IPaymentSystem
         {
+            public bool CancelPayment() => true;
+
             public bool IsAvailable() => true;
+
+            public int Pay() => 1;
         }
         internal class DefaultSupplySystem : ISupplySystem
         {
+            public bool CancelSupply() => true;
             public bool IsAvailable() => true;
+
+            public int Supply() => 1;
         }
     }
 }

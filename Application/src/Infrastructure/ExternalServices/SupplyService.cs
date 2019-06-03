@@ -1,10 +1,11 @@
-﻿using System;
+﻿using ApplicationCore.Interfaces.ExternalServices;
+using System;
 using System.Collections.Generic;
 using System.Text;
 
 namespace Infrastructure.ExternalServices
 {
-    public class SupplySystem : BaseHttpClient
+    public class SupplyService : BaseHttpClient, ISupplySystem
     {
         public bool IsAvailable()
         {

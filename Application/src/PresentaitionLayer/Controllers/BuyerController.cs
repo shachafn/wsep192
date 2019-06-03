@@ -4,8 +4,10 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
 using PresentaitionLayer.Models.BuyerModels;
+using PresentaitionLayer.Models.SellerModels;
 using System;
 using System.Collections.Generic;
+using System.Linq;
 
 namespace PresentaitionLayer.Controllers
 {
@@ -49,6 +51,19 @@ namespace PresentaitionLayer.Controllers
             var products = _serviceFacade.GetShopProducts(new Guid(HttpContext.Session.Id), new Guid(ShopId));
             ViewData["ShopId"] = ShopId;
             return View(products);
+        }
+
+        [AllowAnonymous]
+        public IActionResult Policies(string ShopId)
+        {
+            ViewData["ShopId"] = ShopId;
+            var shops = _serviceFacade.GetUserShops(new Guid(HttpContext.Session.Id));
+            var shop = shops.FirstOrDefault(currshop => currshop.Guid.Equals(new Guid(ShopId)));
+            PoliciesModel model = new PoliciesModel();
+            model.PurchasePolicies = shop.PurchasePolicies;
+            model.DiscountPolicies = shop.DiscountPolicies;
+            model.name = shop.ShopName;
+            return View(model);
         }
         /*  [AllowAnonymous]
           public IActionResult Details(Guid ItemId,Guid)

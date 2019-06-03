@@ -1,0 +1,59 @@
+﻿@{
+    ViewData["Title"] = "EditItem";
+}
+
+<h2>Add purchase Policy</h2>
+<div style="margin: 40px 0">
+    <h3>Add a new Product</h3>
+    <form asp-action="AddProductPurchasePolicies" method="post" class="form-control" style="height:80px; padding:6px 12px">
+        <label>
+            Description
+            <input type="text" class="input" name="Description" placeholder="Policy Description"  style="height:30px; width:1000px;" />
+        </label>
+        <label>
+            bigger/lesser
+            <select name="Sign" required>
+                <option value=">"> ></option>
+                <option value="<"> <</option>
+            </select>
+        </label>
+        <label>
+            than
+            <input type="number" name="Than" placeholder="0" max="100" min="0" />
+        </label>
+
+        <input type="hidden" name="shopId" value="@ViewData["ShopId"]" />
+        <input type="hidden" name="ProductId" value="@ViewData["ProductId"]" />
+        <input type="submit" value="Add new Item" class="btn" />
+    </form>
+</div>
+
+<h2>Add Discount Policy</h2>
+<div style="margin: 40px 0">
+    <h3>Add a new Product</h3>
+    <form asp-action="AddProductDiscountPolicies" method="post" class="form-control" style="height:80px; padding:6px 12px">
+        <label>
+            Description
+            <input type="text" class="input" name="Description" placeholder="Policy Description" style="height:30px; width:1000px;"/>
+        </label>
+        <label>
+            bigger/lesser
+            <select name="Sign" required>
+                <option value=">"> ></option>
+                <option value="<"> <</option>
+            </select>
+        </label>
+        <label>
+            than
+            <input type="number" name="Than" placeholder="0" max="100" min="0" />
+        </label>
+        <label>
+            percentage
+            <input type="number" name="Percent" placeholder="0" max="100" min="0" />%
+        </label>
+
+        <input type="hidden" name="shopId" value="@ViewData["ShopId"]" />
+        <input type="hidden" name="ProductId" value="@ViewData["ProductId"]" />
+        <input type="submit" value="Add new Item" class="btn" />
+    </form>
+</div>

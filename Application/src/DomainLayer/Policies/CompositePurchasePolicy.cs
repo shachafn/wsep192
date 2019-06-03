@@ -12,7 +12,7 @@ namespace DomainLayer.Policies
         private IPurchasePolicy PurchasePolicy1 { get; }
         private ILogicOperator Operator { get; }
         private IPurchasePolicy PurchasePolicy2 { get; }
-        private string Description { get; }
+        public string Description { get; }
 
 
         public CompositePurchasePolicy(IPurchasePolicy purchasePolicy1, ILogicOperator @operator, IPurchasePolicy purchasePolicy2, string description)

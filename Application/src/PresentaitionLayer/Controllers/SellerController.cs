@@ -90,6 +90,14 @@ namespace PresentaitionLayer.Controllers
         }
 
         [HttpPost]
+        public IActionResult ProductPolicies(string ShopId, string ProductId)
+        {
+            ViewData["ShopId"] = ShopId;
+            ViewData["ProductID"] = ProductId;
+            return View();
+        }
+
+        [HttpPost]
         public IActionResult EditItem(string ShopId,string ProductId)
         {
             ViewData["ShopId"] = ShopId;
@@ -110,12 +118,60 @@ namespace PresentaitionLayer.Controllers
             return RedirectToAction("Products", "Seller", new { ShopId = ShopId });
         }
 
-        [HttpPost]
-        public IActionResult Policies( string ShopId)
+        
+        public IActionResult Policies(string ShopId)
         {
-            
+            ViewData["ShopId"] = ShopId;
+            var shops = _serviceFacade.GetUserShops(new Guid(HttpContext.Session.Id));
+            var shop = shops.FirstOrDefault(currshop => currshop.Guid.Equals(new Guid(ShopId)));
+            PoliciesModel model = new PoliciesModel();
+            model.PurchasePolicies = shop.PurchasePolicies;
+            model.DiscountPolicies = shop.DiscountPolicies;
+            model.name = shop.ShopName;
+            return View(model);
+        }
+        [HttpPost]
+        public IActionResult AddCartDiscountPolicy(string Description, string Sign, int Than, int Percent, string ShopId)
+        {
+            _serviceFacade.AddNewDiscountPolicy(new Guid(HttpContext.Session.Id), new Guid(ShopId), (object)"Cart discount policy", (object)Sign, (object)Than, (object)Percent, (object)Description,(object)null);
+            return RedirectToAction("Policies", "Seller", new { ShopId = ShopId });
+        }
+
+        [HttpPost]
+        public IActionResult AddCompoundDiscountPolicy(string Description, string guid1,string Sign, string guid2, int Percent, string ShopId)
+        {
+            _serviceFacade.AddNewDiscountPolicy(new Guid(HttpContext.Session.Id), new Guid(ShopId), (object)"Compound discount policy",(object) new Guid(guid1),(object)Sign, (object)new Guid(guid1), (object)Percent, (object)Description);
+            return RedirectToAction("Policies", "Seller", new { ShopId = ShopId });
+        }
+        /*
+                [HttpPost]
+                public IActionResult AddPurchasePolicy(string ShopId)
+                {
+                    _serviceFacade.CascadeRemoveShopOwner(new Guid(HttpContext.Session.Id), new Guid(ShopId), new Guid(OwnerId));
+                    return RedirectToAction("Manage", "Seller", new { ShopId = ShopId });
+                }
+
+                [HttpPost]
+                public IActionResult AddDiscountPolicy(string ShopId)
+                {
+                    _serviceFacade.CascadeRemoveShopOwner(new Guid(HttpContext.Session.Id), new Guid(ShopId), new Guid(OwnerId));
+                    return RedirectToAction("Manage", "Seller", new { ShopId = ShopId });
+                }*/
+
+        [HttpPost]
+        public IActionResult AddProductPurchasePolicies(string Description,string Sign,int Than, string ProductId,string ShopId)
+        {
+            _serviceFacade.AddNewPurchasePolicy(new Guid(HttpContext.Session.Id), new Guid(ShopId), (object)"Product purchase policy",(object)new Guid(ProductId), (object)Sign, (object)Than, (object)Description);
             return RedirectToAction("Products", "Seller", new { ShopId = ShopId });
         }
+
+        [HttpPost]
+        public IActionResult AddProductDiscountPolicies(string Description, string Sign, int Than,int Percent, string ProductId, string ShopId)
+        {
+            _serviceFacade.AddNewDiscountPolicy(new Guid(HttpContext.Session.Id), new Guid(ShopId), (object)"Product discount policy", (object)new Guid(ProductId), (object)Sign, (object)Than,(object)Percent, (object)Description);
+            return RedirectToAction("Products", "Seller", new { ShopId = ShopId });
+        }
+
         [HttpPost]
         public IActionResult DeleteRole(string OwnerId, string ShopId)
         {

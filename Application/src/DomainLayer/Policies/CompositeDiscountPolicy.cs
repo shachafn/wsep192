@@ -12,7 +12,7 @@ namespace DomainLayer.Policies
         private ILogicOperator Operator { get; } //Discount can be conditioned by purchase
         private IDiscountPolicy DiscountPolicy2 { get; }
         public int DiscountPercentage { get; set; }
-        private string Description { get; }
+        public string Description { get; }
 
         public CompositeDiscountPolicy(IDiscountPolicy discountPolicy1, ILogicOperator @operator, IDiscountPolicy discountPolicy2, int discountPercentage, string description)
         {

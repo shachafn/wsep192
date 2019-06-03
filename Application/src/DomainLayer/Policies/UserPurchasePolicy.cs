@@ -13,7 +13,7 @@ namespace DomainLayer.Policies
         public Guid Guid { get; private set; }
         private string FieldName { get; }
         private object Value { get; }
-        private string Description { get; }
+        public string Description { get; }
 
         public UserPurchasePolicy() { } //Empty constructor for ref
         public UserPurchasePolicy(string fieldName,object value,string description)

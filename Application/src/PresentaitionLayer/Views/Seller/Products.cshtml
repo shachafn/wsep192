@@ -60,6 +60,11 @@
                 @Html.DisplayFor(modelItem => item.Quantity)
             </td>
             <td>
+                <form asp-action="ProductPolicies" method="post">
+                    <input type="hidden" name="ProductId" value=" @Html.DisplayFor(modelItem => item.Guid)" />
+                    <input type="hidden" name="shopId" value="@ViewData["ShopId"]" />
+                    <input type="submit" value="Policies" class="form-control" />
+                </form>
                 <form asp-action="EditItem" method="post">
                     <input type="hidden" name="ProductId" value=" @Html.DisplayFor(modelItem => item.Guid)" />
                     <input type="hidden" name="shopId" value="@ViewData["ShopId"]" />

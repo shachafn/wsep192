@@ -15,7 +15,7 @@ namespace DomainLayer.Policies
         private IArithmeticOperator Operator { get; }
         private int ExpectedQuantitiy { get; }
         public int DiscountPercentage { get; set; }
-        private string Description { get; }
+        public string Description { get; }
 
 
         public ProductDiscountPolicy(Guid productGuid, IArithmeticOperator @operator, int expectedQuantitiy, int discountPercentage, string description)

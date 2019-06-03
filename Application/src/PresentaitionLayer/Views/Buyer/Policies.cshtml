@@ -1,0 +1,118 @@
+﻿@model PresentaitionLayer.Models.SellerModels.PoliciesModel
+@{
+    ViewData["Title"] = "Policies";
+    int i = 0;
+}
+
+<h1 class="text-center">@Model.name policies</h1>
+
+<h4 class="text-left">Purchase Policies</h4>
+<table class="table">
+    <thead>
+        <tr>
+            <th></th>
+            <th>
+                Description
+            </th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var item in Model.PurchasePolicies)
+        {
+            <tr>
+                <td></td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Description)
+                </td>
+            </tr>
+        }
+    </tbody>
+</table>
+
+<div style="margin: 40px 0">
+    <h3>Add a new Discount policy</h3>
+    <form asp-action="AddPurchasePolicy" method="post" class="form-control" style="height:44px; padding:6px 12px">
+        <label>
+            Name
+            <input type="text" name="ProductName" placeholder="chosen name" />
+        </label>
+        <label>
+            Price
+            <input type="number" name="Price" placeholder="0" />
+        </label>
+        <label>
+            Quantity
+            <input type="number" name="StoredQuantity" placeholder="0" />
+        </label>
+        <label>
+            Category
+            <select name="Category" required>
+                <option value="good things"> good things</option>
+                <option value="pro things"> pro things</option>
+                <option value="superb things"> superb things</option>
+                <option value="nice things"> nice things</option>
+            </select>
+        </label>
+        <input type="hidden" name="shopId" value="@ViewData["ShopId"]" />
+        <input type="submit" value="Add purchase policy" class="btn" />
+    </form>
+</div>
+
+
+<h4 class="text-left">Discount Policies</h4>
+<table class="table">
+    <thead>
+        <tr>
+            <th></th>
+            <th>
+                Description
+            </th>
+            <th>
+                precentage
+            </th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var item in Model.DiscountPolicies)
+        {
+            <tr>
+                <td></td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Description)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.DiscountPercentage)
+                </td>
+            </tr>
+        }
+    </tbody>
+</table>
+
+<div style="margin: 40px 0">
+    <h3>Add a new Discount policy</h3>
+    <form asp-action="AddDiscountPolicy" method="post" class="form-control" style="height:44px; padding:6px 12px">
+        <label>
+            Name
+            <input type="text" name="ProductName" placeholder="chosen name" />
+        </label>
+        <label>
+            Price
+            <input type="number" name="Price" placeholder="0" />
+        </label>
+        <label>
+            Quantity
+            <input type="number" name="StoredQuantity" placeholder="0" />
+        </label>
+        <label>
+            Category
+            <select name="Category" required>
+                <option value="good things"> good things</option>
+                <option value="pro things"> pro things</option>
+                <option value="superb things"> superb things</option>
+                <option value="nice things"> nice things</option>
+            </select>
+        </label>
+        <input type="hidden" name="shopId" value="@ViewData["ShopId"]" />
+        <input type="submit" value="Add Discount policy" class="btn" />
+    </form>
+</div>

@@ -9,5 +9,6 @@ namespace DomainLayer.Policies
 
         bool CheckPolicy(ShoppingCart cart, Guid productGuid, int quantity, BaseUser user);
         Guid Guid { get; }
+        string Description { get; }
     }
 }

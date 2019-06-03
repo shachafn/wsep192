@@ -14,7 +14,7 @@ namespace DomainLayer.Policies
         private string FieldName;
         private object ExpectedValue;
         public int DiscountPercentage { get; set; }
-        private string Description { get; }
+        public string Description { get; }
 
        
         public UserDiscountPolicy() { }// Empty constructor for ref

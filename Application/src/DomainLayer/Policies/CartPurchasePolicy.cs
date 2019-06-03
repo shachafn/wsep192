@@ -16,7 +16,7 @@ namespace DomainLayer.Policies
         public Guid Guid { get; set; }
         private int ExpectedQuantity { get; }
         private IArithmeticOperator Operator { get; }
-        private string Description { get; }
+        public string Description { get; }
 
 
         public CartPurchasePolicy(int expectedQuantity, IArithmeticOperator @operator, string description)

@@ -13,7 +13,7 @@ namespace DomainLayer.Policies
         private int ExpectedQuantity { get; }
         private Guid ProductGuid { get; }
         private IArithmeticOperator Operator { get; }
-        private string Description { get; }
+        public string Description { get; }
 
         public ProductPurchasePolicy(Guid productGuid, IArithmeticOperator givenOperator, int expectedQuantity, string description)
         {

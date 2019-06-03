@@ -8,8 +8,10 @@ namespace ApplicationCore.Entitites
     [Table("ShopProducts")]
     public class ShopProductDAO
     {
-        [Key, Column(Order = 0)]
+        [Key]
         public Guid Id { get; set; }
+
+        public Product Product { get; set; }
 
         [ForeignKey("Products")]
         public Guid ProductGuid { get; set; }

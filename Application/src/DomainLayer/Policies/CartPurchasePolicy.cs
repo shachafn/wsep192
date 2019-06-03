@@ -5,6 +5,7 @@ using ApplicationCore.Data;
 using ApplicationCore.Entities;
 using ApplicationCore.Entities.Users;
 using ApplicationCore.Entitites;
+using ApplicationCore.Interfaces.DAL;
 using DomainLayer.Data.Entitites;
 using DomainLayer.Data.Entitites.Users;
 using DomainLayer.Operators;
@@ -18,13 +19,14 @@ namespace DomainLayer.Policies
         private IArithmeticOperator Operator { get; }
         private string Description { get; }
 
-
-        public CartPurchasePolicy(int expectedQuantity, IArithmeticOperator @operator, string description)
+        private IUnitOfWork _unitOfWork;
+        public CartPurchasePolicy(int expectedQuantity, IArithmeticOperator @operator, string description, IUnitOfWork unitOfWork)
         {
             Guid = Guid.NewGuid();
             ExpectedQuantity = expectedQuantity;
             Operator = @operator;
             Description = description;
+            _unitOfWork = unitOfWork;
         }
 
         public bool CheckPolicy(ShoppingCart cart, Guid productGuid, int quantity, BaseUser user)
@@ -38,7 +40,7 @@ namespace DomainLayer.Policies
             int numberOfProducts = 0;
             foreach (Tuple<Guid, int> record in cart.PurchasedProducts)
             {
-                Shop shop = DomainData.ShopsCollection[cart.ShopGuid];
+                Shop shop = _unitOfWork.ShopRepository.FindById(cart.ShopGuid);
                 foreach (ShopProduct productInShop in shop.ShopProducts)
                 {
                     if (productInShop.Guid.Equals(record.Item1))

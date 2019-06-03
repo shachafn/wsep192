@@ -22,6 +22,7 @@ using DataAccessLayer;
 using Microsoft.EntityFrameworkCore;
 using ApplicationCore.Mapping;
 using DataAccessLayer.Mappers;
+using ApplicationCore.Interfaces.DAL;
 
 namespace PresentaitionLayer
 {
@@ -60,6 +61,8 @@ namespace PresentaitionLayer
             services.AddSingleton<BaseUserDAOMapper>();
             services.AddSingleton<ProductMapper>();
             services.AddSingleton<PrdoductDAOMapper>();
+            services.AddSingleton<ShopProductDAOMapper>();
+            services.AddSingleton<ShopProductMapper>();
             services.AddSingleton<ShoppingCartMapper>();
             services.AddSingleton<ShoppingCartDAOMapper>();
             services.AddSingleton<ShopOwnerDAOMapper>();
@@ -71,7 +74,7 @@ namespace PresentaitionLayer
 
             services.AddDbContext<ApplicationContext>
                 (options => options.UseSqlServer(connection));
-            services.AddScoped<UnitOfWork>();
+            services.AddScoped<IUnitOfWork, UnitOfWork>();
 
             //Notice, the order of adding is crucial
             services.AddSingleton<IUserDomain, UserDomain>();

@@ -4,6 +4,7 @@ using System.Text;
 using System.Linq;
 using ApplicationCore.Entities.Users;
 using ApplicationCore.Entitites;
+using ApplicationCore.Interfaces.DAL;
 
 namespace ApplicationCore.Events
 {
@@ -22,18 +23,18 @@ namespace ApplicationCore.Events
             Messages = new Dictionary<ICollection<Guid>, string>();
         }
 
-        public void SetMessage(ICollection<Shop> shops, ICollection<BaseUser> registeredUsers)
+        public void SetMessage(IUnitOfWork unitOfWork)
         {
-            Message = $"Welcome {registeredUsers.First(u => u.Guid.Equals(Initiator)).Username}!";
+            Message = $"Welcome {unitOfWork.UserRepository.FindAll().First(u => u.Guid.Equals(Initiator)).Username}!";
         }
-        public void SetTargets(ICollection<Shop> shops, ICollection<BaseUser> registeredUsers)
+        public void SetTargets(IUnitOfWork unitOfWork)
         {
             Targets.Add(Initiator);
         }
 
-        public void SetMessages(ICollection<Shop> shops, ICollection<BaseUser> registeredUsers)
+        public void SetMessages(IUnitOfWork unitOfWork)
         {
-            string initiatorMsg = $"Welcome {registeredUsers.First(u => u.Guid.Equals(Initiator)).Username}!";
+            string initiatorMsg = $"Welcome {unitOfWork.UserRepository.FindAll().First(u => u.Guid.Equals(Initiator)).Username}!";
             Messages.Add(new List<Guid> { Initiator }, initiatorMsg);
         }
     }

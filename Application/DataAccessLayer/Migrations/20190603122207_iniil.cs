@@ -3,7 +3,7 @@ using Microsoft.EntityFrameworkCore.Migrations;
 
 namespace DataAccessLayer.Migrations
 {
-    public partial class initial : Migration
+    public partial class iniil : Migration
     {
         protected override void Up(MigrationBuilder migrationBuilder)
         {
@@ -40,7 +40,8 @@ namespace DataAccessLayer.Migrations
                 {
                     Guid = table.Column<Guid>(nullable: false),
                     ShopState = table.Column<int>(nullable: false),
-                    ShopName = table.Column<string>(nullable: true)
+                    ShopName = table.Column<string>(nullable: true),
+                    RowVersion = table.Column<byte[]>(rowVersion: true, nullable: true)
                 },
                 constraints: table =>
                 {
@@ -59,25 +60,6 @@ namespace DataAccessLayer.Migrations
                 constraints: table =>
                 {
                     table.PrimaryKey("PK_Users", x => x.Guid);
-                });
-
-            migrationBuilder.CreateTable(
-                name: "StringWrapper",
-                columns: table => new
-                {
-                    Id = table.Column<Guid>(nullable: false),
-                    Text = table.Column<string>(nullable: true),
-                    ProductDAOGuid = table.Column<Guid>(nullable: true)
-                },
-                constraints: table =>
-                {
-                    table.PrimaryKey("PK_StringWrapper", x => x.Id);
-                    table.ForeignKey(
-                        name: "FK_StringWrapper_Products_ProductDAOGuid",
-                        column: x => x.ProductDAOGuid,
-                        principalTable: "Products",
-                        principalColumn: "Guid",
-                        onDelete: ReferentialAction.Restrict);
                 });
 
             migrationBuilder.CreateTable(
@@ -144,6 +126,12 @@ namespace DataAccessLayer.Migrations
                 constraints: table =>
                 {
                     table.PrimaryKey("PK_ShopProducts", x => x.Id);
+                    table.ForeignKey(
+                        name: "FK_ShopProducts_Products_ProductGuid",
+                        column: x => x.ProductGuid,
+                        principalTable: "Products",
+                        principalColumn: "Guid",
+                        onDelete: ReferentialAction.Cascade);
                     table.ForeignKey(
                         name: "FK_ShopProducts_Shops_ShopDAOGuid",
                         column: x => x.ShopDAOGuid,
@@ -213,6 +201,11 @@ namespace DataAccessLayer.Migrations
                 column: "ShopDAOGuid1");
 
             migrationBuilder.CreateIndex(
+                name: "IX_ShopProducts_ProductGuid",
+                table: "ShopProducts",
+                column: "ProductGuid");
+
+            migrationBuilder.CreateIndex(
                 name: "IX_ShopProducts_ShopDAOGuid",
                 table: "ShopProducts",
                 column: "ShopDAOGuid");
@@ -223,11 +216,6 @@ namespace DataAccessLayer.Migrations
                 column: "ShopName",
                 unique: true,
                 filter: "[ShopName] IS NOT NULL");
-
-            migrationBuilder.CreateIndex(
-                name: "IX_StringWrapper_ProductDAOGuid",
-                table: "StringWrapper",
-                column: "ProductDAOGuid");
         }
 
         protected override void Down(MigrationBuilder migrationBuilder)
@@ -242,19 +230,16 @@ namespace DataAccessLayer.Migrations
                 name: "ShopProducts");
 
             migrationBuilder.DropTable(
-                name: "StringWrapper");
-
-            migrationBuilder.DropTable(
                 name: "Users");
 
             migrationBuilder.DropTable(
                 name: "Carts");
 
             migrationBuilder.DropTable(
-                name: "Shops");
+                name: "Products");
 
             migrationBuilder.DropTable(
-                name: "Products");
+                name: "Shops");
 
             migrationBuilder.DropTable(
                 name: "ShoppingBags");

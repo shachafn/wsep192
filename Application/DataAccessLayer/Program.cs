@@ -12,9 +12,7 @@ namespace DataAccessLayer
     {
         public static void Main(string[] args)
         {
-            var b = new BaseMapingManager();
-            b.AddMapper<Shop, ShopDAO>(new ShopMapper());
-            var x = b.Map<Shop, ShopDAO>(new Shop(Guid.NewGuid(), "hi"));
+
         }
     }
 }

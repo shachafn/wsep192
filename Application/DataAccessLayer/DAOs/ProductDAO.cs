@@ -19,7 +19,7 @@ namespace DataAccessLayer.DAOs
         public string Category { get; set; }
         [Timestamp]
         public byte[] RowVersion { get; set; }
-        public ICollection<StringWrapper> Keywords { get; set; }
+        //public ICollection<StringWrapper> Keywords { get; set; }
         public ProductDAO()
         {
 
@@ -29,7 +29,7 @@ namespace DataAccessLayer.DAOs
             Guid = product.GetGuid();
             Name = product.Name;
             Category = product.Category;
-            Keywords = product.Keywords.Select(s => new StringWrapper() { Id = Guid.NewGuid(), Text = s }).ToList();
+            //Keywords = product.Keywords.Select(s => new StringWrapper() { Id = Guid.NewGuid(), Text = s }).ToList();
         }
 
         public override string ToString()

@@ -38,6 +38,8 @@ namespace DataAccessLayer.Migrations
 
                     b.HasKey("Id");
 
+                    b.HasIndex("ProductGuid");
+
                     b.HasIndex("ShopDAOGuid");
 
                     b.ToTable("ShopProducts");
@@ -113,6 +115,10 @@ namespace DataAccessLayer.Migrations
                 {
                     b.Property<Guid>("Guid")
                         .ValueGeneratedOnAdd();
+
+                    b.Property<byte[]>("RowVersion")
+                        .IsConcurrencyToken()
+                        .ValueGeneratedOnAddOrUpdate();
 
                     b.Property<string>("ShopName");
 
@@ -193,24 +199,13 @@ namespace DataAccessLayer.Migrations
                     b.ToTable("Carts");
                 });
 
-            modelBuilder.Entity("DataAccessLayer.DAOs.Wrappers.StringWrapper", b =>
-                {
-                    b.Property<Guid>("Id")
-                        .ValueGeneratedOnAdd();
-
-                    b.Property<Guid?>("ProductDAOGuid");
-
-                    b.Property<string>("Text");
-
-                    b.HasKey("Id");
-
-                    b.HasIndex("ProductDAOGuid");
-
-                    b.ToTable("StringWrapper");
-                });
-
             modelBuilder.Entity("ApplicationCore.Entitites.ShopProductDAO", b =>
                 {
+                    b.HasOne("DataAccessLayer.DAOs.ProductDAO", "Product")
+                        .WithMany()
+                        .HasForeignKey("ProductGuid")
+                        .OnDelete(DeleteBehavior.Cascade);
+
                     b.HasOne("DataAccessLayer.DAOs.ShopDAO")
                         .WithMany("ShopProducts")
                         .HasForeignKey("ShopDAOGuid");
@@ -243,13 +238,6 @@ namespace DataAccessLayer.Migrations
                     b.HasOne("DataAccessLayer.DAOs.ShoppingBagDAO")
                         .WithMany("ShoppingCarts")
                         .HasForeignKey("Carts");
-                });
-
-            modelBuilder.Entity("DataAccessLayer.DAOs.Wrappers.StringWrapper", b =>
-                {
-                    b.HasOne("DataAccessLayer.DAOs.ProductDAO")
-                        .WithMany("Keywords")
-                        .HasForeignKey("ProductDAOGuid");
                 });
 #pragma warning restore 612, 618
         }

@@ -5,6 +5,7 @@ using ApplicationCore.Entities.Users;
 using ApplicationCore.Entitites;
 using System.Linq;
 using Utils;
+using ApplicationCore.Interfaces.DAL;
 
 namespace ApplicationCore.Events
 {
@@ -29,28 +30,28 @@ namespace ApplicationCore.Events
             Messages = new Dictionary<ICollection<Guid>, string>();
         }
 
-        public void SetMessage(ICollection<Shop> shops, ICollection<BaseUser> registeredUsers)
+        public void SetMessage(IUnitOfWork unitOfWork)
         {
-            string username = registeredUsers.FirstOrDefault(user => user.Guid.Equals(Initiator)).Username;
+            string username = unitOfWork.UserRepository.FindAll().FirstOrDefault(user => user.Guid.Equals(Initiator)).Username;
             Message = string.Format("Shop {0} reopened by {1}", ShopGuid, username);
         }
     
-        public void SetMessages(ICollection<Shop> shops, ICollection<BaseUser> registeredUsers)
+        public void SetMessages(IUnitOfWork unitOfWork)
         {
-            Shop reopenedShop = shops.FirstOrDefault(shop => shop.Guid.Equals(ShopGuid));
+            Shop reopenedShop = unitOfWork.ShopRepository.FindAll().FirstOrDefault(shop => shop.Guid.Equals(ShopGuid));
             ICollection<Guid> shopOwners = reopenedShop.Owners.Select(owner => owner.OwnerGuid).ToList();
             shopOwners.Add(reopenedShop.Creator.OwnerGuid);
             shopOwners.Remove(Initiator);
-            string username = registeredUsers.FirstOrDefault(user => user.Guid.Equals(Initiator)).Username;
+            string username = unitOfWork.UserRepository.FindAll().FirstOrDefault(user => user.Guid.Equals(Initiator)).Username;
             string ownersMsg = $"Shop {reopenedShop.ShopName} reopened by {username}";
             string initiatorMsg = $"You reopend your shop {reopenedShop.ShopName}";
             Messages.Add(shopOwners, ownersMsg);
             Messages.Add(new List<Guid> { Initiator }, initiatorMsg);
         }
 
-        public void SetTargets(ICollection<Shop> shops, ICollection<BaseUser> registeredUsers)
+        public void SetTargets(IUnitOfWork unitOfWork)
         {
-            Shop reopenedShop = shops.FirstOrDefault(shop => shop.Guid.Equals(ShopGuid));
+            Shop reopenedShop = unitOfWork.ShopRepository.FindAll().FirstOrDefault(shop => shop.Guid.Equals(ShopGuid));
             ICollection<Guid> shopOwners = reopenedShop.Owners.Select(owner => owner.OwnerGuid).ToList();
             Targets.Add(reopenedShop.Creator.OwnerGuid);
             Targets.AddRange(shopOwners);

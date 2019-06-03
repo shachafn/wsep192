@@ -1,6 +1,7 @@
 ﻿using ApplicationCore.Data;
 using ApplicationCore.Entities.Users;
 using ApplicationCore.Entitites;
+using ApplicationCore.Interfaces.DAL;
 using DomainLayer.Extension_Methods;
 using DomainLayer.Operators;
 using System;
@@ -17,8 +18,8 @@ namespace DomainLayer.Policies
         public int DiscountPercentage { get; set; }
         private string Description { get; }
 
-
-        public ProductDiscountPolicy(Guid productGuid, IArithmeticOperator @operator, int expectedQuantitiy, int discountPercentage, string description)
+        private IUnitOfWork _unitOfWork;
+        public ProductDiscountPolicy(Guid productGuid, IArithmeticOperator @operator, int expectedQuantitiy, int discountPercentage, string description, IUnitOfWork unitOfWork)
         {
 
             Guid = Guid.NewGuid();
@@ -27,6 +28,7 @@ namespace DomainLayer.Policies
             ExpectedQuantitiy = expectedQuantitiy;
             DiscountPercentage = discountPercentage;
             Description = description;
+            _unitOfWork = unitOfWork;
         }
 
 
@@ -42,7 +44,7 @@ namespace DomainLayer.Policies
             if (CheckPolicy(ref cart, productGuid, quantity, user))
             {
                 Product p = null;
-                Shop s = DomainData.ShopsCollection[cart.ShopGuid];
+                Shop s = _unitOfWork.ShopRepository.FindById(cart.ShopGuid);
                 double shopProductPrice = 0;
                 foreach (ShopProduct shopProduct in s.ShopProducts)
                 {

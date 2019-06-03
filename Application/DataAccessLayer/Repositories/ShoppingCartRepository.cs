@@ -5,7 +5,6 @@ using System.Text;
 using ApplicationCore.Entitites;
 using DataAccessLayer.DAOs;
 using ApplicationCore.IRepositories;
-using System.Linq;
 using System.Linq.Expressions;
 using ApplicationCore.Mapping;
 
@@ -51,6 +50,11 @@ namespace DataAccessLayer.Repositories
         IQueryable<ShoppingCart> IRepositoryBase<ShoppingCart>.FindAll()
         {
             return base.FindAll().Select(b => _baseMapingManager.Map<ShoppingCartDAO, ShoppingCart>(b));
+        }
+
+        ShoppingCart IRepositoryBase<ShoppingCart>.FindById(Guid id)
+        {
+            return _baseMapingManager.Map<ShoppingCartDAO, ShoppingCart>(base.FindById(id));
         }
     }
 }

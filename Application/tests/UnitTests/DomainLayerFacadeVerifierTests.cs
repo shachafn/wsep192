@@ -1,5 +1,8 @@
 ﻿using ApplicationCore.Exceptions;
+using ApplicationCore.Interfaces.DAL;
 using ApplicationCore.Interfaces.DomainLayer;
+using ApplicationCore.Mapping;
+using DataAccessLayer;
 using DomainLayer.Domains;
 using DomainLayer.Facade;
 using Microsoft.Extensions.Logging.Abstractions;
@@ -16,12 +19,21 @@ namespace UnitTests
     [TestFixture]
     public class DomainLayerFacadeVerifierTests
     {
-        IDomainLayerFacade facade = new DomainLayerFacade(
-                                    new UserDomain(NullLogger<UserDomain>.Instance),
-                                    new DomainLayerFacadeVerifier(),
+        /*IDomainLayerFacade facade = new DomainLayerFacade(
+                                    new UserDomain(NullLogger<UserDomain>.Instance, new UnitOfWork(new ApplicationContext(new Microsoft.EntityFrameworkCore.DbContextOptions<ApplicationContext>()), new BaseMapingManager())),
+                                    new DomainLayerFacadeVerifier(new UnitOfWork(new ApplicationContext(new Microsoft.EntityFrameworkCore.DbContextOptions<ApplicationContext>()), new BaseMapingManager())),
                                     NullLogger<DomainLayerFacade>.Instance,
-                                    new DefaultExternalServicesManager()
+                                    new DefaultExternalServicesManager(),
+                                    new UnitOfWork(new ApplicationContext(new Microsoft.EntityFrameworkCore.DbContextOptions<ApplicationContext>()), new BaseMapingManager())
                                 );
+                                */
+        IDomainLayerFacade facade = new DomainLayerFacade(
+                            new UserDomain(NullLogger<UserDomain>.Instance, new UnitOfWork(new ApplicationContext(), new BaseMapingManager())),
+                            new DomainLayerFacadeVerifier(new UnitOfWork(new ApplicationContext(), new BaseMapingManager())),
+                            NullLogger<DomainLayerFacade>.Instance,
+                            new DefaultExternalServicesManager(),
+                            new UnitOfWork(new ApplicationContext(), new BaseMapingManager())
+                        );
 
         [Test]
         public void TestReflection()

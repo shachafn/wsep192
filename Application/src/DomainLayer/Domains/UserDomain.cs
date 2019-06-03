@@ -47,7 +47,7 @@ namespace DomainLayer.Domains
             {
                 if (DomainData.GuestsCollection.TryGetValue(userIdentifier.Guid, out IUser res))
                     return res;
-                res = new GuestUser(userIdentifier.Guid);
+                res = new GuestUser(userIdentifier.Guid, _unitOfWork);
                 DomainData.GuestsCollection.Add(res.Guid,res);
                 return res;
             }

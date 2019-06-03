@@ -27,25 +27,18 @@ namespace PresentaitionLayer
         ILogger<Startup> _logger;
         NotificationsCenter _notificationsCenter;
         PipelineManager _pipelineManager;
-        UnitOfWork _unitOfWork;
 
         public Startup(IConfiguration configuration, IServiceFacade facade, ILogger<Startup> logger,
-            NotificationsCenter notificationsCenter, PipelineManager pipelineManager, UnitOfWork unitOfWork)
+            NotificationsCenter notificationsCenter, PipelineManager pipelineManager)
         {
             Configuration = configuration;
             _facade = facade;
             _logger = logger;
             _notificationsCenter = notificationsCenter;
             _pipelineManager = pipelineManager;
-            _unitOfWork = unitOfWork;
             BaseUser u1 = new BaseUser("user1", "213", false);
             BaseUser u2 = new BaseUser("user2", "214", false);
             Shop shop = new Shop(u1.Guid, "Groisman");
-            
-            _unitOfWork.UserRepository.Create(u1);
-            _unitOfWork.UserRepository.Create(u2);
-            _unitOfWork.ShopRepository.Create(shop);
-            _unitOfWork.Save();
         }
 
         public IConfiguration Configuration { get; }

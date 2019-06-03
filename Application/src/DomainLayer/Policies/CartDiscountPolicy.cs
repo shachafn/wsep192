@@ -2,6 +2,7 @@
 using ApplicationCore.Data;
 using ApplicationCore.Entities.Users;
 using ApplicationCore.Entitites;
+using ApplicationCore.Interfaces.DAL;
 using DomainLayer.Extension_Methods;
 using DomainLayer.Operators;
 
@@ -16,13 +17,16 @@ namespace DomainLayer.Policies
         private string Description { get; }
 
         Guid IDiscountPolicy.Guid => Guid;
-        public CartDiscountPolicy(IArithmeticOperator @operator, double expectedSum, int discountpercentage, string description)
+
+        private IUnitOfWork _unitOfWork;
+        public CartDiscountPolicy(IArithmeticOperator @operator, double expectedSum, int discountpercentage, string description, IUnitOfWork unitOfWork)
         {
             Guid = Guid.NewGuid();
             ExpectedSum = expectedSum;
             DiscountPercentage = discountpercentage;
             Operator = @operator;
             Description = description;
+            _unitOfWork = unitOfWork;
         }
 
         public CartDiscountPolicy()
@@ -40,7 +44,7 @@ namespace DomainLayer.Policies
             double totalSum = 0;
             foreach (Tuple<Guid, int> record in cart.PurchasedProducts)
             {
-                Shop shop = DomainData.ShopsCollection[cart.ShopGuid];
+                Shop shop = _unitOfWork.ShopRepository.FindById(cart.ShopGuid);
                 foreach (ShopProduct productInShop in shop.ShopProducts)
                 {
                     if (productInShop.Guid.Equals(record.Item1))

@@ -3,6 +3,7 @@ using System.Reflection;
 using ApplicationCore.Data;
 using ApplicationCore.Entities.Users;
 using ApplicationCore.Entitites;
+using ApplicationCore.Interfaces.DAL;
 using DomainLayer.Extension_Methods;
 
 namespace DomainLayer.Policies
@@ -16,9 +17,14 @@ namespace DomainLayer.Policies
         public int DiscountPercentage { get; set; }
         private string Description { get; }
 
+
+        private IUnitOfWork _unitOfWork;
        
-        public UserDiscountPolicy() { }// Empty constructor for ref
-        public UserDiscountPolicy(string fieldName, object expectedValue,int discountPercentage,string description)
+        public UserDiscountPolicy(IUnitOfWork unitOfWork)
+        {
+            _unitOfWork = unitOfWork;
+        }// Empty constructor for ref
+        public UserDiscountPolicy(string fieldName, object expectedValue,int discountPercentage,string description, IUnitOfWork unitOfWork)
         {
             //field1 = field name
             //field2 = expected value
@@ -30,6 +36,8 @@ namespace DomainLayer.Policies
             ExpectedValue = expectedValue;
             DiscountPercentage = discountPercentage;
             Description = description;
+
+            _unitOfWork = unitOfWork;
         }
 
         public bool CheckPolicy(ref ShoppingCart cart, Guid productGuid, int quantity, BaseUser user)
@@ -62,7 +70,7 @@ namespace DomainLayer.Policies
             double totalSum = 0;
             foreach (Tuple<Guid, int> record in cart.PurchasedProducts)
             {
-                Shop shop = DomainData.ShopsCollection[cart.ShopGuid];
+                Shop shop = _unitOfWork.ShopRepository.FindById(cart.ShopGuid);
                 foreach (ShopProduct productInShop in shop.ShopProducts)
                 {
                     if (productInShop.Guid.Equals(record.Item1))

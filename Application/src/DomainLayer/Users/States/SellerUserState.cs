@@ -111,7 +111,7 @@ namespace DomainLayer.Users.States
 
         public override bool CascadeRemoveShopOwner(BaseUser baseUser, Guid shopGuid, Guid ownerToRemoveGuid)
         {
-            return _unitOfWork.ShopRepository.FindById(shopGuid).CascadeRemoveShopOwner(baseUser.Guid, ownerToRemoveGuid);
+            return _unitOfWork.ShopRepository.FindById(shopGuid).CascadeRemoveShopOwner(baseUser.Guid, ownerToRemoveGuid, _unitOfWork);
         }
 
         public override bool EditProductInCart(BaseUser baseUser, Guid shopGuid, Guid shopProductGuid, int newAmount)

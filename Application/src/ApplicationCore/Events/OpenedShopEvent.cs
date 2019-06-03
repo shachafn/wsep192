@@ -5,6 +5,7 @@ using System.Linq;
 using ApplicationCore.Entities.Users;
 using ApplicationCore.Entitites;
 using Utils;
+using ApplicationCore.Interfaces.DAL;
 
 namespace ApplicationCore.Events
 {
@@ -26,19 +27,19 @@ namespace ApplicationCore.Events
             Messages = new Dictionary<ICollection<Guid>, string>();
         }
 
-        public void SetMessage(ICollection<Shop> shops, ICollection<BaseUser> registeredUsers)
+        public void SetMessage(IUnitOfWork unitOfWork)
         {
             Message = $"A new shop {ShopGuid} was opened successfully!";
         }
 
-        public void SetMessages(ICollection<Shop> shops, ICollection<BaseUser> registeredUsers)
+        public void SetMessages(IUnitOfWork unitOfWork)
         {
-            string shopName = shops.FirstOrDefault(shop => shop.Guid.Equals(ShopGuid)).ShopName;
+            string shopName = unitOfWork.ShopRepository.FindAll().FirstOrDefault(shop => shop.Guid.Equals(ShopGuid)).ShopName;
             string initiatorMsg = $"A new shop {shopName} was opened successfully!";
             Messages.Add(new List<Guid> { Initiator }, initiatorMsg);
         }
 
-        public void SetTargets(ICollection<Shop> shops, ICollection<BaseUser> registeredUsers)
+        public void SetTargets(IUnitOfWork unitOfWork)
         {
             Targets.Add(Initiator);
         }

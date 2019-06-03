@@ -5,6 +5,7 @@ using System.Linq;
 using ApplicationCore.Entities.Users;
 using ApplicationCore.Entitites;
 using Utils;
+using ApplicationCore.Interfaces.DAL;
 
 namespace ApplicationCore.Events
 {
@@ -26,26 +27,26 @@ namespace ApplicationCore.Events
             Message = "UPDATE MESSAGE WAS NOT SET";
             Messages = new Dictionary<ICollection<Guid>, string>();
         }
-        public void SetMessage(ICollection<Shop> shops, ICollection<BaseUser> registeredUsers)
+        public void SetMessage(IUnitOfWork unitOfWork)
         {
-            Message = $"User {registeredUsers.First(u => u.Guid.Equals(AddedOwnerGuid)).Username} is now an owner of shop {ShopGuid}";
+            Message = $"User {unitOfWork.UserRepository.FindAll().First(u => u.Guid.Equals(AddedOwnerGuid)).Username} is now an owner of shop {ShopGuid}";
         }
 
-        public void SetTargets(ICollection<Shop> shops, ICollection<BaseUser> registeredUsers)
+        public void SetTargets(IUnitOfWork unitOfWork)
         {
-            Targets.Add(shops.First(s => s.Guid.Equals(ShopGuid)).Creator.OwnerGuid);
+            Targets.Add(unitOfWork.ShopRepository.FindAll().First(s => s.Guid.Equals(ShopGuid)).Creator.OwnerGuid);
             Targets.Add(AddedOwnerGuid);
         }
 
-        public void SetMessages(ICollection<Shop> shops, ICollection<BaseUser> registeredUsers)
+        public void SetMessages(IUnitOfWork unitOfWork)
         {
-            var shop = shops.First(s => s.Guid.Equals(ShopGuid));
+            var shop = unitOfWork.ShopRepository.FindAll().First(s => s.Guid.Equals(ShopGuid));
             var otherOwners = shop.Owners.Select(owner => owner.OwnerGuid).ToList();
             otherOwners.Add(shop.Creator.OwnerGuid);
             otherOwners.Remove(Initiator);
             otherOwners.Remove(AddedOwnerGuid);
-            string addedOwnerUsername = registeredUsers.First(u => u.Guid.Equals(AddedOwnerGuid)).Username;
-            string initiatorUsername = registeredUsers.First(u => u.Guid.Equals(Initiator)).Username;
+            string addedOwnerUsername = unitOfWork.UserRepository.FindAll().First(u => u.Guid.Equals(AddedOwnerGuid)).Username;
+            string initiatorUsername = unitOfWork.UserRepository.FindAll().First(u => u.Guid.Equals(Initiator)).Username;
             string otherOwnersMsg = $"{addedOwnerUsername} is now an owner of shop {shop.ShopName}";
             string initiatorMsg = $"You added {addedOwnerUsername} as a owner of your shop {shop.ShopName}";
             string addedOwnerMsg = $"{initiatorUsername} added you as an owner of shop {shop.ShopName}";

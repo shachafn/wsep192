@@ -69,7 +69,7 @@ namespace DomainLayer.Users.States
             ICollection<Shop> shopsOwned = GetShopsOwnedByUser(userToRemoveGuid);
             foreach(Shop shop in shopsOwned)
             {
-                shop.RemoveOwner(userToRemoveGuid);
+                shop.RemoveOwner(userToRemoveGuid, _unitOfWork);
             }
             //Clear user's bag if exsits from the list 
             _unitOfWork.ShoppingBagRepository.DeleteById(userToRemoveGuid);

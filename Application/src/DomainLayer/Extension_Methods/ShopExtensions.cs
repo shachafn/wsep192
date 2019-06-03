@@ -8,6 +8,7 @@ using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
+using ApplicationCore.Interfaces.DAL;
 
 namespace DomainLayer.Extension_Methods
 {
@@ -59,16 +60,16 @@ namespace DomainLayer.Extension_Methods
             return toReturn;
         }
 
-        public static bool CascadeRemoveShopOwner(this Shop shop, Guid userGuid, Guid ownerToRemoveGuid)
+        public static bool CascadeRemoveShopOwner(this Shop shop, Guid userGuid, Guid ownerToRemoveGuid, ApplicationCore.Interfaces.DAL.IUnitOfWork _unitOfWork)
         {
             foreach (var owner in shop.Owners.ToList())
             {
                 if (owner.AppointerGuid.Equals(ownerToRemoveGuid))
                 {
                     var newEvent = new RemovedOwnerEvent(owner.OwnerGuid, ownerToRemoveGuid, shop.Guid);
-                    newEvent.SetMessages(DomainData.ShopsCollection.Values, DomainData.RegisteredUsersCollection.Values);
+                    newEvent.SetMessages(_unitOfWork);
                     UpdateCenter.RaiseEvent(newEvent);
-                    CascadeRemoveShopOwner(shop, ownerToRemoveGuid, owner.OwnerGuid);
+                    CascadeRemoveShopOwner(shop, ownerToRemoveGuid, owner.OwnerGuid, _unitOfWork);
                 }
             }
             shop.Owners.Remove(shop.Owners.FirstOrDefault(o => o.OwnerGuid.Equals(ownerToRemoveGuid)));
@@ -115,7 +116,7 @@ namespace DomainLayer.Extension_Methods
             return true;
         }
 
-        public static bool RemoveOwner(this Shop shop, Guid toRemoveOwnerGuid)
+        public static bool RemoveOwner(this Shop shop, Guid toRemoveOwnerGuid, IUnitOfWork unitOfWork)
         {
             var ownerToRemove = shop.GetOwner(toRemoveOwnerGuid);
             if (ownerToRemove.OwnerGuid.Equals(shop.Creator.OwnerGuid))
@@ -124,9 +125,9 @@ namespace DomainLayer.Extension_Methods
             {
                 if (otherOwner.AppointerGuid.Equals(toRemoveOwnerGuid))
                 {
-                    shop.RemoveOwner(otherOwner.OwnerGuid);
+                    shop.RemoveOwner(otherOwner.OwnerGuid, unitOfWork);
                     var newEvent = new RemovedOwnerEvent(otherOwner.OwnerGuid, toRemoveOwnerGuid, shop.Guid);
-                    newEvent.SetMessages(DomainData.ShopsCollection.Values, DomainData.RegisteredUsersCollection.Values);
+                    newEvent.SetMessages(unitOfWork);
                     UpdateCenter.RaiseEvent(newEvent);
                 }
             }

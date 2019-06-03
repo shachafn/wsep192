@@ -11,7 +11,7 @@ namespace ApplicationCore.Entitites
         [Key]
         public Guid Id { get; set; }
 
-        public Product Product { get; set; }
+        public ProductDAO Product { get; set; }
 
         [ForeignKey("Products")]
         public Guid ProductGuid { get; set; }

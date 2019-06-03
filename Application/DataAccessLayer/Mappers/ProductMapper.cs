@@ -22,7 +22,7 @@ namespace ApplicationCore.Mapping
             mappedObject.Guid = fromObject.GetGuid();
             mappedObject.Name = fromObject.Name;
             mappedObject.Category = fromObject.Category;
-            mappedObject.Keywords = new List<StringWrapper>(); //Do not support keywards as of now.
+            //mappedObject.Keywords = new List<StringWrapper>(); //Do not support keywards as of now.
             return mappedObject;
         }
 

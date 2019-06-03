@@ -19,6 +19,7 @@
   </ItemGroup>
 
   <ItemGroup>
+    <ProjectReference Include="..\..\DataAccessLayer\DataAccessLayer.csproj" />
     <ProjectReference Include="..\..\src\ApplicationCore\ApplicationCore.csproj" />
     <ProjectReference Include="..\..\src\DomainLayer\DomainLayer.csproj" />
     <ProjectReference Include="..\..\src\ServiceLayer\ServiceLayer.csproj" />

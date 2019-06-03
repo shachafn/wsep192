@@ -15,11 +15,20 @@ using ApplicationCore.Entities.Users;
 using DomainLayer.Policies;
 using DomainLayer.Data.Entitites.Users.States;
 using DomainLayer.Operators;
+using ApplicationCore.Interfaces.DAL;
 
 namespace DomainLayer.Facade
 {
     public class DomainLayerFacadeVerifier
     {
+
+        private IUnitOfWork _unitOfWork;
+        public DomainLayerFacadeVerifier(IUnitOfWork unitOfWork)
+        {
+            _unitOfWork = unitOfWork;
+        }
+
+
         #region VerifyMe
         public void VerifyMe(MethodBase methodInfo, params object[] parameters)
         {
@@ -455,7 +464,7 @@ namespace DomainLayer.Facade
                 case "Cart purchase policy":
                     if (!(typeof(int) == field2.GetType()))
                         throw new IllegalArgumentException("Invalid sum of cart");
-                    policy = new CartPurchasePolicy((int)field2, GetArithmeticOperator((string)field1), (string)field3);
+                    policy = new CartPurchasePolicy((int)field2, GetArithmeticOperator((string)field1), (string)field3, _unitOfWork);
                     break;
                 case "Compound purchase policy":
                     /*
@@ -491,7 +500,7 @@ namespace DomainLayer.Facade
                     //field5 = description
                     VerifyProductDiscountPolicy(new IllegalArgumentException(), field1, field2, field3, field4, field5);
 
-                    policy = new ProductDiscountPolicy((Guid)field1, GetArithmeticOperator((string)field2), (int)field3, (int)field4, (string)field5);
+                    policy = new ProductDiscountPolicy((Guid)field1, GetArithmeticOperator((string)field2), (int)field3, (int)field4, (string)field5, _unitOfWork);
 
                     break;
                 case "Cart discount policy":
@@ -500,7 +509,7 @@ namespace DomainLayer.Facade
                     //field3 = discount percentage
                     //field4 = description
                     VerifyCartDiscountPolicy(new IllegalArgumentException(), field1, field2, field3, field4);
-                    policy = new CartDiscountPolicy(GetArithmeticOperator((string)field1), (double)field2, (int)field3, (string)field4);
+                    policy = new CartDiscountPolicy(GetArithmeticOperator((string)field1), (double)field2, (int)field3, (string)field4, _unitOfWork);
                     break;
                 case "User discount policy":
                     //field1 = field name
@@ -508,7 +517,7 @@ namespace DomainLayer.Facade
                     //field3 = discount percentage
                     //field4 = description
                     VerifyUserShopPolicy(new IllegalArgumentException(), field1, field2, field3);
-                    policy = new UserDiscountPolicy((string)field1, field2, (int)field3, (string)field4);
+                    policy = new UserDiscountPolicy((string)field1, field2, (int)field3, (string)field4, _unitOfWork);
                     break;
                 case "Compound discount policy":
                     /*
@@ -590,7 +599,7 @@ namespace DomainLayer.Facade
 
         private Shop VerifyShopExists(Guid shopGuid, ICloneableException<Exception> e)
         {
-            var shop = DomainData.ShopsCollection[shopGuid];
+            var shop = _unitOfWork.ShopRepository.FindById(shopGuid);
             if (shop == null)
             {
                 StackTrace stackTrace = new StackTrace();
@@ -603,7 +612,7 @@ namespace DomainLayer.Facade
 
         private IPurchasePolicy VerifyPurchasePolicyExists(Guid shopGuid, Guid purchasePolicyGuid, ICloneableException<Exception> e)
         {
-            var shop = DomainData.ShopsCollection[shopGuid];
+            var shop = _unitOfWork.ShopRepository.FindById(shopGuid);
             foreach (IPurchasePolicy policy in shop.PurchasePolicies)
             {
                 if (policy.Guid.Equals(purchasePolicyGuid))
@@ -624,7 +633,7 @@ namespace DomainLayer.Facade
 
         private void VerifyRegisteredUser(Guid userGuid, ICloneableException<Exception> e)
         {
-            if (!DomainData.RegisteredUsersCollection.ContainsKey(userGuid))
+            if (_unitOfWork.UserRepository.FindById(userGuid) == null)
             {
                 StackTrace stackTrace = new StackTrace();
                 var msg = string.Format(Resources.EntityNotFound, "registered user", userGuid) +
@@ -657,7 +666,7 @@ namespace DomainLayer.Facade
 
         private void VeriffyShopAlreadyExists(Guid userGuid, string shopName, ICloneableException<Exception> e)
         {
-            var constraint = DomainData.ShopsCollection.Where(shop => shop.Creator.OwnerGuid.Equals(userGuid)
+            var constraint = _unitOfWork.ShopRepository.FindAll().Where(shop => shop.Creator.OwnerGuid.Equals(userGuid)
                 || shop.Owners.Select(owner => owner.OwnerGuid).Contains(userGuid)).Select(shop => shop.ShopName).Contains(shopName);
             if (constraint)
             {
@@ -703,7 +712,7 @@ namespace DomainLayer.Facade
 
         private void VerifyOwnerOfShop(Guid userGuid, Guid shopGuid, ICloneableException<Exception> e)
         {
-            var shop = DomainData.ShopsCollection.FirstOrDefault(s => s.Guid.Equals(shopGuid));
+            var shop = _unitOfWork.ShopRepository.FindAll().FirstOrDefault(s => s.Guid.Equals(shopGuid));
             var constraint = shop.Owners.Select(owner => owner.OwnerGuid).Contains(userGuid)
                 || shop.Creator.OwnerGuid.Equals(userGuid);
             if (!constraint)
@@ -717,7 +726,7 @@ namespace DomainLayer.Facade
 
         private void VerifyNotOwnerAppointer(Guid userGuid, Guid ownerToRemoveGuid, Guid shopGuid, ICloneableException<Exception> e)
         {
-            var shop = DomainData.ShopsCollection.FirstOrDefault(s => s.Guid.Equals(shopGuid));
+            var shop = _unitOfWork.ShopRepository.FindAll().FirstOrDefault(s => s.Guid.Equals(shopGuid));
             var constraint = !(shop.Creator.OwnerGuid.Equals(userGuid)) && shop.Owners.FirstOrDefault(owner => owner.OwnerGuid.Equals(userGuid)).AppointerGuid.Equals(ownerToRemoveGuid);
             if (constraint)
             {
@@ -730,7 +739,7 @@ namespace DomainLayer.Facade
 
         private void VerifyNotOnlyOwnerOfAnActiveShop(Guid userGuid, ICloneableException<Exception> e)
         {
-            var constraint = DomainData.ShopsCollection.Any(shop =>
+            var constraint = _unitOfWork.ShopRepository.FindAll().ToList().Any(shop =>
             {
                 var isCreator = shop.Creator.OwnerGuid.Equals(userGuid);
                 var isOwner = shop.Owners.Any(owner => owner.OwnerGuid.Equals(userGuid));
@@ -752,13 +761,13 @@ namespace DomainLayer.Facade
         private ShoppingCart GetCartExistsAndCreateIfNeeded(UserIdentifier userIdentifier, Guid shopGuid)
         {
             ShoppingBag bag = null;
-            if (!DomainData.ShoppingBagsCollection.ContainsKey(userIdentifier.Guid))
+            if (_unitOfWork.ShoppingBagRepository.FindById(userIdentifier.Guid) == null)
             {
                 bag = new ShoppingBag(userIdentifier.Guid);
-                DomainData.ShoppingBagsCollection.Add(userIdentifier.Guid, bag);
+                _unitOfWork.ShoppingBagRepository.Create(bag);
             }
             else
-                bag = DomainData.ShoppingBagsCollection[userIdentifier.Guid];
+                bag = _unitOfWork.ShoppingBagRepository.FindById(userIdentifier.Guid);
 
             ShoppingCart cart = null;
             if (!bag.ShoppingCarts.Any(c => c.ShopGuid.Equals(shopGuid)))
@@ -810,7 +819,7 @@ namespace DomainLayer.Facade
 
         private void VerifyNotOnlyAdmin(Guid userToRemoveGuid, ICloneableException<Exception> e)
         {
-            var admins = DomainData.RegisteredUsersCollection.Where(u => u.IsAdmin).ToList();
+            var admins = _unitOfWork.UserRepository.FindAll().Where(u => u.IsAdmin).ToList();
             if (admins.Count == 1 && admins.First().Guid.Equals(userToRemoveGuid))
             {
                 StackTrace stackTrace = new StackTrace();
@@ -822,7 +831,7 @@ namespace DomainLayer.Facade
 
         private void VerifyLoginCredentials(string username, string password, ICloneableException<Exception> e)
         {
-            if (!DomainData.RegisteredUsersCollection.Any(u => u.Username.ToLower().Equals(username.ToLower()) && u.CheckPass(password)))
+            if (!_unitOfWork.UserRepository.FindAll().Any(u => u.Username.ToLower().Equals(username.ToLower()) && u.CheckPass(password)))
             {
                 StackTrace stackTrace = new StackTrace();
                 var msg = $"Login Credentials does not match any registered user." +
@@ -844,8 +853,8 @@ namespace DomainLayer.Facade
 
         private void VerifyCart(ShoppingCart cart, ICloneableException<Exception> e)
         {
-            Shop shop = DomainData.ShopsCollection[cart.ShopGuid];
-            BaseUser user = DomainData.RegisteredUsersCollection[cart.UserGuid];
+            Shop shop = _unitOfWork.ShopRepository.FindById(cart.ShopGuid);
+            BaseUser user = _unitOfWork.UserRepository.FindById(cart.UserGuid);
             foreach (Tuple<Guid, int> record in cart.PurchasedProducts)
             {
                 foreach (ProductPurchasePolicy policy in shop.PurchasePolicies)
@@ -935,7 +944,7 @@ namespace DomainLayer.Facade
         }
         private IDiscountPolicy VerifyDiscountPolicyExists(Guid shopGuid, Guid discountPolicyGuid, PolicyNotFoundException policyNotFoundException)
         {
-            var shop = DomainData.ShopsCollection[shopGuid];
+            var shop = _unitOfWork.ShopRepository.FindById(shopGuid);
             foreach (IDiscountPolicy policy in shop.DiscountPolicies)
             {
                 if (policy.Guid.Equals(discountPolicyGuid))

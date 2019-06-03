@@ -7,6 +7,8 @@ using Microsoft.Extensions.Logging.Abstractions;
 using ApplicationCore.Interfaces.ServiceLayer;
 using ApplicationCore.Entitites;
 using ApplicationCore.Interfaces.DomainLayer;
+using DataAccessLayer;
+using ApplicationCore.Mapping;
 
 namespace ATBridge
 {
@@ -16,14 +18,18 @@ namespace ATBridge
 
         public BridgeImpl()
         {
+            //Switch to in memory db in testing (=mock)
+            //var unit = new UnitOfWork(new ApplicationContext(new Microsoft.EntityFrameworkCore.DbContextOptions<ApplicationContext>()), new BaseMapingManager());
+            var unit = new UnitOfWork(new ApplicationContext(), new BaseMapingManager());
             _serviceFacade = new ServiceFacadeProxy
                         (
                             new ServiceFacade(
                                 new DomainLayerFacade(
-                                    new UserDomain(NullLogger<UserDomain>.Instance),
-                                    new DomainLayerFacadeVerifier(),
+                                    new UserDomain(NullLogger<UserDomain>.Instance,unit),
+                                    new DomainLayerFacadeVerifier(unit),
                                     NullLogger<DomainLayerFacade>.Instance,
-                                    new DefaultExternalServicesManager()
+                                    new DefaultExternalServicesManager(),
+                                    unit
                                 ),
                                 NullLogger<ServiceFacade>.Instance
                             ),

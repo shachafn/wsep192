@@ -43,6 +43,7 @@ namespace ApplicationCore.Entitites
 
         public static void CheckDiscountPolicy(ref ShoppingCart cartRef)
         {
+            /*
             Shop shop = DomainData.ShopsCollection[cartRef.ShopGuid];
             BaseUser user = DomainData.RegisteredUsersCollection[cartRef.UserGuid];
             foreach (Tuple<Guid, int> record in cartRef.PurchasedProducts)
@@ -52,7 +53,7 @@ namespace ApplicationCore.Entitites
                     policy.ApplyPolicy(ref cartRef, record.Item1, record.Item2, user);
                 }
             }
-
+            */
         }
     }
 }

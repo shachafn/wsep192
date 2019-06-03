@@ -4,6 +4,7 @@ using System.Linq;
 using System.Text;
 using ApplicationCore.Entities.Users;
 using ApplicationCore.Entitites;
+using ApplicationCore.Interfaces.DAL;
 
 namespace ApplicationCore.Events
 {
@@ -25,25 +26,25 @@ namespace ApplicationCore.Events
             Message = "UPDATE MESSAGE WAS NOT SET";
             Messages = new Dictionary<ICollection<Guid>, string>();
         }
-        public void SetMessage(ICollection<Shop> shops, ICollection<BaseUser> registeredUsers)
+        public void SetMessage(IUnitOfWork unitOfWork)
         {
-            Message = $"User {registeredUsers.First(u => u.Guid.Equals(RemovedOwnerGuid)).Username} is no longer an owner of shop {ShopGuid}";
+            Message = $"User {unitOfWork.UserRepository.FindAll().First(u => u.Guid.Equals(RemovedOwnerGuid)).Username} is no longer an owner of shop {ShopGuid}";
         }
-        public void SetTargets(ICollection<Shop> shops, ICollection<BaseUser> registeredUsers)
+        public void SetTargets(IUnitOfWork unitOfWork)
         {
-            Targets.Add(shops.First(s => s.Guid.Equals(ShopGuid)).Creator.OwnerGuid);
+            Targets.Add(unitOfWork.ShopRepository.FindAll().First(s => s.Guid.Equals(ShopGuid)).Creator.OwnerGuid);
             Targets.Add(RemovedOwnerGuid);
         }
 
-        public void SetMessages(ICollection<Shop> shops, ICollection<BaseUser> registeredUsers)
+        public void SetMessages(IUnitOfWork unitOfWork)
         {
-            var shop = shops.First(s => s.Guid.Equals(ShopGuid));
+            var shop = unitOfWork.ShopRepository.FindAll().First(s => s.Guid.Equals(ShopGuid));
             var otherOwners = shop.Owners.Select(owner => owner.OwnerGuid).ToList();
             otherOwners.Add(shop.Creator.OwnerGuid);
             otherOwners.Remove(Initiator);
             otherOwners.Remove(RemovedOwnerGuid);
-            string removedOwnerUsername = registeredUsers.First(u => u.Guid.Equals(RemovedOwnerGuid)).Username;
-            string initiatorUsername = registeredUsers.First(u => u.Guid.Equals(Initiator)).Username;
+            string removedOwnerUsername = unitOfWork.UserRepository.FindAll().First(u => u.Guid.Equals(RemovedOwnerGuid)).Username;
+            string initiatorUsername = unitOfWork.UserRepository.FindAll().First(u => u.Guid.Equals(Initiator)).Username;
             string otherOwnersMsg = $"{removedOwnerUsername} is no longer an owner of shop {shop.ShopName}";
             string initiatorMsg = $"You removed {removedOwnerUsername} from the owners of your shop {shop.ShopName}";
             string removedOwnerMsg = $"{initiatorUsername} removed you from the owners of shop {shop.ShopName}";

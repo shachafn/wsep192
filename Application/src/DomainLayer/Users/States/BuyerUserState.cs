@@ -150,7 +150,7 @@ namespace DomainLayer.Data.Entitites.Users.States
 
         public override ICollection<Tuple<ShopProduct, Guid>> SearchProduct(ICollection<string> toMatch, string searchType)
         {
-            var searcher = new ProductsSearcher(searchType);
+            var searcher = new ProductsSearcher(searchType, _unitOfWork);
             return searcher.Search(toMatch);
         }
 

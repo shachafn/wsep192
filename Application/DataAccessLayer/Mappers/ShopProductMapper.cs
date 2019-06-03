@@ -9,6 +9,14 @@ namespace DataAccessLayer.Mappers
 {
     public class ShopProductMapper : IGenericMapper<ShopProduct, ShopProductDAO>
     {
+        BaseMapingManager _baseMapingManager;
+
+        public ShopProductMapper(BaseMapingManager baseMapingManager)
+        {
+            _baseMapingManager = baseMapingManager;
+            _baseMapingManager.AddMapper<ShopProduct, ShopProductDAO>(this);
+        }
+
         ShopProductDAO IGenericMapper<ShopProduct, ShopProductDAO>.Map(ShopProduct fromObject)
         {
             ShopProductDAO shopProductDAO = new ShopProductDAO();
@@ -16,6 +24,7 @@ namespace DataAccessLayer.Mappers
             shopProductDAO.ProductGuid = fromObject.Product.GetGuid();
             shopProductDAO.Quantity = fromObject.Quantity;
             shopProductDAO.Price = fromObject.Price;
+            shopProductDAO.Product = _baseMapingManager.Map<Product, ProductDAO>(fromObject.Product);
             return shopProductDAO;
         }
 

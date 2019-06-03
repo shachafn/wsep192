@@ -25,11 +25,11 @@ namespace DataAccessLayer
 
         // To run migrations, uncomment this block and comment the ctor above^^ 
         // Dont forget to revert so the application can run
-        /*protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
-        {
-            var connection = @"Data Source=DESKTOP-3MH7VAJ\SQLEXPRESS;Initial Catalog=WSEP192;Integrated Security=True;Connect Timeout=30;Encrypt=False;TrustServerCertificate=False;ApplicationIntent=ReadWrite;MultiSubnetFailover=False";
-            optionsBuilder.UseSqlServer(connection);
-        }*/
+        //protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
+        //{
+        //    var connection = @"Data Source=DESKTOP-KRHRPTB;Initial Catalog=Wsepp;Integrated Security=True;Connect Timeout=30;Encrypt=False;TrustServerCertificate=False;ApplicationIntent=ReadWrite;MultiSubnetFailover=False";
+        //    optionsBuilder.UseSqlServer(connection);
+        //}
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
@@ -48,7 +48,7 @@ namespace DataAccessLayer
             modelBuilder.Entity<ShoppingBagDAO>().HasMany(bag => bag.ShoppingCarts);
 
             modelBuilder.Entity<ProductDAO>().HasIndex(product => product.Name).IsUnique();
-            modelBuilder.Entity<ProductDAO>().HasMany(product => product.Keywords);
+            //modelBuilder.Entity<ProductDAO>().HasMany(product => product.Keywords);
 
         }
         //Connection String

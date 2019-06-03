@@ -5,6 +5,7 @@ using System.Linq;
 using ApplicationCore.Entities.Users;
 using ApplicationCore.Entitites;
 using Utils;
+using ApplicationCore.Interfaces.DAL;
 
 namespace ApplicationCore.Events
 {
@@ -26,26 +27,26 @@ namespace ApplicationCore.Events
             Messages = new Dictionary<ICollection<Guid>, string>();
         }
 
-        public void SetMessage(ICollection<Shop> shops, ICollection<BaseUser> registeredUsers)
+        public void SetMessage(IUnitOfWork unitOfWork)
         {
-            Message = $"{registeredUsers.First(u => u.Guid.Equals(Initiator)).Username} bought from your shop {ShopGuid}";
+            Message = $"{unitOfWork.UserRepository.FindAll().First(u => u.Guid.Equals(Initiator)).Username} bought from your shop {ShopGuid}";
         }
 
-        public void SetTargets(ICollection<Shop> shops, ICollection<BaseUser> registeredUsers)
+        public void SetTargets(IUnitOfWork unitOfWork)
         {
-            var shop = shops.First(s => s.Guid.Equals(ShopGuid));
+            var shop = unitOfWork.ShopRepository.FindAll().First(s => s.Guid.Equals(ShopGuid));
             var owners = shop.Owners.Select(owner => owner.OwnerGuid).ToList();
             Targets.Add(shop.Creator.OwnerGuid);
             Targets.AddRange(owners);
         }
 
-        public void SetMessages(ICollection<Shop> shops, ICollection<BaseUser> registeredUsers)
+        public void SetMessages(IUnitOfWork unitOfWork)
         {
-            var shop = shops.First(s => s.Guid.Equals(ShopGuid));
+            var shop = unitOfWork.ShopRepository.FindAll().First(s => s.Guid.Equals(ShopGuid));
             var owners = shop.Owners.Select(owner => owner.OwnerGuid).ToList();
             owners.Add(shop.Creator.OwnerGuid);
             owners.Remove(Initiator);
-            string ownersMsg = $"{registeredUsers.First(u => u.Guid.Equals(Initiator)).Username} bought from your shop {shop.ShopName}";
+            string ownersMsg = $"{unitOfWork.UserRepository.FindAll().First(u => u.Guid.Equals(Initiator)).Username} bought from your shop {shop.ShopName}";
             string initiatorMsg = $"You bought from shop {shop.ShopName}";
             Messages.Add(owners, ownersMsg);
             Messages.Add(new List<Guid> { Initiator }, initiatorMsg);

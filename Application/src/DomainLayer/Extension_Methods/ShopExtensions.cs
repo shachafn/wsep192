@@ -222,6 +222,10 @@ namespace DomainLayer.Extension_Methods
                 }
 
             }
+            double total_price = cart.PurchasedProducts.Aggregate(0, (total, p) => total += (int) p.Item1.Price * p.Item2);
+            var newEvent = new PurchasedCartEvent(cart.UserGuid, cart.ShopGuid, total_price);
+            newEvent.SetMessages(DomainData.ShopsCollection.Values, DomainData.RegisteredUsersCollection.Values);
+            UpdateCenter.RaiseEvent(newEvent);
             cart.PurchaseCart();
             return true;
         }

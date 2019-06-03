@@ -142,9 +142,9 @@ namespace DomainLayer.Facade
             // Need to actually pay for products
             // if success clear all carts
             _logger.LogInformation($"{GetUserName(userIdentifier.Guid)} purchased cart from shop {GetShopName(shopGuid)} successfuly.");
-            var newEvent = new PurchasedCartEvent(userIdentifier.Guid, shopGuid);
-            newEvent.SetMessages(DomainData.ShopsCollection.Values, DomainData.RegisteredUsersCollection.Values);
-            UpdateCenter.RaiseEvent(newEvent);
+            //var newEvent = new PurchasedCartEvent(userIdentifier.Guid, shopGuid);
+            //newEvent.SetMessages(DomainData.ShopsCollection.Values, DomainData.RegisteredUsersCollection.Values);
+            //UpdateCenter.RaiseEvent(newEvent);
             return _userDomain.GetUserObject(userIdentifier).PurchaseCart(shopGuid); ;
         }
 

@@ -4,6 +4,7 @@ using ApplicationCore.Exceptions;
 using DomainLayer.Policies;
 using System;
 using System.Collections.Generic;
+using DomainLayer;
 
 namespace ApplicationCore.Entitites
 {

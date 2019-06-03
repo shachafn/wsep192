@@ -240,7 +240,7 @@ namespace ApplicationCore.Interfaces.ServiceLayer
         /// <exception cref="ShopNotFoundException">When shopGuid does not match any existing shop guid.</exception>
         /// <exception cref="ShopStateException">When the shop is not active.</exception>
         /// <returns>An enumerable collection of the products.</returns>
-        ICollection<Guid> GetAllProductsInCart(Guid cookie, Guid shopGuid);
+        ICollection<ShopProduct> GetAllProductsInCart(Guid cookie, Guid shopGuid);
 
         /////Implements General Requirement 2.7
         /// <summary>
@@ -517,7 +517,7 @@ namespace ApplicationCore.Interfaces.ServiceLayer
 
 
         //TODO DEFINE CONSTRAINTS
-        ICollection<Tuple<Guid, Product, int>> GetPurchaseHistory(Guid cookie);
+        ICollection<Tuple<Guid, ShopProduct, int>> GetPurchaseHistory(Guid cookie);
 
         //TODO DEFINE CONSTRAINTS
         ICollection<BaseUser> GetAllUsersExceptMe(Guid cookie);

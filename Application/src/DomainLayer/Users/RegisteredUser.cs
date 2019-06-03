@@ -111,7 +111,7 @@ namespace DomainLayer.Users
             return State.RemoveProductFromCart(_baseUser, shopGuid, shopProductGuid);
         }
 
-        public ICollection<Guid> GetAllProductsInCart(Guid shopGuid)
+        public ICollection<ShopProduct> GetAllProductsInCart(Guid shopGuid)
         {
             return State.GetAllProductsInCart(_baseUser, shopGuid);
         }
@@ -135,7 +135,7 @@ namespace DomainLayer.Users
             return State.AddNewDiscountPolicy(userGuid, shopGuid, newPolicy);
         }
 
-        public ICollection<Tuple<Guid, Product, int>> GetPurchaseHistory()
+        public ICollection<Tuple<Guid, ShopProduct, int>> GetPurchaseHistory()
         {
             return DomainData.ShopsCollection.SelectMany(shop => shop.GetPurchaseHistory(Guid)).ToList();
         }

@@ -138,7 +138,7 @@ namespace DomainLayer.Facade
         /////////// REDO CONSTRAINTS, CHANGED FROM CART TO BAG ////////////////
         public void PurchaseCart(UserIdentifier userIdentifier, Guid shopGuid)
         {
-            var user = VerifyLoggedInUser(userIdentifier.Guid, new UserNotFoundException());
+            //var user = VerifyLoggedInUser(userIdentifier.Guid, new UserNotFoundException());
             var shop = VerifyShopExists(shopGuid, new ShopNotFoundException());
             shop.VerifyShopIsActive();
         }
@@ -282,7 +282,8 @@ namespace DomainLayer.Facade
         /// </constraints>
         public void AddProductToCart(UserIdentifier userIdentifier, Guid shopGuid, Guid shopProductGuid, int quantity)
         {
-            var user = VerifyLoggedInUser(userIdentifier.Guid, new UserNotFoundException());
+            //Guests can add to cart too!
+            //var user = VerifyLoggedInUser(userIdentifier.Guid, new UserNotFoundException());
             var shop = VerifyShopExists(shopGuid, new ShopNotFoundException());
             shop.VerifyShopIsActive();
             shop.VerifyShopProductExists(shopProductGuid, new ProductNotFoundException());
@@ -846,11 +847,11 @@ namespace DomainLayer.Facade
         {
             Shop shop = DomainData.ShopsCollection[cart.ShopGuid];
             BaseUser user = DomainData.RegisteredUsersCollection[cart.UserGuid];
-            foreach (Tuple<Guid, int> record in cart.PurchasedProducts)
+            foreach (Tuple<ShopProduct, int> record in cart.PurchasedProducts)
             {
                 foreach (ProductPurchasePolicy policy in shop.PurchasePolicies)
                 {
-                    bool result = policy.CheckPolicy(cart, record.Item1, record.Item2, user);
+                    bool result = policy.CheckPolicy(cart, record.Item1.Guid, record.Item2, user);
                     if (result == false)
                         throw e.Clone("Broken constraint: " + policy.ToString());
                 }
@@ -859,7 +860,7 @@ namespace DomainLayer.Facade
 
         public void VerifyShopProductDoesNotExist(ShoppingCart cart, Guid shopProductGuid, ICloneableException<Exception> e)
         {
-            var product = cart.PurchasedProducts.FirstOrDefault(prod => prod.Item1.Equals(shopProductGuid));
+            var product = cart.PurchasedProducts.FirstOrDefault(prod => prod.Item1.Guid.Equals(shopProductGuid));
             if (product != null)
             {
                 StackTrace stackTrace = new StackTrace();
@@ -871,7 +872,7 @@ namespace DomainLayer.Facade
 
         public void VerifyShopProductExistsInCart(ShoppingCart cart, Guid shopProductGuid, ICloneableException<Exception> e)
         {
-            var product = cart.PurchasedProducts.FirstOrDefault(prod => prod.Item1.Equals(shopProductGuid));
+            var product = cart.PurchasedProducts.FirstOrDefault(prod => prod.Item1.Guid.Equals(shopProductGuid));
             if (product == null)
             {
                 StackTrace stackTrace = new StackTrace();

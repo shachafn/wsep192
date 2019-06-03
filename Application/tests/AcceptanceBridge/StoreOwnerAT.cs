@@ -219,6 +219,16 @@ namespace Tests
             var productGuid = Tester.PBridge.AddProductToShop(cookie, shopGuid, "Galaxy S9", "Cellphones", 2000, 4);
             Guid res = Tester.PBridge.AddNewPurchasePolicy(cookie, shopGuid, "Product purchase policy", productGuid, "<", 2, "Must buy less than 2 Galaxy9");
             Assert.AreNotEqual(Guid.Empty, res);
+
+            UserAT.GenerateRandoms(out var cookieBuyer, out var usernameBuyer, out var passwordBuyer);
+            //Tester.PBridge.ChangeUserState(cookieBuyer, "BuyerUserState");
+            Tester.PBridge.AddProductToCart(cookieBuyer, shopGuid, productGuid, 1);
+            Assert.IsTrue(Tester.PBridge.PurchaseCart(cookieBuyer, shopGuid));
+            Tester.PBridge.AddProductToCart(cookieBuyer, shopGuid, productGuid, 2);
+            Assert.IsFalse(Tester.PBridge.PurchaseCart(cookieBuyer, shopGuid));
+
+
+
         }
 
         [Test]
@@ -233,8 +243,22 @@ namespace Tests
             var productGuid1 = Tester.PBridge.AddProductToShop(cookie, shopGuid, "Iphone X", "Cellphones", 3000, 7);
             var policyGuid = Tester.PBridge.AddNewPurchasePolicy(cookie, shopGuid, "Product purchase policy", productGuid, ">", 1, "Must buy more than 1 Galaxy9");
             var policyGuid1 = Tester.PBridge.AddNewPurchasePolicy(cookie, shopGuid, "Product purchase policy", productGuid1, ">", 2, "Must buy more than 2 Iphone X");
-            Guid res = Tester.PBridge.AddNewPurchasePolicy(cookie, shopGuid, "Compound purchase policy", policyGuid, "^", policyGuid1, "Must buy more than 1 Galaxy9 XOR more than 2 Iphone X");
-            Assert.AreNotEqual(Guid.Empty, res);
+           // Guid res = Tester.PBridge.AddNewPurchasePolicy(cookie, shopGuid, "Compound purchase policy", policyGuid, "^", policyGuid1, "Must buy more than 1 Galaxy9 XOR more than 2 Iphone X");
+           // Assert.AreNotEqual(Guid.Empty, res);
+
+            UserAT.GenerateRandoms(out var cookieBuyer, out var usernameBuyer, out var passwordBuyer);
+            Guid buyerGuid = UserAT.RegisterUser(cookieBuyer, usernameBuyer, passwordBuyer);
+            UserAT.LoginUser(cookieBuyer, usernameBuyer, passwordBuyer);
+            Tester.PBridge.ChangeUserState(cookieBuyer, "BuyerUserState");
+            Tester.PBridge.AddProductToCart(cookieBuyer, shopGuid, productGuid, 2);
+            Tester.PBridge.AddProductToCart(cookieBuyer, shopGuid, productGuid1, 3);
+            Assert.IsTrue(Tester.PBridge.PurchaseCart(cookieBuyer, shopGuid));
+
+
+            Tester.PBridge.AddProductToCart(cookieBuyer, shopGuid, productGuid, 2);
+            Tester.PBridge.AddProductToCart(cookieBuyer, shopGuid, productGuid1, 1);
+            Assert.IsFalse(Tester.PBridge.PurchaseCart(cookieBuyer, shopGuid));
+            
         }
 
         [Test]
@@ -274,16 +298,37 @@ namespace Tests
             var shopGuid = Tester.PBridge.OpenShop(cookie);
             var productHammer = Tester.PBridge.AddProductToShop(cookie, shopGuid, "Hammer", "Tools", 100, 5);
             var productScrewDriver = Tester.PBridge.AddProductToShop(cookie, shopGuid, "Screwdriver", "Tools", 90, 7);
-            var productNail = Tester.PBridge.AddProductToShop(cookie, shopGuid, "Nail", "Tools", 5, 100);
+            var productNail = Tester.PBridge.AddProductToShop(cookie, shopGuid, "Nail", "Tools", 10, 100);
             var productDisc = Tester.PBridge.AddProductToShop(cookie, shopGuid, "Disc", "Tools", 200, 4);
             var policyHammer = Tester.PBridge.AddNewDiscountPolicy(cookie, shopGuid, "Product discount policy", productHammer, ">", 0, 0, "Buy Hammer");
             var policyScrewDriver = Tester.PBridge.AddNewDiscountPolicy(cookie, shopGuid, "Product discount policy", productScrewDriver, ">", 0, 0, "Buy Screwdriver");
-            var policyHammerAndScrew = Tester.PBridge.AddNewDiscountPolicy(cookie, shopGuid, "Compound discount policy", policyHammer, "&", policyScrewDriver,0, "Buy Hammer and Screwdriver");
+            var policyHammerAndScrew = Tester.PBridge.AddNewDiscountPolicy(cookie, shopGuid, "Compound discount policy", policyHammer, "&", policyScrewDriver, 0, "Buy Hammer and Screwdriver");
             var policyDisc = Tester.PBridge.AddNewDiscountPolicy(cookie, shopGuid, "Product discount policy", productDisc, ">", 0, 0, "Buy Disc");
             var policyHammerAndScrew_OrDisc = Tester.PBridge.AddNewDiscountPolicy(cookie, shopGuid, "Compound discount policy", policyHammerAndScrew, "|", policyDisc, 0, "Buy (Hammer and Screwdriver) or Disc");
             var policyNail = Tester.PBridge.AddNewDiscountPolicy(cookie, shopGuid, "Product discount policy", productNail, ">", 0, 0, "Buy Nails");
             var policyHammerAndScrew_OrDisc_impliesNail = Tester.PBridge.AddNewDiscountPolicy(cookie, shopGuid, "Compound discount policy", policyHammerAndScrew_OrDisc, "->", policyNail, 60, "Buy (Hammer and Screwdriver) or Disc implies 60% on Nails");
             Assert.AreNotEqual(Guid.Empty, policyHammerAndScrew_OrDisc_impliesNail);
+
+            //Buy According to the policy and check that the discount applies
+            UserAT.GenerateRandoms(out var cookieBuyer, out var usernameBuyer, out var passwordBuyer);
+            Guid buyerGuid = UserAT.RegisterUser(cookieBuyer, usernameBuyer, passwordBuyer);
+            UserAT.LoginUser(cookieBuyer, usernameBuyer, passwordBuyer);
+            Tester.PBridge.ChangeUserState(cookieBuyer, "BuyerUserState");
+            Tester.PBridge.AddProductToCart(cookieBuyer, shopGuid, productDisc, 2);
+            Tester.PBridge.AddProductToCart(cookieBuyer, shopGuid, productNail, 2);
+
+            Tester.PBridge.PurchaseCart(cookieBuyer, shopGuid);
+            var buyerPurchaseHistory = ApplicationCore.Data.DomainData.LoggedInUsersEntityCollection[buyerGuid].GetPurchaseHistory();
+            bool thereIsDiscount = false;
+            foreach (Tuple<Guid, ApplicationCore.Entitites.ShopProduct, int> item in buyerPurchaseHistory)
+            {
+                if (item.Item1 == shopGuid && item.Item2.Price == -6 && item.Item3 == 2)
+                {
+                    thereIsDiscount = true;
+                }
+            }
+            Assert.IsTrue(thereIsDiscount);
+
         }
 
         [Test]

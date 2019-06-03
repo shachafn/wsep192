@@ -27,6 +27,7 @@ namespace DomainLayer.Policies
 
         public bool CheckPolicy(ShoppingCart cart, Guid productGuid, int quantity, BaseUser inputUser)
         {
+            if (inputUser==null) return false;
             foreach(PropertyInfo property in inputUser.GetType().GetProperties())
             {
                 if(property.Name == FieldName)

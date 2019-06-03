@@ -125,7 +125,7 @@ namespace ServiceLayer
             return _serviceFacade.EditProductInShop(userGuid, shopGuid, productGuid, newPrice, newQuantity);
         }
 
-        public ICollection<Guid> GetAllProductsInCart(Guid cookie, Guid shopGuid)
+        public ICollection<ShopProduct> GetAllProductsInCart(Guid cookie, Guid shopGuid)
         {
             var userGuid = _sessionManager.ResolveCookie(cookie);
             return _serviceFacade.GetAllProductsInCart(userGuid, shopGuid);
@@ -215,7 +215,7 @@ namespace ServiceLayer
             return _serviceFacade.GetShopProducts(userGuid, shopGuid);
         }
 
-        public ICollection<Tuple<Guid, Product, int>> GetPurchaseHistory(Guid cookie)
+        public ICollection<Tuple<Guid, ShopProduct, int>> GetPurchaseHistory(Guid cookie)
         {
             var userGuid = _sessionManager.ResolveCookie(cookie);
             return _serviceFacade.GetPurchaseHistory(userGuid);

@@ -130,9 +130,21 @@ namespace Tests
 
             Tester.PBridge.ChangeUserState(cookie, "BuyerUserState");
             Tester.PBridge.AddProductToCart(cookie, shopGuid, productGuid, 10);
+            var shop = ApplicationCore.Data.DomainData.ShopsCollection[shopGuid];
+            ApplicationCore.Entitites.ShopProduct[] shopProductsArr=new ApplicationCore.Entitites.ShopProduct[1];
+            shop.ShopProducts.CopyTo(shopProductsArr, 0);
+            var shopProduct = shopProductsArr[0];
+            foreach (var sp in shop.ShopProducts)
+            {
+                if(sp.Guid.Equals(productGuid))
+                {
+                    shopProduct = sp;
+                    break;
+                }
+            }
 
             var res = Tester.PBridge.GetAllProductsInCart(cookie, shopGuid);
-            CollectionAssert.AreEqual(res, new List<Guid>() { productGuid });
+            CollectionAssert.AreEqual(res, new List<ApplicationCore.Entitites.ShopProduct>() { shopProduct });
         }
         [Test]
         public static void WatchingAndEditingOfCartAT3()
@@ -141,6 +153,7 @@ namespace Tests
             UserAT.RegisterUser(cookie, username, password);
             UserAT.LoginUser(cookie, username, password);
             Tester.PBridge.ChangeUserState(cookie, "SellerUserState");
+
             var shopGuid = Tester.PBridge.OpenShop(cookie);
             var productGuid = Tester.PBridge.AddProductToShop(cookie, shopGuid, "Galaxy S9", "Cellphones", 2000, 10);
 

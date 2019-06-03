@@ -104,7 +104,7 @@ namespace DomainLayer.Facade
         public void ReopenShop(UserIdentifier userIdentifier, Guid shopGuid)
         {
             VerifySystemIsInitialized();
-            _verifier.VerifyMe(MethodBase.GetCurrentMethod(), userIdentifier);
+            _verifier.VerifyMe(MethodBase.GetCurrentMethod(), userIdentifier, shopGuid);
             _userDomain.GetUserObject(userIdentifier).ReopenShop(shopGuid);
             var newEvent = new ReopenedShopEvent(userIdentifier.Guid, shopGuid);
             newEvent.SetMessages(DomainData.ShopsCollection.Values, DomainData.RegisteredUsersCollection.Values);
@@ -115,7 +115,7 @@ namespace DomainLayer.Facade
         public void CloseShop(UserIdentifier userIdentifier, Guid shopGuid)
         {
             VerifySystemIsInitialized();
-            _verifier.VerifyMe(MethodBase.GetCurrentMethod(), userIdentifier);
+            _verifier.VerifyMe(MethodBase.GetCurrentMethod(), userIdentifier, shopGuid);
             _userDomain.GetUserObject(userIdentifier).CloseShop(shopGuid);
             var newEvent = new ClosedShopEvent(userIdentifier.Guid, shopGuid);
             newEvent.SetMessages(DomainData.ShopsCollection.Values, DomainData.RegisteredUsersCollection.Values);
@@ -127,7 +127,7 @@ namespace DomainLayer.Facade
         public void CloseShopPermanently(UserIdentifier userIdentifier, Guid shopGuid)
         {
             VerifySystemIsInitialized();
-            _verifier.VerifyMe(MethodBase.GetCurrentMethod(), userIdentifier);
+            _verifier.VerifyMe(MethodBase.GetCurrentMethod(), userIdentifier, shopGuid);
             _userDomain.GetUserObject(userIdentifier).CloseShopPermanently(shopGuid);
             var newEvent = new ClosedShopPermanentlyEvent(userIdentifier.Guid, shopGuid);
             newEvent.SetMessages(DomainData.ShopsCollection.Values, DomainData.RegisteredUsersCollection.Values);

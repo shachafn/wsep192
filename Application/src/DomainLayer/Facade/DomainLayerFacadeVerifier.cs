@@ -57,7 +57,8 @@ namespace DomainLayer.Facade
                 var is6 = ex is MethodAccessException;
                 var is7 = ex is InvalidOperationException;
                 var is8 = ex is NotSupportedException;
-                if (is1 || is2 || is3 || is4 || is5 || is6 || is7 || is8)
+                var is9 = ex is ShopStateException;
+                if (is1 || is2 || is3 || is4 || is5 || is6 || is7 || is8 || is9)
                     throw new VerifierReflectionNotFound("Couldnt verify.", ex);
                 else
                     throw ex.InnerException;
@@ -123,7 +124,7 @@ namespace DomainLayer.Facade
             var user = VerifyLoggedInUser(userIdentifier.Guid, new UserNotFoundException());
             var shop = VerifyShopExists(shopGuid, new ShopNotFoundException());
             VerifyOwnerOfShop(userIdentifier.Guid, shopGuid, new OwnerNotFoundException());
-            shop.VerifyShopIsActive();
+            shop.VerifyShopIsClosed();
         }
 
         public void CloseShop(UserIdentifier userIdentifier, Guid shopGuid)
@@ -132,7 +133,7 @@ namespace DomainLayer.Facade
             var user = VerifyLoggedInUser(userIdentifier.Guid, new UserNotFoundException());
             var shop = VerifyShopExists(shopGuid, new ShopNotFoundException());
             VerifyOwnerOfShop(userIdentifier.Guid, shopGuid, new OwnerNotFoundException());
-            shop.VerifyShopIsClosed();
+            shop.VerifyShopIsActive();
         }
 
         public void CloseShopPermanently(UserIdentifier userIdentifier, Guid shopGuid)
@@ -140,7 +141,7 @@ namespace DomainLayer.Facade
             VerifyLoggedInUser(userIdentifier.Guid, new UserNotFoundException());
             var user = VerifyLoggedInUser(userIdentifier.Guid, new UserNotFoundException());
             var shop = VerifyShopExists(shopGuid, new ShopNotFoundException());
-            shop.VerifyShopIsPermanentlyClosed();
+            shop.VerifyShopIsActiveOrClosed();
         }
 
         /////////// REDO CONSTRAINTS, CHANGED FROM CART TO BAG ////////////////
@@ -149,6 +150,13 @@ namespace DomainLayer.Facade
             //var user = VerifyLoggedInUser(userIdentifier.Guid, new UserNotFoundException());
             var shop = VerifyShopExists(shopGuid, new ShopNotFoundException());
             shop.VerifyShopIsActive();
+            var cart = GetCartExistsAndCreateIfNeeded(userIdentifier, shopGuid);
+            foreach(var purchasedProduct in cart.PurchasedProducts)
+            {
+                int purchasedQuantity = purchasedProduct.Item2;
+                int availableQuantity = purchasedProduct.Item1.Quantity;
+                VerifyIntEqualOrGreaterThan0(availableQuantity - purchasedQuantity, new IllegalArgumentException());
+            }
         }
 
         /// <constraints>
@@ -630,7 +638,7 @@ namespace DomainLayer.Facade
             {
                 StackTrace stackTrace = new StackTrace();
                 string msg = $"User {GetUserName(userIdentifier.Guid)} is not a guest." +
-        $"Cant complete {stackTrace.GetFrame(1).GetMethod().Name}";
+        $" Cant complete {stackTrace.GetFrame(1).GetMethod().Name}";
                 _logger.LogError(msg);
                 throw e.Clone(msg);
             }
@@ -642,7 +650,7 @@ namespace DomainLayer.Facade
             {
                 StackTrace stackTrace = new StackTrace();
                 var msg = string.Format(Resources.EntityNotFound, "registered user", userGuid) +
-        $"Cant complete {stackTrace.GetFrame(1).GetMethod().Name}";
+        $" Cant complete {stackTrace.GetFrame(1).GetMethod().Name}";
                 _logger.LogError(msg);
                 throw e.Clone(msg);
             }
@@ -704,7 +712,7 @@ namespace DomainLayer.Facade
             {
                 StackTrace stackTrace = new StackTrace();
                 var msg = $"{toCheck} is not equal or greater than 0" +
-        $"Cant complete {stackTrace.GetFrame(1).GetMethod().Name}";
+        $" Cant complete {stackTrace.GetFrame(1).GetMethod().Name}";
                 _logger.LogError(msg);
                 throw e.Clone(msg);
             }
@@ -716,7 +724,7 @@ namespace DomainLayer.Facade
             {
                 StackTrace stackTrace = new StackTrace();
                 var msg = $"{toCheck} is not equal or greater than 0" +
-        $"Cant complete {stackTrace.GetFrame(1).GetMethod().Name}";
+        $" Cant complete {stackTrace.GetFrame(1).GetMethod().Name}";
                 _logger.LogError(msg);
                 throw e.Clone(msg);
             }
@@ -731,7 +739,7 @@ namespace DomainLayer.Facade
             {
                 StackTrace stackTrace = new StackTrace();
                 var msg = $"User {GetUserName(userGuid)} is the not an owner of the shop {shop.ShopName}." +
-        $"Cant complete {stackTrace.GetFrame(1).GetMethod().Name}";
+        $" Cant complete {stackTrace.GetFrame(1).GetMethod().Name}";
                 _logger.LogError(msg);
                 throw e.Clone(msg);
             }
@@ -745,7 +753,7 @@ namespace DomainLayer.Facade
             {
                 StackTrace stackTrace = new StackTrace();
                 var msg = $"User {GetUserName(userGuid)} cannot remove user {GetUserName(ownerToRemoveGuid)} from {shop.ShopName} because this user is it's appointer ." +
-        $"Cant complete {stackTrace.GetFrame(1).GetMethod().Name}";
+        $" Cant complete {stackTrace.GetFrame(1).GetMethod().Name}";
                 _logger.LogError(msg);
                 throw e.Clone(msg);
             }
@@ -767,7 +775,7 @@ namespace DomainLayer.Facade
             {
                 StackTrace stackTrace = new StackTrace();
                 var msg = $"User {GetUserName(userGuid)} is the only owner of an active shop." +
-        $"Cant complete {stackTrace.GetFrame(1).GetMethod().Name}";
+        $" Cant complete {stackTrace.GetFrame(1).GetMethod().Name}";
                 _logger.LogError(msg);
                 throw e.Clone(msg);
             }
@@ -801,7 +809,7 @@ namespace DomainLayer.Facade
             {
                 StackTrace stackTrace = new StackTrace();
                 var msg = $"State string doesnt not match any state." +
-        $"Cant complete {stackTrace.GetFrame(1).GetMethod().Name}";
+        $" Cant complete {stackTrace.GetFrame(1).GetMethod().Name}";
                 _logger.LogError(msg);
                 throw e.Clone(msg);
             }
@@ -815,7 +823,7 @@ namespace DomainLayer.Facade
             {
                 StackTrace stackTrace = new StackTrace();
                 var msg = $"Search Type string doesnt not match any search type." +
-        $"Cant complete {stackTrace.GetFrame(1).GetMethod().Name}";
+        $" Cant complete {stackTrace.GetFrame(1).GetMethod().Name}";
                 _logger.LogError(msg);
                 throw e.Clone(msg);
             }
@@ -829,7 +837,7 @@ namespace DomainLayer.Facade
             {
                 StackTrace stackTrace = new StackTrace();
                 var msg = $"Search must have input, input must be valid," +
-        $"Cant complete {stackTrace.GetFrame(1).GetMethod().Name}";
+        $" Cant complete {stackTrace.GetFrame(1).GetMethod().Name}";
                 _logger.LogError(msg);
                 throw e.Clone(msg);
             }
@@ -842,7 +850,7 @@ namespace DomainLayer.Facade
             {
                 StackTrace stackTrace = new StackTrace();
                 var msg = $"User {GetUserName(userToRemoveGuid)} is the only admin of the system." +
-        $"Cant complete {stackTrace.GetFrame(1).GetMethod().Name}";
+        $" Cant complete {stackTrace.GetFrame(1).GetMethod().Name}";
                 _logger.LogError(msg);
                 throw e.Clone(msg);
             }
@@ -854,7 +862,7 @@ namespace DomainLayer.Facade
             {
                 StackTrace stackTrace = new StackTrace();
                 var msg = $"Login Credentials does not match any registered user." +
-        $"Cant complete {stackTrace.GetFrame(1).GetMethod().Name}";
+        $" Cant complete {stackTrace.GetFrame(1).GetMethod().Name}";
                 _logger.LogError(msg);
                 throw e.Clone(msg);
             }
@@ -866,7 +874,7 @@ namespace DomainLayer.Facade
             {
                 StackTrace stackTrace = new StackTrace();
                 var msg = $"Can't change state to admin state with the user not being an admin." +
-        $"Cant complete {stackTrace.GetFrame(1).GetMethod().Name}";
+        $" Cant complete {stackTrace.GetFrame(1).GetMethod().Name}";
                 _logger.LogError(msg);
                 throw e.Clone(msg);
             }

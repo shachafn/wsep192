@@ -154,9 +154,9 @@ namespace DomainLayer.Facade
             string msg;
             if (_isSystemInitialized)
                 throw new SystemAlreadyInitializedException($"Cannot initialize the system again.");
-            if (!External_Services.ExternalServicesManager._paymentSystem.IsAvailable())
+            if (!_externalServicesManager.PaymentSystem.IsAvailable())
                 throw new ServiceUnReachableException($"Payment System Service is unreachable.");
-            if (!External_Services.ExternalServicesManager._supplySystem.IsAvailable())
+            if (!_externalServicesManager.SupplySystem.IsAvailable())
                 throw new ServiceUnReachableException($"Supply System Service is unreachable.");
 
             var res = Guid.Empty;
@@ -513,7 +513,8 @@ namespace DomainLayer.Facade
 
         public string GetUserName(Guid userGuid)
         {
-            return DomainData.RegisteredUsersCollection[userGuid].Username;
+            var user = DomainData.RegisteredUsersCollection[userGuid];
+            return user == null ? "Guest - " + userGuid.ToString() : user.Username;
         }
 
         public Guid GetUserGuid(string userName)

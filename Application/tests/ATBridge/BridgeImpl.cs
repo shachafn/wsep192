@@ -21,14 +21,15 @@ namespace ATBridge
                             new ServiceFacade(
                                 new DomainLayerFacade(
                                     new UserDomain(NullLogger<UserDomain>.Instance),
-                                    new DomainLayerFacadeVerifier(),
-                                    NullLogger<DomainLayerFacade>.Instance
+                                    new DomainLayerFacadeVerifier(NullLogger<DomainLayerFacadeVerifier>.Instance),
+                                    NullLogger<DomainLayerFacade>.Instance,
+                                    new DefaultExternalServicesManager()
                                 ),
                                 NullLogger<ServiceFacade>.Instance
                             ),
                             new SessionManager(NullLogger<SessionManager>.Instance),
                             NullLogger<ServiceFacadeProxy>.Instance
-                        );
+                        ); ; ;
         }
 
         public bool AddProductToCart(Guid userGuid, Guid shopGuid, Guid productGuid, int quantity)

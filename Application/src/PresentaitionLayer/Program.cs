@@ -18,6 +18,7 @@ using ApplicationCore.Interfaces.Infastracture;
 using ApplicationCore.Interfaces.ExternalServices;
 using Infrastructure.gRPC.services;
 using DomainLayer.External_Services;
+using Infrastructure.ExternalServices;
 
 namespace PresentaitionLayer
 {
@@ -52,7 +53,9 @@ namespace PresentaitionLayer
             //Notice, the order of adding is crucial
             services.AddSingleton<IUserDomain, UserDomain>();
             services.AddSingleton<DomainLayerFacadeVerifier>();
-            services.AddSingleton<IPaymentSystem, GRPCPaymentService>();
+            //services.AddSingleton<IPaymentSystem, GRPCPaymentService>();
+            services.AddSingleton<IPaymentSystem, PaymentService>();
+            services.AddSingleton<ISupplySystem, SupplyService>();
             services.AddSingleton<IExternalServicesManager, ExternalServicesManager>();
             services.AddSingleton<IDomainLayerFacade, DomainLayerFacade>();
             services.AddSingleton<ISessionManager, SessionManager>();

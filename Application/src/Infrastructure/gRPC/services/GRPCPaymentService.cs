@@ -9,7 +9,7 @@ using Channel = Grpc.Core.Channel;
 
 namespace Infrastructure.gRPC.services
 {
-    public class GRPCPaymentService : Payment.Payer.PayerClient, IPaymentSystem
+    public class GRPCPaymentService : Payment.Payer.PayerClient//, IPaymentSystem
     {
         private Channel _channel;
         private Payer.PayerClient _client;

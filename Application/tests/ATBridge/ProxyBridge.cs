@@ -13,9 +13,9 @@ namespace ATBridge
             _real = null;
         }
 
-        public bool AddProductToCart(Guid userGuid, Guid productGuid, Guid shopGuid, int quantity)
+        public bool AddProductToCart(Guid userGuid, Guid shopGuid, Guid productGuid, int quantity)
         {
-            return _real == null ? false : _real.AddProductToCart(userGuid, productGuid, shopGuid, quantity);
+            return _real == null ? false : _real.AddProductToCart(userGuid, shopGuid, productGuid, quantity);
         }
 
         public bool AddShopManager(Guid userGuid, Guid shopGuid, Guid newManagaerGuid, List<string> priviliges)
@@ -58,7 +58,7 @@ namespace ATBridge
             return _real == null ? false : _real.EditProductInShop(userGuid, shopGuid, productGuid, newPrice, newQuantity);
         }
 
-        public ICollection<Guid> GetAllProductsInCart(Guid userGuid, Guid shopGuid)
+        public ICollection<ShopProduct> GetAllProductsInCart(Guid userGuid, Guid shopGuid)
         {
             return _real?.GetAllProductsInCart(userGuid, shopGuid);
         }

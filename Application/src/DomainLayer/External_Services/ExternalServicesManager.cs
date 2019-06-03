@@ -1,6 +1,5 @@
 ﻿using ApplicationCore.Interfaces.DomainLayer;
 using ApplicationCore.Interfaces.ExternalServices;
-using DomainLayer.External_Services.Adapters;
 
 namespace DomainLayer.External_Services
 {
@@ -9,9 +8,9 @@ namespace DomainLayer.External_Services
         public ISupplySystem SupplySystem { get; set; }
         public IPaymentSystem PaymentSystem { get; set; }
 
-        public ExternalServicesManager(IPaymentSystem paymentSystem)
+        public ExternalServicesManager(IPaymentSystem paymentSystem, ISupplySystem supplySystem)
         {
-            SupplySystem = new SupplySystemAdapter();
+            SupplySystem = supplySystem;
             PaymentSystem = paymentSystem;
         }
     }

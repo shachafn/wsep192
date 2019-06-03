@@ -3,11 +3,13 @@ using DomainLayer.Policies;
 using ApplicationCore.Entitites;
 using System;
 using System.Collections.Generic;
+using Microsoft.Extensions.Logging;
 
 namespace DomainLayer.Users.States
 {
     public abstract class AbstractUserState : IAbstractUserState
     {
+        //private ILogger<AbstractUserState> _logger;
         public abstract ICollection<Guid> GetShoppingHistory();
         public abstract Guid OpenShop(BaseUser baseUser);
         public abstract Guid OpenShop(BaseUser baseUser, string shopName);
@@ -26,7 +28,7 @@ namespace DomainLayer.Users.States
         public abstract bool AddProductToCart(BaseUser baseUser, Guid shopGuid, Guid shopProductGuid, int quantity);
         public abstract bool EditProductInCart(BaseUser baseUser, Guid shopGuid, Guid shopProductGuid, int newAmount);
         public abstract bool RemoveProductFromCart(BaseUser baseUser, Guid shopGuid, Guid shopProductGuid);
-        public abstract ICollection<Guid> GetAllProductsInCart(BaseUser baseUser, Guid shopGuid);
+        public abstract ICollection<ShopProduct> GetAllProductsInCart(BaseUser baseUser, Guid shopGuid);
         public abstract bool RemoveShopManager(BaseUser baseUser, Guid shopGuid, Guid managerToRemoveGuid);
         public abstract bool AddShopOwner(BaseUser baseUser, Guid shopGuid, Guid newManagaerGuid);
         public abstract Guid AddNewPurchasePolicy(Guid userGuid, Guid shopGuid, IPurchasePolicy newPolicy);

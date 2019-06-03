@@ -31,7 +31,7 @@ namespace ApplicationCore.Interfaces.DomainLayer
         bool CascadeRemoveShopOwner(UserIdentifier userIdentifier, Guid shopGuid, Guid ownerToRemoveGuid);
         bool EditProductInCart(UserIdentifier userIdentifier, Guid shopGuid, Guid shopProductGuid, int newAmount);
         bool RemoveProductFromCart(UserIdentifier userIdentifier, Guid shopGuid, Guid shopProductGuid);
-        ICollection<Guid> GetAllProductsInCart(UserIdentifier userIdentifier, Guid shopGuid);
+        ICollection<ShopProduct> GetAllProductsInCart(UserIdentifier userIdentifier, Guid shopGuid);
         ICollection<Tuple<ShopProduct, Guid>> SearchProduct(UserIdentifier userIdentifier, ICollection<string> toMatch, string searchType);
         bool RemoveShopManager(UserIdentifier userIdentifier, Guid shopGuid, Guid managerToRemoveGuid);
         bool ChangeUserState(UserIdentifier userIdentifier, string newState);
@@ -39,7 +39,7 @@ namespace ApplicationCore.Interfaces.DomainLayer
         bool AddShopOwner(UserIdentifier userIdentifier, Guid shopGuid, Guid newShopOwnerGuid);
         Guid AddNewPurchasePolicy(UserIdentifier userGuid, Guid shopGuid, object policyType, object field1, object field2, object field3, object field4);
         Guid AddNewDiscountPolicy(UserIdentifier userGuid, Guid shopGuid, object policyType, object field1, object field2, object field3, object field4,object field5);
-        ICollection<Tuple<Guid, Product, int>> GetPurchaseHistory(UserIdentifier userIdentifier);
+        ICollection<Tuple<Guid, ShopProduct, int>> GetPurchaseHistory(UserIdentifier userIdentifier);
         ICollection<BaseUser> GetAllUsersExceptMe(UserIdentifier userIdentifier);
         IEnumerable<ShopProduct> GetShopProducts(UserIdentifier userId, Guid shopGuid);
         IEnumerable<Shop> GetUserShops(UserIdentifier userId);

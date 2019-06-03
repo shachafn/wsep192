@@ -144,7 +144,7 @@ namespace ServiceLayer
             return _domainLayerFacade.EditProductInCart(userIdentifier, shopGuid, shopProductGuid, newAmount);
         }
 
-        public ICollection<Guid> GetAllProductsInCart(UserIdentifier userIdentifier, Guid shopGuid)
+        public ICollection<ShopProduct> GetAllProductsInCart(UserIdentifier userIdentifier, Guid shopGuid)
         {
             return _domainLayerFacade.GetAllProductsInCart(userIdentifier, shopGuid);
         }
@@ -207,7 +207,7 @@ namespace ServiceLayer
             _domainLayerFacade.ClearSystem();
         }
 
-        public ICollection<Tuple<Guid, Product, int>> GetPurchaseHistory(UserIdentifier userIdentifier)
+        public ICollection<Tuple<Guid, ShopProduct, int>> GetPurchaseHistory(UserIdentifier userIdentifier)
         {
             return _domainLayerFacade.GetPurchaseHistory(userIdentifier);
         }

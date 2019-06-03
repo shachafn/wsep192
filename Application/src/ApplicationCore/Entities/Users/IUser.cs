@@ -22,7 +22,7 @@ namespace ApplicationCore.Entities.Users
         bool ConnectToSupplySystem();
         bool EditProductInCart(Guid shopGuid, Guid shopProductGuid, int newAmount);
         void EditProductInShop(Guid shopGuid, Guid productGuid, double newPrice, int newQuantity);
-        ICollection<Guid> GetAllProductsInCart(Guid shopGuid);
+        ICollection<ShopProduct> GetAllProductsInCart(Guid shopGuid);
         ICollection<Guid> GetShoppingHistory();
         Guid OpenShop();
         Guid OpenShop(string name);
@@ -38,7 +38,7 @@ namespace ApplicationCore.Entities.Users
         bool SetState(IAbstractUserState newState);
         Guid AddNewPurchasePolicy(Guid userGuid , Guid shopGuid, IPurchasePolicy newPolicy);
         Guid AddNewDiscountPolicy(Guid userGuid ,Guid shopGuid, IDiscountPolicy newPolicy);
-        ICollection<Tuple<Guid, Product, int>> GetPurchaseHistory();
+        ICollection<Tuple<Guid, ShopProduct, int>> GetPurchaseHistory();
         #endregion
     }
 }

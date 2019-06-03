@@ -1,9 +1,6 @@
 ﻿@model IEnumerable<ApplicationCore.Entitites.ShopProduct>
-
 @{
-
     ViewData["Title"] = "Search";
-
 }
 
 <h2>Search</h2>
@@ -15,7 +12,6 @@
             <th>
                 Product Name
             </th>
-
             <th>
                 Product Category
             </th>
@@ -23,9 +19,8 @@
                 Price
             </th>
             <th></th>
-        </tr
+        </tr>
     </thead>
-
     <tbody>
         @foreach (var item in Model)
         {

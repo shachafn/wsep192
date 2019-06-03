@@ -49,13 +49,13 @@ namespace DomainLayer.Extension_Methods
             shop.ShopProducts.Remove(toRemove);
         }
 
-        public static ICollection<Tuple<Guid, Product, int>> GetPurchaseHistory(this Shop shop, Guid userGuid)
+        public static ICollection<Tuple<Guid, ShopProduct, int>> GetPurchaseHistory(this Shop shop, Guid userGuid)
         {
-            ICollection<Tuple<Guid, Product, int>> toReturn = new List<Tuple<Guid, Product, int>>();
-            foreach (Tuple<Guid, Product, int> purchase in shop.UsersPurchaseHistory)
+            ICollection<Tuple<Guid, ShopProduct, int>> toReturn = new List<Tuple<Guid, ShopProduct, int>>();
+            foreach (Tuple<Guid, ShopProduct, int> purchase in shop.UsersPurchaseHistory)
             {
                 if (userGuid.Equals(purchase.Item1))
-                    toReturn.Add(new Tuple<Guid, Product, int>(shop.Guid, purchase.Item2, purchase.Item3));
+                    toReturn.Add(new Tuple<Guid, ShopProduct, int>(shop.Guid, purchase.Item2, purchase.Item3));
             }
             return toReturn;
         }
@@ -99,7 +99,7 @@ namespace DomainLayer.Extension_Methods
             if (shop.Creator.OwnerGuid.Equals(userGuid))
                 return shop.Creator;
             var otherOwner = shop.Owners.FirstOrDefault(o => o.OwnerGuid.Equals(userGuid));
-            if (otherOwner == null) throw new OwnerNotFoundException($"There is no owner with guid {userGuid} of shop with {shop.Guid}.");
+            if (otherOwner == null) throw new OwnerNotFoundException($"User with Guid - {userGuid} is not an owner of shop {shop.ShopName}.");
             return otherOwner;
         }
         public static bool IsOwner(this Shop shop, Guid userGuid)
@@ -185,25 +185,42 @@ namespace DomainLayer.Extension_Methods
             foreach (var productAndAmountBought in cart.PurchasedProducts)
             {
                 var userGuid = cart.UserGuid;
-                var actualProduct = shop.ShopProducts.First(p => p.Guid.Equals(productAndAmountBought.Item1));
-                BaseUser user = DomainData.RegisteredUsersCollection[userGuid];
+                BaseUser user;
+                try
+                {
+                    user = DomainData.RegisteredUsersCollection[userGuid];
+                }
+                catch (Exception)
+                {
+                    user = null;
+                }
                 //check purchase policies
                 var quantity = productAndAmountBought.Item2;
-                foreach(IPurchasePolicy policy in shop.PurchasePolicies)
-                    if (!policy.CheckPolicy(cart, productAndAmountBought.Item1, quantity, user))
+                foreach (IPurchasePolicy policy in shop.PurchasePolicies)
+                    if (!policy.CheckPolicy(cart, productAndAmountBought.Item1.Guid, quantity, user))
                         canPurchaseCart = false;
             }
             if (!canPurchaseCart)
                 return false;
-            
+
             foreach (var productAndAmountBought in cart.PurchasedProducts)
             {
                 var userGuid = cart.UserGuid;
-                var actualProduct = shop.ShopProducts.First(p => p.Guid.Equals(productAndAmountBought.Item1));
-                //decrease stock quantity
+
+                var actualProduct = shop.ShopProducts.FirstOrDefault(p => p.Guid.Equals(productAndAmountBought.Item1.Guid));
+                //decrease stock quantity if it wasnt a discount record
+
                 var quantity = productAndAmountBought.Item2;
-                actualProduct.Quantity -= quantity;
-                shop.UsersPurchaseHistory.Add(new Tuple<Guid, Product, int>(userGuid, actualProduct.Product, quantity));
+                if (actualProduct != null)
+                {
+                    shop.UsersPurchaseHistory.Add(new Tuple<Guid, ShopProduct, int>(userGuid, actualProduct, quantity));
+                    actualProduct.Quantity -= quantity;
+                }
+                else
+                {
+                    shop.UsersPurchaseHistory.Add(new Tuple<Guid, ShopProduct, int>(userGuid, productAndAmountBought.Item1, quantity));
+                }
+
             }
             cart.PurchaseCart();
             return true;
@@ -320,7 +337,7 @@ namespace DomainLayer.Extension_Methods
             if (!shop.ShopState.Equals(Shop.ShopStateEnum.Active))
             {
                 StackTrace stackTrace = new StackTrace();
-                throw new ShopStateException($"Shop is not active. Cant complete method {stackTrace.GetFrame(1).GetMethod().Name}");
+                throw new ShopStateException($"Shop {shop.ShopName} is not active. Cant complete method {stackTrace.GetFrame(1).GetMethod().Name}");
             }
         }
 
@@ -329,7 +346,7 @@ namespace DomainLayer.Extension_Methods
             if (!shop.ShopState.Equals(Shop.ShopStateEnum.Closed))
             {
                 StackTrace stackTrace = new StackTrace();
-                throw new ShopStateException($"Shop is not closed. Cant complete method {stackTrace.GetFrame(1).GetMethod().Name}");
+                throw new ShopStateException($"Shop {shop.ShopName} is not closed. Cant complete method {stackTrace.GetFrame(1).GetMethod().Name}");
             }
         }
 
@@ -338,7 +355,7 @@ namespace DomainLayer.Extension_Methods
             if (!(shop.ShopState.Equals(Shop.ShopStateEnum.Closed) || shop.ShopState.Equals(Shop.ShopStateEnum.Active)))
             {
                 StackTrace stackTrace = new StackTrace();
-                throw new ShopStateException($"Shop is not closed or active. Cant complete method {stackTrace.GetFrame(1).GetMethod().Name}");
+                throw new ShopStateException($"Shop {shop.ShopName} is not closed or active. Cant complete method {stackTrace.GetFrame(1).GetMethod().Name}");
             }
         }
 
@@ -347,7 +364,7 @@ namespace DomainLayer.Extension_Methods
             if (!(shop.ShopState.Equals(Shop.ShopStateEnum.PermanentlyClosed)))
             {
                 StackTrace stackTrace = new StackTrace();
-                throw new ShopStateException($"Shop is not closed or active. Cant complete method {stackTrace.GetFrame(1).GetMethod().Name}");
+                throw new ShopStateException($"Shop {shop.ShopName} is not closed or active. Cant complete method {stackTrace.GetFrame(1).GetMethod().Name}");
             }
         }
 

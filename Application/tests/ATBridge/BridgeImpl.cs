@@ -21,7 +21,7 @@ namespace ATBridge
                             new ServiceFacade(
                                 new DomainLayerFacade(
                                     new UserDomain(NullLogger<UserDomain>.Instance),
-                                    new DomainLayerFacadeVerifier(),
+                                    new DomainLayerFacadeVerifier(NullLogger<DomainLayerFacadeVerifier>.Instance),
                                     NullLogger<DomainLayerFacade>.Instance,
                                     new DefaultExternalServicesManager()
                                 ),
@@ -29,7 +29,7 @@ namespace ATBridge
                             ),
                             new SessionManager(NullLogger<SessionManager>.Instance),
                             NullLogger<ServiceFacadeProxy>.Instance
-                        );
+                        ); ; ;
         }
 
         public bool AddProductToCart(Guid userGuid, Guid shopGuid, Guid productGuid, int quantity)
@@ -78,7 +78,7 @@ namespace ATBridge
             return _serviceFacade.EditProductInShop(userGuid, shopGuid, productGuid, newPrice, newQuantity);
         }
 
-        public ICollection<Guid> GetAllProductsInCart(Guid userGuid, Guid shopGuid)
+        public ICollection<ShopProduct> GetAllProductsInCart(Guid userGuid, Guid shopGuid)
         {
             return _serviceFacade.GetAllProductsInCart(userGuid, shopGuid);
         }

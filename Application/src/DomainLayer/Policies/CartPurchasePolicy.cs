@@ -36,12 +36,12 @@ namespace DomainLayer.Policies
             //Adding only products that are found in shop
             //Just in case someone applied Discount policy before Purchase policy
             int numberOfProducts = 0;
-            foreach (Tuple<Guid, int> record in cart.PurchasedProducts)
+            foreach (Tuple<ShopProduct, int> record in cart.PurchasedProducts)
             {
                 Shop shop = DomainData.ShopsCollection[cart.ShopGuid];
                 foreach (ShopProduct productInShop in shop.ShopProducts)
                 {
-                    if (productInShop.Guid.Equals(record.Item1))
+                    if (productInShop.Guid.Equals(record.Item1.Guid))
                     {
                         numberOfProducts += record.Item2;
                         break;

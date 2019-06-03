@@ -78,7 +78,7 @@ namespace ATBridge
             return _serviceFacade.EditProductInShop(userGuid, shopGuid, productGuid, newPrice, newQuantity);
         }
 
-        public ICollection<Guid> GetAllProductsInCart(Guid userGuid, Guid shopGuid)
+        public ICollection<ShopProduct> GetAllProductsInCart(Guid userGuid, Guid shopGuid)
         {
             return _serviceFacade.GetAllProductsInCart(userGuid, shopGuid);
         }

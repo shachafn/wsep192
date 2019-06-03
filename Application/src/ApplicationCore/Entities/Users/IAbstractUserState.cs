@@ -16,7 +16,7 @@ namespace ApplicationCore.Entities.Users
         bool ConnectToSupplySystem();
         bool EditProductInCart(BaseUser baseUser, Guid shopGuid, Guid shopProductGuid, int newAmount);
         void EditProductInShop(BaseUser baseUser, Guid shopGuid, Guid productGuid, double newPrice, int newQuantity);
-        ICollection<Guid> GetAllProductsInCart(BaseUser baseUser, Guid shopGuid);
+        ICollection<ShopProduct> GetAllProductsInCart(BaseUser baseUser, Guid shopGuid);
         ICollection<Guid> GetShoppingHistory();
         Guid OpenShop(BaseUser baseUser);
         Guid OpenShop(BaseUser baseUser, string shopName);

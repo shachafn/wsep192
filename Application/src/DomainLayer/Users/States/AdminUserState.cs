@@ -134,7 +134,7 @@ namespace DomainLayer.Users.States
             throw new BadStateException($"Tried to invoke RemoveProductFromCart in Admin State");
         }
 
-        public override ICollection<Guid> GetAllProductsInCart(BaseUser baseUser, Guid shopGuid)
+        public override ICollection<ShopProduct> GetAllProductsInCart(BaseUser baseUser, Guid shopGuid)
         {
             throw new BadStateException($"Tried to invoke GetAllProductsInCart in Admin State");
         }

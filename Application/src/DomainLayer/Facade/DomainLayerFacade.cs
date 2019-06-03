@@ -277,7 +277,7 @@ namespace DomainLayer.Facade
             return _userDomain.GetUserObject(userIdentifier).RemoveProductFromCart(shopGuid, shopProductGuid);
         }
 
-        public ICollection<Guid> GetAllProductsInCart(UserIdentifier userIdentifier, Guid shopGuid)
+        public ICollection<ShopProduct> GetAllProductsInCart(UserIdentifier userIdentifier, Guid shopGuid)
         {
             VerifySystemIsInitialized();
             _verifier.VerifyMe(MethodBase.GetCurrentMethod(), userIdentifier, shopGuid);
@@ -305,7 +305,7 @@ namespace DomainLayer.Facade
             return _userDomain.GetUserObject(userIdentifier).RemoveShopManager(shopGuid, managerToRemoveGuid);
         }
 
-        public ICollection<Tuple<Guid, Product, int>> GetPurchaseHistory(UserIdentifier userIdentifier)
+        public ICollection<Tuple<Guid, ShopProduct, int>> GetPurchaseHistory(UserIdentifier userIdentifier)
         {
             VerifySystemIsInitialized();
             _verifier.VerifyMe(MethodBase.GetCurrentMethod(), userIdentifier);
@@ -402,7 +402,8 @@ namespace DomainLayer.Facade
                     var shop = DomainData.ShopsCollection[cart.ShopGuid];
                     foreach (var item in cart.PurchasedProducts)
                     {
-                        ShopProduct currProduct = shop.ShopProducts.FirstOrDefault(prod => prod.Guid.Equals(item.Item1));
+                        //ShopProduct currProduct = shop.ShopProducts.FirstOrDefault(prod => prod.Guid.Equals(item.Item1));
+                        ShopProduct currProduct = item.Item1;
                         ShopProduct product = new ShopProduct();
                         product.Product = new Product(currProduct.Product.Name, currProduct.Product.Category);
                         product.Guid = currProduct.Guid;

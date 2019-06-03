@@ -46,18 +46,18 @@ namespace DomainLayer.Policies
                 double shopProductPrice = 0;
                 foreach (ShopProduct shopProduct in s.ShopProducts)
                 {
-                    if (s.Guid.CompareTo(productGuid) == 0)
+                    if (shopProduct.Guid.CompareTo(productGuid) == 0)
                     {
                         p = shopProduct.Product;
                         shopProductPrice = shopProduct.Price;
                         break;
                     }
                 }
-                double discountValue = -(DiscountPercentage / 100) * shopProductPrice;
+                double discountValue = -((double)DiscountPercentage / 100.0) * shopProductPrice;
                 if (discountValue == 0) return;
                 Product discountProduct = new Product("Discount - " + p.Name, "Discount");
                 ShopProduct discountRecord = new ShopProduct(discountProduct, discountValue, 1);
-                cart.AddProductToCart(discountRecord.Guid, quantity);
+                cart.AddProductToCart(discountRecord, quantity);
             }
         }
     }

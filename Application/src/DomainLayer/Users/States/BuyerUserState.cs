@@ -35,8 +35,8 @@ namespace DomainLayer.Data.Entitites.Users.States
             //Can implement RollBack, purchase is given a Guid, shop.PurchaseCart returns a Guid,
             // if the user fails to pay later, we can delete the purchase and revert the shop quantities and cart content
             ShoppingCart.CheckDiscountPolicy(ref cart);
-            shop.PurchaseCart(cart);
-
+            if (!shop.PurchaseCart(cart))
+                return false;
             //External payment pay, if not true ---- rollback
             return true;
         }
@@ -99,7 +99,9 @@ namespace DomainLayer.Data.Entitites.Users.States
         public override bool AddProductToCart(BaseUser baseUser, Guid shopGuid, Guid shopProductGuid, int quantity)
         {
             var cart = GetCartAndCreateIfNeeded(baseUser.Guid, shopGuid);
-            cart.AddProductToCart(shopProductGuid, quantity);
+            var shop = DomainData.ShopsCollection[shopGuid];
+            var actualProduct = shop.ShopProducts.FirstOrDefault(p => p.Guid.Equals(shopProductGuid));
+            cart.AddProductToCart(actualProduct, quantity);
             return true;
         }
 
@@ -125,7 +127,7 @@ namespace DomainLayer.Data.Entitites.Users.States
             return cart.RemoveProductFromCart(shopProductGuid);
         }
 
-        public override ICollection<Guid> GetAllProductsInCart(BaseUser baseuser, Guid shopGuid)
+        public override ICollection<ShopProduct> GetAllProductsInCart(BaseUser baseuser, Guid shopGuid)
         {
             var cart = GetCartAndCreateIfNeeded(baseuser.Guid, shopGuid);
             return cart.GetAllProductsInCart();

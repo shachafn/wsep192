@@ -170,7 +170,7 @@ namespace ATBridge
         /// <exception cref="ProductNotFoundException">When the productGuid does not match any product in the shop.</exception>
         /// <exception cref="BrokenConstraintException">When the product already exists in the user's cart.</exception>
         /// <returns>True.</returns>
-        bool AddProductToCart(Guid userGuid, Guid productGuid, Guid shopGuid, int quantity);
+        bool AddProductToCart(Guid userGuid, Guid shopGuid , Guid productGuid, int quantity);
 
         /////Implements General Requirement 2.7
         /// <summary>
@@ -190,7 +190,7 @@ namespace ATBridge
         /// <exception cref="ShopNotFoundException">When shopGuid does not match any existing shop guid.</exception>
         /// <exception cref="ShopStateException">When the shop is not active.</exception>
         /// <returns>An enumerable collection of the products.</returns>
-        ICollection<Guid> GetAllProductsInCart(Guid userGuid, Guid shopGuid);
+        ICollection<ShopProduct> GetAllProductsInCart(Guid userGuid, Guid shopGuid);
 
         /////Implements General Requirement 2.7
         /// <summary>

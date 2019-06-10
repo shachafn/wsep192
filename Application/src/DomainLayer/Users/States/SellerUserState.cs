@@ -140,7 +140,7 @@ namespace DomainLayer.Users.States
         public override Guid AddNewPurchasePolicy(Guid userGuid, Guid shopGuid, IPurchasePolicy newPolicy)
         {
             var shop = DomainData.ShopsCollection[shopGuid];
-            if (!shop.IsOwner(userGuid))
+            if (!(shop.IsOwner(userGuid) || (shop.IsManager(userGuid))))
             {
                 throw new IllegalOperationException("Tried to add new purchase policy to a shop that doesn't belong to him");
             }
@@ -150,7 +150,7 @@ namespace DomainLayer.Users.States
         public override Guid AddNewDiscountPolicy(Guid userGuid, Guid shopGuid, IDiscountPolicy newPolicy)
         {
             var shop = DomainData.ShopsCollection[shopGuid];
-            if (!shop.IsOwner(userGuid))
+            if (!(shop.IsOwner(userGuid) || (shop.IsManager(userGuid))))
             {
                 throw new IllegalOperationException("Tried to add new discount policy to a shop that doesn't belong to him");
             }

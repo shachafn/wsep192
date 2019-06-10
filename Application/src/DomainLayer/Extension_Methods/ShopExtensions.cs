@@ -272,16 +272,18 @@ namespace DomainLayer.Extension_Methods
                 throw e.Clone(msg);
             }
         }
-        public static void VerifyOwnerOrManager(this Shop shop, Guid newManagaerGuid, ICloneableException<Exception> e)
-        {
-            if (!shop.IsOwnerOrManager(newManagaerGuid))
-            {
-                StackTrace stackTrace = new StackTrace();
-                var msg = $"User with Guid - {newManagaerGuid} is not an owner or a creator or a manager" +
-                    $" cant complete {stackTrace.GetFrame(1).GetMethod().Name}";
-                throw e.Clone(msg);
-            }
-        }
+
+
+        //public static void VerifyOwnerOrManager(this Shop shop, Guid newManagaerGuid, ICloneableException<Exception> e)
+        //{
+        //    if (!shop.IsOwnerOrManager(newManagaerGuid))
+        //    {
+        //        StackTrace stackTrace = new StackTrace();
+        //        var msg = $"User with Guid - {newManagaerGuid} is not an owner or a creator or a manager" +
+        //            $" cant complete {stackTrace.GetFrame(1).GetMethod().Name}";
+        //        throw e.Clone(msg);
+        //    }
+        //}
 
         public static void VerifyOwnerOrCreator(this Shop shop, Guid ownerToRemoveGuid, ICloneableException<Exception> e)
         {
@@ -314,13 +316,20 @@ namespace DomainLayer.Extension_Methods
                 throw e.Clone(msg);
             }
         }
-        private static bool IsOwnerOrManager(this Shop shop, Guid userGuid)
-        {
-            var isOwner = shop.Owners.Any(owner => owner.OwnerGuid.Equals(userGuid));
-            var isManager = shop.Managers.Any(manager => manager.OwnerGuid.Equals(userGuid));
 
-            return (isOwner || isManager);
+        //private static bool IsOwnerOrManager(this Shop shop, Guid userGuid)
+        //{
+        //    var isOwner = shop.Owners.Any(owner => owner.OwnerGuid.Equals(userGuid));
+        //    var isManager = shop.Managers.Any(manager => manager.OwnerGuid.Equals(userGuid));
+
+        //    return (isOwner || isManager);
+        //}
+
+        public static bool IsManager(this Shop shop, Guid userGuid)
+        {
+            return shop.Managers.Any(manager => manager.OwnerGuid.Equals(userGuid));
         }
+
         private static bool IsCreatorOrOwner(this Shop shop, Guid userGuid)
         {
             var isCreator = shop.Creator.OwnerGuid.Equals(userGuid);
@@ -329,8 +338,8 @@ namespace DomainLayer.Extension_Methods
         }
         private static bool IsCreatorOrOwnerOrManager(this Shop shop, Guid userGuid)
         {
-            var isManager = shop.Managers.Any(m => m.OwnerGuid.Equals(userGuid));
-            return (shop.IsCreatorOrOwner(userGuid) || isManager);
+            //var isManager = shop.Managers.Any(m => m.OwnerGuid.Equals(userGuid));
+            return (shop.IsCreatorOrOwner(userGuid) || shop.IsManager(userGuid));
         }
         #endregion
 

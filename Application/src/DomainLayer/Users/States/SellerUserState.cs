@@ -96,9 +96,9 @@ namespace DomainLayer.Users.States
             throw new BadStateException($"Tried to invoke AddProductToCart in Seller State");
         }
 
-        public override bool AddShopManager(BaseUser baseUser, Guid shopGuid, Guid newManagaerGuid, List<string> priviliges)
+        public override bool AddShopManager(BaseUser baseUser, Guid shopGuid, Guid newManagaerGuid, List<bool> privileges)
         {
-            DomainData.ShopsCollection[shopGuid].AddShopManager(baseUser.Guid, newManagaerGuid, priviliges);
+            DomainData.ShopsCollection[shopGuid].AddShopManager(baseUser.Guid, newManagaerGuid, privileges);
             return true;
         }
 

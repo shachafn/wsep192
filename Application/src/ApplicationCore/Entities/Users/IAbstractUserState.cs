@@ -9,7 +9,7 @@ namespace ApplicationCore.Entities.Users
     {
         bool AddProductToCart(BaseUser baseUser, Guid shopGuid, Guid shopProductGuid, int quantity);
         Guid AddProductToShop(BaseUser baseUser, Guid shopGuid, string name, string category, double price, int quantity);
-        bool AddShopManager(BaseUser baseUser, Guid shopGuid, Guid newManagaerGuid, List<string> priviliges);
+        bool AddShopManager(BaseUser baseUser, Guid shopGuid, Guid newManagaerGuid, List<bool> privileges);
         bool AddShopOwner(BaseUser baseUser, Guid shopGuid, Guid newManagaerGuid);
         bool CascadeRemoveShopOwner(BaseUser baseUser, Guid shopGuid, Guid ownerToRemoveGuid);
         bool ConnectToPaymentSystem();

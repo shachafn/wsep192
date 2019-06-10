@@ -91,9 +91,9 @@ namespace DomainLayer.Users
             return State.AddShopOwner(_baseUser, shopGuid, newManagaerGuid);
         }
 
-        public bool AddShopManager(Guid shopGuid, Guid newManagaerGuid, List<string> priviliges)
+        public bool AddShopManager(Guid shopGuid, Guid newManagaerGuid, List<bool> privileges)
         {
-            return State.AddShopManager(_baseUser, shopGuid, newManagaerGuid, priviliges);
+            return State.AddShopManager(_baseUser, shopGuid, newManagaerGuid, privileges);
         }
 
         public bool CascadeRemoveShopOwner(Guid shopGuid, Guid ownerToRemoveGuid)

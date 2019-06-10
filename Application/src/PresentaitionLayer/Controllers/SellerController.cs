@@ -54,27 +54,36 @@ namespace PresentaitionLayer.Controllers
             ViewData["UserName"] = User.Identity.Name;
             var shops = _serviceFacade.GetUserShops(new Guid(HttpContext.Session.Id));
             var shop = shops.FirstOrDefault(currshop => currshop.Guid.Equals(new Guid(shopId)));
-            ShopManageIndexModel model = new ShopManageIndexModel(shop);
-            model.Owners = getOwnerNames(shop);
+            ShopManageIndexModel model = new ShopManageIndexModel(shop)
+            {
+                Owners = GetOwnerNames(shop),
+                Managers = GetManagerNames(shop)
+            };
             if (shop.candidate != null)
             {
-                model.ownerCandidate = (_serviceFacade.GetUserName(shop.candidate.OwnerGuid), _serviceFacade.GetUserName(shop.candidate.AppointerGuid));
+                model.OwnerCandidate = (_serviceFacade.GetUserName(shop.candidate.OwnerGuid), _serviceFacade.GetUserName(shop.candidate.AppointerGuid));
             }
-            model.creatorName = _serviceFacade.GetUserName(shop.Creator.OwnerGuid);
+            model.CreatorName = _serviceFacade.GetUserName(shop.Creator.OwnerGuid);
             return View(model);
         }
-        private List<(string, string,Guid)> getOwnerNames(Shop shop)
+        private List<(string, string,Guid)> GetOwnerNames(Shop shop)
         {
-            List<(string, string,Guid)> owners = new List<(string, string,Guid)>();
+            List<(string, string, Guid)> owners = new List<(string, string,Guid)>();
             foreach (ShopOwner owner in shop.Owners)
             {
                 owners.Add((_serviceFacade.GetUserName(owner.OwnerGuid),_serviceFacade.GetUserName(owner.AppointerGuid),owner.OwnerGuid) );
             }
             return owners;
         }
-        private List<Tuple<string, string, int>> getManagerNames(Shop shop)
+        private List<(string, string, string, Guid)> GetManagerNames(Shop shop)
         {
-            throw new NotImplementedException();
+            List<(string, string, string, Guid)> managers = new List<(string, string, string, Guid)>();
+            foreach (ShopOwner manager in shop.Managers)
+            {
+                managers.Add((_serviceFacade.GetUserName(manager.OwnerGuid), _serviceFacade.GetUserName(manager.AppointerGuid),
+                    manager.Privileges.Count == 0 ? "None" : string.Join('\n', manager.Privileges.Select(p=>p.ToString())), manager.OwnerGuid));
+            }
+            return managers;
         }
         public IActionResult Products(string ShopId)
         {
@@ -134,14 +143,14 @@ namespace PresentaitionLayer.Controllers
         public IActionResult AddCartDiscountPolicy(string Description, string Sign, int Than, int Percent, string ShopId)
         {
             _serviceFacade.AddNewDiscountPolicy(new Guid(HttpContext.Session.Id), new Guid(ShopId), (object)"Cart discount policy", (object)Sign, (object)Than, (object)Percent, (object)Description,(object)null);
-            return RedirectToAction("Policies", "Seller", new { ShopId = ShopId });
+            return RedirectToAction("Policies", "Seller", new { ShopId });
         }
 
         [HttpPost]
         public IActionResult AddCompoundDiscountPolicy(string Description, string guid1,string Sign, string guid2, int Percent, string ShopId)
         {
             _serviceFacade.AddNewDiscountPolicy(new Guid(HttpContext.Session.Id), new Guid(ShopId), (object)"Compound discount policy",(object) new Guid(guid1),(object)Sign, (object)new Guid(guid1), (object)Percent, (object)Description);
-            return RedirectToAction("Policies", "Seller", new { ShopId = ShopId });
+            return RedirectToAction("Policies", "Seller", new {  ShopId });
         }
         /*
                 [HttpPost]
@@ -162,21 +171,21 @@ namespace PresentaitionLayer.Controllers
         public IActionResult AddProductPurchasePolicies(string Description,string Sign,int Than, string ProductId,string ShopId)
         {
             _serviceFacade.AddNewPurchasePolicy(new Guid(HttpContext.Session.Id), new Guid(ShopId), (object)"Product purchase policy",(object)new Guid(ProductId), (object)Sign, (object)Than, (object)Description);
-            return RedirectToAction("Products", "Seller", new { ShopId = ShopId });
+            return RedirectToAction("Products", "Seller", new { ShopId });
         }
 
         [HttpPost]
         public IActionResult AddProductDiscountPolicies(string Description, string Sign, int Than,int Percent, string ProductId, string ShopId)
         {
             _serviceFacade.AddNewDiscountPolicy(new Guid(HttpContext.Session.Id), new Guid(ShopId), (object)"Product discount policy", (object)new Guid(ProductId), (object)Sign, (object)Than,(object)Percent, (object)Description);
-            return RedirectToAction("Products", "Seller", new { ShopId = ShopId });
+            return RedirectToAction("Products", "Seller", new {  ShopId });
         }
 
         [HttpPost]
-        public IActionResult DeleteRole(string OwnerId, string ShopId)
+        public IActionResult DeleteOwner(string OwnerId, string ShopId)
         {
             _serviceFacade.CascadeRemoveShopOwner(new Guid(HttpContext.Session.Id), new Guid(ShopId), new Guid(OwnerId));
-            return RedirectToAction("Manage", "Seller", new { ShopId = ShopId });
+            return RedirectToAction("Manage", "Seller", new {  ShopId });
         }
 
         [HttpPost]
@@ -184,19 +193,31 @@ namespace PresentaitionLayer.Controllers
         {
             Guid OwnerId = _serviceFacade.GetUserGuid(OwnerName); //need to adress the empty guid thingy
             _serviceFacade.AddShopOwner(new Guid(HttpContext.Session.Id), new Guid(ShopId), OwnerId);
-            return RedirectToAction("Manage", "Seller", new { ShopId = ShopId });
+            return RedirectToAction("Manage", "Seller", new { ShopId });
+        }
+
+        public IActionResult AddShopManager(string ManagerName, string ShopId, bool manageProducts = false,
+            bool manageShopState = false, bool managePolicies = false, bool appointManagers = false)
+        {
+            Guid OwnerId = _serviceFacade.GetUserGuid(ManagerName); //need to adress the empty guid thingy
+            ICollection<bool> privileges = new List<bool>
+            {
+                manageProducts, manageShopState, managePolicies, appointManagers
+            };
+            _serviceFacade.AddShopManager(new Guid(HttpContext.Session.Id), new Guid(ShopId), OwnerId, privileges.ToList());
+            return RedirectToAction("Manage", "Seller", new { ShopId });
+        }
+
+        public IActionResult DeleteManager(string ManagerId, string ShopId)
+        {
+            _serviceFacade.RemoveShopManager(new Guid(HttpContext.Session.Id), new Guid(ShopId), new Guid(ManagerId));
+            return RedirectToAction("Manage", "Seller", new { ShopId });
         }
 
         public IActionResult CancelOwnerAssignment(string ShopId)
         {
             _serviceFacade.cancelOwnerAssignment(new Guid(HttpContext.Session.Id), new Guid(ShopId));
-            return RedirectToAction("Manage", "Seller", new { ShopId = ShopId });
+            return RedirectToAction("Manage", "Seller", new { ShopId });
         }
-        /*public IActionResult Roles(string ShopId)
-        {
-            _serviceFacade.
-            return View();
-        }*/
-
     }
 }

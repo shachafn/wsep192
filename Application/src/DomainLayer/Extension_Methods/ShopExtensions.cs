@@ -72,8 +72,8 @@ namespace DomainLayer.Extension_Methods
                     CascadeRemoveShopOwner(shop, ownerToRemoveGuid, owner.OwnerGuid);
                 }
             }
-            shop.Owners.Remove(shop.Owners.FirstOrDefault(o => o.OwnerGuid.Equals(ownerToRemoveGuid)));
-            return true;
+            return shop.Owners.Remove(shop.Owners.FirstOrDefault(o => o.OwnerGuid.Equals(ownerToRemoveGuid)));
+            //return true;
         }
 
         public static void AddShopOwner(this Shop shop, Guid userGuid, Guid newOwnerGuid)
@@ -84,13 +84,12 @@ namespace DomainLayer.Extension_Methods
 
         public static bool RemoveShopManager(this Shop shop, Guid userGuid, Guid managerToRemoveGuid)
         {
-            shop.Managers.Remove(shop.Owners.FirstOrDefault(o => o.OwnerGuid.Equals(managerToRemoveGuid)));
-            return true;
+            return shop.Managers.Remove(shop.Managers.FirstOrDefault(o => o.OwnerGuid.Equals(managerToRemoveGuid)));
         }
 
-        public static void AddShopManager(this Shop shop, Guid userGuid, Guid newManagaerGuid, List<string> priviliges)
+        public static void AddShopManager(this Shop shop, Guid userGuid, Guid newManagaerGuid, List<bool> privileges)
         {
-            var newOwner = new ShopOwner(newManagaerGuid, userGuid, shop.Guid, priviliges);
+            var newOwner = new ShopOwner(newManagaerGuid, userGuid, shop.Guid, privileges);
             shop.Managers.Add(newOwner);
         }
 
@@ -154,8 +153,8 @@ namespace DomainLayer.Extension_Methods
                     UpdateCenter.RaiseEvent(newEvent);
                 }
             }
-            shop.Owners.Remove(ownerToRemove);// remove the owner from the owners list
-            return true;
+            return shop.Owners.Remove(ownerToRemove);// remove the owner from the owners list
+            //return true;
         }
 
         public static Guid AddNewPurchasePolicy(this Shop shop, IPurchasePolicy newPurchasePolicy)

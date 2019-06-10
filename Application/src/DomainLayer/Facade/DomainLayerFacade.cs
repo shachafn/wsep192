@@ -247,15 +247,15 @@ namespace DomainLayer.Facade
             return res;
         }
 
-        public bool AddShopManager(UserIdentifier userIdentifier, Guid shopGuid, Guid newManagaerGuid, List<string> priviliges)
+        public bool AddShopManager(UserIdentifier userIdentifier, Guid shopGuid, Guid newManagaerGuid, List<bool> privileges)
         {
             VerifySystemIsInitialized();
-            _verifier.VerifyMe(MethodBase.GetCurrentMethod(), userIdentifier, shopGuid, newManagaerGuid, priviliges);
-            bool res = _userDomain.GetUserObject(userIdentifier).AddShopManager(shopGuid, newManagaerGuid, priviliges);
-            string newManagerPriviliges = priviliges.Count == 0 ? "None" : string.Join('\n', priviliges);
+            _verifier.VerifyMe(MethodBase.GetCurrentMethod(), userIdentifier, shopGuid, newManagaerGuid, privileges);
+            bool res = _userDomain.GetUserObject(userIdentifier).AddShopManager(shopGuid, newManagaerGuid, privileges);
+            string newManagerprivileges = privileges.Count == 0 ? "None" : string.Join('\n', privileges);
             if (res)
                 _logger.LogInformation($"{GetUserName(userIdentifier.Guid)} added {GetUserName(newManagaerGuid)} " +
-                    $" as a new manager of shop {GetShopName(shopGuid)} with priviliges: {newManagerPriviliges}.");
+                    $" as a new manager of shop {GetShopName(shopGuid)} with privileges: {newManagerprivileges}.");
             else
                 _logger.LogInformation($"{GetUserName(userIdentifier.Guid)} failed to add {GetUserName(newManagaerGuid)}" +
                     $" as a new manager of shop {GetShopName(shopGuid)}.");

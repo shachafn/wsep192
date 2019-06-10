@@ -228,7 +228,7 @@ namespace DomainLayer.Facade
             VerifyString(category, new IllegalArgumentException());
             VerifyDoubleGreaterThan0(price, new IllegalArgumentException());
             VerifyIntEqualOrGreaterThan0(quantity, new IllegalArgumentException());
-            shop.VerifyCreatorOrOwnerOrManager(userIdentifier.Guid, new NoPriviligesException());
+            shop.VerifyCreatorOrOwnerOrManager(userIdentifier.Guid, new NoPrivilegesException());
         }
 
         /// <constraints>
@@ -246,7 +246,7 @@ namespace DomainLayer.Facade
             var shop = VerifyShopExists(shopGuid, new ShopNotFoundException());
             shop.VerifyShopIsActive();
             shop.VerifyShopProductExists(shopProductGuid, new ProductNotFoundException());
-            shop.VerifyCreatorOrOwnerOrManager(userIdentifier.Guid, new NoPriviligesException());
+            shop.VerifyCreatorOrOwnerOrManager(userIdentifier.Guid, new NoPrivilegesException());
         }
 
         /// <constraints>
@@ -268,7 +268,7 @@ namespace DomainLayer.Facade
             shop.VerifyShopProductExists(productGuid, new ProductNotFoundException());
             VerifyDoubleGreaterThan0(newPrice, new IllegalArgumentException());
             VerifyIntEqualOrGreaterThan0(newQuantity, new IllegalArgumentException());
-            shop.VerifyCreatorOrOwnerOrManager(userIdentifier.Guid, new NoPriviligesException());
+            shop.VerifyCreatorOrOwnerOrManager(userIdentifier.Guid, new NoPrivilegesException());
         }
 
         /// <constraints>
@@ -369,12 +369,12 @@ namespace DomainLayer.Facade
         /// 7. checked.
         /// 8. Will be checked in Shop class - newManagaerGuid must not be the creator of the shop, or one of the owners/managers.
         /// </constraints>
-        public void AddShopManager(UserIdentifier userIdentifier, Guid shopGuid, Guid newManagaerGuid, List<string> priviliges)
+        public void AddShopManager(UserIdentifier userIdentifier, Guid shopGuid, Guid newManagaerGuid, List<bool> privileges)
         {
             var user = VerifyLoggedInUser(userIdentifier.Guid, new UserNotFoundException());
             VerifyRegisteredUser(newManagaerGuid, new UserNotFoundException());
             var shop = VerifyShopExists(shopGuid, new ShopNotFoundException());
-            shop.VerifyCreatorOrOwner(userIdentifier.Guid, new NoPriviligesException());
+            shop.VerifyCreatorOrOwner(userIdentifier.Guid, new NoPrivilegesException());
             shop.VerifyNotCreatorOrOwnerOrManager(newManagaerGuid, new BrokenConstraintException());
             shop.VerifyShopIsActive();
         }
@@ -394,7 +394,7 @@ namespace DomainLayer.Facade
             var user = VerifyLoggedInUser(userIdentifier.Guid, new UserNotFoundException());
             VerifyRegisteredUser(newOwnerGuid, new UserNotFoundException());
             var shop = VerifyShopExists(shopGuid, new ShopNotFoundException());
-            shop.VerifyCreatorOrOwner(userIdentifier.Guid, new NoPriviligesException());
+            shop.VerifyCreatorOrOwner(userIdentifier.Guid, new NoPrivilegesException());
             shop.VerifyNotCreatorOrOwnerOrManager(newOwnerGuid, new BrokenConstraintException());
             shop.VerifyShopIsActive();
         }
@@ -415,7 +415,7 @@ namespace DomainLayer.Facade
             var user = VerifyLoggedInUser(userIdentifier.Guid, new UserNotFoundException());
             var shop = VerifyShopExists(shopGuid, new ShopNotFoundException());
             shop.VerifyShopIsActive();
-            shop.VerifyOwnerOrCreator(userIdentifier.Guid, new NoPriviligesException());
+            shop.VerifyOwnerOrCreator(userIdentifier.Guid, new NoPrivilegesException());
             VerifyRegisteredUser(ownerToRemoveGuid, new UserNotFoundException());
             VerifyNotOwnerAppointer(userIdentifier.Guid, ownerToRemoveGuid, shopGuid, new IllegalArgumentException());
         }
@@ -434,7 +434,7 @@ namespace DomainLayer.Facade
             var user = VerifyLoggedInUser(userIdentifier.Guid, new UserNotFoundException());
             VerifyRegisteredUser(managerToRemoveGuid, new UserNotFoundException());
             var shop = VerifyShopExists(shopGuid, new ShopNotFoundException());
-            shop.VerifyCreatorOrOwner(userIdentifier.Guid, new NoPriviligesException());
+            shop.VerifyCreatorOrOwner(userIdentifier.Guid, new NoPrivilegesException());
             shop.VerifyAppointedBy(managerToRemoveGuid, userIdentifier.Guid, new IllegalOperationException());
             shop.VerifyShopIsActive();
         }
@@ -560,7 +560,7 @@ namespace DomainLayer.Facade
         {
             var user = VerifyLoggedInUser(userIdentifier.Guid, new UserNotFoundException());
             var shop = VerifyShopExists(shopGuid, new ShopNotFoundException());
-            shop.VerifyCreatorOrOwner(userIdentifier.Guid, new NoPriviligesException());
+            shop.VerifyCreatorOrOwner(userIdentifier.Guid, new NoPrivilegesException());
         }
         #endregion
 

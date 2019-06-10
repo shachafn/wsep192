@@ -37,9 +37,9 @@ namespace ATBridge
             return _serviceFacade.AddProductToCart(userGuid, shopGuid, productGuid, quantity);
         }
 
-        public bool AddShopManager(Guid userGuid, Guid shopGuid, Guid newManagaerGuid, List<string> priviliges)
+        public bool AddShopManager(Guid userGuid, Guid shopGuid, Guid newManagaerGuid, List<bool> privileges)
         {
-            return _serviceFacade.AddShopManager(userGuid, shopGuid, newManagaerGuid, priviliges);
+            return _serviceFacade.AddShopManager(userGuid, shopGuid, newManagaerGuid, privileges);
 
         }
 

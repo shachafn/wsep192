@@ -2,15 +2,15 @@
 
 namespace ApplicationCore.Exceptions
 {
-    public class NoPriviligesException : Exception, ICloneableException<Exception>
+    public class NoPrivilegesException : Exception, ICloneableException<Exception>
     {
-        public NoPriviligesException() { }
+        public NoPrivilegesException() { }
 
-        public NoPriviligesException(string msg) : base(msg) { }
+        public NoPrivilegesException(string msg) : base(msg) { }
 
         Exception ICloneableException<Exception>.Clone(string msg)
         {
-            return new NoPriviligesException(msg);
+            return new NoPrivilegesException(msg);
         }
     }
 }

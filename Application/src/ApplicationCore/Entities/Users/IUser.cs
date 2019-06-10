@@ -15,7 +15,7 @@ namespace ApplicationCore.Entities.Users
         #region Public Methods
         bool AddProductToCart(Guid shopGuid, Guid shopProductGuid, int quantity);
         Guid AddProductToShop(Guid shopGuid, string name, string category, double price, int quantity);
-        bool AddShopManager(Guid shopGuid, Guid newManagaerGuid, List<string> priviliges);
+        bool AddShopManager(Guid shopGuid, Guid newManagaerGuid, List<bool> privileges);
         bool AddShopOwner(Guid shopGuid, Guid newManagaerGuid);
         bool CascadeRemoveShopOwner(Guid shopGuid, Guid ownerToRemoveGuid);
         bool ConnectToPaymentSystem();

@@ -7,7 +7,7 @@
 <h2>Manage your shop</h2>
 <h4>shop @Model.Shop.ShopName</h4>
 <h4>Current Shop state: @Model.Shop.ShopState </h4>
-<h4>Shop creator: @Model.creatorName</h4>
+<h4>Shop creator: @Model.CreatorName</h4>
 <div class="col-md-5" style="margin-bottom:20px;">
     manage products
     <input type="button" align="left" class="btn-lg" value="Products" onclick="location.href='@Url.Action("Products","Seller",new { ShopId=ViewData["ShopId"]})'" />
@@ -42,10 +42,10 @@
             </thead>
             <tr>
                 <td>
-                    @Model.ownerCandidate.Item1
+                    @Model.OwnerCandidate.Item1
                 </td>
                 <td>
-                    @Model.ownerCandidate.Item2
+                    @Model.OwnerCandidate.Item2
                 </td>
                 <td>
                     <div class="img-responsive list-inline">
@@ -67,7 +67,7 @@
                     @if (!Model.Shop.candidate.Signatures.Keys.Contains(ViewData["UserName"]))
                     {
                         <form asp-action="AddOwner" method="post">
-                            <input type="hidden" value="@Model.ownerCandidate.Item1" name="OwnerName" required />
+                            <input type="hidden" value="@Model.OwnerCandidate.Item1" name="OwnerName" required />
                             <input type="hidden" name="shopId" value="@ViewData["ShopId"]" />
                             <input type="submit" value="sign" class="form-control" />
                         </form>
@@ -76,7 +76,7 @@
                     else
                     {
                         <div>already signed</div>
-                        <br/>
+                        <br />
                         <input type="button" class="form-control" value="cancel assignment" onclick="location.href='@Url.Action("CancelOwnerAssignment","Seller",new { ShopId=ViewData["ShopId"]})'" />
                     }
                 </td>
@@ -113,7 +113,7 @@
                     @Html.DisplayFor(modelItem => item.Item2)
                 </td>
                 <td>
-                    <form asp-action="DeleteRole" method="post">
+                    <form asp-action="DeleteOwner" method="post">
                         <input type="hidden" name="OwnerId" value=" @Html.DisplayFor(modelItem => item.Item3)" />
                         <input type="hidden" name="ShopId" value="@ViewData["ShopId"]" />
                         <input type="submit" value="Delete" class="form-control" />
@@ -145,7 +145,7 @@
                 Manager Name
             </th>
             <th>
-                Appointer Guid
+                Appointer Name
             </th>
             <th>
                 Privileges
@@ -154,7 +154,7 @@
         </tr>
     </thead>
     <tbody>
-        @foreach (var item in Model.Shop.Managers)
+        @foreach (var item in Model.Managers)
         {
             <tr>
                 <td>
@@ -162,23 +162,45 @@
                     <img src="~/images/personIcon.png" alt="should be the product's name" style="height:80px; width:80px;" />
                 </td>
                 <td>
-                    @Html.DisplayFor(modelItem => item.OwnerGuid)
+                    @Html.DisplayFor(modelItem => item.Item1)
                 </td>
                 <td>
-                    @Html.DisplayFor(modelItem => item.AppointerGuid)
+                    @Html.DisplayFor(modelItem => item.Item2)
                 </td>
                 <td>
-                    @Html.DisplayFor(modelItem => item.Priviliges.ToString())
+                    @Html.DisplayFor(modelItem => item.Item3)
+                    @*"None"*@
                 </td>
                 <td>
-                    <form asp-action="DeleteOwner" method="post">
-                        <input type="hidden" name="OwnerId" value=" @Html.DisplayFor(modelItem => item.OwnerGuid)" />
+                    <form asp-action="DeleteManager" method="post">
+                        <input type="hidden" name="ManagerId" value=" @Html.DisplayFor(modelItem => item.Item4)" />
                         <input type="hidden" name="shopId" value="@ViewData["ShopId"]" />
                         <input type="submit" value="Delete" class="form-control" />
                     </form>
                 </td>
             </tr>
         }
+        <tr>
+            <td class="form-inline">
+                <form asp-action="AddShopManager" method="post">
+                    <input type="text" placeholder="new manager name" name="ManagerName" required />
+                    <input type="hidden" name="shopId" value="@ViewData["ShopId"]" />
+                    Manage Products
+                    @Html.CheckBox("manageProducts")
+                    @*<input type="checkbox" name="manageProducts" />*@
+                    Manage Shop State
+                    @*<input type="checkbox" name="manageShopState" />*@
+                    @Html.CheckBox("manageShopState")
+                    Manage Policies
+                    @*<input type="checkbox" name="managePolicies" />*@
+                    @Html.CheckBox("managePolicies")
+                    Appoint Managers
+                    @*<input type="checkbox" name="appointManagers" />*@
+                    @Html.CheckBox("appointManagers")
+                    <input type="submit" value="Add Shop Manager" class="form-control" />
+                </form>
+            </td>
+        </tr>
     </tbody>
 </table>
 

@@ -105,7 +105,7 @@ namespace DomainLayer.Data.Entitites.Users.States
             return true;
         }
 
-        public override bool AddShopManager(BaseUser baseUser, Guid shopGuid, Guid newManagaerGuid, List<string> priviliges)
+        public override bool AddShopManager(BaseUser baseUser, Guid shopGuid, Guid newManagaerGuid, List<bool> privileges)
         {
             throw new BadStateException($"Tried to invoke AddShopManager in Buyer State");
         }

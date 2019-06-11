@@ -83,10 +83,10 @@ namespace ServiceLayer
 
         }
 
-        public bool AddShopManager(Guid cookie, Guid shopGuid, Guid newManagaerGuid, List<string> priviliges)
+        public bool AddShopManager(Guid cookie, Guid shopGuid, Guid newManagaerGuid, List<bool> privileges)
         {
             var userGuid = _sessionManager.ResolveCookie(cookie);
-            return _serviceFacade.AddShopManager(userGuid, shopGuid, newManagaerGuid, priviliges);
+            return _serviceFacade.AddShopManager(userGuid, shopGuid, newManagaerGuid, privileges);
         }
 
         public bool AddShopOwner(Guid cookie, Guid shopGuid, Guid newShopOwnerGuid)

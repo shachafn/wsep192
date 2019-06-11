@@ -18,9 +18,9 @@ namespace ATBridge
             return _real == null ? false : _real.AddProductToCart(userGuid, shopGuid, productGuid, quantity);
         }
 
-        public bool AddShopManager(Guid userGuid, Guid shopGuid, Guid newManagaerGuid, List<string> priviliges)
+        public bool AddShopManager(Guid userGuid, Guid shopGuid, Guid newManagaerGuid, List<bool> privileges)
         {
-            return _real == null ? false : _real.AddShopManager(userGuid, shopGuid, newManagaerGuid, priviliges);
+            return _real == null ? false : _real.AddShopManager(userGuid, shopGuid, newManagaerGuid, privileges);
         }
 
         public bool AddShopOwner(Guid userGuid, Guid shopGuid, Guid newShopOwnerGuid)

@@ -114,7 +114,7 @@ namespace DomainLayer.Users.States
             throw new BadStateException($"Tried to invoke AddProductToCart in Admin State");
         }
 
-        public override bool AddShopManager(BaseUser baseUser, Guid shopGuid, Guid newManagaerGuid, List<string> priviliges)
+        public override bool AddShopManager(BaseUser baseUser, Guid shopGuid, Guid newManagaerGuid, List<bool> privileges)
         {
             throw new BadStateException($"Tried to invoke AddShopManager in Admin State");
         }

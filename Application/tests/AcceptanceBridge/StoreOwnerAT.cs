@@ -75,7 +75,7 @@ namespace Tests
             UserAT.LoginUser(otherCookie, otherUsername, otherPassword);
             Tester.PBridge.ChangeUserState(otherCookie, "SellerUserState");
 
-            Assert.Throws<NoPriviligesException>(
+            Assert.Throws<NoPrivilegesException>(
                 () => AddProductToShop(otherCookie, shopGuid, "Galaxy S9", "Cellphones", 2000, 10));
         }
 
@@ -461,7 +461,7 @@ namespace Tests
             Tester.PBridge.ChangeUserState(benCookie, "SellerUserState");
 
             //verify he really is not an owner anymore
-            Assert.Throws<NoPriviligesException>(
+            Assert.Throws<NoPrivilegesException>(
                 () => Tester.PBridge.AddShopOwner(tomCookie, shopGuid, benGuid));
         }
         #endregion
@@ -480,13 +480,13 @@ namespace Tests
             UserAT.GenerateRandoms(out var benCookie, out var benUsername, out var benPassword);
             var benGuid = UserAT.RegisterUser(benCookie, benUsername, benPassword);
 
-            Tester.PBridge.AddShopManager(cookie, shopGuid, benGuid, new List<string>());
+            Tester.PBridge.AddShopManager(cookie, shopGuid, benGuid, new List<bool>());
         }
 
         [Test]
         public static void AppointmentOfNewManagerAT2()
         {
-            Assert.Throws<UserNotFoundException>(() => Tester.PBridge.AddShopManager(Tester.GroismanGuid, Tester._groismanShop, Tester.GuestGuid, new List<string>()));
+            Assert.Throws<UserNotFoundException>(() => Tester.PBridge.AddShopManager(Tester.GroismanGuid, Tester._groismanShop, Tester.GuestGuid, new List<bool>()));
         }
 
         #endregion
@@ -505,7 +505,7 @@ namespace Tests
             UserAT.GenerateRandoms(out var benCookie, out var benUsername, out var benPassword);
             var benGuid = UserAT.RegisterUser(benCookie, benUsername, benPassword);
 
-            Tester.PBridge.AddShopManager(cookie, shopGuid, benGuid, new List<string>());
+            Tester.PBridge.AddShopManager(cookie, shopGuid, benGuid, new List<bool>());
             var res = Tester.PBridge.RemoveShopManager(cookie, shopGuid, benGuid);
             Assert.IsTrue(res);
         }

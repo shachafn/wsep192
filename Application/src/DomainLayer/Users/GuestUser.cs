@@ -107,7 +107,7 @@ namespace ApplicationCore.Entities.Users
             return true;
         }
 
-        public bool AddShopManager(Guid shopGuid, Guid newManagaerGuid, List<string> priviliges)
+        public bool AddShopManager(Guid shopGuid, Guid newManagaerGuid, List<bool> privileges)
         {
             throw new BadStateException($"Tried to invoke AddShopManager in GuestUser");
         }

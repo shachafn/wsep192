@@ -123,7 +123,9 @@ namespace DomainLayer.Facade
             VerifyLoggedInUser(userIdentifier.Guid, new UserNotFoundException());
             var user = VerifyLoggedInUser(userIdentifier.Guid, new UserNotFoundException());
             var shop = VerifyShopExists(shopGuid, new ShopNotFoundException());
-            VerifyOwnerOfShop(userIdentifier.Guid, shopGuid, new OwnerNotFoundException());
+            //VerifyOwnerOfShop(userIdentifier.Guid, shopGuid, new OwnerNotFoundException());
+            VerifyOwnerOfShopOrManagerWithPrivilige(userIdentifier.Guid, shopGuid, ShopOwner.PrivilegeEnum.ManageShopState,
+                new NoPrivilegesException());
             shop.VerifyShopIsClosed();
         }
 
@@ -132,7 +134,9 @@ namespace DomainLayer.Facade
             VerifyLoggedInUser(userIdentifier.Guid, new UserNotFoundException());
             var user = VerifyLoggedInUser(userIdentifier.Guid, new UserNotFoundException());
             var shop = VerifyShopExists(shopGuid, new ShopNotFoundException());
-            VerifyOwnerOfShop(userIdentifier.Guid, shopGuid, new OwnerNotFoundException());
+            //VerifyOwnerOfShop(userIdentifier.Guid, shopGuid, new OwnerNotFoundException());
+            VerifyOwnerOfShopOrManagerWithPrivilige(userIdentifier.Guid, shopGuid, ShopOwner.PrivilegeEnum.ManageShopState,
+                new NoPrivilegesException());
             shop.VerifyShopIsActive();
         }
 
@@ -151,7 +155,7 @@ namespace DomainLayer.Facade
             var shop = VerifyShopExists(shopGuid, new ShopNotFoundException());
             shop.VerifyShopIsActive();
             var cart = GetCartExistsAndCreateIfNeeded(userIdentifier, shopGuid);
-            foreach(var purchasedProduct in cart.PurchasedProducts)
+            foreach (var purchasedProduct in cart.PurchasedProducts)
             {
                 int purchasedQuantity = purchasedProduct.Item2;
                 int availableQuantity = purchasedProduct.Item1.Quantity;
@@ -228,7 +232,9 @@ namespace DomainLayer.Facade
             VerifyString(category, new IllegalArgumentException());
             VerifyDoubleGreaterThan0(price, new IllegalArgumentException());
             VerifyIntEqualOrGreaterThan0(quantity, new IllegalArgumentException());
-            shop.VerifyCreatorOrOwnerOrManager(userIdentifier.Guid, new NoPriviligesException());
+            //shop.VerifyCreatorOrOwnerOrManager(userIdentifier.Guid, new NoPrivilegesException());
+            VerifyOwnerOfShopOrManagerWithPrivilige(userIdentifier.Guid, shopGuid, ShopOwner.PrivilegeEnum.ManageProducts,
+                new NoPrivilegesException());
         }
 
         /// <constraints>
@@ -246,7 +252,9 @@ namespace DomainLayer.Facade
             var shop = VerifyShopExists(shopGuid, new ShopNotFoundException());
             shop.VerifyShopIsActive();
             shop.VerifyShopProductExists(shopProductGuid, new ProductNotFoundException());
-            shop.VerifyCreatorOrOwnerOrManager(userIdentifier.Guid, new NoPriviligesException());
+            //shop.VerifyCreatorOrOwnerOrManager(userIdentifier.Guid, new NoPrivilegesException());
+            VerifyOwnerOfShopOrManagerWithPrivilige(userIdentifier.Guid, shopGuid, ShopOwner.PrivilegeEnum.ManageProducts,
+                new NoPrivilegesException());
         }
 
         /// <constraints>
@@ -268,7 +276,9 @@ namespace DomainLayer.Facade
             shop.VerifyShopProductExists(productGuid, new ProductNotFoundException());
             VerifyDoubleGreaterThan0(newPrice, new IllegalArgumentException());
             VerifyIntEqualOrGreaterThan0(newQuantity, new IllegalArgumentException());
-            shop.VerifyCreatorOrOwnerOrManager(userIdentifier.Guid, new NoPriviligesException());
+            //shop.VerifyCreatorOrOwnerOrManager(userIdentifier.Guid, new NoPrivilegesException());
+            VerifyOwnerOfShopOrManagerWithPrivilige(userIdentifier.Guid, shopGuid, ShopOwner.PrivilegeEnum.ManageProducts,
+                new NoPrivilegesException());
         }
 
         /// <constraints>
@@ -369,12 +379,12 @@ namespace DomainLayer.Facade
         /// 7. checked.
         /// 8. Will be checked in Shop class - newManagaerGuid must not be the creator of the shop, or one of the owners/managers.
         /// </constraints>
-        public void AddShopManager(UserIdentifier userIdentifier, Guid shopGuid, Guid newManagaerGuid, List<string> priviliges)
+        public void AddShopManager(UserIdentifier userIdentifier, Guid shopGuid, Guid newManagaerGuid, List<bool> privileges)
         {
             var user = VerifyLoggedInUser(userIdentifier.Guid, new UserNotFoundException());
             VerifyRegisteredUser(newManagaerGuid, new UserNotFoundException());
             var shop = VerifyShopExists(shopGuid, new ShopNotFoundException());
-            shop.VerifyCreatorOrOwner(userIdentifier.Guid, new NoPriviligesException());
+            shop.VerifyCreatorOrOwner(userIdentifier.Guid, new NoPrivilegesException());
             shop.VerifyNotCreatorOrOwnerOrManager(newManagaerGuid, new BrokenConstraintException());
             shop.VerifyShopIsActive();
         }
@@ -394,7 +404,7 @@ namespace DomainLayer.Facade
             var user = VerifyLoggedInUser(userIdentifier.Guid, new UserNotFoundException());
             VerifyRegisteredUser(newOwnerGuid, new UserNotFoundException());
             var shop = VerifyShopExists(shopGuid, new ShopNotFoundException());
-            shop.VerifyCreatorOrOwner(userIdentifier.Guid, new NoPriviligesException());
+            shop.VerifyCreatorOrOwner(userIdentifier.Guid, new NoPrivilegesException());
             shop.VerifyNotCreatorOrOwnerOrManager(newOwnerGuid, new BrokenConstraintException());
             shop.VerifyShopIsActive();
         }
@@ -415,7 +425,7 @@ namespace DomainLayer.Facade
             var user = VerifyLoggedInUser(userIdentifier.Guid, new UserNotFoundException());
             var shop = VerifyShopExists(shopGuid, new ShopNotFoundException());
             shop.VerifyShopIsActive();
-            shop.VerifyOwnerOrCreator(userIdentifier.Guid, new NoPriviligesException());
+            shop.VerifyOwnerOrCreator(userIdentifier.Guid, new NoPrivilegesException());
             VerifyRegisteredUser(ownerToRemoveGuid, new UserNotFoundException());
             VerifyNotOwnerAppointer(userIdentifier.Guid, ownerToRemoveGuid, shopGuid, new IllegalArgumentException());
         }
@@ -434,7 +444,7 @@ namespace DomainLayer.Facade
             var user = VerifyLoggedInUser(userIdentifier.Guid, new UserNotFoundException());
             VerifyRegisteredUser(managerToRemoveGuid, new UserNotFoundException());
             var shop = VerifyShopExists(shopGuid, new ShopNotFoundException());
-            shop.VerifyCreatorOrOwner(userIdentifier.Guid, new NoPriviligesException());
+            shop.VerifyCreatorOrOwner(userIdentifier.Guid, new NoPrivilegesException());
             shop.VerifyAppointedBy(managerToRemoveGuid, userIdentifier.Guid, new IllegalOperationException());
             shop.VerifyShopIsActive();
         }
@@ -455,6 +465,8 @@ namespace DomainLayer.Facade
 
         public void AddNewPurchasePolicy(ref IPurchasePolicy policy, UserIdentifier userIdentifier, Guid shopGuid, object policyType, object field1, object field2, object field3 = null, object field4 = null)
         {
+            VerifyOwnerOfShopOrManagerWithPrivilige(userIdentifier.Guid, shopGuid, ShopOwner.PrivilegeEnum.ManagePolicies,
+                new NoPrivilegesException());
             if (!(typeof(string) == policyType.GetType()))
                 throw new IllegalArgumentException("Wrong policy type");
             string type = (string)policyType;
@@ -494,6 +506,8 @@ namespace DomainLayer.Facade
 
         public void AddNewDiscountPolicy(ref IDiscountPolicy policy, UserIdentifier userIdentifier, Guid shopGuid, object policyType, object field1, object field2, object field3 = null, object field4 = null, object field5 = null)
         {
+            VerifyOwnerOfShopOrManagerWithPrivilige(userIdentifier.Guid, shopGuid, ShopOwner.PrivilegeEnum.ManagePolicies,
+                new NoPrivilegesException());
             if (!(typeof(string) == policyType.GetType()))
                 throw new IllegalArgumentException("Wrong policy type");
             string type = (string)policyType;
@@ -556,11 +570,11 @@ namespace DomainLayer.Facade
             var user = VerifyLoggedInUser(userIdentifier.Guid, new UserNotFoundException());
         }
 
-        public void cancelOwnerAssignment (UserIdentifier userIdentifier,Guid shopGuid)
+        public void cancelOwnerAssignment(UserIdentifier userIdentifier, Guid shopGuid)
         {
             var user = VerifyLoggedInUser(userIdentifier.Guid, new UserNotFoundException());
             var shop = VerifyShopExists(shopGuid, new ShopNotFoundException());
-            shop.VerifyCreatorOrOwner(userIdentifier.Guid, new NoPriviligesException());
+            shop.VerifyCreatorOrOwner(userIdentifier.Guid, new NoPrivilegesException());
         }
         #endregion
 
@@ -746,6 +760,53 @@ namespace DomainLayer.Facade
                 StackTrace stackTrace = new StackTrace();
                 var msg = $"User {GetUserName(userGuid)} is the not an owner of the shop {shop.ShopName}." +
         $" Cant complete {stackTrace.GetFrame(1).GetMethod().Name}";
+                _logger.LogError(msg);
+                throw e.Clone(msg);
+            }
+        }
+
+        private void VerifyManagerOfShop(Guid userGuid, Guid shopGuid, ICloneableException<Exception> e)
+        {
+            var shop = DomainData.ShopsCollection.FirstOrDefault(s => s.Guid.Equals(shopGuid));
+            var constraint = shop.Managers.Select(owner => owner.OwnerGuid).Contains(userGuid)
+                || shop.Creator.OwnerGuid.Equals(userGuid);
+            if (!constraint)
+            {
+                StackTrace stackTrace = new StackTrace();
+                var msg = $"User {GetUserName(userGuid)} is the not an manager of the shop {shop.ShopName}." +
+        $" Cant complete {stackTrace.GetFrame(1).GetMethod().Name}";
+                _logger.LogError(msg);
+                throw e.Clone(msg);
+            }
+        }
+
+        private void VerifyManagerPrivilige(Guid userGuid, Guid shopGuid, ShopOwner.PrivilegeEnum privilege, ICloneableException<Exception> e)
+        {
+            var shop = DomainData.ShopsCollection.FirstOrDefault(s => s.Guid.Equals(shopGuid));
+            var manager = shop.Managers.First(m => m.OwnerGuid.Equals(userGuid));
+            var constraint = manager.Privileges.Contains(privilege);
+            if (!constraint)
+            {
+                StackTrace stackTrace = new StackTrace();
+                var msg = $"User {GetUserName(userGuid)} is does not have the privilige of {privilege} in shop {shop.ShopName}." +
+        $" Cant complete {stackTrace.GetFrame(1).GetMethod().Name}";
+                _logger.LogError(msg);
+                throw e.Clone(msg);
+            }
+        }
+
+        private void VerifyOwnerOfShopOrManagerWithPrivilige(Guid userGuid, Guid shopGuid, ShopOwner.PrivilegeEnum privilege, ICloneableException<Exception> e)
+        {
+            var shop = DomainData.ShopsCollection.FirstOrDefault(s => s.Guid.Equals(shopGuid));
+            var creatorOrOwnerConstraint = shop.Owners.Select(owner => owner.OwnerGuid).Contains(userGuid)
+                || shop.Creator.OwnerGuid.Equals(userGuid);
+            var priviligeConstraint = shop.Managers.Select(owner => owner.OwnerGuid).Contains(userGuid) && shop.Managers.FirstOrDefault(m => m.OwnerGuid.Equals(userGuid)).Privileges.Contains(privilege);
+            if (!(creatorOrOwnerConstraint || priviligeConstraint))
+            {
+                StackTrace stackTrace = new StackTrace();
+                var msg = $"User {GetUserName(userGuid)} is the not the creator or an owner of the shop {shop.ShopName} " +
+                    $"and not a manager with the privilige {privilege}." +
+                    $" Cant complete {stackTrace.GetFrame(1).GetMethod().Name}";
                 _logger.LogError(msg);
                 throw e.Clone(msg);
             }

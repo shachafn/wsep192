@@ -296,7 +296,7 @@ namespace ApplicationCore.Interfaces.ServiceLayer
         /// 1. Must be called by an existing user.
         /// 2. User must be logged in.
         /// 3. User must be in seller state.
-        /// 4. User must be creator, or an owner (or a manager with priviliges for this operation) of the shop.
+        /// 4. User must be creator, or an owner (or a manager with privileges for this operation) of the shop.
         /// 5. Shop must exist.
         /// 6. Shop must be active.
         /// 7. name must not be string.IsNullOrWhitespace
@@ -307,7 +307,7 @@ namespace ApplicationCore.Interfaces.ServiceLayer
         /// <exception cref="SystemNotInitializedException">When system has not yet been initialized.</exception>
         /// <exception cref="UserNotFoundException">When cookie does not match any logged-in user's guid.</exception>
         /// <exception cref="BadStateException">When the user is not in SellerUserState</exception>
-        /// <exception cref="NoPriviligesException">When the user is not a creator,owner or manager with priviliges.</exception>
+        /// <exception cref="NoPrivilegesException">When the user is not a creator,owner or manager with privileges.</exception>
         /// <exception cref="ShopNotFoundException">When shopGuid does not match any existing shop guid.</exception>
         /// <exception cref="ShopStateException">When the shop is not active.</exception>
         /// <exception cref="IllegalArgumentException">When the name/category is null,empty or whitespace</exception>
@@ -325,7 +325,7 @@ namespace ApplicationCore.Interfaces.ServiceLayer
         /// 1. Must be called by an existing user.
         /// 2. User must be logged in.
         /// 3. User must be in seller state.
-        /// 4. User must be creator, an owner (or a manager with priviliges for this operation) of the shop.
+        /// 4. User must be creator, an owner (or a manager with privileges for this operation) of the shop.
         /// 5. Shop must exist.
         /// 6. Shop must be active.
         /// 7. Product must exist in shop.
@@ -333,7 +333,7 @@ namespace ApplicationCore.Interfaces.ServiceLayer
         /// <exception cref="SystemNotInitializedException">When system has not yet been initialized.</exception>
         /// <exception cref="UserNotFoundException">When cookie does not match any logged-in user's guid.</exception>
         /// <exception cref="BadStateException">When the user is not in SellerUserState</exception>
-        /// <exception cref="NoPriviligesException">When the user is not a creator,owner or manager with priviliges.</exception>
+        /// <exception cref="NoPrivilegesException">When the user is not a creator,owner or manager with privileges.</exception>
         /// <exception cref="ShopNotFoundException">When shopGuid does not match any existing shop guid.</exception>
         /// <exception cref="ShopStateException">When the shop is not active.</exception>
         /// <exception cref="ProductNotFoundException">When shopProductGuid does not match any product in the shop.</exception>
@@ -349,7 +349,7 @@ namespace ApplicationCore.Interfaces.ServiceLayer
         /// 1. Must be called by an existing user.
         /// 2. User must be logged in.
         /// 3. User must be in seller state.
-        /// 4. User must be creator, an owner (or a manager with priviliges for this operation) of the shop.
+        /// 4. User must be creator, an owner (or a manager with privileges for this operation) of the shop.
         /// 5. Shop must exist.
         /// 6. Shop must be active.
         /// 7. Product must exist in shop.
@@ -359,7 +359,7 @@ namespace ApplicationCore.Interfaces.ServiceLayer
         /// <exception cref="SystemNotInitializedException">When system has not yet been initialized.</exception>
         /// <exception cref="UserNotFoundException">When cookie does not match any logged-in user's guid.</exception>
         /// <exception cref="BadStateException">When the user is not in SellerUserState</exception>
-        /// <exception cref="NoPriviligesException">When the user is not a creator,owner or manager with priviliges.</exception>
+        /// <exception cref="NoPrivilegesException">When the user is not a creator,owner or manager with privileges.</exception>
         /// <exception cref="ShopNotFoundException">When shopGuid does not match any existing shop guid.</exception>
         /// <exception cref="ShopStateException">When the shop is not active.</exception>
         /// <exception cref="ProductNotFoundException">When shopProductGuid does not match any product in the shop.</exception>
@@ -407,7 +407,7 @@ namespace ApplicationCore.Interfaces.ServiceLayer
         /// <exception cref="SystemNotInitializedException">When system has not yet been initialized.</exception>
         /// <exception cref="UserNotFoundException">When cookie does not match any logged-in user's guid.</exception>
         /// <exception cref="BadStateException">When the user is not in SellerUserState</exception>
-        /// <exception cref="NoPriviligesException">When the user is not an owner of the shop.</exception>
+        /// <exception cref="NoPrivilegesException">When the user is not an owner of the shop.</exception>
         /// <exception cref="ShopNotFoundException">When shopGuid does not match any existing shop guid.</exception>
         /// <exception cref="ShopStateException">When the shop is not active.</exception>
         /// <exception cref="UserNotFoundException">When the newShopOwnerGuid does not match any registered user's guid</exception>
@@ -433,7 +433,7 @@ namespace ApplicationCore.Interfaces.ServiceLayer
         /// <exception cref="SystemNotInitializedException">When system has not yet been initialized.</exception>
         /// <exception cref="UserNotFoundException">When cookie does not match any logged-in user's guid.</exception>
         /// <exception cref="BadStateException">When the user is not in SellerUserState</exception>
-        /// <exception cref="NoPriviligesException">When the user is not an owner of the shop.</exception>
+        /// <exception cref="NoPrivilegesException">When the user is not an owner of the shop.</exception>
         /// <exception cref="ShopNotFoundException">When shopGuid does not match any existing shop guid.</exception>
         /// <exception cref="ShopStateException">When the shop is not active.</exception>
         /// <exception cref="UserNotFoundException">When the newShopOwnerGuid does not match any registered user's guid</exception>
@@ -459,13 +459,13 @@ namespace ApplicationCore.Interfaces.ServiceLayer
         /// <exception cref="SystemNotInitializedException">When system has not yet been initialized.</exception>
         /// <exception cref="UserNotFoundException">When cookie does not match any logged-in user's guid.</exception>
         /// <exception cref="BadStateException">When the user is not in SellerUserState</exception>
-        /// <exception cref="NoPriviligesException">When the user is not an owner of the shop.</exception>
+        /// <exception cref="NoPrivilegesException">When the user is not an owner of the shop.</exception>
         /// <exception cref="ShopNotFoundException">When shopGuid does not match any existing shop guid.</exception>
         /// <exception cref="ShopStateException">When the shop is not active.</exception>
         /// <exception cref="UserNotFoundException">When the newManagaerGuid does not match any registered user's guid</exception>
         /// <exception cref="BrokenConstraintException">When the newShopOwner is already a creator/owner/manager</exception>
         /// <returns>True if the operation was done successfully.</returns>
-        bool AddShopManager(Guid cookie, Guid shopGuid, Guid newManagaerGuid, List<string> priviliges);
+        bool AddShopManager(Guid cookie, Guid shopGuid, Guid newManagaerGuid, List<bool> privileges);
 
         /////Implements General Requirement 4.6
         /// <summary>
@@ -485,7 +485,7 @@ namespace ApplicationCore.Interfaces.ServiceLayer
         /// <exception cref="SystemNotInitializedException">When system has not yet been initialized.</exception>
         /// <exception cref="UserNotFoundException">When cookie does not match any logged-in user's guid.</exception>
         /// <exception cref="BadStateException">When the user is not in SellerUserState</exception>
-        /// <exception cref="NoPriviligesException">When the user is not an owner of the shop.</exception>
+        /// <exception cref="NoPrivilegesException">When the user is not an owner of the shop.</exception>
         /// <exception cref="ShopNotFoundException">When shopGuid does not match any existing shop guid.</exception>
         /// <exception cref="ShopStateException">When the shop is not active.</exception>
         /// <exception cref="UserNotFoundException">When the newManagaerGuid does not match any registered user's guid</exception>

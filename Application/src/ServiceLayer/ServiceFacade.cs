@@ -76,9 +76,9 @@ namespace ServiceLayer
         #endregion
 
         #region Shop Owners and Managers
-        public bool AddShopManager(UserIdentifier userIdentifier, Guid shopGuid, Guid newManagaerGuid, List<string> priviliges)
+        public bool AddShopManager(UserIdentifier userIdentifier, Guid shopGuid, Guid newManagaerGuid, List<bool> privileges)
         {
-            return _domainLayerFacade.AddShopManager(userIdentifier, shopGuid, newManagaerGuid, priviliges);
+            return _domainLayerFacade.AddShopManager(userIdentifier, shopGuid, newManagaerGuid, privileges);
         }
 
         public bool RemoveShopManager(UserIdentifier userIdentifier, Guid shopGuid, Guid managerToRemoveGuid)

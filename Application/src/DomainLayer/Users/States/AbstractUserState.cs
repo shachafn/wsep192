@@ -23,7 +23,7 @@ namespace DomainLayer.Users.States
         public abstract Guid AddProductToShop(BaseUser baseUser, Guid shopGuid, string name, string category, double price, int quantity);
         public abstract void EditProductInShop(BaseUser baseUser, Guid shopGuid, Guid productGuid, double newPrice, int newQuantity);
         public abstract bool RemoveProductFromShop(BaseUser baseUser, Guid shopGuid, Guid shopProductGuid);
-        public abstract bool AddShopManager(BaseUser baseUser, Guid shopGuid, Guid newManagaerGuid, List<string> priviliges);
+        public abstract bool AddShopManager(BaseUser baseUser, Guid shopGuid, Guid newManagaerGuid, List<bool> privileges);
         public abstract bool CascadeRemoveShopOwner(BaseUser baseUser, Guid shopGuid, Guid ownerToRemoveGuid);
         public abstract bool AddProductToCart(BaseUser baseUser, Guid shopGuid, Guid shopProductGuid, int quantity);
         public abstract bool EditProductInCart(BaseUser baseUser, Guid shopGuid, Guid shopProductGuid, int newAmount);

@@ -155,9 +155,9 @@ namespace DomainLayer.Facade
             if (_isSystemInitialized)
                 throw new SystemAlreadyInitializedException($"Cannot initialize the system again.");
             if (!_externalServicesManager.PaymentSystem.IsAvailable())
-                throw new ServiceUnReachableException($"Payment System Service is unreachable.");
+                ;// throw new ServiceUnReachableException($"Payment System Service is unreachable.");
             if (!_externalServicesManager.SupplySystem.IsAvailable())
-                throw new ServiceUnReachableException($"Supply System Service is unreachable.");
+                ;// throw new ServiceUnReachableException($"Supply System Service is unreachable.");
 
             var res = Guid.Empty;
             if (!_userDomain.IsAdminExists())

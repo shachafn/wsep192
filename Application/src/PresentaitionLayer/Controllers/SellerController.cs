@@ -143,6 +143,13 @@ namespace PresentaitionLayer.Controllers
             _serviceFacade.AddNewDiscountPolicy(new Guid(HttpContext.Session.Id), new Guid(ShopId), (object)"Compound discount policy",(object) new Guid(guid1),(object)Sign, (object)new Guid(guid1), (object)Percent, (object)Description);
             return RedirectToAction("Policies", "Seller", new { ShopId = ShopId });
         }
+
+        [HttpPost]
+        public IActionResult AddCompoundPurchasePolicy(string Description, string guid1, string Sign, string guid2, int Percent, string ShopId)
+        {
+            _serviceFacade.AddNewPurchasePolicy(new Guid(HttpContext.Session.Id), new Guid(ShopId), (object)"Compound discount policy", (object)new Guid(guid1), (object)Sign, (object)new Guid(guid1), (object)Description);
+            return RedirectToAction("Policies", "Seller", new { ShopId = ShopId });
+        }
         /*
                 [HttpPost]
                 public IActionResult AddPurchasePolicy(string ShopId)

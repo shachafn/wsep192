@@ -43,8 +43,8 @@ namespace DomainLayer.Users
             //Can implement RollBack, purchase is given a Guid, shop.PurchaseCart returns a Guid,
             // if the user fails to pay later, we can delete the purchase and revert the shop quantities and cart content
             _shopDomain.ShoppingCartDomain.CheckDiscountPolicy(cart);
-            //TODO-FIXif (!shop.PurchaseCart(cart))
-            //TODO-FIXreturn false;
+            if (!_shopDomain.PurchaseCart(shop, cart))
+                return false;
             //External payment pay, if not true ---- rollback
             return true;
         }
@@ -54,7 +54,7 @@ namespace DomainLayer.Users
             var cart = _unitOfWork.BagRepository.GetShoppingBagAndCreateIfNeeded(Guid).GetShoppingCartAndCreateIfNeeded(shopGuid);
             var shop = _unitOfWork.ShopRepository.FindByIdOrNull(shopGuid);
             var actualProduct = shop.ShopProducts.FirstOrDefault(p => p.Guid.Equals(shopProductGuid));
-            //TODO-FIXcart.AddProductToCart(actualProduct, quantity);
+            cart.AddProductToCart(actualProduct, quantity);
             return true;
         }
 

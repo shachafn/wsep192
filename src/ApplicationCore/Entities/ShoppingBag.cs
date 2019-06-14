@@ -23,8 +23,8 @@ namespace ApplicationCore.Entitites
 
         public ShoppingCart GetShoppingCartAndCreateIfNeeded(Guid shopGuid)
         {
-            ShoppingCart cart = ShoppingCarts.FirstOrDefault(c => c.ShopGuid.Equals(shopGuid));
-            if (!IsCartExists(shopGuid))
+            var cart = ShoppingCarts.FirstOrDefault(c => c.ShopGuid.Equals(shopGuid));
+            if (cart == null)
             {
                 cart = new ShoppingCart(UserGuid, shopGuid);
                 ShoppingCarts.Add(cart);

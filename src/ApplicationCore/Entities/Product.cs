@@ -2,7 +2,7 @@
 
 namespace ApplicationCore.Entitites
 {
-    public class Product : BaseEntity
+    public class Product
     {
         public string Name { get; set; }
         public string Category { get; set; }
@@ -16,7 +16,7 @@ namespace ApplicationCore.Entitites
 
         public override string ToString()
         {
-            return $"Guid - {Guid}, Name - {Name}, Category - {Category} ";
+            return $"Name - {Name}, Category - {Category} ";
         }
     }
 }

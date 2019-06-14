@@ -78,12 +78,9 @@ namespace Tests
             UserAT.GenerateRandoms(out var cookie, out var username, out var password);
             UserAT.RegisterUser(cookie, username, password);
             UserAT.LoginUser(cookie, username, password);
-            Tester.PBridge.ChangeUserState(cookie, "SellerUserState");
             var shopGuid = Tester.PBridge.OpenShop(cookie, "Name");
             var galaxyGuid = Tester.PBridge.AddProductToShop(cookie, shopGuid, "Galaxy S9", "Cellphones", 2000, 10);
             var iphoneGuid = Tester.PBridge.AddProductToShop(cookie, shopGuid, "Iphone 6", "Cellphones", 500, 50);
-
-            Tester.PBridge.ChangeUserState(cookie, "BuyerUserState");
 
             var resByName = Tester.PBridge.SearchProduct(cookie, new List<string>() { "Iphone 6" }, "Name");
             Assert.AreEqual(resByName.Count, 1);

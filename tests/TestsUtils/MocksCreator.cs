@@ -14,13 +14,17 @@ namespace TestsUtils
             var uoW = new MockUnitOfWork(new MockContext());
             var cartDomain = new ShoppingCartDomain(uoW, new NullLogger<ShoppingCartDomain>());
             var shopDomain = new ShopDomain(cartDomain, uoW, new NullLogger<ShopDomain>());
-            return new DomainLayerFacade(
+            return new DomainFacadeTransactionProxy(
+                        new DomainLayerFacade(
                             new UserDomain(NullLogger<UserDomain>.Instance, uoW, shopDomain),
                             new DomainLayerFacadeVerifier(NullLogger<DomainLayerFacadeVerifier>.Instance, uoW),
                             NullLogger<DomainLayerFacade>.Instance,
                             new DefaultExternalServicesManager(),
                             uoW
-                        );
+                        ),
+                        new NullLogger<DomainFacadeTransactionProxy>(),
+                        uoW
+                    );
         }
 
         public static IServiceFacade GetServiceFacade()
@@ -31,11 +35,15 @@ namespace TestsUtils
             return new ServiceFacadeProxy
             (
                 new ServiceFacade(
-                    new DomainLayerFacade(
-                        new UserDomain(NullLogger<UserDomain>.Instance, uoW, shopDomain),
-                        new DomainLayerFacadeVerifier(NullLogger<DomainLayerFacadeVerifier>.Instance, uoW),
-                        NullLogger<DomainLayerFacade>.Instance,
-                        new DefaultExternalServicesManager(),
+                    new DomainFacadeTransactionProxy(
+                        new DomainLayerFacade(
+                            new UserDomain(NullLogger<UserDomain>.Instance, uoW, shopDomain),
+                            new DomainLayerFacadeVerifier (NullLogger<DomainLayerFacadeVerifier>.Instance, uoW),
+                            NullLogger<DomainLayerFacade>.Instance,
+                            new DefaultExternalServicesManager(),
+                            uoW
+                        ),
+                        new NullLogger<DomainFacadeTransactionProxy>(),
                         uoW
                     ),
                     NullLogger<ServiceFacade>.Instance

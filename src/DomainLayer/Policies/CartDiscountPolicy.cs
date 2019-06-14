@@ -1,6 +1,7 @@
 ﻿using System;
 using ApplicationCore.Entities.Users;
 using ApplicationCore.Entitites;
+using ApplicationCore.Interfaces.DataAccessLayer;
 using DomainLayer.Operators;
 
 namespace DomainLayer.Policies
@@ -27,7 +28,7 @@ namespace DomainLayer.Policies
         {
         }
 
-        public bool CheckPolicy(ShoppingCart cart, Guid productGuid, int quantity, BaseUser user)
+        public bool CheckPolicy(ShoppingCart cart, Guid productGuid, int quantity, BaseUser user, IUnitOfWork unitOfWork)
         {
             double totalSum = CalculateSumBeforeDiscount(cart);
             return Operator.IsValid(ExpectedSum, totalSum);
@@ -43,9 +44,9 @@ namespace DomainLayer.Policies
             return totalSum;
         }
 
-        public Tuple<ShopProduct, int> ApplyPolicy(ShoppingCart cart, Guid productGuid, int quantity, BaseUser user)
+        public Tuple<ShopProduct, int> ApplyPolicy(ShoppingCart cart, Guid productGuid, int quantity, BaseUser user, IUnitOfWork unitOfWork)
         {
-            if (CheckPolicy(cart, productGuid, quantity, user))
+            if (CheckPolicy(cart, productGuid, quantity, user, unitOfWork))
             {
                 double totalSum = CalculateSumBeforeDiscount(cart);
                 double discountValue = -totalSum * (DiscountPercentage / 100);

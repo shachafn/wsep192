@@ -36,8 +36,9 @@ namespace DomainLayer.Domains
             {
                 foreach (IDiscountPolicy policy in shop.DiscountPolicies)
                 {
-                    var discountProductAndQuantity = policy.ApplyPolicy(cart, record.Item1.Guid, record.Item2, user);
-                    cart.AddProductToCart(discountProductAndQuantity.Item1, discountProductAndQuantity.Item2);
+                    var discountProductAndQuantity = policy.ApplyPolicy(cart, record.Item1.Guid, record.Item2, user, _unitOfWork);
+                    if (discountProductAndQuantity != null)
+                        cart.AddProductToCart(discountProductAndQuantity.Item1, discountProductAndQuantity.Item2);
                 }
             }
 

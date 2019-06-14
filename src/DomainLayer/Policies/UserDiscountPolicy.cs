@@ -2,6 +2,7 @@ using System;
 using System.Reflection;
 using ApplicationCore.Entities.Users;
 using ApplicationCore.Entitites;
+using ApplicationCore.Interfaces.DataAccessLayer;
 
 namespace DomainLayer.Policies
 {
@@ -30,7 +31,7 @@ namespace DomainLayer.Policies
             Description = description;
         }
 
-        public bool CheckPolicy(ShoppingCart cart, Guid productGuid, int quantity, BaseUser user)
+        public bool CheckPolicy(ShoppingCart cart, Guid productGuid, int quantity, BaseUser user, IUnitOfWork unitOfWork)
         {
             foreach (PropertyInfo property in user.GetType().GetProperties())
             {
@@ -42,9 +43,9 @@ namespace DomainLayer.Policies
             return false;
         }
 
-        public Tuple<ShopProduct, int> ApplyPolicy(ShoppingCart cart, Guid productGuid, int quantity, BaseUser user)
+        public Tuple<ShopProduct, int> ApplyPolicy(ShoppingCart cart, Guid productGuid, int quantity, BaseUser user, IUnitOfWork unitOfWork)
         {
-            if (CheckPolicy(cart, productGuid, quantity, user))
+            if (CheckPolicy(cart, productGuid, quantity, user, unitOfWork))
             {
                 double totalSum = CalculateSumBeforeDiscount(cart);
                 double discountValue = -totalSum * (DiscountPercentage / 100);

@@ -204,9 +204,6 @@ namespace Tests
             Assert.IsTrue(Tester.PBridge.PurchaseCart(cookieBuyer, shopGuid));
             Tester.PBridge.AddProductToCart(cookieBuyer, shopGuid, productGuid, 2);
             Assert.IsFalse(Tester.PBridge.PurchaseCart(cookieBuyer, shopGuid));
-
-
-
         }
 
         [Test]

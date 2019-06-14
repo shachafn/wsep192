@@ -28,13 +28,13 @@ namespace DomainLayer.Users
             ICollection<Shop> shopsOwned = GetShopsOwnedByUser(userToRemoveGuid);
             foreach (Shop shop in shopsOwned)
             {
-                //TODO-FIX shopDomain.RemoveOwner(userToRemoveGuid);
+                _shopDomain.RemoveOwner(shop, userToRemoveGuid);
             }
             //Clear user's bag if exsits from the list 
-            //TODO-FIX DomainData.ShoppingBagsCollection.Remove(userToRemoveGuid);
+            _unitOfWork.BagRepository.Delete(_unitOfWork.BagRepository.GetShoppingBagAndCreateIfNeeded(userToRemoveGuid));
             //Clear shop products--->>???
             //Clear user registration
-            //TODO-FIX DomainData.RegisteredUsersCollection.Remove(userToRemoveGuid);
+            _unitOfWork.BaseUserRepository.Delete(_unitOfWork.BaseUserRepository.FindByIdOrNull(userToRemoveGuid));
             //Clear user from logged in - Maybe block this operation if the user is logged in, or its a real pain to cut him off.
             DomainData.LoggedInUsersEntityCollection.Remove(userToRemoveGuid);
             return true;
@@ -42,7 +42,7 @@ namespace DomainLayer.Users
 
         public ICollection<Tuple<Guid, ShopProduct, int>> GetPurchaseHistory()
         {
-            return null;//TODO-FIX return DomainData.ShopsCollection.SelectMany(shop => shop.GetPurchaseHistory(Guid)).ToList();
+            return _unitOfWork.ShopRepository.Query().SelectMany(shop => shop.GetPurchaseHistory(Guid)).ToList();
         }
 
         private ICollection<Shop> GetShopsOwnedByUser(Guid userToRemoveGuid)

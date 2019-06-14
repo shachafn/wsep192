@@ -46,7 +46,8 @@ namespace DomainLayer.Domains
             if (userIdentifier.IsGuest)
             {
                 var res = new GuestUser(userIdentifier.Guid, _unirOfWork, _shopDomain);
-                DomainData.GuestsCollection.Add(res.Guid, res.Guid);
+                if (!DomainData.GuestsCollection.ContainsKey(res.Guid))
+                    DomainData.GuestsCollection.Add(res.Guid, res.Guid);
                 return res;
             }
             var baseUser = _unirOfWork.BaseUserRepository.FindByIdOrNull(userIdentifier.Guid);

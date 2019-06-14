@@ -1,4 +1,5 @@
-﻿using ApplicationCore.Entitites;
+﻿using ApplicationCore.Data;
+using ApplicationCore.Entitites;
 using ApplicationCore.Exceptions;
 using ApplicationCore.Interfaces.DataAccessLayer;
 using DomainLayer;
@@ -17,7 +18,7 @@ namespace ApplicationCore.Entities.Users
 
         public Guid Guid { get; private set; }
         public bool IsAdmin => false;
-
+        
         public GuestUser(Guid guid, IUnitOfWork unitOfWork, ShopDomain shopDomain)
         {
             Guid = guid;
@@ -52,13 +53,14 @@ namespace ApplicationCore.Entities.Users
 
         public bool PurchaseCart(Guid shopGuid)
         {
-            var cart = _unitOfWork.BagRepository.GetShoppingBagAndCreateIfNeeded(Guid).GetShoppingCartAndCreateIfNeeded(shopGuid);
+            var cart = GetGuestCartAndCreateIfNeeded(shopGuid);
 
             var shop = _unitOfWork.ShopRepository.FindByIdOrNull(shopGuid);
             //Can implement RollBack, purchase is given a Guid, shop.PurchaseCart returns a Guid,
             // if the user fails to pay later, we can delete the purchase and revert the shop quantities and cart content
-            cart.PurchaseCart();
-
+            _shopDomain.ShoppingCartDomain.CheckDiscountPolicy(cart);
+            if (!_shopDomain.PurchaseCart(shop, cart))
+                return false;
             //External payment pay, if not true ---- rollback
             return true;
         }
@@ -95,7 +97,7 @@ namespace ApplicationCore.Entities.Users
 
         public bool AddProductToCart(Guid shopGuid, Guid shopProductGuid, int quantity)
         {
-            var cart = GetCartAndCreateIfNeeded(Guid, shopGuid);
+            var cart = GetGuestCartAndCreateIfNeeded(shopGuid);
             var shop = _unitOfWork.ShopRepository.FindByIdOrNull(shopGuid);
             var actualProduct = shop.ShopProducts.FirstOrDefault(p => p.Guid.Equals(shopProductGuid));
             cart.AddProductToCart(actualProduct, quantity);
@@ -114,19 +116,19 @@ namespace ApplicationCore.Entities.Users
 
         public bool EditProductInCart(Guid shopGuid, Guid shopProductGuid, int newAmount)
         {
-            var cart = GetCartAndCreateIfNeeded(Guid, shopGuid);
-           return cart.EditProductInCart(shopProductGuid, newAmount);
+            var cart = GetGuestCartAndCreateIfNeeded(shopGuid);
+            return cart.EditProductInCart(shopProductGuid, newAmount);
         }
 
         public bool RemoveProductFromCart(Guid shopGuid, Guid shopProductGuid)
         {
-            var cart = GetCartAndCreateIfNeeded(Guid, shopGuid);
+            var cart = GetGuestCartAndCreateIfNeeded(shopGuid);
             return cart.RemoveProductFromCart(shopProductGuid);
         }
 
         public ICollection<ShopProduct> GetAllProductsInCart(Guid shopGuid)
         {
-            var cart = GetCartAndCreateIfNeeded(Guid, shopGuid);
+            var cart = GetGuestCartAndCreateIfNeeded(shopGuid);
             return cart.GetAllProductsInCart();
         }
 
@@ -146,9 +148,9 @@ namespace ApplicationCore.Entities.Users
             return searcher.Search(toMatch);
         }
 
-        private ShoppingCart GetCartAndCreateIfNeeded(Guid userGuid, Guid shopGuid)
+        private ShoppingCart GetGuestCartAndCreateIfNeeded(Guid shopGuid)
         {
-            return _unitOfWork.BagRepository.GetShoppingBagAndCreateIfNeeded(userGuid).GetShoppingCartAndCreateIfNeeded(shopGuid);
+            return DomainData.GuestsBagsCollection.GetShoppingBagAndCreateIfNeeded(Guid).GetShoppingCartAndCreateIfNeeded(shopGuid);
         }
 
         public Guid AddNewPurchasePolicy(Guid userGuid, Guid shopGuid, IPurchasePolicy newPolicy)

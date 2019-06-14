@@ -148,7 +148,7 @@ namespace ServiceLayer
             return _domainLayerFacade.GetAllProductsInCart(userIdentifier, shopGuid);
         }
 
-                public bool PurchaseCart(UserIdentifier userIdentifier, Guid shopGuid)
+        public bool PurchaseCart(UserIdentifier userIdentifier, Guid shopGuid)
         {
             return _domainLayerFacade.PurchaseCart(userIdentifier, shopGuid);
         }

@@ -1,12 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
-using ServiceLayer;
-using DomainLayer.Facade;
-using DomainLayer.Domains;
-using Microsoft.Extensions.Logging.Abstractions;
 using ApplicationCore.Interfaces.ServiceLayer;
 using ApplicationCore.Entitites;
-using ApplicationCore.Interfaces.DomainLayer;
 using TestsUtils;
 using ApplicationCore.Entities.Users;
 

@@ -2,7 +2,7 @@
 
 namespace ApplicationCore.Exceptions
 {
-    public class SystemNotInitializedException : Exception, ICloneableException<Exception>
+    public class SystemNotInitializedException : BaseException, ICloneableException<Exception>
     {
         public SystemNotInitializedException() { }
 

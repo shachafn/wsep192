@@ -2,7 +2,7 @@
 
 namespace ApplicationCore.Exceptions
 {
-    public class ServiceUnReachableException : Exception, ICloneableException<Exception>
+    public class ServiceUnReachableException : BaseException, ICloneableException<Exception>
     {
         public ServiceUnReachableException() { }
 

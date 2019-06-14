@@ -1,8 +1,5 @@
 ﻿using ApplicationCore.Exceptions;
 using ApplicationCore.Interfaces.DomainLayer;
-using DomainLayer.Domains;
-using DomainLayer.Facade;
-using Microsoft.Extensions.Logging.Abstractions;
 using NUnit.Framework;
 using System;
 using System.Collections.Generic;

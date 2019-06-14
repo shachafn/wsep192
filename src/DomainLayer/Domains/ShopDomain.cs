@@ -1,7 +1,6 @@
 ﻿using ApplicationCore.Entities.Users;
 using ApplicationCore.Entitites;
 using ApplicationCore.Events;
-using ApplicationCore.Exceptions;
 using ApplicationCore.Interfaces.DataAccessLayer;
 using DomainLayer.Policies;
 using Microsoft.Extensions.Logging;

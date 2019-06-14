@@ -2,7 +2,7 @@
 
 namespace ApplicationCore.Exceptions
 {
-    public class ShopStateException : Exception, ICloneableException<Exception>
+    public class ShopStateException : BaseException, ICloneableException<Exception>
     {
         public ShopStateException() { }
 

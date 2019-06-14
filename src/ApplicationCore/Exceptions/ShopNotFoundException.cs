@@ -2,7 +2,7 @@
 
 namespace ApplicationCore.Exceptions
 {
-    public class ShopNotFoundException : Exception, ICloneableException<Exception>
+    public class ShopNotFoundException : BaseException, ICloneableException<Exception>
     {
         public ShopNotFoundException() { }
 

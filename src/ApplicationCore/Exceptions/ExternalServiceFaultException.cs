@@ -2,7 +2,7 @@
 
 namespace ApplicationCore.Exceptions
 {
-    public class ExternalServiceFaultException : Exception, ICloneableException<Exception>
+    public class ExternalServiceFaultException : BaseException, ICloneableException<Exception>
     {
         public ExternalServiceFaultException() { }
         public ExternalServiceFaultException(string msg) :base(msg){ }

@@ -2,7 +2,7 @@
 
 namespace ApplicationCore.Exceptions
 {
-    public class NoPrivilegesException : Exception, ICloneableException<Exception>
+    public class NoPrivilegesException : BaseException, ICloneableException<Exception>
     {
         public NoPrivilegesException() { }
 

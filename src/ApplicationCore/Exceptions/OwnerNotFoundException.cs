@@ -2,7 +2,7 @@
 
 namespace ApplicationCore.Exceptions
 {
-    public class OwnerNotFoundException : Exception, ICloneableException<Exception>
+    public class OwnerNotFoundException : BaseException, ICloneableException<Exception>
     {
         public OwnerNotFoundException() { }
 

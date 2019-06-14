@@ -142,18 +142,14 @@ namespace ServiceLayer
 
         public bool InitSystem()
         {
-            var session = _unitOfWork.Context.StartSession();
             try
             {
-                session.StartTransaction();
                 _facade.Initialize(Guid.NewGuid(), "Meni", "moni");
-                session.CommitTransaction();
                 return true;
             }
             catch (Exception e)
             {
                 _logger.LogCritical(e, "System Initialization failed.");
-                session.AbortTransaction();
                 return false;
             }
         }

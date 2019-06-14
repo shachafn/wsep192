@@ -4,9 +4,6 @@ using DomainLayer.Domains;
 using DomainLayer.Facade;
 using Microsoft.Extensions.Logging.Abstractions;
 using ServiceLayer;
-using System;
-using System.Collections.Generic;
-using System.Text;
 
 namespace TestsUtils
 {

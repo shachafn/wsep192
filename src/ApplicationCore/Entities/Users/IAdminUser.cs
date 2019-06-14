@@ -1,6 +1,4 @@
-﻿using ApplicationCore.Entitites;
-using System;
-using System.Collections.Generic;
+﻿using System;
 
 namespace ApplicationCore.Entities.Users
 {

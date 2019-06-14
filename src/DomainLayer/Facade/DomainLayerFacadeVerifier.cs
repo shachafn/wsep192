@@ -14,7 +14,6 @@ using DomainLayer.Policies;
 using DomainLayer.Operators;
 using Microsoft.Extensions.Logging;
 using ApplicationCore.Interfaces.DataAccessLayer;
-using DomainLayer.Users;
 
 namespace DomainLayer.Facade
 {

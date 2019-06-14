@@ -1,6 +1,5 @@
 ﻿using ApplicationCore.Interfaces.DataAccessLayer;
 using MongoDB.Driver;
-using System;
 
 namespace DataAccessLayer
 {

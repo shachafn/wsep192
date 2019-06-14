@@ -1,8 +1,5 @@
-﻿using ApplicationCore.Entities.Users;
-using ApplicationCore.Entitites;
-using ApplicationCore.Interfaces.DataAccessLayer;
+﻿using ApplicationCore.Interfaces.DataAccessLayer;
 using System;
-using System.Collections.Generic;
 
 namespace TestsUtils
 {

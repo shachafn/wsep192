@@ -1,5 +1,4 @@
 ﻿using ApplicationCore.Interfaces.DataAccessLayer;
-using System;
 
 namespace TestsUtils
 {

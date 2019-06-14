@@ -103,7 +103,8 @@ namespace PresentaitionLayer
             services.AddScoped<IUserDomain, UserDomain>();
             services.AddScoped<DomainLayerFacadeVerifier>();
             services.AddSingleton<IExternalServicesManager, ExternalServicesManager>();
-            services.AddScoped<IDomainLayerFacade, DomainLayerFacade>();
+            services.AddScoped<DomainLayerFacade>();
+            services.AddScoped<IDomainLayerFacade, DomainFacadeTransactionProxy>();
         }
 
         private static void SetupServiceLayerInjections(IServiceCollection services)

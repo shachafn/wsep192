@@ -16,7 +16,7 @@ using System.Reflection;
 
 namespace DomainLayer.Facade
 {
-    public class DomainLayerFacade : IDomainLayerFacade
+    public class DomainLayerFacade
     {
         IUserDomain _userDomain;
         DomainLayerFacadeVerifier _verifier;

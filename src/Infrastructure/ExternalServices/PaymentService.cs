@@ -1,8 +1,6 @@
 ﻿using ApplicationCore.Interfaces.ExternalServices;
 using System;
 using System.Collections.Generic;
-using System.Net.Http;
-using System.Text;
 
 namespace Infrastructure.ExternalServices
 {

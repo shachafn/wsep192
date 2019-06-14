@@ -1,9 +1,7 @@
 using System;
 using System.Reflection;
-using ApplicationCore.Data;
 using ApplicationCore.Entities.Users;
 using ApplicationCore.Entitites;
-using DomainLayer.Extension_Methods;
 
 namespace DomainLayer.Policies
 {
@@ -32,7 +30,7 @@ namespace DomainLayer.Policies
             Description = description;
         }
 
-        public bool CheckPolicy(ref ShoppingCart cart, Guid productGuid, int quantity, BaseUser user)
+        public bool CheckPolicy(ShoppingCart cart, Guid productGuid, int quantity, BaseUser user)
         {
             foreach (PropertyInfo property in user.GetType().GetProperties())
             {
@@ -44,17 +42,18 @@ namespace DomainLayer.Policies
             return false;
         }
 
-        public void ApplyPolicy(ref ShoppingCart cart, Guid productGuid, int quantity, BaseUser user)
+        public Tuple<ShopProduct, int> ApplyPolicy(ShoppingCart cart, Guid productGuid, int quantity, BaseUser user)
         {
-            if (CheckPolicy(ref cart, productGuid, quantity, user))
+            if (CheckPolicy(cart, productGuid, quantity, user))
             {
                 double totalSum = CalculateSumBeforeDiscount(cart);
                 double discountValue = -totalSum * (DiscountPercentage / 100);
-                if (discountValue == 0) return;
+                if (discountValue == 0) return null;
                 Product discountProduct = new Product("Discount - user", "Discount");
                 ShopProduct discountRecord = new ShopProduct(discountProduct, discountValue, 1);
-                cart.AddProductToCart(discountRecord, 1);
+                return new Tuple<ShopProduct, int>(discountRecord, 1);
             }
+            return null;
         }
 
         private double CalculateSumBeforeDiscount(ShoppingCart cart)
@@ -62,7 +61,7 @@ namespace DomainLayer.Policies
             double totalSum = 0;
             foreach (Tuple<ShopProduct, int> record in cart.PurchasedProducts)
             {
-                Shop shop = DomainData.ShopsCollection[cart.ShopGuid];
+                Shop shop = null; //TODO-FIX DomainData.ShopsCollection[cart.ShopGuid];
                 foreach (ShopProduct productInShop in shop.ShopProducts)
                 {
                     if (productInShop.Guid.Equals(record.Item1.Guid))

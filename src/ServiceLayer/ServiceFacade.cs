@@ -3,7 +3,6 @@ using System.Collections.Generic;
 using ApplicationCore.Interfaces.DomainLayer;
 using ApplicationCore.Entities;
 using Microsoft.Extensions.Logging;
-using ApplicationCore.Data.Collections;
 using ApplicationCore.Entitites;
 using ApplicationCore.Entities.Users;
 

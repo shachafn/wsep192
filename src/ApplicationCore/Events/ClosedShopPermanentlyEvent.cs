@@ -1,9 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Text;
 using System.Linq;
-using ApplicationCore.Entities.Users;
 using ApplicationCore.Entitites;
+using ApplicationCore.Interfaces.DataAccessLayer;
 using Utils;
 
 namespace ApplicationCore.Events
@@ -29,27 +28,27 @@ namespace ApplicationCore.Events
             Messages = new Dictionary<ICollection<Guid>, string>();
         }
 
-        public void SetMessage(ICollection<Shop> shops, ICollection<BaseUser> registeredUsers)
+        public void SetMessage(IUnitOfWork unitOfWork)
         {
-            string username = registeredUsers.FirstOrDefault(user => user.Guid.Equals(Initiator)).Username;
+            string username = unitOfWork.BaseUserRepository.GetUsername(Initiator);
             Message = string.Format("Shop {0} closed permanently by {1}", ShopGuid, username);
         }
 
-        public void SetTargets(ICollection<Shop> shops, ICollection<BaseUser> registeredUsers)
+        public void SetTargets(IUnitOfWork unitOfWork)
         {
-            Shop reopenedShop = shops.FirstOrDefault(shop => shop.Guid.Equals(ShopGuid));
+            Shop reopenedShop = unitOfWork.ShopRepository.FindByIdOrNull(ShopGuid);
             ICollection<Guid> shopOwners = reopenedShop.Owners.Select(owner => owner.OwnerGuid).ToList();
             Targets.Add(reopenedShop.Creator.OwnerGuid);
             Targets.AddRange(shopOwners);
         }
 
-        public void SetMessages(ICollection<Shop> shops, ICollection<BaseUser> registeredUsers)
+        public void SetMessages(IUnitOfWork unitOfWork)
         {
-            Shop closedShop = shops.FirstOrDefault(shop => shop.Guid.Equals(ShopGuid));
+            Shop closedShop = unitOfWork.ShopRepository.FindByIdOrNull(ShopGuid);
             ICollection<Guid> shopOwners = closedShop.Owners.Select(owner => owner.OwnerGuid).ToList();
             shopOwners.Add(closedShop.Creator.OwnerGuid);
             shopOwners.Remove(Initiator);
-            string username = registeredUsers.FirstOrDefault(user => user.Guid.Equals(Initiator)).Username;
+            string username = unitOfWork.BaseUserRepository.GetUsername(Initiator);
             string ownersMsg = $"Shop {closedShop.ShopName} closed permanently by {username}";
             string initiatorMsg = $"Shop {closedShop.ShopName} closed permanently by you";
             Messages.Add(shopOwners, ownersMsg);

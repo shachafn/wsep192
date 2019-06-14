@@ -5,8 +5,6 @@ using ApplicationCore.Interfaces.ServiceLayer;
 using System.Linq;
 using PresentaitionLayer.Models.AdminModels;
 using System;
-using System.Collections.Generic;
-using ApplicationCore.Entitites;
 
 namespace PresentaitionLayer.Controllers
 {

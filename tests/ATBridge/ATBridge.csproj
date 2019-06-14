@@ -11,6 +11,7 @@
 
   <ItemGroup>
     <ProjectReference Include="..\..\src\ServiceLayer\ServiceLayer.csproj" />
+    <ProjectReference Include="..\TestsUtils\TestsUtils.csproj" />
   </ItemGroup>
 
   <ItemGroup>

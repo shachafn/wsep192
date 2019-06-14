@@ -1,8 +1,8 @@
-﻿using ApplicationCore.Entities.Users;
+﻿using System;
 
 namespace ApplicationCore.Data.Collections
 {
-    public class GuestsEntityCollection : EntityCollection<IUser>
+    public class GuestsEntityCollection : EntityCollection<Guid>
     {
     }
 }

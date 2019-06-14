@@ -1,6 +1,7 @@
 using System;
 using ApplicationCore.Entities.Users;
 using ApplicationCore.Entitites;
+using ApplicationCore.Interfaces.DataAccessLayer;
 using DomainLayer.Operators;
 
 
@@ -25,7 +26,7 @@ namespace DomainLayer.Policies
             Description = description;
         }
 
-        public bool CheckPolicy(ShoppingCart cart, Guid productGuid, int quantity, BaseUser user)
+        public bool CheckPolicy(ShoppingCart cart, Guid productGuid, int quantity, BaseUser user, IUnitOfWork unitOfWork)
         {
             return productGuid.CompareTo(ProductGuid) == 0 ? Operator.IsValid(ExpectedQuantity, quantity) : true;
         }

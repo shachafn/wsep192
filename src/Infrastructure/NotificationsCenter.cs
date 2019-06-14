@@ -1,19 +1,7 @@
-﻿using ApplicationCore.Data;
-using ApplicationCore.Events;
-using ApplicationCore.Interfaces.DomainLayer;
+﻿using ApplicationCore.Events;
 using ApplicationCore.Interfaces.Infastracture;
-using ApplicationCore.Interfaces.ServiceLayer;
-using DomainLayer;
-using Microsoft.AspNetCore.Http;
-using Microsoft.AspNetCore.SignalR;
 using Microsoft.Extensions.Logging;
-using System;
-using System.Collections.Concurrent;
-using System.Collections.Generic;
-using System.Text;
 using System.Threading.Tasks;
-using System.Linq;
-using Utils;
 
 namespace Infrastructure
 {

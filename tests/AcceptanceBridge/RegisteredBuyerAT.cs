@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using NUnit.Framework;
 using ATBridge;
 using ApplicationCore.Exceptions;
-using ApplicationCore;
+using System.Linq;
 
 namespace Tests
 {
@@ -59,14 +59,14 @@ namespace Tests
             UserAT.RegisterUser(cookie, username, password);
             UserAT.LoginUser(cookie, username, password);
             Tester.PBridge.ChangeUserState(cookie, "SellerUserState");
-            var res = Tester.PBridge.OpenShop(cookie);
+            var res = Tester.PBridge.OpenShop(cookie, "Name");
             Assert.AreNotEqual(res, Guid.Empty);
         }
 
         [Test]
         public static void OpenStoreAT2()
         {
-           Assert.Throws<UserNotFoundException>( () => Tester.PBridge.OpenShop(Guid.NewGuid()));
+           Assert.Throws<UserNotFoundException>( () => Tester.PBridge.OpenShop(Guid.NewGuid(), "Name"));
         }
         #endregion
 
@@ -79,7 +79,7 @@ namespace Tests
             UserAT.RegisterUser(cookie, username, password);
             UserAT.LoginUser(cookie, username, password);
             Tester.PBridge.ChangeUserState(cookie, "SellerUserState");
-            var shopGuid = Tester.PBridge.OpenShop(cookie);
+            var shopGuid = Tester.PBridge.OpenShop(cookie, "Name");
             var productGuid = StoreOwnerAT.AddProductToShop(cookie, shopGuid, "Galaxy S9", "Cellphones", 2000, 10);
 
             Tester.PBridge.ChangeUserState(cookie, "BuyerUserState");
@@ -93,7 +93,7 @@ namespace Tests
             UserAT.RegisterUser(cookie, username, password);
             UserAT.LoginUser(cookie, username, password);
             Tester.PBridge.ChangeUserState(cookie, "SellerUserState");
-            var shopGuid = Tester.PBridge.OpenShop(cookie);
+            var shopGuid = Tester.PBridge.OpenShop(cookie, "Name");
             var productGuid = StoreOwnerAT.AddProductToShop(cookie, shopGuid, "Galaxy S9", "Cellphones", 2000, 10);
 
             Tester.PBridge.ChangeUserState(cookie, "BuyerUserState");
@@ -112,7 +112,7 @@ namespace Tests
             UserAT.RegisterUser(cookie, username, password);
             UserAT.LoginUser(cookie, username, password);
             Tester.PBridge.ChangeUserState(cookie, "SellerUserState");
-            var shopGuid = Tester.PBridge.OpenShop(cookie);
+            var shopGuid = Tester.PBridge.OpenShop(cookie, "Name");
 
             Tester.PBridge.ChangeUserState(cookie, "BuyerUserState");
             var res = Tester.PBridge.GetAllProductsInCart(cookie, shopGuid);
@@ -125,12 +125,12 @@ namespace Tests
             UserAT.RegisterUser(cookie, username, password);
             UserAT.LoginUser(cookie, username, password);
             Tester.PBridge.ChangeUserState(cookie, "SellerUserState");
-            var shopGuid = Tester.PBridge.OpenShop(cookie);
+            var shopGuid = Tester.PBridge.OpenShop(cookie, "name");
             var productGuid = Tester.PBridge.AddProductToShop(cookie, shopGuid, "Galaxy S9", "Cellphones", 2000, 10);
 
             Tester.PBridge.ChangeUserState(cookie, "BuyerUserState");
             Tester.PBridge.AddProductToCart(cookie, shopGuid, productGuid, 10);
-            var shop = ApplicationCore.Data.DomainData.ShopsCollection[shopGuid];
+            var shop = Tester.PBridge.GetAllShops(cookie).FirstOrDefault(s => s.Guid.Equals(shopGuid));
             ApplicationCore.Entitites.ShopProduct[] shopProductsArr=new ApplicationCore.Entitites.ShopProduct[1];
             shop.ShopProducts.CopyTo(shopProductsArr, 0);
             var shopProduct = shopProductsArr[0];
@@ -154,7 +154,7 @@ namespace Tests
             UserAT.LoginUser(cookie, username, password);
             Tester.PBridge.ChangeUserState(cookie, "SellerUserState");
 
-            var shopGuid = Tester.PBridge.OpenShop(cookie);
+            var shopGuid = Tester.PBridge.OpenShop(cookie,"Name");
             var productGuid = Tester.PBridge.AddProductToShop(cookie, shopGuid, "Galaxy S9", "Cellphones", 2000, 10);
 
             Tester.PBridge.ChangeUserState(cookie, "BuyerUserState");

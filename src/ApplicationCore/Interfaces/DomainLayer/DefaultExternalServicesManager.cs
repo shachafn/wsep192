@@ -1,7 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
-using ApplicationCore.Interfaces.ExternalServices;
+﻿using ApplicationCore.Interfaces.ExternalServices;
 
 namespace ApplicationCore.Interfaces.DomainLayer
 {

@@ -1,7 +1,4 @@
 ﻿using System;
-using System.Net.WebSockets;
-using System.Threading;
-using ApplicationCore.Interfaces.Infastracture;
 using ApplicationCore.Interfaces.ServiceLayer;
 using DomainLayer;
 using Infrastructure;
@@ -23,15 +20,18 @@ namespace PresentaitionLayer
         ILogger<Startup> _logger;
         NotificationsCenter _notificationsCenter;
         PipelineManager _pipelineManager;
+        SystemInitializer _systemInitializer;
 
         public Startup(IConfiguration configuration, IServiceFacade facade, ILogger<Startup> logger,
-            NotificationsCenter notificationsCenter, PipelineManager pipelineManager)
+            NotificationsCenter notificationsCenter, PipelineManager pipelineManager
+            , SystemInitializer systemInitializer)
         {
             Configuration = configuration;
             _facade = facade;
             _logger = logger;
             _notificationsCenter = notificationsCenter;
             _pipelineManager = pipelineManager;
+            _systemInitializer = systemInitializer;
         }
 
         public IConfiguration Configuration { get; }
@@ -63,29 +63,10 @@ namespace PresentaitionLayer
                 options.LogoutPath = "/auth/logout";
             });
             services.AddSession();
-            //services.AddAuthorization(options=> options.AddPolicy("BuyerOnly",policy=>policy.RequireRole("Buyer")));
-
-            var g = Guid.NewGuid();
-            _facade.Initialize(g, "meni", "moni");
-            _facade.Register(Guid.NewGuid(), "ooo", "1111");
-            _logger.LogDebug(_facade.Register(Guid.NewGuid(), "myUser", "1111").ToString());
-            _facade.Logout(g);
-            SystemInitializer init = new SystemInitializer(_facade);
-            init.InitSystemWithFile();
-           // init_data();
+            if (!_systemInitializer.InitSystem())
+                throw new Exception();
+            _systemInitializer.InitSystemWithFile();
             UpdateCenter.Subscribe(_notificationsCenter.HandleUpdate);
-        }
-
-        private void init_data()
-        {
-            var dummySession = Guid.NewGuid();
-            _facade.Register(dummySession, "ben", "ben");
-            _facade.Login(dummySession, "ben", "ben");
-            _facade.ChangeUserState(dummySession, "SellerUserState");
-            var shop_guid = _facade.OpenShop(dummySession, "Ben's groceries");
-            _facade.AddProductToShop(dummySession, shop_guid, "Banana", "good things", 3.0, 120);
-            _facade.AddProductToShop(dummySession, shop_guid, "Mango", "nice things", 12.0, 30);
-            _facade.Logout(dummySession);
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.

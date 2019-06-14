@@ -1,9 +1,9 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Reflection;
 //using System.Reflection;
 using ApplicationCore.Entities.Users;
 using ApplicationCore.Entitites;
+using ApplicationCore.Interfaces.DataAccessLayer;
 
 namespace DomainLayer.Policies
 {
@@ -25,7 +25,7 @@ namespace DomainLayer.Policies
             Description = description;
         }
 
-        public bool CheckPolicy(ShoppingCart cart, Guid productGuid, int quantity, BaseUser inputUser)
+        public bool CheckPolicy(ShoppingCart cart, Guid productGuid, int quantity, BaseUser inputUser, IUnitOfWork unitOfWork)
         {
             if (inputUser==null) return false;
             foreach(PropertyInfo property in inputUser.GetType().GetProperties())

@@ -1,10 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Text;
 using System.Linq;
-using ApplicationCore.Entities.Users;
-using ApplicationCore.Entitites;
-using Utils;
+using ApplicationCore.Interfaces.DataAccessLayer;
 
 namespace ApplicationCore.Events
 {
@@ -26,26 +23,26 @@ namespace ApplicationCore.Events
             Message = "UPDATE MESSAGE WAS NOT SET";
             Messages = new Dictionary<ICollection<Guid>, string>();
         }
-        public void SetMessage(ICollection<Shop> shops, ICollection<BaseUser> registeredUsers)
+        public void SetMessage(IUnitOfWork unitOfWork)
         {
-            Message = $"User {registeredUsers.First(u => u.Guid.Equals(AddedManagerGuid)).Username} is now a manager of shop {ShopGuid}";
+            Message = $"User {unitOfWork.BaseUserRepository.GetUsername(AddedManagerGuid)} is now a manager of shop {ShopGuid}";
         }
 
-        public void SetTargets(ICollection<Shop> shops, ICollection<BaseUser> registeredUsers)
+        public void SetTargets(IUnitOfWork unitOfWork)
         {
-            Targets.Add(shops.First(s => s.Guid.Equals(ShopGuid)).Creator.OwnerGuid);
+            Targets.Add(unitOfWork.ShopRepository.FindByIdOrNull(ShopGuid).Creator.OwnerGuid);
             Targets.Add(AddedManagerGuid);
         }
 
-        public void SetMessages(ICollection<Shop> shops, ICollection<BaseUser> registeredUsers)
+        public void SetMessages(IUnitOfWork unitOfWork)
         {
-            var shop = shops.First(s => s.Guid.Equals(ShopGuid));
+            var shop = unitOfWork.ShopRepository.FindByIdOrNull(ShopGuid);
             var otherOwners = shop.Owners.Select(owner => owner.OwnerGuid).ToList();
             otherOwners.Add(shop.Creator.OwnerGuid);
             otherOwners.Remove(Initiator);
             otherOwners.Remove(AddedManagerGuid);
-            string addedOwnerUsername = registeredUsers.First(u => u.Guid.Equals(AddedManagerGuid)).Username;
-            string initiatorUsername = registeredUsers.First(u => u.Guid.Equals(Initiator)).Username;
+            string addedOwnerUsername = unitOfWork.BaseUserRepository.GetUsername(AddedManagerGuid);
+            string initiatorUsername = unitOfWork.BaseUserRepository.GetUsername(Initiator);
             string otherOwnersMsg = $"{addedOwnerUsername} is now an manager of shop {shop.ShopName}";
             string initiatorMsg = $"You added {addedOwnerUsername} as a manager of your shop {shop.ShopName}";
             string addedOwnerMsg = $"{initiatorUsername} added you as an manager of shop {shop.ShopName}";

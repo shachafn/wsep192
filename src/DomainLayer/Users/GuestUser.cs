@@ -1,8 +1,8 @@
-﻿using ApplicationCore.Data;
-using ApplicationCore.Entitites;
+﻿using ApplicationCore.Entitites;
 using ApplicationCore.Exceptions;
+using ApplicationCore.Interfaces.DataAccessLayer;
 using DomainLayer;
-using DomainLayer.Extension_Methods;
+using DomainLayer.Domains;
 using DomainLayer.Policies;
 using System;
 using System.Collections.Generic;
@@ -12,18 +12,17 @@ namespace ApplicationCore.Entities.Users
 {
     public class GuestUser : IUser
     {
+        protected IUnitOfWork _unitOfWork;
+        protected ShopDomain _shopDomain; 
+
         public Guid Guid { get; private set; }
         public bool IsAdmin => false;
-        public ShoppingBag CurrentBag { get; private set; }
 
-        public GuestUser(Guid guid)
+        public GuestUser(Guid guid, IUnitOfWork unitOfWork, ShopDomain shopDomain)
         {
             Guid = guid;
-        }
-
-        public ICollection<Guid> GetShoppingHistory()
-        {
-            throw new BadStateException($"Tried to invoke GetShoppingHistory in GuestUser");
+            _unitOfWork = unitOfWork;
+            _shopDomain = shopDomain;
         }
 
         public Guid OpenShop()
@@ -53,16 +52,12 @@ namespace ApplicationCore.Entities.Users
 
         public bool PurchaseCart(Guid shopGuid)
         {
-            var cart = DomainData.ShoppingBagsCollection
-                .First(bag => bag.UserGuid.Equals(Guid))
-                .ShoppingCarts
-                .First(c => c.ShopGuid.Equals(shopGuid));
+            var cart = _unitOfWork.BagRepository.GetShoppingBagAndCreateIfNeeded(Guid).GetShoppingCartAndCreateIfNeeded(shopGuid);
 
-            var shop = DomainData.ShopsCollection[shopGuid];
+            var shop = _unitOfWork.ShopRepository.FindByIdOrNull(shopGuid);
             //Can implement RollBack, purchase is given a Guid, shop.PurchaseCart returns a Guid,
             // if the user fails to pay later, we can delete the purchase and revert the shop quantities and cart content
-            if (!shop.PurchaseCart(cart))
-                return false;
+            cart.PurchaseCart();
 
             //External payment pay, if not true ---- rollback
             return true;
@@ -101,7 +96,7 @@ namespace ApplicationCore.Entities.Users
         public bool AddProductToCart(Guid shopGuid, Guid shopProductGuid, int quantity)
         {
             var cart = GetCartAndCreateIfNeeded(Guid, shopGuid);
-            var shop = DomainData.ShopsCollection[shopGuid];
+            var shop = _unitOfWork.ShopRepository.FindByIdOrNull(shopGuid);
             var actualProduct = shop.ShopProducts.FirstOrDefault(p => p.Guid.Equals(shopProductGuid));
             cart.AddProductToCart(actualProduct, quantity);
             return true;
@@ -120,7 +115,7 @@ namespace ApplicationCore.Entities.Users
         public bool EditProductInCart(Guid shopGuid, Guid shopProductGuid, int newAmount)
         {
             var cart = GetCartAndCreateIfNeeded(Guid, shopGuid);
-            return cart.EditProductInCart(shopProductGuid, newAmount);
+           return cart.EditProductInCart(shopProductGuid, newAmount);
         }
 
         public bool RemoveProductFromCart(Guid shopGuid, Guid shopProductGuid)
@@ -147,35 +142,13 @@ namespace ApplicationCore.Entities.Users
 
         public ICollection<Tuple<ShopProduct, Guid>> SearchProduct(ICollection<string> toMatch, string searchType)
         {
-            var searcher = new ProductsSearcher(searchType);
+            var searcher = new ProductsSearcher(searchType, _unitOfWork);
             return searcher.Search(toMatch);
         }
 
         private ShoppingCart GetCartAndCreateIfNeeded(Guid userGuid, Guid shopGuid)
         {
-            ShoppingBag bag = null;
-            if (CurrentBag == null)
-            {
-                if (!DomainData.ShoppingBagsCollection.ContainsKey(userGuid))
-                {
-                    bag = new ShoppingBag(userGuid);
-                    DomainData.ShoppingBagsCollection.Add(userGuid, bag);
-                    CurrentBag = bag;
-                }
-            }
-            CurrentBag = DomainData.ShoppingBagsCollection.First(c => c.UserGuid.Equals(userGuid));
-            ShoppingCart cart = CurrentBag.ShoppingCarts.First(c => c.ShopGuid.Equals(shopGuid));
-            if (cart==null)
-            {
-                cart = new ShoppingCart(userGuid, shopGuid);
-                CurrentBag.ShoppingCarts.Add(cart);
-            }
-            return cart;
-        }
-
-        public bool SetState(IAbstractUserState newState)
-        {
-            throw new BadStateException($"Tried to invoke AddShopOwner in GuestUser");
+            return _unitOfWork.BagRepository.GetShoppingBagAndCreateIfNeeded(userGuid).GetShoppingCartAndCreateIfNeeded(shopGuid);
         }
 
         public Guid AddNewPurchasePolicy(Guid userGuid, Guid shopGuid, IPurchasePolicy newPolicy)
@@ -190,7 +163,7 @@ namespace ApplicationCore.Entities.Users
 
         public ICollection<Tuple<Guid, ShopProduct, int>> GetPurchaseHistory()
         {
-            return DomainData.ShopsCollection.SelectMany(shop => shop.GetPurchaseHistory(Guid)).ToList();
+            return _unitOfWork.ShopRepository.Query().SelectMany(shop => shop.GetPurchaseHistory(Guid)).ToList();
         }
 
 

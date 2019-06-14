@@ -9,8 +9,8 @@ namespace DomainLayer.Policies
     {
         Guid Guid { get; }
         int DiscountPercentage { get; set; }
-        bool CheckPolicy(ref ShoppingCart cart, Guid productGuid, int quantity, BaseUser user);
-        void ApplyPolicy(ref ShoppingCart cart, Guid productGuid, int quantity, BaseUser user);
+        bool CheckPolicy(ShoppingCart cart, Guid productGuid, int quantity, BaseUser user);
+        Tuple<ShopProduct, int> ApplyPolicy(ShoppingCart cart, Guid productGuid, int quantity, BaseUser user);
         string Description { get; }
     }
 }

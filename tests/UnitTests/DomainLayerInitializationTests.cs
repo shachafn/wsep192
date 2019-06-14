@@ -7,6 +7,7 @@ using NUnit.Framework;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using TestsUtils;
 
 namespace UnitTests
 {
@@ -16,13 +17,7 @@ namespace UnitTests
     [TestFixture]
     public class DomainLayerInitializationTests
     {
-
-        IDomainLayerFacade facade = new DomainLayerFacade(
-                                    new UserDomain(NullLogger<UserDomain>.Instance),
-                                    new DomainLayerFacadeVerifier(NullLogger<DomainLayerFacadeVerifier>.Instance),
-                                    NullLogger<DomainLayerFacade>.Instance,
-                                    new DefaultExternalServicesManager()
-                                );
+        IDomainLayerFacade facade = MocksCreator.GetDomainLayerFacade();
 
         [Test]
         public void TestReflection()

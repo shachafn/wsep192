@@ -1,8 +1,6 @@
 ﻿using System;
-using ApplicationCore.Data;
 using ApplicationCore.Entities.Users;
 using ApplicationCore.Entitites;
-using DomainLayer.Extension_Methods;
 using DomainLayer.Operators;
 
 namespace DomainLayer.Policies
@@ -29,7 +27,7 @@ namespace DomainLayer.Policies
         {
         }
 
-        public bool CheckPolicy(ref ShoppingCart cart, Guid productGuid, int quantity, BaseUser user)
+        public bool CheckPolicy(ShoppingCart cart, Guid productGuid, int quantity, BaseUser user)
         {
             double totalSum = CalculateSumBeforeDiscount(cart);
             return Operator.IsValid(ExpectedSum, totalSum);
@@ -45,17 +43,18 @@ namespace DomainLayer.Policies
             return totalSum;
         }
 
-        public void ApplyPolicy(ref ShoppingCart cart, Guid productGuid, int quantity, BaseUser user)
+        public Tuple<ShopProduct, int> ApplyPolicy(ShoppingCart cart, Guid productGuid, int quantity, BaseUser user)
         {
-            if (CheckPolicy(ref cart, productGuid, quantity, user))
+            if (CheckPolicy(cart, productGuid, quantity, user))
             {
                 double totalSum = CalculateSumBeforeDiscount(cart);
                 double discountValue = -totalSum * (DiscountPercentage / 100);
-                if (discountValue == 0) return;
+                if (discountValue == 0) return null;
                 Product discountProduct = new Product("Discount - cart", "Discount");
-                ShopProduct discountRecord = new ShopProduct(discountProduct, discountValue, 1);
-                cart.AddProductToCart(discountRecord, 1);
+                var discountShopProduct = new ShopProduct(discountProduct, discountValue, 1);
+                return new Tuple<ShopProduct, int>(discountShopProduct, 1);
             }
+            return null;
         }
     }
 }

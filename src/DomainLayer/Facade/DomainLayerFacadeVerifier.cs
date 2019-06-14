@@ -9,23 +9,24 @@ using ApplicationCore.Entities;
 using ApplicationCore.Entitites;
 using ApplicationCore.Data;
 using static ApplicationCore.Entitites.Shop;
-using DomainLayer.Users.States;
-using DomainLayer.Extension_Methods;
 using ApplicationCore.Entities.Users;
 using DomainLayer.Policies;
-using DomainLayer.Data.Entitites.Users.States;
 using DomainLayer.Operators;
 using Microsoft.Extensions.Logging;
+using ApplicationCore.Interfaces.DataAccessLayer;
+using DomainLayer.Users;
 
 namespace DomainLayer.Facade
 {
     public class DomainLayerFacadeVerifier
     {
         readonly ILogger<DomainLayerFacadeVerifier> _logger;
+        readonly IUnitOfWork _unitOfWork;
 
-        public DomainLayerFacadeVerifier(ILogger<DomainLayerFacadeVerifier> logger)
+        public DomainLayerFacadeVerifier(ILogger<DomainLayerFacadeVerifier> logger, IUnitOfWork unitOfWork)
         {
             _logger = logger;
+            _unitOfWork = unitOfWork;
         }
 
         #region VerifyMe
@@ -121,7 +122,6 @@ namespace DomainLayer.Facade
         public void ReopenShop(UserIdentifier userIdentifier, Guid shopGuid)
         {
             VerifyLoggedInUser(userIdentifier.Guid, new UserNotFoundException());
-            var user = VerifyLoggedInUser(userIdentifier.Guid, new UserNotFoundException());
             var shop = VerifyShopExists(shopGuid, new ShopNotFoundException());
             //VerifyOwnerOfShop(userIdentifier.Guid, shopGuid, new OwnerNotFoundException());
             VerifyOwnerOfShopOrManagerWithPrivilige(userIdentifier.Guid, shopGuid, ShopOwner.PrivilegeEnum.ManageShopState,
@@ -132,7 +132,6 @@ namespace DomainLayer.Facade
         public void CloseShop(UserIdentifier userIdentifier, Guid shopGuid)
         {
             VerifyLoggedInUser(userIdentifier.Guid, new UserNotFoundException());
-            var user = VerifyLoggedInUser(userIdentifier.Guid, new UserNotFoundException());
             var shop = VerifyShopExists(shopGuid, new ShopNotFoundException());
             //VerifyOwnerOfShop(userIdentifier.Guid, shopGuid, new OwnerNotFoundException());
             VerifyOwnerOfShopOrManagerWithPrivilige(userIdentifier.Guid, shopGuid, ShopOwner.PrivilegeEnum.ManageShopState,
@@ -143,7 +142,6 @@ namespace DomainLayer.Facade
         public void CloseShopPermanently(UserIdentifier userIdentifier, Guid shopGuid)
         {
             VerifyLoggedInUser(userIdentifier.Guid, new UserNotFoundException());
-            var user = VerifyLoggedInUser(userIdentifier.Guid, new UserNotFoundException());
             var shop = VerifyShopExists(shopGuid, new ShopNotFoundException());
             shop.VerifyShopIsActiveOrClosed();
         }
@@ -185,7 +183,7 @@ namespace DomainLayer.Facade
         /// </constraints>
         public void RemoveUser(UserIdentifier userIdentifier, Guid userToRemoveGuid)
         {
-            var user = VerifyLoggedInUser(userIdentifier.Guid, new UserNotFoundException());
+            VerifyLoggedInUser(userIdentifier.Guid, new UserNotFoundException());
             VerifyRegisteredUser(userToRemoveGuid, new UserNotFoundException());
             VerifyNotOnlyOwnerOfAnActiveShop(userToRemoveGuid, new BrokenConstraintException());
             VerifyNotOnlyAdmin(userToRemoveGuid, new BrokenConstraintException());
@@ -225,7 +223,7 @@ namespace DomainLayer.Facade
         /// </constraints>
         public void AddProductToShop(UserIdentifier userIdentifier, Guid shopGuid, string name, string category, double price, int quantity)
         {
-            var user = VerifyLoggedInUser(userIdentifier.Guid, new UserNotFoundException());
+            VerifyLoggedInUser(userIdentifier.Guid, new UserNotFoundException());
             var shop = VerifyShopExists(shopGuid, new ShopNotFoundException());
             shop.VerifyShopIsActive();
             VerifyString(name, new IllegalArgumentException());
@@ -248,7 +246,7 @@ namespace DomainLayer.Facade
         /// </constraints>
         public void RemoveProductFromShop(UserIdentifier userIdentifier, Guid shopGuid, Guid shopProductGuid)
         {
-            var user = VerifyLoggedInUser(userIdentifier.Guid, new UserNotFoundException());
+            VerifyLoggedInUser(userIdentifier.Guid, new UserNotFoundException());
             var shop = VerifyShopExists(shopGuid, new ShopNotFoundException());
             shop.VerifyShopIsActive();
             shop.VerifyShopProductExists(shopProductGuid, new ProductNotFoundException());
@@ -270,7 +268,7 @@ namespace DomainLayer.Facade
         /// </constraints>
         public void EditProductInShop(UserIdentifier userIdentifier, Guid shopGuid, Guid productGuid, double newPrice, int newQuantity)
         {
-            var user = VerifyLoggedInUser(userIdentifier.Guid, new UserNotFoundException());
+            VerifyLoggedInUser(userIdentifier.Guid, new UserNotFoundException());
             var shop = VerifyShopExists(shopGuid, new ShopNotFoundException());
             shop.VerifyShopIsActive();
             shop.VerifyShopProductExists(productGuid, new ProductNotFoundException());
@@ -327,7 +325,7 @@ namespace DomainLayer.Facade
         /// </constraints>
         public void GetAllProductsInCart(UserIdentifier userIdentifier, Guid shopGuid)
         {
-            var user = VerifyLoggedInUser(userIdentifier.Guid, new UserNotFoundException());
+            VerifyLoggedInUser(userIdentifier.Guid, new UserNotFoundException());
             var shop = VerifyShopExists(shopGuid, new ShopNotFoundException());
             shop.VerifyShopIsActive();
             GetCartExistsAndCreateIfNeeded(userIdentifier, shopGuid);
@@ -343,7 +341,7 @@ namespace DomainLayer.Facade
         /// </constraints>
         public void RemoveProductFromCart(UserIdentifier userIdentifier, Guid shopGuid, Guid shopProductGuid)
         {
-            var user = VerifyLoggedInUser(userIdentifier.Guid, new UserNotFoundException());
+            VerifyLoggedInUser(userIdentifier.Guid, new UserNotFoundException());
             var shop = VerifyShopExists(shopGuid, new ShopNotFoundException());
             shop.VerifyShopIsActive();
             var cart = GetCartExistsAndCreateIfNeeded(userIdentifier, shopGuid);
@@ -361,7 +359,7 @@ namespace DomainLayer.Facade
         /// </constraints>
         public void EditProductInCart(UserIdentifier userIdentifier, Guid shopGuid, Guid shopProductGuid, int newAmount)
         {
-            var user = VerifyLoggedInUser(userIdentifier.Guid, new UserNotFoundException());
+            VerifyLoggedInUser(userIdentifier.Guid, new UserNotFoundException());
             var shop = VerifyShopExists(shopGuid, new ShopNotFoundException());
             shop.VerifyShopIsActive();
             VerifyIntGreaterThan0(newAmount, new IllegalArgumentException());
@@ -381,7 +379,7 @@ namespace DomainLayer.Facade
         /// </constraints>
         public void AddShopManager(UserIdentifier userIdentifier, Guid shopGuid, Guid newManagaerGuid, List<bool> privileges)
         {
-            var user = VerifyLoggedInUser(userIdentifier.Guid, new UserNotFoundException());
+            VerifyLoggedInUser(userIdentifier.Guid, new UserNotFoundException());
             VerifyRegisteredUser(newManagaerGuid, new UserNotFoundException());
             var shop = VerifyShopExists(shopGuid, new ShopNotFoundException());
             shop.VerifyCreatorOrOwner(userIdentifier.Guid, new NoPrivilegesException());
@@ -401,7 +399,7 @@ namespace DomainLayer.Facade
         /// </constraints>
         public void AddShopOwner(UserIdentifier userIdentifier, Guid shopGuid, Guid newOwnerGuid)
         {
-            var user = VerifyLoggedInUser(userIdentifier.Guid, new UserNotFoundException());
+            VerifyLoggedInUser(userIdentifier.Guid, new UserNotFoundException());
             VerifyRegisteredUser(newOwnerGuid, new UserNotFoundException());
             var shop = VerifyShopExists(shopGuid, new ShopNotFoundException());
             shop.VerifyCreatorOrOwner(userIdentifier.Guid, new NoPrivilegesException());
@@ -422,7 +420,7 @@ namespace DomainLayer.Facade
         /// </constraints>
         public void CascadeRemoveShopOwner(UserIdentifier userIdentifier, Guid shopGuid, Guid ownerToRemoveGuid)
         {
-            var user = VerifyLoggedInUser(userIdentifier.Guid, new UserNotFoundException());
+            VerifyLoggedInUser(userIdentifier.Guid, new UserNotFoundException());
             var shop = VerifyShopExists(shopGuid, new ShopNotFoundException());
             shop.VerifyShopIsActive();
             shop.VerifyOwnerOrCreator(userIdentifier.Guid, new NoPrivilegesException());
@@ -441,7 +439,7 @@ namespace DomainLayer.Facade
         /// </constraints>
         public void RemoveShopManager(UserIdentifier userIdentifier, Guid shopGuid, Guid managerToRemoveGuid)
         {
-            var user = VerifyLoggedInUser(userIdentifier.Guid, new UserNotFoundException());
+            VerifyLoggedInUser(userIdentifier.Guid, new UserNotFoundException());
             VerifyRegisteredUser(managerToRemoveGuid, new UserNotFoundException());
             var shop = VerifyShopExists(shopGuid, new ShopNotFoundException());
             shop.VerifyCreatorOrOwner(userIdentifier.Guid, new NoPrivilegesException());
@@ -457,10 +455,10 @@ namespace DomainLayer.Facade
         /// </constraints>
         public void ChangeUserState(UserIdentifier userIdentifier, string newState)
         {
-            var user = VerifyLoggedInUser(userIdentifier.Guid, new UserNotFoundException());
+            VerifyLoggedInUser(userIdentifier.Guid, new UserNotFoundException());
             VerifyString(newState, new IllegalArgumentException());
             VerifyStateString(newState, new IllegalArgumentException());
-            VerifyIfChangeToAdminMustBeAdmin(user, newState, new IllegalOperationException());
+            VerifyIfChangeToAdminMustBeAdmin(userIdentifier.Guid, newState, new IllegalOperationException());
         }
 
         public void AddNewPurchasePolicy(ref IPurchasePolicy policy, UserIdentifier userIdentifier, Guid shopGuid, object policyType, object field1, object field2, object field3 = null, object field4 = null)
@@ -562,17 +560,17 @@ namespace DomainLayer.Facade
 
         public void GetAllUsersExceptMe(UserIdentifier userIdentifier)
         {
-            var user = VerifyLoggedInUser(userIdentifier.Guid, new UserNotFoundException());
+            VerifyLoggedInUser(userIdentifier.Guid, new UserNotFoundException());
         }
 
         public void GetAllShops(UserIdentifier userIdentifier)
         {
-            var user = VerifyLoggedInUser(userIdentifier.Guid, new UserNotFoundException());
+            VerifyLoggedInUser(userIdentifier.Guid, new UserNotFoundException());
         }
 
         public void cancelOwnerAssignment(UserIdentifier userIdentifier, Guid shopGuid)
         {
-            var user = VerifyLoggedInUser(userIdentifier.Guid, new UserNotFoundException());
+            VerifyLoggedInUser(userIdentifier.Guid, new UserNotFoundException());
             var shop = VerifyShopExists(shopGuid, new ShopNotFoundException());
             shop.VerifyCreatorOrOwner(userIdentifier.Guid, new NoPrivilegesException());
         }
@@ -611,11 +609,11 @@ namespace DomainLayer.Facade
         #endregion
 
         #region Private Verifiers
-        private IUser VerifyLoggedInUser(Guid userGuid, ICloneableException<Exception> e)
+        private bool VerifyLoggedInUser(Guid userGuid, ICloneableException<Exception> e)
         {
             //Could equivalently check for IsGuest, but we also want to return the user.
-            var user = DomainData.LoggedInUsersEntityCollection[userGuid];
-            if (user == null)
+            var isLoggedIn = DomainData.LoggedInUsersEntityCollection.ContainsKey(userGuid);
+            if (!isLoggedIn)
             {
                 StackTrace stackTrace = new StackTrace();
                 var msg = string.Format(Resources.EntityNotFound, "logged in user", userGuid) +
@@ -623,12 +621,12 @@ namespace DomainLayer.Facade
                 _logger.LogError(msg);
                 throw e.Clone(msg);
             }
-            return user;
+            return true;
         }
 
         private Shop VerifyShopExists(Guid shopGuid, ICloneableException<Exception> e)
         {
-            var shop = DomainData.ShopsCollection[shopGuid];
+            var shop = _unitOfWork.ShopRepository.FindByIdOrNull(shopGuid);
             if (shop == null)
             {
                 StackTrace stackTrace = new StackTrace();
@@ -642,7 +640,7 @@ namespace DomainLayer.Facade
 
         private IPurchasePolicy VerifyPurchasePolicyExists(Guid shopGuid, Guid purchasePolicyGuid, ICloneableException<Exception> e)
         {
-            var shop = DomainData.ShopsCollection[shopGuid];
+            var shop = _unitOfWork.ShopRepository.FindByIdOrNull(shopGuid);
             foreach (IPurchasePolicy policy in shop.PurchasePolicies)
             {
                 if (policy.Guid.Equals(purchasePolicyGuid))
@@ -666,7 +664,7 @@ namespace DomainLayer.Facade
 
         private void VerifyRegisteredUser(Guid userGuid, ICloneableException<Exception> e)
         {
-            if (!DomainData.RegisteredUsersCollection.ContainsKey(userGuid))
+            if (!_unitOfWork.BaseUserRepository.IsUserExistsByGuid(userGuid))
             {
                 StackTrace stackTrace = new StackTrace();
                 var msg = string.Format(Resources.EntityNotFound, "registered user", userGuid) +
@@ -702,7 +700,7 @@ namespace DomainLayer.Facade
 
         private void VeriffyShopAlreadyExists(Guid userGuid, string shopName, ICloneableException<Exception> e)
         {
-            var constraint = DomainData.ShopsCollection.Where(shop => shop.Creator.OwnerGuid.Equals(userGuid)
+            var constraint = _unitOfWork.ShopRepository.Query().Where(shop => shop.Creator.OwnerGuid.Equals(userGuid)
                 || shop.Owners.Select(owner => owner.OwnerGuid).Contains(userGuid)).Select(shop => shop.ShopName).Contains(shopName);
             if (constraint)
             {
@@ -752,7 +750,7 @@ namespace DomainLayer.Facade
 
         private void VerifyOwnerOfShop(Guid userGuid, Guid shopGuid, ICloneableException<Exception> e)
         {
-            var shop = DomainData.ShopsCollection.FirstOrDefault(s => s.Guid.Equals(shopGuid));
+            var shop = _unitOfWork.ShopRepository.FindByIdOrNull(shopGuid);
             var constraint = shop.Owners.Select(owner => owner.OwnerGuid).Contains(userGuid)
                 || shop.Creator.OwnerGuid.Equals(userGuid);
             if (!constraint)
@@ -767,7 +765,7 @@ namespace DomainLayer.Facade
 
         private void VerifyManagerOfShop(Guid userGuid, Guid shopGuid, ICloneableException<Exception> e)
         {
-            var shop = DomainData.ShopsCollection.FirstOrDefault(s => s.Guid.Equals(shopGuid));
+            var shop = _unitOfWork.ShopRepository.FindByIdOrNull(shopGuid);
             var constraint = shop.Managers.Select(owner => owner.OwnerGuid).Contains(userGuid)
                 || shop.Creator.OwnerGuid.Equals(userGuid);
             if (!constraint)
@@ -782,7 +780,7 @@ namespace DomainLayer.Facade
 
         private void VerifyManagerPrivilige(Guid userGuid, Guid shopGuid, ShopOwner.PrivilegeEnum privilege, ICloneableException<Exception> e)
         {
-            var shop = DomainData.ShopsCollection.FirstOrDefault(s => s.Guid.Equals(shopGuid));
+            var shop = _unitOfWork.ShopRepository.FindByIdOrNull(shopGuid);
             var manager = shop.Managers.First(m => m.OwnerGuid.Equals(userGuid));
             var constraint = manager.Privileges.Contains(privilege);
             if (!constraint)
@@ -797,7 +795,7 @@ namespace DomainLayer.Facade
 
         private void VerifyOwnerOfShopOrManagerWithPrivilige(Guid userGuid, Guid shopGuid, ShopOwner.PrivilegeEnum privilege, ICloneableException<Exception> e)
         {
-            var shop = DomainData.ShopsCollection.FirstOrDefault(s => s.Guid.Equals(shopGuid));
+            var shop = _unitOfWork.ShopRepository.FindByIdOrNull(shopGuid);
             var creatorOrOwnerConstraint = shop.Owners.Select(owner => owner.OwnerGuid).Contains(userGuid)
                 || shop.Creator.OwnerGuid.Equals(userGuid);
             var priviligeConstraint = shop.Managers.Select(owner => owner.OwnerGuid).Contains(userGuid) && shop.Managers.FirstOrDefault(m => m.OwnerGuid.Equals(userGuid)).Privileges.Contains(privilege);
@@ -814,7 +812,7 @@ namespace DomainLayer.Facade
 
         private void VerifyNotOwnerAppointer(Guid userGuid, Guid ownerToRemoveGuid, Guid shopGuid, ICloneableException<Exception> e)
         {
-            var shop = DomainData.ShopsCollection.FirstOrDefault(s => s.Guid.Equals(shopGuid));
+            var shop = _unitOfWork.ShopRepository.FindByIdOrNull(shopGuid);
             var constraint = !(shop.Creator.OwnerGuid.Equals(userGuid)) && shop.Owners.FirstOrDefault(owner => owner.OwnerGuid.Equals(userGuid)).AppointerGuid.Equals(ownerToRemoveGuid);
             if (constraint)
             {
@@ -828,7 +826,8 @@ namespace DomainLayer.Facade
 
         private void VerifyNotOnlyOwnerOfAnActiveShop(Guid userGuid, ICloneableException<Exception> e)
         {
-            var constraint = DomainData.ShopsCollection.Any(shop =>
+            // FetchAll instead of Query() - Very unefficient.
+            var constraint = _unitOfWork.ShopRepository.FetchAll().Any(shop =>
             {
                 var isCreator = shop.Creator.OwnerGuid.Equals(userGuid);
                 var isOwner = shop.Owners.Any(owner => owner.OwnerGuid.Equals(userGuid));
@@ -850,29 +849,15 @@ namespace DomainLayer.Facade
 
         private ShoppingCart GetCartExistsAndCreateIfNeeded(UserIdentifier userIdentifier, Guid shopGuid)
         {
-            ShoppingBag bag = null;
-            if (!DomainData.ShoppingBagsCollection.ContainsKey(userIdentifier.Guid))
-            {
-                bag = new ShoppingBag(userIdentifier.Guid);
-                DomainData.ShoppingBagsCollection.Add(userIdentifier.Guid, bag);
-            }
-            else
-                bag = DomainData.ShoppingBagsCollection[userIdentifier.Guid];
-
-            ShoppingCart cart = null;
-            if (!bag.ShoppingCarts.Any(c => c.ShopGuid.Equals(shopGuid)))
-            {
-                cart = new ShoppingCart(userIdentifier.Guid, shopGuid);
-                bag.ShoppingCarts.Add(cart);
-            }
-            return bag.ShoppingCarts.First(c => c.ShopGuid.Equals(shopGuid));
+            ShoppingBag bag = _unitOfWork.BagRepository.GetShoppingBagAndCreateIfNeeded(userIdentifier.Guid);
+            return bag.GetShoppingCartAndCreateIfNeeded(shopGuid);
         }
 
         private void VerifyStateString(string newState, ICloneableException<Exception> e)
         {
-            if (!(newState.Equals(AdminUserState.AdminUserStateString)
-                  || newState.Equals(BuyerUserState.BuyerUserStateString)
-                  || newState.Equals(SellerUserState.SellerUserStateString)))
+            if (!(newState.Equals("AdminUserState")
+                  || newState.Equals("BuyerUserState")
+                  || newState.Equals("SellerUserState")))
             {
                 StackTrace stackTrace = new StackTrace();
                 var msg = $"State string doesnt not match any state." +
@@ -912,7 +897,7 @@ namespace DomainLayer.Facade
 
         private void VerifyNotOnlyAdmin(Guid userToRemoveGuid, ICloneableException<Exception> e)
         {
-            var admins = DomainData.RegisteredUsersCollection.Where(u => u.IsAdmin).ToList();
+            var admins = _unitOfWork.BaseUserRepository.Query().Where(u => u.IsAdmin).ToList();
             if (admins.Count == 1 && admins.First().Guid.Equals(userToRemoveGuid))
             {
                 StackTrace stackTrace = new StackTrace();
@@ -925,7 +910,7 @@ namespace DomainLayer.Facade
 
         private void VerifyLoginCredentials(string username, string password, ICloneableException<Exception> e)
         {
-            if (!DomainData.RegisteredUsersCollection.Any(u => u.Username.ToLower().Equals(username.ToLower()) && u.CheckPass(password)))
+            if (!_unitOfWork.BaseUserRepository.Query().Any(u => u.Username.ToLower().Equals(username.ToLower()) && u.CheckPass(password)))
             {
                 StackTrace stackTrace = new StackTrace();
                 var msg = $"Login Credentials does not match any registered user." +
@@ -935,9 +920,10 @@ namespace DomainLayer.Facade
             }
         }
 
-        private void VerifyIfChangeToAdminMustBeAdmin(IUser user, string newState, ICloneableException<Exception> e)
+        private void VerifyIfChangeToAdminMustBeAdmin(Guid userGuid, string newState, ICloneableException<Exception> e)
         {
-            if (newState.Equals(AdminUserState.AdminUserStateString) && !user.IsAdmin)
+            var user = _unitOfWork.BaseUserRepository.FindByIdOrNull(userGuid);
+            if (newState.Equals("AdminUserState") && !user.IsAdmin)
             {
                 StackTrace stackTrace = new StackTrace();
                 var msg = $"Can't change state to admin state with the user not being an admin." +
@@ -949,13 +935,13 @@ namespace DomainLayer.Facade
 
         private void VerifyCart(ShoppingCart cart, ICloneableException<Exception> e)
         {
-            Shop shop = DomainData.ShopsCollection[cart.ShopGuid];
-            BaseUser user = DomainData.RegisteredUsersCollection[cart.UserGuid];
+            Shop shop = _unitOfWork.ShopRepository.FindByIdOrNull(cart.ShopGuid);
+            BaseUser user = _unitOfWork.BaseUserRepository.FindByIdOrNull(cart.UserGuid);
             foreach (Tuple<ShopProduct, int> record in cart.PurchasedProducts)
             {
                 foreach (ProductPurchasePolicy policy in shop.PurchasePolicies)
                 {
-                    bool result = policy.CheckPolicy(cart, record.Item1.Guid, record.Item2, user);
+                    bool result = policy.CheckPolicy(cart, record.Item1.Guid, record.Item2, user, _unitOfWork);
                     if (result == false)
                     {
                         string msg = $"Broken constraint: { policy }.";
@@ -1050,7 +1036,7 @@ namespace DomainLayer.Facade
         }
         private IDiscountPolicy VerifyDiscountPolicyExists(Guid shopGuid, Guid discountPolicyGuid, PolicyNotFoundException policyNotFoundException)
         {
-            var shop = DomainData.ShopsCollection[shopGuid];
+            var shop = _unitOfWork.ShopRepository.FindByIdOrNull(shopGuid);
             foreach (IDiscountPolicy policy in shop.DiscountPolicies)
             {
                 if (policy.Guid.Equals(discountPolicyGuid))
@@ -1118,17 +1104,14 @@ namespace DomainLayer.Facade
         #endregion
 
         #region Utils
-        public string GetShopName(Guid shopGuid)
-        {
-            return DomainData.ShopsCollection[shopGuid].ShopName;
-        }
+        public string GetShopName(Guid shopGuid) => _unitOfWork.ShopRepository.GetShopName(shopGuid);
         public string GetUserName(Guid userGuid)
         {
-            return DomainData.RegisteredUsersCollection[userGuid].Username;
+            return _unitOfWork.BaseUserRepository.GetUsername(userGuid);
         }
         public ShopProduct GetShopProduct(Guid shopGuid, Guid productGuid)
         {
-            return DomainData.ShopsCollection[shopGuid].ShopProducts.FirstOrDefault(p => p.Guid.Equals(productGuid));
+            return _unitOfWork.ShopRepository.FindByIdOrNull(shopGuid).ShopProducts.FirstOrDefault(p => p.Guid.Equals(productGuid));
         }
         public string GetShopProductName(Guid shopGuid, Guid productGuid)
         {

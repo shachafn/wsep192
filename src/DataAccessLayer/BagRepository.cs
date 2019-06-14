@@ -10,7 +10,10 @@ namespace DataAccessLayer
     {
         private IContext context;
 
-        public BagRepository(IContext context) : base(context) { }
+        public BagRepository(IContext context) : base(context)
+        {
+            this.context = context;
+        }
 
 
         public void Add(ShoppingBag entity)

@@ -12,6 +12,7 @@ namespace DataAccessLayer
 
         public ShopRepository(IContext context) : base(context)
         {
+            this.context = context;
         }
 
         public void Add(Shop entity)

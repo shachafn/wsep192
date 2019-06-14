@@ -40,11 +40,6 @@ namespace DomainLayer.Users
             return true;
         }
 
-        public ICollection<Tuple<Guid, ShopProduct, int>> GetPurchaseHistory()
-        {
-            return _unitOfWork.ShopRepository.Query().SelectMany(shop => shop.GetPurchaseHistory(Guid)).ToList();
-        }
-
         private ICollection<Shop> GetShopsOwnedByUser(Guid userToRemoveGuid)
         {
             return _unitOfWork.ShopRepository.Query().Where

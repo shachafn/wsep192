@@ -324,7 +324,7 @@ namespace DomainLayer.Facade
         /// </constraints>
         public void GetAllProductsInCart(UserIdentifier userIdentifier, Guid shopGuid)
         {
-            VerifyLoggedInUser(userIdentifier.Guid, new UserNotFoundException());
+            //VerifyLoggedInUser(userIdentifier.Guid, new UserNotFoundException());
             var shop = VerifyShopExists(shopGuid, new ShopNotFoundException());
             shop.VerifyShopIsActive();
             GetCartExistsAndCreateIfNeeded(userIdentifier, shopGuid);
@@ -340,7 +340,7 @@ namespace DomainLayer.Facade
         /// </constraints>
         public void RemoveProductFromCart(UserIdentifier userIdentifier, Guid shopGuid, Guid shopProductGuid)
         {
-            VerifyLoggedInUser(userIdentifier.Guid, new UserNotFoundException());
+            //VerifyLoggedInUser(userIdentifier.Guid, new UserNotFoundException());
             var shop = VerifyShopExists(shopGuid, new ShopNotFoundException());
             shop.VerifyShopIsActive();
             var cart = GetCartExistsAndCreateIfNeeded(userIdentifier, shopGuid);
@@ -358,7 +358,7 @@ namespace DomainLayer.Facade
         /// </constraints>
         public void EditProductInCart(UserIdentifier userIdentifier, Guid shopGuid, Guid shopProductGuid, int newAmount)
         {
-            VerifyLoggedInUser(userIdentifier.Guid, new UserNotFoundException());
+            //VerifyLoggedInUser(userIdentifier.Guid, new UserNotFoundException());
             var shop = VerifyShopExists(shopGuid, new ShopNotFoundException());
             shop.VerifyShopIsActive();
             VerifyIntGreaterThan0(newAmount, new IllegalArgumentException());
@@ -462,6 +462,7 @@ namespace DomainLayer.Facade
 
         public void AddNewPurchasePolicy(ref IPurchasePolicy policy, UserIdentifier userIdentifier, Guid shopGuid, object policyType, object field1, object field2, object field3 = null, object field4 = null)
         {
+            VerifyLoggedInUser(userIdentifier.Guid, new UserNotFoundException());
             VerifyOwnerOfShopOrManagerWithPrivilige(userIdentifier.Guid, shopGuid, ShopOwner.PrivilegeEnum.ManagePolicies,
                 new NoPrivilegesException());
             if (!(typeof(string) == policyType.GetType()))
@@ -503,6 +504,7 @@ namespace DomainLayer.Facade
 
         public void AddNewDiscountPolicy(ref IDiscountPolicy policy, UserIdentifier userIdentifier, Guid shopGuid, object policyType, object field1, object field2, object field3 = null, object field4 = null, object field5 = null)
         {
+            VerifyLoggedInUser(userIdentifier.Guid, new UserNotFoundException());
             VerifyOwnerOfShopOrManagerWithPrivilige(userIdentifier.Guid, shopGuid, ShopOwner.PrivilegeEnum.ManagePolicies,
                 new NoPrivilegesException());
             if (!(typeof(string) == policyType.GetType()))
@@ -567,7 +569,7 @@ namespace DomainLayer.Facade
             VerifyLoggedInUser(userIdentifier.Guid, new UserNotFoundException());
         }
 
-        public void cancelOwnerAssignment(UserIdentifier userIdentifier, Guid shopGuid)
+        public void CancelOwnerAssignment(UserIdentifier userIdentifier, Guid shopGuid)
         {
             VerifyLoggedInUser(userIdentifier.Guid, new UserNotFoundException());
             var shop = VerifyShopExists(shopGuid, new ShopNotFoundException());

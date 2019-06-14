@@ -21,7 +21,7 @@ namespace ApplicationCore.Entitites
             AppointerGuid = appointerGuid;
             ShopGuid = shopGuid;
             Privileges = new List<PrivilegeEnum>();
-            if (privileges == null) return;
+            if (privileges == null || privileges.Count == 0) return;
             Array values = Enum.GetValues(typeof(PrivilegeEnum));
             for (int i = 0; i < Enum.GetNames(typeof(PrivilegeEnum)).Length; i++)
             {
@@ -38,7 +38,7 @@ namespace ApplicationCore.Entitites
             AppointerGuid = Guid.Empty;
             ShopGuid = shopGuid;
             Privileges = new List<PrivilegeEnum>();
-            if (privileges == null) return;
+            if (privileges == null || privileges.Count == 0) return;
             Array values = Enum.GetValues(typeof(PrivilegeEnum));
             for (int i = 0; i < Enum.GetNames(typeof(PrivilegeEnum)).Length; i++)
             {

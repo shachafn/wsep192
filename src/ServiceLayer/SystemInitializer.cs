@@ -136,7 +136,9 @@ namespace ServiceLayer
 
             ShopProduct product = new ShopProduct(new Product(name, category), price, quantity);
 
-            _unitOfWork.ShopRepository.FindByIdOrNull(shopId).ShopProducts.Add(product);
+            var shop = _unitOfWork.ShopRepository.FindByIdOrNull(shopId);
+            shop.ShopProducts.Add(product);
+            _unitOfWork.ShopRepository.Update(shop);
 
         }
 

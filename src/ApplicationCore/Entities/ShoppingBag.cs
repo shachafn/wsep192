@@ -26,7 +26,7 @@ namespace ApplicationCore.Entitites
             return ShoppingCarts.Any(c => c.Guid.Equals(shopGuid));
         }
 
-        public ShoppingCart GetShoppingCartAndCreateIfNeededForGuestOnly(Guid shopGuid)
+        public ShoppingCart GetShoppingCartAndCreateIfNeededForGuestOnlyOrInBagDomain(Guid shopGuid)
         {
             var cart = ShoppingCarts.FirstOrDefault(c => c.ShopGuid.Equals(shopGuid));
             if (cart == null)

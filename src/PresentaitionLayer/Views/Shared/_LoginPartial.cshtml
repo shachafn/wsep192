@@ -1,7 +1,8 @@
 @using Microsoft.AspNetCore.Identity
+@using ApplicationCore.Interfaces.ServiceLayer;
+@inject ISessionManager sessionManager
 
-
-@if (User.Identity.IsAuthenticated)
+@if (User.Identity.IsAuthenticated && !sessionManager.ResolveCookie(new Guid(Context.Session.Id)).IsGuest)
 {
     <script>
         var x = 1;

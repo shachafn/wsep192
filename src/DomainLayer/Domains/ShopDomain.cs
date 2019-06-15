@@ -12,13 +12,13 @@ namespace DomainLayer.Domains
 {
     public class ShopDomain
     {
-        public ShoppingCartDomain ShoppingCartDomain;
+        public ShoppingCartDomain ShoppingBagDomain;
         protected IUnitOfWork _unitOfWork;
         protected ILogger<ShopDomain> _logger;
 
         public ShopDomain(ShoppingCartDomain shoppingCartDomain, IUnitOfWork unitOfWork, ILogger<ShopDomain> logger)
         {
-            ShoppingCartDomain = shoppingCartDomain;
+            ShoppingBagDomain = shoppingCartDomain;
             _unitOfWork = unitOfWork;
             _logger = logger;
         }
@@ -198,8 +198,9 @@ namespace DomainLayer.Domains
             return newDiscountPolicy.Guid;
         }
 
-        public bool PurchaseCart(Shop shop, ShoppingCart cart)
+        public bool PurchaseCart(Shop shop, ShoppingBag bag)
         {
+            var cart = bag.GetShoppingCartAndCreateIfNeededForGuestOnlyOrInBagDomain(shop.Guid);
             bool canPurchaseCart = true;
 
             foreach (var productAndAmountBought in cart.PurchasedProducts)
@@ -223,6 +224,7 @@ namespace DomainLayer.Domains
             if (!canPurchaseCart)
             {
                 _unitOfWork.ShopRepository.Update(shop);
+                _unitOfWork.BagRepository.Update(bag);
                 return false;
             }
 
@@ -249,7 +251,7 @@ namespace DomainLayer.Domains
             var newEvent = new PurchasedCartEvent(cart.UserGuid, cart.ShopGuid, total_price);
             newEvent.SetMessages(_unitOfWork);
             UpdateCenter.RaiseEvent(newEvent);
-            cart.PurchaseCart();
+            ShoppingBagDomain.PurchaseCart(bag, shop.Guid);
             _unitOfWork.ShopRepository.Update(shop);
             return true;
         }

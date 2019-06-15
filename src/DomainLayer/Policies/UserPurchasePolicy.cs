@@ -7,13 +7,13 @@ using ApplicationCore.Interfaces.DataAccessLayer;
 
 namespace DomainLayer.Policies
 {
-    class UserPurchasePolicy : IPurchasePolicy
+    public class UserPurchasePolicy : IPurchasePolicy
     {
 
-        public Guid Guid { get; private set; }
-        private string FieldName { get; }
-        private object Value { get; }
-        public string Description { get; }
+        public Guid Guid { get; set; }
+        public string FieldName { get; set; }
+        public object Value { get; set; }
+        public string Description { get; set; }
 
         public UserPurchasePolicy() { } //Empty constructor for ref
         public UserPurchasePolicy(string fieldName,object value,string description)

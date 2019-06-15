@@ -6,12 +6,12 @@ using DomainLayer.Operators;
 
 namespace DomainLayer.Policies
 {
-    class CartPurchasePolicy : IPurchasePolicy
+    public class CartPurchasePolicy : IPurchasePolicy
     {
         public Guid Guid { get; set; }
-        private int ExpectedQuantity { get; }
-        private IArithmeticOperator Operator { get; }
-        public string Description { get; }
+        public int ExpectedQuantity { get; set; }
+        public IArithmeticOperator Operator { get; set; }
+        public string Description { get; set; }
 
 
         public CartPurchasePolicy(int expectedQuantity, IArithmeticOperator @operator, string description)

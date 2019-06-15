@@ -7,6 +7,12 @@ namespace PresentaitionLayer.Models
 {
     public class UserMessage
     {
+        public UserMessage(string redirect, string message)
+        {
+            this.redirect = redirect;
+            Message = message;
+        }
+
         public string redirect { get; set; }
         public string Message { get; set; }
     }

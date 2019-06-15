@@ -186,7 +186,7 @@ namespace ServiceLayer
         }
         public IEnumerable<Tuple<ShoppingCart, IEnumerable<ShopProduct>>> GetUserBag(UserIdentifier userIdentifier)
         {
-            return _domainLayerFacade.getUserBag(userIdentifier);
+            return _domainLayerFacade.GetUserBag(userIdentifier);
         }
         #endregion
 

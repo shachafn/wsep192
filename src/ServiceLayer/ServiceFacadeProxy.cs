@@ -233,7 +233,7 @@ namespace ServiceLayer
             return _serviceFacade.GetAllShops(userIdentifier);
         }
 
-        public IEnumerable<Tuple<ShoppingCart, IEnumerable<ShopProduct>>> getUserBag(Guid cookie)
+        public IEnumerable<Tuple<ShoppingCart, IEnumerable<ShopProduct>>> GetUserBag(Guid cookie)
         {
             var userIdentifier = _sessionManager.ResolveCookie(cookie);
             return _serviceFacade.GetUserBag(userIdentifier);

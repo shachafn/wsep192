@@ -99,7 +99,11 @@ namespace PresentaitionLayer.Account
                 new Claim(ClaimTypes.Name, user.UserName),
                 new Claim(ClaimTypes.Role,user.UserType)
             };
-
+            var isAdmin = _serviceFacade.IsUserAdmin(user.Id);
+            if(isAdmin)
+            {
+                claims.Add(new Claim(ClaimTypes.Country, "adminia"));
+            }
             var identity = new ClaimsIdentity(claims, CookieAuthenticationDefaults.AuthenticationScheme);
             var principal = new ClaimsPrincipal(identity);
             await HttpContext.SignInAsync(principal, properties);
@@ -214,7 +218,11 @@ namespace PresentaitionLayer.Account
                 new Claim(ClaimTypes.Name,User.Claims.First(c=>c.Type==ClaimTypes.Name).Value),
                 new Claim(ClaimTypes.Role,userType)
             };
-
+            var isAdmin = _serviceFacade.IsUserAdmin(new Guid(HttpContext.Session.Id));
+            if (isAdmin)
+            {
+                claims.Add(new Claim(ClaimTypes.Country, "adminia"));
+            }
             var identity = new ClaimsIdentity(claims, CookieAuthenticationDefaults.AuthenticationScheme);
             var principal = new ClaimsPrincipal(identity);
             await HttpContext.SignInAsync(principal, properties);

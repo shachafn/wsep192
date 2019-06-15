@@ -984,5 +984,29 @@ namespace DomainLayer.Facade
                 throw new GeneralServerError("An error has occured. Please try again.", e);
             }
         }
+
+        public bool IsUserAdmin(Guid id)
+        {
+            var session = _unitOfWork.Context.StartSession();
+            try
+            {
+                session.StartTransaction();
+                var result = _domainLayerFacade.IsUserAdmin(id);
+                session.CommitTransaction();
+                return result;
+            }
+            catch (BaseException e)
+            {
+                session.AbortTransaction();
+                _logger.LogWarning("GetUserName Failed.", e);
+                throw e;
+            }
+            catch (Exception e)
+            {
+                session.AbortTransaction();
+                _logger.LogWarning("GetUserName Failed Due to unknown error.", e);
+                throw new GeneralServerError("An error has occured. Please try again.", e);
+            }
+        }
     }
 }

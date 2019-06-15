@@ -70,6 +70,7 @@ namespace ApplicationCore.Interfaces.ServiceLayer
         /// <returns>Guid of the created shop.</returns>
 
         Guid OpenShop(Guid cookie, string shopName);
+        bool IsUserAdmin(Guid id);
 
         /////Implements General Requirement 4.7
         /// <summary>

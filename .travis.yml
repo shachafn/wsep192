@@ -3,8 +3,16 @@ language: csharp
 solution: "wsep192.sln"
 mono: none
 dotnet: 2.2
-script:
-  - dotnet restore
-  - dotnet build
-  - dotnet test tests/UnitTests/UnitTests.csproj
-  - dotnet test tests/AcceptanceBridge/AcceptanceTests.csproj
+
+stages:
+- name: build
+- name: test
+
+jobs:
+  include:
+  - stage: build
+    script: dotnet restore
+  - script: dotnet build
+  - stage: test
+    script: dotnet test tests/UnitTests/UnitTests.csproj
+  - script: dotnet test tests/AcceptanceBridge/AcceptanceTests.csproj

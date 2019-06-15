@@ -12,6 +12,7 @@ namespace ApplicationCore.Entitites
         {
             Name = name;
             Category = category;
+            Keywords = new List<string>();
         }
 
         public override string ToString()

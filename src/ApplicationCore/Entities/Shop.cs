@@ -10,7 +10,7 @@ namespace ApplicationCore.Entitites
 {
     public class Shop : BaseEntity
     {
-        public ShopOwner Creator { get; }
+        public ShopOwner Creator { get; set; }
         public ICollection<ShopOwner> Owners { get; set; }
         public ICollection<ShopOwner> Managers { get; set; }
         public ICollection<ShopProduct> ShopProducts { get; set; }
@@ -19,7 +19,7 @@ namespace ApplicationCore.Entitites
         public ICollection<Tuple<Guid,ShopProduct,int>> UsersPurchaseHistory { get; set; }
         public ICollection<IPurchasePolicy> PurchasePolicies { get; set; }
         public ICollection<IDiscountPolicy> DiscountPolicies { get; set; }
-        public string ShopName { get; }
+        public string ShopName { get; set; }
         public OwnerCandidate candidate { get; set; }
         public Shop(Guid ownerGuid)
         {

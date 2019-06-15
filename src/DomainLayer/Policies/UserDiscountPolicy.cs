@@ -8,12 +8,11 @@ namespace DomainLayer.Policies
 {
     public class UserDiscountPolicy : IDiscountPolicy
     {
-        public Guid Guid { get; private set; }
-
-        private string FieldName;
-        private object ExpectedValue;
+        public Guid Guid { get; set; }
+        public string FieldName { get; set; }
+        public object ExpectedValue { get; set; }
         public int DiscountPercentage { get; set; }
-        public string Description { get; }
+        public string Description { get; set; }
 
        
         public UserDiscountPolicy() { }// Empty constructor for ref

@@ -7,13 +7,13 @@ using DomainLayer.Operators;
 namespace DomainLayer.Policies
 {
 
-    class CompositePurchasePolicy : IPurchasePolicy
+    public class CompositePurchasePolicy : IPurchasePolicy
     {
-        public Guid Guid { get; private set; }
-        private IPurchasePolicy PurchasePolicy1 { get; }
-        private ILogicOperator Operator { get; }
-        private IPurchasePolicy PurchasePolicy2 { get; }
-        public string Description { get; }
+        public Guid Guid { get; set; }
+        public IPurchasePolicy PurchasePolicy1 { get; set; }
+        public ILogicOperator Operator { get; set; }
+        public IPurchasePolicy PurchasePolicy2 { get; set; }
+        public string Description { get; set; }
 
 
         public CompositePurchasePolicy(IPurchasePolicy purchasePolicy1, ILogicOperator @operator, IPurchasePolicy purchasePolicy2, string description)

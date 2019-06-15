@@ -34,16 +34,11 @@ namespace DomainLayer.Users
 
         public bool PurchaseCart(Guid shopGuid)
         {
-            var cart = _unitOfWork.BagRepository.Query()
-                .First(bag => bag.UserGuid.Equals(Guid))
-                .ShoppingCarts
-                .First(c => c.ShopGuid.Equals(shopGuid));
+            var bag = _unitOfWork.BagRepository.GetShoppingBagAndCreateIfNeeded(Guid);
 
             var shop = _unitOfWork.ShopRepository.FindByIdOrNull(shopGuid);
-            //Can implement RollBack, purchase is given a Guid, shop.PurchaseCart returns a Guid,
-            // if the user fails to pay later, we can delete the purchase and revert the shop quantities and cart content
-            _shopDomain.ShoppingCartDomain.CheckDiscountPolicy(cart);
-            if (!_shopDomain.PurchaseCart(shop, cart))
+            _shopDomain.ShoppingBagDomain.CheckDiscountPolicy(bag, shopGuid);
+            if (!_shopDomain.PurchaseCart(shop, bag))
                 return false;
             //External payment pay, if not true ---- rollback
             return true;
@@ -51,24 +46,24 @@ namespace DomainLayer.Users
 
         public bool AddProductToCart(Guid shopGuid, Guid shopProductGuid, int quantity)
         {
-            var cart = _unitOfWork.BagRepository.GetShoppingCartAndCreateIfNeeded(Guid, shopGuid);
+            var bag = _unitOfWork.BagRepository.GetShoppingBagAndCreateIfNeeded(Guid);
             var shop = _unitOfWork.ShopRepository.FindByIdOrNull(shopGuid);
             var actualProduct = shop.ShopProducts.FirstOrDefault(p => p.Guid.Equals(shopProductGuid));
-            _shopDomain.ShoppingCartDomain.AddProductToCart(cart, actualProduct, quantity);
+            _shopDomain.ShoppingBagDomain.AddProductToCart(bag, shopGuid, actualProduct, quantity);
             return true;
         }
 
 
         public bool EditProductInCart(Guid shopGuid, Guid shopProductGuid, int newAmount)
         {
-            var cart = _unitOfWork.BagRepository.GetShoppingCartAndCreateIfNeeded(Guid, shopGuid);
-            return cart.EditProductInCart(shopProductGuid, newAmount);
+            var bag = _unitOfWork.BagRepository.GetShoppingBagAndCreateIfNeeded(Guid);
+            return _shopDomain.ShoppingBagDomain.EditProductInCart(bag, shopGuid, shopProductGuid, newAmount);
         }
 
         public bool RemoveProductFromCart(Guid shopGuid, Guid shopProductGuid)
         {
-            var cart = _unitOfWork.BagRepository.GetShoppingCartAndCreateIfNeeded(Guid, shopGuid);
-            return cart.RemoveProductFromCart(shopProductGuid);
+            var bag = _unitOfWork.BagRepository.GetShoppingBagAndCreateIfNeeded(Guid);
+            return _shopDomain.ShoppingBagDomain.RemoveProductFromCart(bag, shopGuid, shopProductGuid);
         }
 
         public ICollection<ShopProduct> GetAllProductsInCart(Guid shopGuid)

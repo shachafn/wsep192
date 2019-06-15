@@ -7,14 +7,14 @@ using System;
 
 namespace DomainLayer.Policies
 {
-    class ProductDiscountPolicy : IDiscountPolicy
+    public class ProductDiscountPolicy : IDiscountPolicy
     {
-        public Guid Guid { get; private set; }
-        private Guid ProductGuid { get; }
-        private IArithmeticOperator Operator { get; }
-        private int ExpectedQuantitiy { get; }
+        public Guid Guid { get; set; }
+        public Guid ProductGuid { get; set; }
+        public IArithmeticOperator Operator { get; set; }
+        public int ExpectedQuantitiy { get; set; }
         public int DiscountPercentage { get; set; }
-        public string Description { get; }
+        public string Description { get; set; }
 
 
         public ProductDiscountPolicy(Guid productGuid, IArithmeticOperator @operator, int expectedQuantitiy, int discountPercentage, string description)

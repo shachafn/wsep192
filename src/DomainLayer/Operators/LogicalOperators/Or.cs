@@ -1,6 +1,6 @@
 ﻿namespace DomainLayer.Operators
 {
-    class Or : ILogicOperator
+    public class Or : ILogicOperator
     {
         public bool Operate(bool operand1, bool operand2)
         {

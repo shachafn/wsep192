@@ -1,5 +1,4 @@
-﻿using ApplicationCore.Data;
-
+﻿
 using System;
 
 using System.Collections.Generic;
@@ -32,7 +31,7 @@ namespace ApplicationCore.Entitites
 
         public int signature_target { get; }
 
-        public OwnerCandidate(Guid ownerGuid, Guid shopGuid, Guid appointer, int signatures_required)
+        public OwnerCandidate(Guid ownerGuid, Guid shopGuid, Guid appointer, int signatures_required, string appointerUsername)
 
         {
 
@@ -46,7 +45,7 @@ namespace ApplicationCore.Entitites
 
             Signatures = new Dictionary<string, Guid>();
 
-            Signatures.Add(DomainData.RegisteredUsersCollection[appointer].Username, appointer);
+            Signatures.Add(appointerUsername, appointer);
 
         }
 

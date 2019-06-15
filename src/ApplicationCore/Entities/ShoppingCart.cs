@@ -1,10 +1,6 @@
-﻿using ApplicationCore.Data;
-using ApplicationCore.Entities.Users;
-using ApplicationCore.Exceptions;
-using DomainLayer.Policies;
-using System;
+﻿using System;
 using System.Collections.Generic;
-using DomainLayer;
+using System.Linq;
 
 namespace ApplicationCore.Entitites
 {
@@ -23,40 +19,34 @@ namespace ApplicationCore.Entitites
             PurchasedProducts = new List<Tuple<ShopProduct, int>>();
         }
 
-        public void PurchaseCart()
+        public void AddProductToCart(ShopProduct newShopProduct, int amount)
         {
-            try
-            {
-                //TODO:Sum the value of the products in the cart and call to external service of payment
-                PurchasedProducts = new List<Tuple<ShopProduct, int>>();
-            }
-            catch
-            {
-                throw new ExternalServiceFaultException();
-            }
+            PurchasedProducts.Add(new Tuple<ShopProduct, int>(newShopProduct, amount));
         }
 
-        public static void CheckDiscountPolicy(ref ShoppingCart cartRef)
+        public bool EditProductInCart(Guid shopProductGuid, int newAmount)
         {
-            Shop shop = DomainData.ShopsCollection[cartRef.ShopGuid];
-            BaseUser user = DomainData.RegisteredUsersCollection[cartRef.UserGuid];
+            var purchasedProduct = PurchasedProducts.FirstOrDefault(p => p.Item1.Equals(shopProductGuid));
+            PurchasedProducts.Remove(purchasedProduct);
+            PurchasedProducts.Add(new Tuple<ShopProduct, int>(purchasedProduct.Item1, newAmount));
+            //Tuple is immutable so create new one and add it
+            return true;
+        }
 
-            //Copy the list so you can iterate and add the discount to it
-            ICollection<Tuple<ShopProduct, int>> tempPurchasedProducts = new List<Tuple<ShopProduct, int>>();
-            foreach (Tuple<ShopProduct, int> record in cartRef.PurchasedProducts)
-            {
-                tempPurchasedProducts.Add(record);
-            }
+        public bool RemoveProductFromCart(Guid shopProductGuid)
+        {
+            var purchasedProduct = PurchasedProducts.FirstOrDefault(p => p.Item1.Guid.Equals(shopProductGuid));
+            PurchasedProducts.Remove(purchasedProduct);
+            return true;
+        }
+        public ICollection<ShopProduct> GetAllProductsInCart()
+        {
+            return PurchasedProducts.Select(tuple => tuple.Item1).ToList();
+        }
 
-
-            foreach (Tuple<ShopProduct, int> record in tempPurchasedProducts)
-            {
-                foreach (IDiscountPolicy policy in shop.DiscountPolicies)
-                {
-                    policy.ApplyPolicy(ref cartRef, record.Item1.Guid, record.Item2, user);
-                }
-            }
-
+        public void PurchaseCart()
+        {
+            PurchasedProducts.Clear();
         }
     }
 }

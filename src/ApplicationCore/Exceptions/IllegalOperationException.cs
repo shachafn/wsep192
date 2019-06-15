@@ -2,7 +2,7 @@
 
 namespace ApplicationCore.Exceptions
 {
-    public class IllegalOperationException : Exception, ICloneableException<Exception>
+    public class IllegalOperationException : BaseException, ICloneableException<Exception>
     {
         public IllegalOperationException() { }
 

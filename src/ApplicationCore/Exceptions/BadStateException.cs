@@ -2,7 +2,7 @@
 
 namespace ApplicationCore.Exceptions
 {
-    public class BadStateException : Exception, ICloneableException<Exception>
+    public class BadStateException : BaseException, ICloneableException<Exception>
     {
         public BadStateException() { }
 

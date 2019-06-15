@@ -13,12 +13,12 @@ using ServiceLayer;
 using Microsoft.AspNetCore.Builder;
 using Serilog;
 using Infrastructure;
-using Microsoft.AspNetCore.SignalR;
 using ApplicationCore.Interfaces.Infastracture;
 using ApplicationCore.Interfaces.ExternalServices;
-using Infrastructure.gRPC.services;
 using DomainLayer.External_Services;
 using Infrastructure.ExternalServices;
+using DataAccessLayer;
+using ApplicationCore.Interfaces.DataAccessLayer;
 
 namespace PresentaitionLayer
 {
@@ -50,27 +50,75 @@ namespace PresentaitionLayer
 
         private static void BuildApplicationServices(IServiceCollection services)
         {
-            //Notice, the order of adding is crucial
-            services.AddSingleton<IUserDomain, UserDomain>();
-            services.AddSingleton<DomainLayerFacadeVerifier>();
-            //services.AddSingleton<IPaymentSystem, GRPCPaymentService>();
-            services.AddSingleton<IPaymentSystem, PaymentService>();
-            services.AddSingleton<ISupplySystem, SupplyService>();
-            services.AddSingleton<IExternalServicesManager, ExternalServicesManager>();
-            services.AddSingleton<IDomainLayerFacade, DomainLayerFacade>();
-            services.AddSingleton<ISessionManager, SessionManager>();
+            //Notice, the order is crucial
+            SetupDbConfiguration(services);
+            SetupDbInjections(services);
+            SetupExternalServicesInjection(services);
+            SetupDomainLayerInjections(services);
+            SetupServiceLayerInjections(services);
+            SetupPipeLiningInjections(services);
+            SetupInfrastructureInjections(services);
+            SetupPresentationLayerServicesInjections(services);
+        }
+        private static void SetupDbInjections(IServiceCollection services)
+        {
+            services.AddScoped<IContext, MongoDbContext>();
+            services.AddScoped<MongoDbContext>();
+            services.AddScoped<IUnitOfWork,UnitOfWork>();
+        }
+        private static void SetupDbConfiguration(IServiceCollection services)
+        {
+            IConfigurationRoot configuration = GetConfigurationAccordingToEnvironmentVariable();
+            var configurationBuilder = new ConfigurationBuilder();
+            configurationBuilder.AddConfiguration(configuration);
+            var config = configurationBuilder.Build();
+            var dbSection = config.GetSection(nameof(DatabaseConfiguration));
 
+            services.AddSingleton(new DatabaseConfiguration(dbSection.GetValue<string>("ConnectionString"), dbSection.GetValue<string>("DatabaseName")));
+        }
+
+        private static void SetupPresentationLayerServicesInjections(IServiceCollection services)
+        {
+            services.AddScoped<UserServices>();
+        }
+
+        private static void SetupInfrastructureInjections(IServiceCollection services)
+        {
+            services.AddSingleton<NotificationsCenter>();
+        }
+
+        private static void SetupPipeLiningInjections(IServiceCollection services)
+        {
             services.AddTransient<PipelineManager>();
             services.AddTransient<WebSocketsManager>();
             services.AddTransient<NotificationsWebSocketsManager>();
-
             services.AddTransient<IUserNotifier, NotificationsWebSocketsManager>();
 
-            services.AddSingleton<NotificationsCenter>();
+        }
 
-            services.AddSingleton<ServiceFacade>();
-            services.AddSingleton<IServiceFacade, ServiceFacadeProxy>();
-            services.AddSingleton<UserServices>();
+        private static void SetupDomainLayerInjections(IServiceCollection services)
+        {
+            services.AddScoped<ShoppingCartDomain>();
+            services.AddScoped<ShopDomain>();
+            services.AddScoped<IUserDomain, UserDomain>();
+            services.AddScoped<DomainLayerFacadeVerifier>();
+            services.AddSingleton<IExternalServicesManager, ExternalServicesManager>();
+            services.AddScoped<DomainLayerFacade>();
+            services.AddScoped<IDomainLayerFacade, DomainFacadeTransactionProxy>();
+        }
+
+        private static void SetupServiceLayerInjections(IServiceCollection services)
+        {
+            services.AddSingleton<ISessionManager, SessionManager>();
+            services.AddScoped<ServiceFacade>();
+            services.AddScoped<IServiceFacade, ServiceFacadeProxy>();
+            services.AddSingleton<SystemInitializer>();
+        }
+
+        private static void SetupExternalServicesInjection(IServiceCollection services)
+        {
+            services.AddSingleton<IPaymentSystem, PaymentService>();
+            services.AddSingleton<ISupplySystem, SupplyService>();
         }
 
         private static void SetupLogging()

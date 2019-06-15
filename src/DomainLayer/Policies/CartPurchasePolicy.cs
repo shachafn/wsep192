@@ -1,12 +1,7 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Text;
-using ApplicationCore.Data;
-using ApplicationCore.Entities;
 using ApplicationCore.Entities.Users;
 using ApplicationCore.Entitites;
-using DomainLayer.Data.Entitites;
-using DomainLayer.Data.Entitites.Users;
+using ApplicationCore.Interfaces.DataAccessLayer;
 using DomainLayer.Operators;
 
 namespace DomainLayer.Policies
@@ -27,18 +22,18 @@ namespace DomainLayer.Policies
             Description = description;
         }
 
-        public bool CheckPolicy(ShoppingCart cart, Guid productGuid, int quantity, BaseUser user)
+        public bool CheckPolicy(ShoppingCart cart, Guid productGuid, int quantity, BaseUser user, IUnitOfWork unitOfWork)
         {
-            return Operator.IsValid(ExpectedQuantity, GetCartSize(cart));
+            return Operator.IsValid(ExpectedQuantity, GetCartSize(cart, unitOfWork));
         }
-        private int GetCartSize(ShoppingCart cart)
+        private int GetCartSize(ShoppingCart cart, IUnitOfWork unitOfWork)
         {
             //Adding only products that are found in shop
             //Just in case someone applied Discount policy before Purchase policy
             int numberOfProducts = 0;
             foreach (Tuple<ShopProduct, int> record in cart.PurchasedProducts)
             {
-                Shop shop = DomainData.ShopsCollection[cart.ShopGuid];
+                Shop shop = unitOfWork.ShopRepository.FindByIdOrNull(cart.ShopGuid);
                 foreach (ShopProduct productInShop in shop.ShopProducts)
                 {
                     if (productInShop.Guid.Equals(record.Item1.Guid))

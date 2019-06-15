@@ -2,7 +2,7 @@
 
 namespace ApplicationCore.Exceptions
 {
-    public class SystemAlreadyInitializedException : Exception, ICloneableException<Exception>
+    public class SystemAlreadyInitializedException : BaseException, ICloneableException<Exception>
     {
         public SystemAlreadyInitializedException() { }
 

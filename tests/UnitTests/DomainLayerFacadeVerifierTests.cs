@@ -1,12 +1,10 @@
 ﻿using ApplicationCore.Exceptions;
 using ApplicationCore.Interfaces.DomainLayer;
-using DomainLayer.Domains;
-using DomainLayer.Facade;
-using Microsoft.Extensions.Logging.Abstractions;
 using NUnit.Framework;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using TestsUtils;
 
 namespace UnitTests
 {
@@ -16,12 +14,7 @@ namespace UnitTests
     [TestFixture]
     public class DomainLayerFacadeVerifierTests
     {
-        IDomainLayerFacade facade = new DomainLayerFacade(
-                                    new UserDomain(NullLogger<UserDomain>.Instance),
-                                    new DomainLayerFacadeVerifier(NullLogger<DomainLayerFacadeVerifier>.Instance),
-                                    NullLogger<DomainLayerFacade>.Instance,
-                                    new DefaultExternalServicesManager()
-                                );
+        IDomainLayerFacade facade = MocksCreator.GetDomainLayerFacade();
 
         [Test]
         public void TestReflection()

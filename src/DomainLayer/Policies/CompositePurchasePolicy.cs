@@ -1,6 +1,7 @@
 ﻿using System;
 using ApplicationCore.Entities.Users;
 using ApplicationCore.Entitites;
+using ApplicationCore.Interfaces.DataAccessLayer;
 using DomainLayer.Operators;
 
 namespace DomainLayer.Policies
@@ -24,9 +25,9 @@ namespace DomainLayer.Policies
             Description = description;
         }
 
-        public bool CheckPolicy(ShoppingCart cart, Guid productGuid, int quantity, BaseUser user)
+        public bool CheckPolicy(ShoppingCart cart, Guid productGuid, int quantity, BaseUser user, IUnitOfWork unitOfWork)
         {
-            return Operator.Operate(PurchasePolicy1.CheckPolicy(cart, productGuid, quantity, user), PurchasePolicy2.CheckPolicy(cart, productGuid, quantity, user));
+            return Operator.Operate(PurchasePolicy1.CheckPolicy(cart, productGuid, quantity, user, unitOfWork), PurchasePolicy2.CheckPolicy(cart, productGuid, quantity, user, unitOfWork));
         }
     }
 }

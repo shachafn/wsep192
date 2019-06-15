@@ -1,4 +1,5 @@
-﻿using ApplicationCore.Entitites;
+﻿using ApplicationCore.Entities.Users;
+using ApplicationCore.Entitites;
 using System;
 using System.Collections.Generic;
 
@@ -77,10 +78,6 @@ namespace ATBridge
         {
             return _real == null ? false : _real.Logout(userGuid);
         }
-        public Guid OpenShop(Guid userGuid)
-        {
-            return _real == null ? Guid.Empty : _real.OpenShop(userGuid);
-        }
 
         public bool PurchaseCart(Guid userGuid, Guid shopGuid)
         {
@@ -141,6 +138,75 @@ namespace ATBridge
         public Guid AddNewDiscountPolicy(Guid userGuid, Guid shopGuid, object policyType, object field1, object field2, object field3 = null, object field4 = null, object field5 = null)
         {
             return _real == null ? Guid.Empty : _real.AddNewDiscountPolicy(userGuid, shopGuid, policyType, field1, field2, field3, field4, field5);
+        }
+
+        public Guid OpenShop(Guid cookie, string shopName)
+        {
+            return _real == null ? Guid.Empty : _real.OpenShop(cookie, shopName);
+        }
+
+        public void CloseShop(Guid cookie, Guid shopGuid)
+        {
+            if (_real != null)
+                _real.CloseShop(cookie, shopGuid);
+        }
+
+        public void CloseShopPermanently(Guid cookie, Guid shopGuid)
+        {
+            if (_real != null)
+                _real.CloseShopPermanently(cookie, shopGuid);
+        }
+
+        public void ReopenShop(Guid cookie, Guid shopGuid)
+        {
+            if (_real != null)
+                _real.ReopenShop(cookie, shopGuid);
+        }
+
+        public Guid GetUserGuid(string ownerName)
+        {
+            return _real == null ? Guid.Empty :  _real.GetUserGuid(ownerName);
+        }
+
+        public ICollection<Tuple<Guid, ShopProduct, int>> GetPurchaseHistory(Guid cookie)
+        {
+            return _real == null ? null : _real.GetPurchaseHistory(cookie);
+        }
+
+        public ICollection<BaseUser> GetAllUsersExceptMe(Guid cookie)
+        {
+            return _real == null ? null : _real.GetAllUsersExceptMe(cookie);
+        }
+
+        public IEnumerable<Shop> GetUserShops(Guid id)
+        {
+            return _real == null ? null : _real.GetUserShops(id);
+        }
+
+        public string GetUserName(Guid userGuid)
+        {
+            return _real == null ? null : _real.GetUserName(userGuid);
+        }
+
+        public IEnumerable<ShopProduct> GetShopProducts(Guid id, Guid shopGuid)
+        {
+            return _real == null ? null : _real.GetShopProducts(id, shopGuid);
+        }
+
+        public ICollection<Shop> GetAllShops(Guid cookie)
+        {
+            return _real == null ? null : _real.GetAllShops(cookie);
+        }
+
+        public IEnumerable<Tuple<ShoppingCart, IEnumerable<ShopProduct>>> getUserBag(Guid cookie)
+        {
+            return _real == null ? null : _real.getUserBag(cookie);
+        }
+
+        public void cancelOwnerAssignment(Guid cookie, Guid shopId)
+        {
+            if (_real != null)
+                _real.cancelOwnerAssignment(cookie, shopId);
         }
     }
 }

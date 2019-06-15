@@ -6,11 +6,9 @@ using Microsoft.Extensions.Logging;
 using ApplicationCore.Data.Collections;
 using ApplicationCore.Data;
 using DomainLayer.Users;
-using DomainLayer.Users.States;
-using DomainLaye.Users.States;
 using ApplicationCore.Entities.Users;
-using DomainLayer.Data.Entitites.Users.States;
 using System.Collections.Generic;
+using ApplicationCore.Interfaces.DataAccessLayer;
 
 namespace DomainLayer.Domains
 {
@@ -20,13 +18,16 @@ namespace DomainLayer.Domains
     public class UserDomain : IUserDomain
     {
         private static LoggedInUsersEntityCollection LoggedInUsers = DomainData.LoggedInUsersEntityCollection;
-        private static ShopsEntityCollection Shops = DomainData.ShopsCollection;
-
 
         ILogger<UserDomain> _logger;
-        public UserDomain(ILogger<UserDomain> logger)
+        IUnitOfWork _unirOfWork;
+        ShopDomain _shopDomain;
+
+        public UserDomain(ILogger<UserDomain> logger, IUnitOfWork unitOfWork, ShopDomain shopDomain)
         {
             _logger = logger;
+            _unirOfWork = unitOfWork;
+            _shopDomain = shopDomain;
         }
 
         public Guid Register(string username, string password, bool isAdmin)
@@ -35,8 +36,8 @@ namespace DomainLayer.Domains
                 return Guid.Empty;
 
             //var newUser = new BaseUser(username.ToLower(), password, isAdmin);
-            var newUser = new BaseUser(username, password, isAdmin);
-            DomainData.RegisteredUsersCollection.Add(newUser.Guid, newUser);
+            var newUser = new BaseUser(username.ToLower(), password, isAdmin);
+            _unirOfWork.BaseUserRepository.Add(newUser);
             return newUser.Guid;
         }
 
@@ -44,52 +45,43 @@ namespace DomainLayer.Domains
         {
             if (userIdentifier.IsGuest)
             {
-                if (DomainData.GuestsCollection.TryGetValue(userIdentifier.Guid, out IUser res))
-                    return res;
-                res = new GuestUser(userIdentifier.Guid);
-                DomainData.GuestsCollection.Add(res.Guid,res);
+                var res = new GuestUser(userIdentifier.Guid, _unirOfWork, _shopDomain);
+                if (!DomainData.GuestsCollection.ContainsKey(res.Guid))
+                    DomainData.GuestsCollection.Add(res.Guid, res.Guid);
                 return res;
             }
-            return DomainData.LoggedInUsersEntityCollection[userIdentifier.Guid];
+            var baseUser = _unirOfWork.BaseUserRepository.FindByIdOrNull(userIdentifier.Guid);
+            if (baseUser.IsAdmin)
+                return new AdminUser(baseUser, _unirOfWork, _shopDomain);
+            return new RegisteredUser(baseUser, _unirOfWork, _shopDomain);
         }
 
-        private bool IsUsernameTaken(string username) => DomainData.RegisteredUsersCollection.Any(bUser => bUser.Username.ToLower().Equals(username.ToLower()));
+        private bool IsUsernameTaken(string username)
+        {
+            var lower = username.ToLower();
+            return _unirOfWork.BaseUserRepository.Query().Any(bUser => bUser.Username.Equals(lower));
+        }
 
 
         public Guid Login(string username, string password)
         {
-            if (IsAdminCredentials(username, password)) return LoginAdmin(username, password);
-
-            BaseUser baseUser = GetRegisteredUserByUsername(username);
-            var user = new RegisteredUser(baseUser);
-            LoggedInUsers.Add(user.Guid, user);
-            ChangeUserState(user.Guid, BuyerUserState.BuyerUserStateString);
-            return user.Guid;
+            BaseUser baseUser = GetRegisteredUserByUsernameOrNull(username);
+            LoggedInUsers.Add(baseUser.Guid, baseUser.Guid);
+            return baseUser.Guid;
         }
 
         private bool IsAdminCredentials(string username, string password)
         {
-            var admin = DomainData.RegisteredUsersCollection.First(bU => bU.IsAdmin);
+            var admin = _unirOfWork.BaseUserRepository.Query().First(bU => bU.IsAdmin);
             if (admin.Username.Equals(username.ToLower()) && admin.CheckPass(password))
                 return true;
             return false;
         }
 
-        private Guid LoginAdmin(string username, string password)
+        private BaseUser GetRegisteredUserByUsernameOrNull(string username)
         {
-            if (!DomainData.LoggedInUsersEntityCollection.Any(u => u.IsAdmin))
-            {
-                BaseUser baseUser = GetRegisteredUserByUsername(username);
-                var user = new RegisteredUser(baseUser);
-                LoggedInUsers.Add(user.Guid, user);
-                return baseUser.Guid;
-            }
-            return DomainData.RegisteredUsersCollection.First(bU => bU.IsAdmin).Guid;
-        }
-
-        private BaseUser GetRegisteredUserByUsername(string username)
-        {
-            return DomainData.RegisteredUsersCollection.First(r => string.Equals(r.Username.ToLower(), username.ToLower()));
+            var lowerUsername = username.ToLower();
+            return _unirOfWork.BaseUserRepository.Query().FirstOrDefault(r => string.Equals(r.Username, lowerUsername));
         }
 
         public bool LogoutUser(UserIdentifier userIdentifier)
@@ -100,19 +92,23 @@ namespace DomainLayer.Domains
 
         public bool ChangeUserState(Guid userGuid, string newStateString)
         {
-            var user = DomainData.LoggedInUsersEntityCollection[userGuid];
-            var builder = new StateBuilder();
-            var newState = builder.BuildState(newStateString, user);
-            return user.SetState(newState);
+            return true;
         }
 
-        public bool IsAdminExists() => DomainData.RegisteredUsersCollection.Any(u => u.IsAdmin);
+        public bool IsAdminExists() => _unirOfWork.BaseUserRepository.Query().Any(u => u.IsAdmin);
 
         public ICollection<BaseUser> GetAllUsersExceptMe(UserIdentifier userIdentifier)
         {
-            return DomainData.RegisteredUsersCollection
+            return _unirOfWork.BaseUserRepository
+                .Query()
                 .Where(reg => !reg.Guid.Equals(userIdentifier.Guid))
                 .ToList();
+        }
+
+        public IAdminUser GetAdminUser(UserIdentifier userIdentifier)
+        {
+            var baseUser = _unirOfWork.BaseUserRepository.FindByIdOrNull(userIdentifier.Guid);
+            return new AdminUser(baseUser, _unirOfWork, _shopDomain);
         }
     }
 }

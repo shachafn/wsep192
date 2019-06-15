@@ -1,10 +1,8 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Text;
 
 namespace ApplicationCore.Exceptions
 {
-    public class ExternalServiceFaultException : Exception, ICloneableException<Exception>
+    public class ExternalServiceFaultException : BaseException, ICloneableException<Exception>
     {
         public ExternalServiceFaultException() { }
         public ExternalServiceFaultException(string msg) :base(msg){ }

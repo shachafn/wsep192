@@ -1,12 +1,9 @@
 ﻿using System;
 using System.Collections.Generic;
-using ServiceLayer;
-using DomainLayer.Facade;
-using DomainLayer.Domains;
-using Microsoft.Extensions.Logging.Abstractions;
 using ApplicationCore.Interfaces.ServiceLayer;
 using ApplicationCore.Entitites;
-using ApplicationCore.Interfaces.DomainLayer;
+using TestsUtils;
+using ApplicationCore.Entities.Users;
 
 namespace ATBridge
 {
@@ -16,20 +13,7 @@ namespace ATBridge
 
         public BridgeImpl()
         {
-            _serviceFacade = new ServiceFacadeProxy
-                        (
-                            new ServiceFacade(
-                                new DomainLayerFacade(
-                                    new UserDomain(NullLogger<UserDomain>.Instance),
-                                    new DomainLayerFacadeVerifier(NullLogger<DomainLayerFacadeVerifier>.Instance),
-                                    NullLogger<DomainLayerFacade>.Instance,
-                                    new DefaultExternalServicesManager()
-                                ),
-                                NullLogger<ServiceFacade>.Instance
-                            ),
-                            new SessionManager(NullLogger<SessionManager>.Instance),
-                            NullLogger<ServiceFacadeProxy>.Instance
-                        ); ; ;
+            _serviceFacade = MocksCreator.GetServiceFacade();
         }
 
         public bool AddProductToCart(Guid userGuid, Guid shopGuid, Guid productGuid, int quantity)
@@ -164,6 +148,64 @@ namespace ATBridge
             return _serviceFacade.AddNewDiscountPolicy(userGuid, shopGuid, policyType, field1, field2, field3, field4, field5);
         }
 
+        public void CloseShop(Guid coolie, Guid shopGuid)
+        {
+            _serviceFacade.CloseShop(coolie, shopGuid);
+        }
 
+        public void CloseShopPermanently(Guid cookie, Guid shopGuid)
+        {
+            _serviceFacade.CloseShopPermanently(cookie, shopGuid);
+        }
+
+        public void ReopenShop(Guid cookie, Guid shopGuid)
+        {
+            _serviceFacade.ReopenShop(cookie, shopGuid);
+        }
+
+        public Guid GetUserGuid(string ownerName)
+        {
+            return _serviceFacade.GetUserGuid(ownerName);
+        }
+
+        public ICollection<Tuple<Guid, ShopProduct, int>> GetPurchaseHistory(Guid cookie)
+        {
+            return _serviceFacade.GetPurchaseHistory(cookie);
+        }
+
+        public ICollection<BaseUser> GetAllUsersExceptMe(Guid cookie)
+        {
+            return _serviceFacade.GetAllUsersExceptMe(cookie);
+        }
+
+        public IEnumerable<Shop> GetUserShops(Guid id)
+        {
+            return _serviceFacade.GetUserShops(id);
+        }
+
+        public string GetUserName(Guid userGuid)
+        {
+            return _serviceFacade.GetUserName(userGuid);
+        }
+
+        public IEnumerable<ShopProduct> GetShopProducts(Guid id, Guid shopGuid)
+        {
+            return _serviceFacade.GetShopProducts(id, shopGuid);
+        }
+
+        public ICollection<Shop> GetAllShops(Guid cookie)
+        {
+            return _serviceFacade.GetAllShops(cookie);
+        }
+
+        public IEnumerable<Tuple<ShoppingCart, IEnumerable<ShopProduct>>> getUserBag(Guid cookie)
+        {
+            return _serviceFacade.getUserBag(cookie);
+        }
+
+        public void cancelOwnerAssignment(Guid cookie, Guid shopId)
+        {
+            _serviceFacade.cancelOwnerAssignment(cookie, shopId);
+        }
     }
 }

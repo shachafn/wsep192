@@ -1,0 +1,13 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>netcoreapp2.2</TargetFramework>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\..\src\ApplicationCore\ApplicationCore.csproj" />
+    <ProjectReference Include="..\..\src\DomainLayer\DomainLayer.csproj" />
+    <ProjectReference Include="..\..\src\ServiceLayer\ServiceLayer.csproj" />
+  </ItemGroup>
+
+</Project>

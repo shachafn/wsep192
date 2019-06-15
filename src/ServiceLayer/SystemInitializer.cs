@@ -1,6 +1,7 @@
-﻿using ApplicationCore.Data;
-using ApplicationCore.Entitites;
+﻿using ApplicationCore.Entitites;
+using ApplicationCore.Interfaces.DataAccessLayer;
 using ApplicationCore.Interfaces.ServiceLayer;
+using Microsoft.Extensions.Logging;
 using System;
 using System.Collections.Generic;
 using System.IO;
@@ -15,25 +16,34 @@ namespace ServiceLayer
         private Dictionary<string, Guid> _results;
 
         private IServiceFacade _facade;
-
-        public SystemInitializer(IServiceFacade facade)
+        private IUnitOfWork _unitOfWork;
+        ILogger<SystemInitializer> _logger;
+        public SystemInitializer(IServiceFacade facade, IUnitOfWork unitOfWork, ILogger<SystemInitializer> logger)
 
         {
-
+            _unitOfWork = unitOfWork;
             _results = new Dictionary<string, Guid>();
-
             _facade = facade;
-
+            _logger = logger;
         }
 
         public void InitSystemWithFile()
-
         {
 
             List<Opertaion> jsonList = readJsonFromInitFile();
 
-            runOperations(jsonList);
-
+            var session = _unitOfWork.Context.StartSession();
+            session.StartTransaction();
+            try
+            {
+                runOperations(jsonList);
+                session.CommitTransaction();
+            }
+            catch (Exception e)
+            {
+                _logger.LogCritical(e, "Exception during system initialization from file.");
+                session.AbortTransaction();
+            }
         }
 
 
@@ -126,11 +136,23 @@ namespace ServiceLayer
 
             ShopProduct product = new ShopProduct(new Product(name, category), price, quantity);
 
-            DomainData.ShopsCollection[shopId].ShopProducts.Add(product);
+            _unitOfWork.ShopRepository.FindByIdOrNull(shopId).ShopProducts.Add(product);
 
         }
 
-
+        public bool InitSystem()
+        {
+            try
+            {
+                _facade.Initialize(Guid.NewGuid(), "Meni", "moni");
+                return true;
+            }
+            catch (Exception e)
+            {
+                _logger.LogCritical(e, "System Initialization failed.");
+                return false;
+            }
+        }
 
         private void openshop(Opertaion op, int i)
 
@@ -150,7 +172,7 @@ namespace ServiceLayer
 
             //ShopsOwned.Add(shop);
 
-            DomainData.ShopsCollection.Add(shop.Guid, shop);
+            _unitOfWork.ShopRepository.Add(shop);
 
             _results.Add("r" + i, shop.Guid);
 
@@ -172,7 +194,7 @@ namespace ServiceLayer
 
             var userId = _results[op.args[0]];
 
-            DomainData.RegisteredUsersCollection[userId].makeAdmin();
+            _unitOfWork.BaseUserRepository.FindByIdOrNull(userId).makeAdmin();
 
         }
 

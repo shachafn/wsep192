@@ -1,6 +1,7 @@
 ﻿using System;
 using ApplicationCore.Entities.Users;
 using ApplicationCore.Entitites;
+using ApplicationCore.Interfaces.DataAccessLayer;
 using DomainLayer.Operators;
 
 namespace DomainLayer.Policies
@@ -24,20 +25,22 @@ namespace DomainLayer.Policies
             Description = description;
         }
 
-        public bool CheckPolicy(ref ShoppingCart cart, Guid productGuid, int quantity, BaseUser user)
+        public bool CheckPolicy(ShoppingCart cart, Guid productGuid, int quantity, BaseUser user, IUnitOfWork unitOfWork)
         {
-            return Operator.Operate(DiscountPolicy1.CheckPolicy(ref cart, productGuid, quantity, user), DiscountPolicy2.CheckPolicy(ref cart, productGuid, quantity, user));
+            return Operator.Operate(DiscountPolicy1.CheckPolicy(cart, productGuid, quantity, user, unitOfWork), DiscountPolicy2.CheckPolicy(cart, productGuid, quantity, user, unitOfWork));
         }
 
-        public void ApplyPolicy(ref ShoppingCart cart, Guid productGuid, int quantity, BaseUser user)
+        public Tuple<ShopProduct, int> ApplyPolicy(ShoppingCart cart, Guid productGuid, int quantity, BaseUser user, IUnitOfWork unitOfWork)
         {
-            if (CheckPolicy(ref cart, productGuid, quantity, user))
+            if (CheckPolicy(cart, productGuid, quantity, user, unitOfWork))
             {
                 int prevDiscountPercentage = DiscountPolicy2.DiscountPercentage;
                 DiscountPolicy2.DiscountPercentage = DiscountPercentage;
-                DiscountPolicy2.ApplyPolicy(ref cart, productGuid, quantity, user);
+                var deiscountProductAndQuantity = DiscountPolicy2.ApplyPolicy(cart, productGuid, quantity, user, unitOfWork);
                 DiscountPolicy2.DiscountPercentage = prevDiscountPercentage;
+                return deiscountProductAndQuantity;
             }
+            return null;
         }
     }
 }

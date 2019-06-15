@@ -8,7 +8,6 @@ using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
-using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
 using PresentaitionLayer.Models;
@@ -36,6 +35,7 @@ namespace PresentaitionLayer.Account
         [Route("Login")]
         public IActionResult Login(string returnUrl)
         {
+            var nice = this.Url.Action("Login", "Account");
             return View(new LoginModel());
         }
 

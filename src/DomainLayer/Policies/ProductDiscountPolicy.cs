@@ -1,7 +1,6 @@
-﻿using ApplicationCore.Data;
-using ApplicationCore.Entities.Users;
+﻿using ApplicationCore.Entities.Users;
 using ApplicationCore.Entitites;
-using DomainLayer.Extension_Methods;
+using ApplicationCore.Interfaces.DataAccessLayer;
 using DomainLayer.Operators;
 using System;
 
@@ -32,17 +31,18 @@ namespace DomainLayer.Policies
 
 
         //Discount by percentage only!
-        public bool CheckPolicy(ref ShoppingCart cart, Guid productGuid, int quantity, BaseUser user)
+        public bool CheckPolicy(ShoppingCart cart, Guid productGuid, int quantity, BaseUser user, IUnitOfWork unitOfWork)
         {
             return productGuid.CompareTo(ProductGuid) == 0 && Operator.IsValid(ExpectedQuantitiy, quantity);
         }
 
-        public void ApplyPolicy(ref ShoppingCart cart, Guid productGuid, int quantity, BaseUser user)
+        public Tuple<ShopProduct, int> ApplyPolicy(ShoppingCart cart, Guid productGuid, int quantity
+            , BaseUser user, IUnitOfWork unitOfWork)
         {
-            if (CheckPolicy(ref cart, productGuid, quantity, user))
+            if (CheckPolicy(cart, productGuid, quantity, user, unitOfWork))
             {
                 Product p = null;
-                Shop s = DomainData.ShopsCollection[cart.ShopGuid];
+                Shop s = unitOfWork.ShopRepository.FindByIdOrNull(cart.ShopGuid);
                 double shopProductPrice = 0;
                 foreach (ShopProduct shopProduct in s.ShopProducts)
                 {
@@ -54,11 +54,12 @@ namespace DomainLayer.Policies
                     }
                 }
                 double discountValue = -((double)DiscountPercentage / 100.0) * shopProductPrice;
-                if (discountValue == 0) return;
+                if (discountValue == 0) return null;
                 Product discountProduct = new Product("Discount - " + p.Name, "Discount");
                 ShopProduct discountRecord = new ShopProduct(discountProduct, discountValue, 1);
-                cart.AddProductToCart(discountRecord, quantity);
+                return new Tuple<ShopProduct, int>(discountRecord, quantity);
             }
+            return null;
         }
     }
 }

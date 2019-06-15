@@ -60,7 +60,7 @@ namespace Tests
             var userGuid = UserAT.RegisterUser(cookie, username, password);
             UserAT.LoginUser(cookie, username, password);
             Tester.PBridge.ChangeUserState(cookie, "SellerUserState");
-            Tester.PBridge.OpenShop(cookie);
+            Tester.PBridge.OpenShop(cookie, "Name");
 
             Assert.Throws<BrokenConstraintException>(
                 () => Tester.PBridge.RemoveUser(_adminCookie, userGuid));

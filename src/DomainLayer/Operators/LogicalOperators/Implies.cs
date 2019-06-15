@@ -1,9 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
-using ApplicationCore.Interfaces.DomainLayer;
-
-namespace DomainLayer.Operators
+﻿namespace DomainLayer.Operators
 {
     class Implies : ILogicOperator
     {

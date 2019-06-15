@@ -3,7 +3,6 @@ using System.Collections.Generic;
 using ApplicationCore.Interfaces.DomainLayer;
 using ApplicationCore.Entities;
 using Microsoft.Extensions.Logging;
-using ApplicationCore.Data.Collections;
 using ApplicationCore.Entitites;
 using ApplicationCore.Entities.Users;
 
@@ -149,7 +148,7 @@ namespace ServiceLayer
             return _domainLayerFacade.GetAllProductsInCart(userIdentifier, shopGuid);
         }
 
-                public bool PurchaseCart(UserIdentifier userIdentifier, Guid shopGuid)
+        public bool PurchaseCart(UserIdentifier userIdentifier, Guid shopGuid)
         {
             return _domainLayerFacade.PurchaseCart(userIdentifier, shopGuid);
         }

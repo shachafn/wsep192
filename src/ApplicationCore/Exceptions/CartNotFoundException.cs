@@ -2,7 +2,7 @@
 
 namespace ApplicationCore.Exceptions
 {
-    public class CartNotFoundException : Exception, ICloneableException<Exception>
+    public class CartNotFoundException : BaseException, ICloneableException<Exception>
     {
         public CartNotFoundException() { }
 

@@ -2,7 +2,7 @@
 
 namespace ApplicationCore.Exceptions
 {
-    public class BrokenConstraintException : Exception, ICloneableException<Exception>
+    public class BrokenConstraintException : BaseException, ICloneableException<Exception>
     {
         public BrokenConstraintException() { }
 

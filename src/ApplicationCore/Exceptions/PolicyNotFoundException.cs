@@ -2,7 +2,7 @@
 
 namespace ApplicationCore.Exceptions
 {
-    public class PolicyNotFoundException : Exception, ICloneableException<Exception>
+    public class PolicyNotFoundException : BaseException, ICloneableException<Exception>
     {
         public PolicyNotFoundException() { }
 

@@ -1,8 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Text;
-using System.Threading.Channels;
-using ApplicationCore.Interfaces.ExternalServices;
 using Grpc.Core;
 using Payment;
 using Channel = Grpc.Core.Channel;

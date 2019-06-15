@@ -2,7 +2,7 @@
 
 namespace ApplicationCore.Exceptions
 {
-    public class IllegalArgumentException : Exception, ICloneableException<Exception>
+    public class IllegalArgumentException : BaseException, ICloneableException<Exception>
     {
         public IllegalArgumentException() { }
 

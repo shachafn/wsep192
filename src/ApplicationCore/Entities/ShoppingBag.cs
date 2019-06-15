@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 
 namespace ApplicationCore.Entitites
 {
@@ -18,6 +19,22 @@ namespace ApplicationCore.Entitites
         public bool IsEmpty()
         {
             return ShoppingCarts.Count==0;
+        }
+
+        public ShoppingCart GetShoppingCartAndCreateIfNeeded(Guid shopGuid)
+        {
+            var cart = ShoppingCarts.FirstOrDefault(c => c.ShopGuid.Equals(shopGuid));
+            if (cart == null)
+            {
+                cart = new ShoppingCart(UserGuid, shopGuid);
+                ShoppingCarts.Add(cart);
+            }
+            return cart;
+        }
+
+        public bool IsCartExists(Guid shopGuid)
+        {
+            return ShoppingCarts.Any(c => c.Guid.Equals(shopGuid));
         }
     }
 }

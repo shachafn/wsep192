@@ -2,7 +2,7 @@
 
 namespace ApplicationCore.Exceptions
 {
-    public class UserNotFoundException : Exception, ICloneableException<Exception>
+    public class UserNotFoundException : BaseException, ICloneableException<Exception>
     {
         public UserNotFoundException() { }
 

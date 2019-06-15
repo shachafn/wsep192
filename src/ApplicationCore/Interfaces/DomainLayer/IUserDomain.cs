@@ -9,6 +9,7 @@ namespace ApplicationCore.Interfaces.DomainLayer
     {
         bool ChangeUserState(Guid userGuid, string newStateString);
         IUser GetUserObject(UserIdentifier userIdentifier);
+        IAdminUser GetAdminUser(UserIdentifier userIdentifier);
         bool IsAdminExists();
         Guid Login(string username, string password);
         bool LogoutUser(UserIdentifier userIdentifier);

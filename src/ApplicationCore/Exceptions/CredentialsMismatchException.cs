@@ -2,7 +2,7 @@
 
 namespace ApplicationCore.Exceptions
 {
-    public class CredentialsMismatchException : Exception, ICloneableException<Exception>
+    public class CredentialsMismatchException : BaseException, ICloneableException<Exception>
     {
         public CredentialsMismatchException() { }
 

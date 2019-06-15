@@ -1,5 +1,6 @@
 ﻿using ApplicationCore.Entities.Users;
 using ApplicationCore.Entitites;
+using ApplicationCore.Interfaces.DataAccessLayer;
 using System;
 
 
@@ -9,8 +10,8 @@ namespace DomainLayer.Policies
     {
         Guid Guid { get; }
         int DiscountPercentage { get; set; }
-        bool CheckPolicy(ref ShoppingCart cart, Guid productGuid, int quantity, BaseUser user);
-        void ApplyPolicy(ref ShoppingCart cart, Guid productGuid, int quantity, BaseUser user);
+        bool CheckPolicy(ShoppingCart cart, Guid productGuid, int quantity, BaseUser user, IUnitOfWork unitOfWork);
+        Tuple<ShopProduct, int> ApplyPolicy(ShoppingCart cart, Guid productGuid, int quantity, BaseUser user, IUnitOfWork unitOfWork);
         string Description { get; }
     }
 }

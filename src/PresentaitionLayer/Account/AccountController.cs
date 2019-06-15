@@ -35,6 +35,7 @@ namespace PresentaitionLayer.Account
         [Route("Login")]
         public IActionResult Login(string returnUrl)
         {
+            var nice = this.Url.Action("Login", "Account");
             return View(new LoginModel());
         }
 

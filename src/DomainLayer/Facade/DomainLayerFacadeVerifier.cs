@@ -14,6 +14,7 @@ using DomainLayer.Policies;
 using DomainLayer.Operators;
 using Microsoft.Extensions.Logging;
 using ApplicationCore.Interfaces.DataAccessLayer;
+using DomainLayer.Domains;
 
 namespace DomainLayer.Facade
 {
@@ -21,11 +22,14 @@ namespace DomainLayer.Facade
     {
         readonly ILogger<DomainLayerFacadeVerifier> _logger;
         readonly IUnitOfWork _unitOfWork;
+        readonly ShopDomain _shopDomain;
 
-        public DomainLayerFacadeVerifier(ILogger<DomainLayerFacadeVerifier> logger, IUnitOfWork unitOfWork)
+        public DomainLayerFacadeVerifier(ILogger<DomainLayerFacadeVerifier> logger, IUnitOfWork unitOfWork
+            , ShopDomain shopDomain)
         {
             _logger = logger;
             _unitOfWork = unitOfWork;
+            _shopDomain = shopDomain;
         }
 
         #region VerifyMe
@@ -851,7 +855,7 @@ namespace DomainLayer.Facade
         private ShoppingCart GetCartExistsAndCreateIfNeeded(UserIdentifier userIdentifier, Guid shopGuid)
         {
             ShoppingBag bag = _unitOfWork.BagRepository.GetShoppingBagAndCreateIfNeeded(userIdentifier.Guid);
-            return bag.GetShoppingCartAndCreateIfNeeded(shopGuid);
+            return _unitOfWork.BagRepository.GetShoppingCartAndCreateIfNeeded(userIdentifier.Guid, shopGuid);
         }
 
         private void VerifyStateString(string newState, ICloneableException<Exception> e)

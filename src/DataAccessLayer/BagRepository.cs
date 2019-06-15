@@ -54,6 +54,7 @@ namespace DataAccessLayer
                 bag = new ShoppingBag(userGuid);
                 Add(new ShoppingBag(userGuid));
             }
+            Update(bag);
             return bag;
         }
 
@@ -65,6 +66,19 @@ namespace DataAccessLayer
         private bool IsBagExists(Guid userGuid)
         {
             return Query().Any(bag => bag.UserGuid.Equals(userGuid));
+        }
+
+        public ShoppingCart GetShoppingCartAndCreateIfNeeded(Guid userGuid, Guid shopGuid)
+        {
+            var bag = GetShoppingBagAndCreateIfNeeded(userGuid);
+            var cart = bag.ShoppingCarts.FirstOrDefault(c => c.ShopGuid.Equals(shopGuid));
+            if (cart == null)
+            {
+                cart = new ShoppingCart(bag.UserGuid, shopGuid);
+                bag.ShoppingCarts.Add(cart);
+            }
+            Update(bag);
+            return cart;
         }
 
         public void Clear()

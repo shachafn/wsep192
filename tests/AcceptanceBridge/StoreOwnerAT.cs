@@ -271,7 +271,7 @@ namespace Tests
             var shopGuid = Tester.PBridge.OpenShop(cookie);
             var productGuid = Tester.PBridge.AddProductToShop(cookie, shopGuid, "Galaxy S9", "Cellphones", 2000, 1);
             UserAT.GenerateRandoms(out var anotherCookie, out var anotherUsername, out var anotherPassword);
-            Assert.Throws<BadStateException>(() => Tester.PBridge.AddNewPurchasePolicy(anotherCookie, shopGuid, "Product purchase policy", productGuid, "<", 2, "Must buy less than 2 Galaxy9"));
+            Assert.Throws<UserNotFoundException>(() => Tester.PBridge.AddNewPurchasePolicy(anotherCookie, shopGuid, "Product purchase policy", productGuid, "<", 2, "Must buy less than 2 Galaxy9"));
         }
 
         #endregion
@@ -341,7 +341,7 @@ namespace Tests
             var shopGuid = Tester.PBridge.OpenShop(cookie);
             var productGuid = Tester.PBridge.AddProductToShop(cookie, shopGuid, "Galaxy S9", "Cellphones", 2000, 1);
             UserAT.GenerateRandoms(out var anotherCookie, out var anotherUsername, out var anotherPassword);
-            Assert.Throws<BadStateException>(() => Tester.PBridge.AddNewDiscountPolicy(anotherCookie, shopGuid, "Product discount policy", productGuid, ">", 0, 20, "20% on Galaxy S9"));
+            Assert.Throws<UserNotFoundException>(() => Tester.PBridge.AddNewDiscountPolicy(anotherCookie, shopGuid, "Product discount policy", productGuid, ">", 0, 20, "20% on Galaxy S9"));
         }
 
 

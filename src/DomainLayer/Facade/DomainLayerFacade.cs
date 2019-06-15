@@ -465,6 +465,7 @@ namespace DomainLayer.Facade
             else
                 _logger.LogInformation($"{GetUserName(userIdentifier.Guid)} failed to add new discount policy " +
                     $"of type {policyType.GetType()} to {GetShopName(shopGuid)}.");
+
             return discountPolicyGuid;
         }
 

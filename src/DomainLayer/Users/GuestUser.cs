@@ -150,7 +150,7 @@ namespace ApplicationCore.Entities.Users
 
         private ShoppingCart GetGuestCartAndCreateIfNeeded(Guid shopGuid)
         {
-            return DomainData.GuestsBagsCollection.GetShoppingBagAndCreateIfNeeded(Guid).GetShoppingCartAndCreateIfNeeded(shopGuid);
+            return DomainData.GuestsBagsCollection.GetShoppingBagAndCreateIfNeeded(Guid).GetShoppingCartAndCreateIfNeededForGuestOnly(shopGuid);
         }
 
         public Guid AddNewPurchasePolicy(Guid userGuid, Guid shopGuid, IPurchasePolicy newPolicy)

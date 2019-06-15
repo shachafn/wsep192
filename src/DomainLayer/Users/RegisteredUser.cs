@@ -51,29 +51,29 @@ namespace DomainLayer.Users
 
         public bool AddProductToCart(Guid shopGuid, Guid shopProductGuid, int quantity)
         {
-            var cart = _unitOfWork.BagRepository.GetShoppingBagAndCreateIfNeeded(Guid).GetShoppingCartAndCreateIfNeeded(shopGuid);
+            var cart = _unitOfWork.BagRepository.GetShoppingCartAndCreateIfNeeded(Guid, shopGuid);
             var shop = _unitOfWork.ShopRepository.FindByIdOrNull(shopGuid);
             var actualProduct = shop.ShopProducts.FirstOrDefault(p => p.Guid.Equals(shopProductGuid));
-            cart.AddProductToCart(actualProduct, quantity);
+            _shopDomain.ShoppingCartDomain.AddProductToCart(cart, actualProduct, quantity);
             return true;
         }
 
 
         public bool EditProductInCart(Guid shopGuid, Guid shopProductGuid, int newAmount)
         {
-            var cart = _unitOfWork.BagRepository.GetShoppingBagAndCreateIfNeeded(Guid).GetShoppingCartAndCreateIfNeeded(shopGuid);
+            var cart = _unitOfWork.BagRepository.GetShoppingCartAndCreateIfNeeded(Guid, shopGuid);
             return cart.EditProductInCart(shopProductGuid, newAmount);
         }
 
         public bool RemoveProductFromCart(Guid shopGuid, Guid shopProductGuid)
         {
-            var cart = _unitOfWork.BagRepository.GetShoppingBagAndCreateIfNeeded(Guid).GetShoppingCartAndCreateIfNeeded(shopGuid);
+            var cart = _unitOfWork.BagRepository.GetShoppingCartAndCreateIfNeeded(Guid, shopGuid);
             return cart.RemoveProductFromCart(shopProductGuid);
         }
 
         public ICollection<ShopProduct> GetAllProductsInCart(Guid shopGuid)
         {
-            var cart = _unitOfWork.BagRepository.GetShoppingBagAndCreateIfNeeded(Guid).GetShoppingCartAndCreateIfNeeded(shopGuid);
+            var cart = _unitOfWork.BagRepository.GetShoppingCartAndCreateIfNeeded(Guid, shopGuid);
             return cart.GetAllProductsInCart();
         }
 

@@ -17,7 +17,7 @@ namespace TestsUtils
             return new DomainFacadeTransactionProxy(
                         new DomainLayerFacade(
                             new UserDomain(NullLogger<UserDomain>.Instance, uoW, shopDomain),
-                            new DomainLayerFacadeVerifier(NullLogger<DomainLayerFacadeVerifier>.Instance, uoW),
+                            new DomainLayerFacadeVerifier(NullLogger<DomainLayerFacadeVerifier>.Instance, uoW, shopDomain),
                             NullLogger<DomainLayerFacade>.Instance,
                             new DefaultExternalServicesManager(),
                             uoW
@@ -38,7 +38,7 @@ namespace TestsUtils
                     new DomainFacadeTransactionProxy(
                         new DomainLayerFacade(
                             new UserDomain(NullLogger<UserDomain>.Instance, uoW, shopDomain),
-                            new DomainLayerFacadeVerifier (NullLogger<DomainLayerFacadeVerifier>.Instance, uoW),
+                            new DomainLayerFacadeVerifier (NullLogger<DomainLayerFacadeVerifier>.Instance, uoW, shopDomain),
                             NullLogger<DomainLayerFacade>.Instance,
                             new DefaultExternalServicesManager(),
                             uoW

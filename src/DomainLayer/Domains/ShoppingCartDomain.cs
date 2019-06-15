@@ -5,6 +5,7 @@ using DomainLayer.Policies;
 using Microsoft.Extensions.Logging;
 using System;
 using System.Collections.Generic;
+using System.Linq;
 
 namespace DomainLayer.Domains
 {
@@ -42,6 +43,12 @@ namespace DomainLayer.Domains
                 }
             }
 
+        }
+
+        public void AddProductToCart(ShoppingCart cart, ShopProduct actualProduct, int quantity)
+        {
+            cart.AddProductToCart(actualProduct, quantity);
+            _unitOfWork.BagRepository.Update(_unitOfWork.BagRepository.GetShoppingBagAndCreateIfNeeded(cart.UserGuid));
         }
     }
 }

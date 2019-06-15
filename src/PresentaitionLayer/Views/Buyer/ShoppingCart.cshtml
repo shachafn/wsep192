@@ -17,7 +17,7 @@
                     Product Name
                 </th>
                 <th>
-                    quantity
+                    Quantity
                 </th>
                 <th>
                     Total Price
@@ -38,17 +38,33 @@
                     <td>
                         @Html.DisplayFor(modelItem => item.Product.Name)
                     </td>
+                    @*<td>
+                            @Html.DisplayFor(modelItem => item.Quantity)
+                        </td>*@
                     <td>
-                        @Html.DisplayFor(modelItem => item.Quantity)
+                        <form asp-action="EditCartProduct" method="post" class="form-horizontal" id="editProductAmountFrom">
+                            <input type="hidden" name="shopGuid" value="@cartProductTuple.Item1.ShopGuid" />
+                            <input type="hidden" name="shopProductGuid" value="@item.Guid" />
+                            <input type="number" name="newAmount" value=@item.Quantity min="1" width="5" />
+                        </form>
                     </td>
                     <td>
-                        @(item.Price*item.Quantity)
+                        @(item.Price * item.Quantity)
+                    </td>
+                    <td>
+                        <input type="submit" name="edit" value="Update" form="editProductAmountFrom"/>
+                        <form asp-action="DeleteCartProduct" method="post" class="form-horizontal">
+                            <input type="hidden" name="shopGuid" value="@cartProductTuple.Item1.ShopGuid" />
+                            <input type="hidden" name="shopProductGuid" value="@item.Guid" />
+                            <input type="submit" name="delete" value="Delete" />
+                        </form>
                     </td>
                 </tr>
             }
         </tbody>
     </table>
     <form asp-action="BuyNow" method="post" class="form-control" style="height:44px; padding:6px 12px">
+        Total Price: @cartProductTuple.Item2.Aggregate(0, (total, next) => total += next.Quantity * (int)next.Price)
         <input type="hidden" name="ShopId" value="@cartProductTuple.Item1.ShopGuid" />
         <input type="submit" value="Buy Now!" class="btn" />
     </form>

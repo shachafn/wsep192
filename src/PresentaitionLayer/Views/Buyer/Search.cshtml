@@ -13,6 +13,9 @@
                 Product Name
             </th>
             <th>
+                Shop Guid
+            </th>
+            <th>
                 Product Category
             </th>
             <th>
@@ -30,6 +33,9 @@
                 </td>
                 <td>
                     @Html.DisplayFor(modelItem => item.Item1.Product.Name)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Item2);
                 </td>
                 <td>
                     @Html.DisplayFor(modelItem => item.Item1.Product.Category)

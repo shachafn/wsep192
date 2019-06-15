@@ -247,7 +247,7 @@ namespace DomainLayer.Domains
                 }
 
             }
-            double total_price = cart.PurchasedProducts.Aggregate(0, (total, p) => total += (int)p.Item1.Price * p.Item2);
+            double total_price = cart.PurchasedProducts.Aggregate(0, (total, p) => total += (int) p.Item1.Price * p.Item2);
             var newEvent = new PurchasedCartEvent(cart.UserGuid, cart.ShopGuid, total_price);
             newEvent.SetMessages(_unitOfWork);
             UpdateCenter.RaiseEvent(newEvent);

@@ -6,7 +6,7 @@ using System;
 
 namespace DataAccessLayer
 {
-    internal class BagRepository : BaseMongoRepository, IBagRepository
+    public class BagRepository : BaseMongoRepository, IBagRepository
     {
         private IContext context;
 

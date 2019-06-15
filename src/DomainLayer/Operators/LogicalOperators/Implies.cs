@@ -1,6 +1,6 @@
 ﻿namespace DomainLayer.Operators
 {
-    class Implies : ILogicOperator
+    public class Implies : ILogicOperator
     {
         public bool Operate(bool operand1, bool operand2)
         {

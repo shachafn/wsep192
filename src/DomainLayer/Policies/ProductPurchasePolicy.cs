@@ -11,10 +11,10 @@ namespace DomainLayer.Policies
     {
         public Guid Guid { get; private set; }
 
-        private int ExpectedQuantity { get; }
-        private Guid ProductGuid { get; }
-        private IArithmeticOperator Operator { get; }
-        public string Description { get; }
+        public int ExpectedQuantity { get; set; }
+        public Guid ProductGuid { get; set; }
+        public IArithmeticOperator Operator { get; set; }
+        public string Description { get; set; }
 
         public ProductPurchasePolicy(Guid productGuid, IArithmeticOperator givenOperator, int expectedQuantity, string description)
         {

@@ -21,7 +21,12 @@ namespace ApplicationCore.Entitites
             return ShoppingCarts.Count==0;
         }
 
-        public ShoppingCart GetShoppingCartAndCreateIfNeeded(Guid shopGuid)
+        public bool IsCartExists(Guid shopGuid)
+        {
+            return ShoppingCarts.Any(c => c.Guid.Equals(shopGuid));
+        }
+
+        public ShoppingCart GetShoppingCartAndCreateIfNeededForGuestOnlyOrInBagDomain(Guid shopGuid)
         {
             var cart = ShoppingCarts.FirstOrDefault(c => c.ShopGuid.Equals(shopGuid));
             if (cart == null)
@@ -30,11 +35,6 @@ namespace ApplicationCore.Entitites
                 ShoppingCarts.Add(cart);
             }
             return cart;
-        }
-
-        public bool IsCartExists(Guid shopGuid)
-        {
-            return ShoppingCarts.Any(c => c.Guid.Equals(shopGuid));
         }
     }
 }

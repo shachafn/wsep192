@@ -49,6 +49,18 @@ namespace TestsUtils
             return bag;
         }
 
+        public ShoppingCart GetShoppingCartAndCreateIfNeeded(Guid userGuid, Guid shopGuid)
+        {
+            var bag = GetShoppingBagAndCreateIfNeeded(userGuid);
+            var cart = bag.ShoppingCarts.FirstOrDefault(c => c.ShopGuid.Equals(shopGuid));
+            if (cart == null)
+            {
+                cart = new ShoppingCart(userGuid, shopGuid);
+                bag.ShoppingCarts.Add(cart);
+            }
+            return cart;
+        }
+
         public IQueryable<ShoppingBag> Query()
         {
             return ShoppingBags.AsQueryable();

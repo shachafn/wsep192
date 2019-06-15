@@ -99,7 +99,7 @@ namespace PresentaitionLayer.Account
                 new Claim(ClaimTypes.Name, user.UserName),
                 new Claim(ClaimTypes.Role,user.UserType)
             };
-            var isAdmin = _serviceFacade.IsUserAdmin(user.Id);
+            var isAdmin = _serviceFacade.IsUserAdmin(new Guid(HttpContext.Session.Id));
             if(isAdmin)
             {
                 claims.Add(new Claim(ClaimTypes.Country, "adminia"));

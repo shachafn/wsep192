@@ -194,7 +194,9 @@ namespace ServiceLayer
 
             var userId = _results[op.args[0]];
 
-            _unitOfWork.BaseUserRepository.FindByIdOrNull(userId).makeAdmin();
+           var user = _unitOfWork.BaseUserRepository.FindByIdOrNull(userId);
+            user.IsAdmin = true;
+            _unitOfWork.BaseUserRepository.Update(user);
 
         }
 

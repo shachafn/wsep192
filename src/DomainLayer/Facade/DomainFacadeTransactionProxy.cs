@@ -985,13 +985,13 @@ namespace DomainLayer.Facade
             }
         }
 
-        public bool IsUserAdmin(Guid id)
+        public bool IsUserAdmin(UserIdentifier id)
         {
             var session = _unitOfWork.Context.StartSession();
             try
             {
                 session.StartTransaction();
-                var result = _domainLayerFacade.IsUserAdmin(id);
+                var result = _domainLayerFacade.IsUserAdmin(id.Guid);
                 session.CommitTransaction();
                 return result;
             }

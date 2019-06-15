@@ -276,9 +276,10 @@ namespace ServiceLayer
             _serviceFacade.cancelOwnerAssignment(userIdentifier,shopId);
         }
 
-        public bool IsUserAdmin(Guid id)
+        public bool IsUserAdmin(Guid cookie)
         {
-            return _serviceFacade.IsUserAdmin(id);
+            var userIdentfier = _sessionManager.ResolveCookie(cookie);
+            return _serviceFacade.IsUserAdmin(userIdentfier);
         }
     }
 }

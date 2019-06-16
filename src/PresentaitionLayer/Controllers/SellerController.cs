@@ -326,7 +326,7 @@ namespace PresentaitionLayer.Controllers
         }
 
         [HttpPost]
-        public IActionResult AddCompoundDiscountPolicy(string Description, string guid1,string Sign, string guid2, int Percent, string ShopId)
+        public IActionResult AddCompoundDiscountPolicy(string Description, int guid1,string Sign, int guid2, int Percent, string ShopId)
         {
             try
             {
@@ -346,9 +346,16 @@ namespace PresentaitionLayer.Controllers
                 return View("UserMessage", message);
             }
         }
+            PoliciesModel policy = new PoliciesModel();
+            var shops = _serviceFacade.GetUserShops(new Guid(HttpContext.Session.Id));
+            var shop = shops.FirstOrDefault(currshop => currshop.Guid.Equals(new Guid(ShopId)));
+            policy.DiscountPolicies = shop.DiscountPolicies;
+            _serviceFacade.AddNewDiscountPolicy(new Guid(HttpContext.Session.Id), new Guid(ShopId), (object)"Compound discount policy",(object) policy.DiscountPolicies.ElementAt(guid1-1).Guid,(object)Sign, (object)policy.DiscountPolicies.ElementAt(guid2 - 1).Guid, (object)Percent, (object)Description);
+            return RedirectToAction("Policies", "Seller", new {  ShopId });
+        }
 
         [HttpPost]
-        public IActionResult AddCompoundPurchasePolicy(string Description, string guid1, string Sign, string guid2, int Percent, string ShopId)
+        public IActionResult AddCompoundPurchasePolicy(string Description, int guid1, string Sign, int guid2, int Percent, string ShopId)
         {
             try
             {
@@ -367,6 +374,13 @@ namespace PresentaitionLayer.Controllers
                 var message = new UserMessage(redirect, "An error has occured. Please refresh and try again. (Database connection lost).");
                 return View("UserMessage", message);
             }
+        }
+            PoliciesModel policy = new PoliciesModel();
+            var shops = _serviceFacade.GetUserShops(new Guid(HttpContext.Session.Id));
+            var shop = shops.FirstOrDefault(currshop => currshop.Guid.Equals(new Guid(ShopId)));
+            policy.PurchasePolicies = shop.PurchasePolicies;
+            _serviceFacade.AddNewPurchasePolicy(new Guid(HttpContext.Session.Id), new Guid(ShopId), (object)"Compound discount policy", policy.PurchasePolicies.ElementAt(guid2 - 1).Guid, (object)Sign, policy.PurchasePolicies.ElementAt(guid2 - 1).Guid, (object)Description);
+            return RedirectToAction("Policies", "Seller", new { ShopId = ShopId });
         }
         /*
                 [HttpPost]

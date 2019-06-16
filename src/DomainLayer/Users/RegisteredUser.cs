@@ -35,7 +35,6 @@ namespace DomainLayer.Users
         public bool PurchaseCart(Guid shopGuid)
         {
             var bag = _unitOfWork.BagRepository.GetShoppingBagAndCreateIfNeeded(Guid);
-
             var shop = _unitOfWork.ShopRepository.FindByIdOrNull(shopGuid);
             _shopDomain.ShoppingBagDomain.CheckDiscountPolicy(bag, shopGuid);
             if (!_shopDomain.PurchaseCart(shop, bag))
@@ -91,7 +90,6 @@ namespace DomainLayer.Users
         #endregion
 
         #region Seller
-
         public Guid OpenShop()
         {
             var shop = new Shop(Guid);
@@ -110,12 +108,14 @@ namespace DomainLayer.Users
         {
             var shop = _unitOfWork.ShopRepository.FindByIdOrNull(shopGuid);
             shop.Reopen();
+            _unitOfWork.ShopRepository.Update(shop);
         }
 
         public void CloseShop(Guid shopGuid)
         {
             var shop = _unitOfWork.ShopRepository.FindByIdOrNull(shopGuid);
             shop.Close();
+            _unitOfWork.ShopRepository.Update(shop);
         }
 
         public void CloseShopPermanently(Guid shopGuid)
@@ -125,12 +125,11 @@ namespace DomainLayer.Users
             _unitOfWork.ShopRepository.Update(shop);
         }
 
-
         public Guid AddProductToShop(Guid shopGuid,
             string name, string category, double price, int quantity)
         {
             var shop = _unitOfWork.ShopRepository.FindByIdOrNull(shopGuid);
-           return _shopDomain.AddProductToShop(shop, Guid, new Product(name, category), price, quantity);
+            return _shopDomain.AddProductToShop(shop, Guid, new Product(name, category), price, quantity);
         }
 
         public void EditProductInShop(Guid shopGuid, Guid productGuid, double newPrice, int newQuantity)
@@ -146,7 +145,6 @@ namespace DomainLayer.Users
             return true;
         }
 
-
         public bool AddShopManager(Guid shopGuid, Guid newManagaerGuid, List<bool> privileges)
         {
             var shop = _unitOfWork.ShopRepository.FindByIdOrNull(shopGuid);
@@ -159,7 +157,6 @@ namespace DomainLayer.Users
             var shop = _unitOfWork.ShopRepository.FindByIdOrNull(shopGuid);
             return _shopDomain.CascadeRemoveShopOwner(shop, Guid, ownerToRemoveGuid);
         }
-
 
         public bool RemoveShopManager(Guid shopGuid, Guid managerToRemoveGuid)
         {
@@ -175,15 +172,17 @@ namespace DomainLayer.Users
             return true;
         }
 
-
         public Guid AddNewPurchasePolicy(Guid userGuid, Guid shopGuid, IPurchasePolicy newPolicy)
         {
             var shop = _unitOfWork.ShopRepository.FindByIdOrNull(shopGuid);
             if (!(shop.IsOwner(userGuid) || (shop.IsManager(userGuid))))
             {
-            throw new IllegalOperationException("Tried to add new purchase policy to a shop that doesn't belong to him");
+                throw new IllegalOperationException("Tried to add new purchase policy to a shop that doesn't belong to him");
             }
-            return shop.AddNewPurchasePolicy(newPolicy);
+            var res = shop.AddNewPurchasePolicy(newPolicy);
+            //if (!res.Equals(Guid.Empty))
+            //    _unitOfWork.ShopRepository.Update(shop);
+            return res;
         }
 
         public Guid AddNewDiscountPolicy(Guid userGuid, Guid shopGuid, IDiscountPolicy newPolicy)
@@ -191,9 +190,12 @@ namespace DomainLayer.Users
             var shop = _unitOfWork.ShopRepository.FindByIdOrNull(shopGuid);
             if (!(shop.IsOwner(userGuid) || (shop.IsManager(userGuid))))
             {
-            throw new IllegalOperationException("Tried to add new discount policy to a shop that doesn't belong to him");
+                throw new IllegalOperationException("Tried to add new discount policy to a shop that doesn't belong to him");
             }
-            return shop.AddNewDiscountPolicy(newPolicy);
+            var res = shop.AddNewDiscountPolicy(newPolicy);
+            //if (!res.Equals(Guid.Empty))
+            //    _unitOfWork.ShopRepository.Update(shop);
+            return res;
         }
 
         public ICollection<Tuple<Guid, ShopProduct, int>> GetPurchaseHistory()

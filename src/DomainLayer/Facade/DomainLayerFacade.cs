@@ -145,7 +145,16 @@ namespace DomainLayer.Facade
             //var newEvent = new PurchasedCartEvent(userIdentifier.Guid, shopGuid);
             //newEvent.SetMessages(DomainData.ShopsCollection.Values, DomainData.RegisteredUsersCollection.Values);
             //UpdateCenter.RaiseEvent(newEvent);
-            return _userDomain.GetUserObject(userIdentifier).PurchaseCart(shopGuid); ;
+            var res = _userDomain.GetUserObject(userIdentifier).PurchaseCart(shopGuid);
+            if (res)
+            {
+                if (_externalServicesManager.PaymentSystem.Pay() == -1)
+                    throw new ExternalServiceFaultException("Payment",ExternalServiceFaultException.ExternalServiceType.Payment);
+                if (_externalServicesManager.SupplySystem.Supply() == -1)
+                    throw new ExternalServiceFaultException("Supply", ExternalServiceFaultException.ExternalServiceType.Supply);
+            }
+
+            return res;
         }
 
         public double GetCartPrice(UserIdentifier userIdentifier, Guid shopGuid)

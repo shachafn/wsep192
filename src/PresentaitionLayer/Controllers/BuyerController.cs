@@ -225,6 +225,21 @@ namespace PresentaitionLayer.Controllers
                 _serviceFacade.PurchaseCart(new Guid(HttpContext.Session.Id), new Guid(ShopId));
                 return RedirectToAction("ShoppingCart", "Buyer");
             }
+            catch(ExternalServiceFaultException ex)
+            {
+                if (ex.Type.Equals(ExternalServiceFaultException.ExternalServiceType.Payment))
+                {
+                    var redirect = this.Url.Action("Index", "Buyer");
+                    var message = new UserMessage(redirect, "Couldn't complete the payment, please try again later.");
+                    return View("UserMessage", message);
+                }
+                else
+                {
+                    var redirect = this.Url.Action("Index", "Buyer");
+                    var message = new UserMessage(redirect, "Couldn't complete the supply request, please try again later.");
+                    return View("UserMessage", message);
+                }
+            }
             catch (GeneralServerError)
             {
                 var redirect = this.Url.Action("Index", "Buyer");

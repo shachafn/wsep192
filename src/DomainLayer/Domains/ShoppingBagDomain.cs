@@ -56,7 +56,7 @@ namespace DomainLayer.Domains
         public void ClearAllDiscounts(ShoppingBag bag, Guid shopGuid)
         {
             var cart = bag.GetShoppingCartAndCreateIfNeededForGuestOnlyOrInBagDomain(shopGuid);
-            var tmp= cart.PurchasedProducts.Where(sp => sp.Item1.Price > 0);
+            var tmp= cart.PurchasedProducts.Where(sp => sp.Item1.Price > 0).ToList();
             cart.PurchasedProducts.Clear();
             foreach(Tuple<ShopProduct,int> sp in tmp)
             {

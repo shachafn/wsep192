@@ -46,10 +46,9 @@
                     <td>
                         @(item.Price * item.Quantity)
                     </td>
+                    <td></td>
                     <td>
-                    </td>
-                    <td>
-                        <input type="submit" name="edit" value="Update" form="editProductAmountFrom"/>
+                        <input type="submit" name="edit" value="Update" form="editProductAmountFrom" />
                         <form asp-action="DeleteCartProduct" method="post" class="form-horizontal">
                             <input type="hidden" name="shopGuid" value="@cartProductTuple.Item1.ShopGuid" />
                             <input type="hidden" name="shopProductGuid" value="@item.Guid" />
@@ -60,13 +59,16 @@
             }
         </tbody>
     </table>
-    <form asp-action="BuyNow" method="post" class="form-control" style="height:44px; padding:6px 12px">
-        Total Price: @cartProductTuple.Item2.Aggregate(0, (total, next) => total += next.Quantity * (int)next.Price)
-        After Discount: @Model.AfterDiscount.ElementAt(i)
-        <input type="hidden" name="ShopId" value="@cartProductTuple.Item1.ShopGuid" />
-        <input type="submit" value="Buy Now!" class="btn" />
-    </form>
-    <div class="hidden">
-        @(i++)
-    </div>
+    @if (cartProductTuple.Item2.ToList().Count > 0)
+    {
+        <form asp-action="BuyNow" method="post" class="form-control" style="height:44px; padding:6px 12px">
+            Total Price: @cartProductTuple.Item2.Aggregate(0, (total, next) => total += next.Quantity * (int)next.Price)
+            After Discount: @Model.AfterDiscount.ElementAt(i)
+            <input type="hidden" name="ShopId" value="@cartProductTuple.Item1.ShopGuid" />
+            <input type="submit" value="Buy Now!" class="btn" />
+        </form>
+        <div class="hidden">
+            @(i++)
+        </div>
+    }
 }

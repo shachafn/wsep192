@@ -155,7 +155,10 @@ namespace DomainLayer.Facade
             //var user = VerifyLoggedInUser(userIdentifier.Guid, new UserNotFoundException());
             var shop = VerifyShopExists(shopGuid, new ShopNotFoundException());
             shop.VerifyShopIsActive();
-            var cart = GetCartExistsAndCreateIfNeeded(userIdentifier, shopGuid);
+            var cart = userIdentifier.IsGuest ?
+                DomainData.GuestsBagsCollection.GetShoppingBagAndCreateIfNeeded(userIdentifier.Guid).
+                    GetShoppingCartAndCreateIfNeededForGuestOnlyOrInBagDomain(shopGuid) 
+                        : GetCartExistsAndCreateIfNeeded(userIdentifier, shopGuid);
             foreach (var purchasedProduct in cart.PurchasedProducts)
             {
                 int purchasedQuantity = purchasedProduct.Item2;

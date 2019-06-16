@@ -54,7 +54,6 @@ namespace ApplicationCore.Entities.Users
         public bool PurchaseCart(Guid shopGuid)
         {
             var bag = GetGuestBagAndCreateIfNeeded(shopGuid);
-
             var shop = _unitOfWork.ShopRepository.FindByIdOrNull(shopGuid);
             //Can implement RollBack, purchase is given a Guid, shop.PurchaseCart returns a Guid,
             // if the user fails to pay later, we can delete the purchase and revert the shop quantities and cart content

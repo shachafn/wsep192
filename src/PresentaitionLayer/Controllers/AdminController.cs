@@ -39,13 +39,13 @@ namespace PresentaitionLayer.Controllers
             }
             catch (GeneralServerError)
             {
-                var redirect = this.Url.Action("Index", "Seller");
+                var redirect = this.Url.Action("Index", "Admin");
                 var message = new UserMessage(redirect, "An error has occured. Please refresh and try again.");
                 return View("UserMessage", message);
             }
             catch (DatabaseConnectionTimeoutException)
             {
-                var redirect = this.Url.Action("Index", "Seller");
+                var redirect = this.Url.Action("Index", "Admin");
                 var message = new UserMessage(redirect, "An error has occured. Please refresh and try again. (Database connection lost).");
                 return View("UserMessage", message);
             }
@@ -60,19 +60,19 @@ namespace PresentaitionLayer.Controllers
             }
             catch(BrokenConstraintException)
             {
-                var redirect = this.Url.Action("Index", "Seller");
+                var redirect = this.Url.Action("Index", "Admin");
                 var message = new UserMessage(redirect, "The user is either the only owner of an active shop, or an admin himself. Could not complete the request.");
                 return View("UserMessage", message);
             }
             catch (GeneralServerError)
             {
-                var redirect = this.Url.Action("Index", "Seller");
+                var redirect = this.Url.Action("Index", "Admin");
                 var message = new UserMessage(redirect, "An error has occured. Please refresh and try again.");
                 return View("UserMessage", message);
             }
             catch (DatabaseConnectionTimeoutException)
             {
-                var redirect = this.Url.Action("Index", "Seller");
+                var redirect = this.Url.Action("Index", "Admin");
                 var message = new UserMessage(redirect, "An error has occured. Please refresh and try again. (Database connection lost).");
                 return View("UserMessage", message);
             }
@@ -94,13 +94,13 @@ namespace PresentaitionLayer.Controllers
             }
             catch (GeneralServerError)
             {
-                var redirect = this.Url.Action("Index", "Seller");
+                var redirect = this.Url.Action("Index", "Admin");
                 var message = new UserMessage(redirect, "An error has occured. Please refresh and try again.");
                 return View("UserMessage", message);
             }
             catch (DatabaseConnectionTimeoutException)
             {
-                var redirect = this.Url.Action("Index", "Seller");
+                var redirect = this.Url.Action("Index", "Admin");
                 var message = new UserMessage(redirect, "An error has occured. Please refresh and try again. (Database connection lost).");
                 return View("UserMessage", message);
             }
@@ -115,13 +115,13 @@ namespace PresentaitionLayer.Controllers
             }
             catch (GeneralServerError)
             {
-                var redirect = this.Url.Action("Index", "Seller");
+                var redirect = this.Url.Action("Index", "Admin");
                 var message = new UserMessage(redirect, "An error has occured. Please refresh and try again.");
                 return View("UserMessage", message);
             }
             catch (DatabaseConnectionTimeoutException)
             {
-                var redirect = this.Url.Action("Index", "Seller");
+                var redirect = this.Url.Action("Index", "Admin");
                 var message = new UserMessage(redirect, "An error has occured. Please refresh and try again. (Database connection lost).");
                 return View("UserMessage", message);
             }

@@ -30,9 +30,9 @@ namespace DomainLayer
                         {
                             foreach (var str in toMatch)
                             {
-                                var maxDist = Math.Ceiling(str.Length * 0.3);
+                                var maxDist = Math.Max(2, Math.Ceiling(str.Length * 0.3));
                                 var filteredProducts = shop.ShopProducts.
-                                    Where(product => product.Product.Name.ToLower().Contains(str.ToLower())
+                                    Where(product => product.Quantity > 0 && product.Product.Name.ToLower().Contains(str.ToLower())
                                         || LevenshteinDistance(product.Product.Name.ToLower(), str.ToLower()) <= maxDist);
                                 foreach (var product in filteredProducts)
                                     output.Add(new Tuple<ShopProduct, Guid>(product, shop.Guid));
@@ -45,16 +45,13 @@ namespace DomainLayer
                         ICollection<Tuple<ShopProduct, Guid>> output = new List<Tuple<ShopProduct, Guid>>();
                         foreach (var shop in activeShops)
                         {
-                            foreach (var str in toMatch)
-                            {
-                                var maxDist = Math.Ceiling(str.Length * 0.3);
-                                var filteredProducts = shop.ShopProducts.
-                                    Where(prod => prod.Product.Category.ToLower().Contains(str.ToLower())
-                                        || LevenshteinDistance(prod.Product.Category.ToLower(), str.ToLower()) <= maxDist);
-
-                                foreach (var product in filteredProducts)
-                                    output.Add(new Tuple<ShopProduct, Guid>(product, shop.Guid));
-                            }
+                            var str = toMatch.Aggregate("", (acc, s) => acc+=($"{s} ")).Trim();
+                            var maxDist = Math.Max(2, Math.Ceiling(str.Length * 0.3));
+                            var filteredProducts = shop.ShopProducts.
+                                Where(prod => prod.Quantity > 0 && (prod.Product.Category.ToLower().Contains(str.ToLower().Trim())
+                                    || LevenshteinDistance(prod.Product.Category.ToLower(), str.ToLower().Trim()) <= maxDist));
+                            foreach (var product in filteredProducts)
+                                output.Add(new Tuple<ShopProduct, Guid>(product, shop.Guid));                      
                         }
                         return output;
                     }
@@ -65,9 +62,9 @@ namespace DomainLayer
                         {
                             foreach (var str in toMatch)
                             {
-                                var maxDist = Math.Ceiling(str.Length * 0.3);
+                                var maxDist = Math.Max(2, Math.Ceiling(str.Length * 0.3));
                                 var filteredProducts = shop.ShopProducts.
-                                    Where(prod => toMatch.Any(keyword => prod.Product.Keywords.Contains(str)
+                                    Where(prod => prod.Quantity>0 && toMatch.Any(keyword => prod.Product.Keywords.Contains(str)
                                         || LevenshteinDistance(keyword, str.ToLower()) <= maxDist));
 
                                 foreach (var product in filteredProducts)

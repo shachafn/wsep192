@@ -40,7 +40,7 @@ namespace PresentaitionLayer.Controllers
             };
             try
             {
-                var results = _serviceFacade.SearchProduct(new Guid(HttpContext.Session.Id), strings, "Name");
+                var results = _serviceFacade.SearchProduct(new Guid(HttpContext.Session.Id), strings, searchType);
                 return View(results);
             }
             catch (IllegalArgumentException)

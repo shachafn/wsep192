@@ -876,7 +876,7 @@ namespace DomainLayer.Facade
         private ShoppingCart GetCartExistsAndCreateIfNeeded(UserIdentifier userIdentifier, Guid shopGuid)
         {
             ShoppingBag bag = _unitOfWork.BagRepository.GetShoppingBagAndCreateIfNeeded(userIdentifier.Guid);
-            return _unitOfWork.BagRepository.GetShoppingCartAndCreateIfNeeded(userIdentifier.Guid, shopGuid);
+            return bag.GetShoppingCartAndCreateIfNeededForGuestOnlyOrInBagDomain(shopGuid);
         }
 
         private void VerifyStateString(string newState, ICloneableException<Exception> e)

@@ -41,7 +41,7 @@
                     <form asp-action="AddToCart" class="form-control" style="height:44px; padding:6px 12px">
                         <label>
                             Quantity
-                            <input type="number" name="Quantity" placeholder="0" />
+                            <input type="number" name="Quantity" min="1" max=@item.Quantity value="1" placeholder="1"/>
                         </label>
                         <input type="hidden" name="ShopId" value="@ViewData["ShopId"]" />
                         <input type="hidden" name="ItemId" value="@item.Guid" />

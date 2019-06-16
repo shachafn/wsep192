@@ -139,3 +139,30 @@
         <input type="submit" value="Add new Item" class="btn" />
     </form>
 </div>
+
+<div style="margin: 40px 0">
+    <h3>Add Cart Policy</h3>
+    <form asp-action="AddCartDiscountPolicy" method="post" class="form-control" style="height:120px; padding:6px 12px">
+        <label>
+            Description
+            <input type="text" class="input" name="Description" placeholder="Policy Description" style="height:30px; width:1000px;" />
+        </label>
+        <label>
+            Bigger/Lesser
+            <select name="Sign" required>
+                <option value=">"> ></option>
+                <option value="<"> <</option>
+            </select>
+        </label>
+        <label>
+            Than
+            <input type="number" step="0.01" value="0" name="Than"/>
+        </label>
+        <label>
+            Percentage
+            <input type="number" name="Percent" placeholder="0" max="100" min="0" />%
+        </label>
+        <input type="hidden" name="shopId" value="@ViewData["ShopId"]" />
+        <input type="submit" value="Add new Item" class="btn" />
+    </form>
+</div>

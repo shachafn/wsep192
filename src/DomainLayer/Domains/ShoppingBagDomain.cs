@@ -83,8 +83,8 @@ namespace DomainLayer.Domains
         {
             var cart = bag.GetShoppingCartAndCreateIfNeededForGuestOnlyOrInBagDomain(shopGuid);
             var result = cart.RemoveProductFromCart(shopProductGuid);
-            if (cart.PurchasedProducts.Count == 0)
-                bag.ShoppingCarts.Remove(cart);
+            //if (cart.PurchasedProducts.Count == 0)
+            //    bag.ShoppingCarts.Remove(cart);
             _unitOfWork.BagRepository.Update(bag);
             return result;
         }
@@ -93,7 +93,6 @@ namespace DomainLayer.Domains
         {
             var cart = bag.GetShoppingCartAndCreateIfNeededForGuestOnlyOrInBagDomain(shopGuid);
             cart.PurchaseCart();
-            bag.ShoppingCarts.Remove(cart);
             _unitOfWork.BagRepository.Update(bag);
         }
     }

@@ -38,36 +38,11 @@ namespace DomainLayer.Domains
             {
                 tempPurchasedProducts.Add(record);
             }
-
-
-            //foreach (Tuple<ShopProduct, int> record in tempPurchasedProducts)
-            //{
-            //    foreach (IDiscountPolicy policy in shop.DiscountPolicies)
-            //    {
-            //        var discountProductAndQuantity = policy.ApplyPolicy(cart, record.Item1.Guid, record.Item2, user, _unitOfWork);
-            //        if (discountProductAndQuantity != null)
-            //            cart.AddProductToCart(discountProductAndQuantity.Item1, discountProductAndQuantity.Item2);
-            //    }
-            //}
-            //Copy the list so you can iterate and add the discount to it
-
-
-            //First Apply CartDiscountPolicy
-            //foreach (IDiscountPolicy policy in shop.DiscountPolicies)
-            //{
-            //    if (policy.GetType() != typeof(CartDiscountPolicy)) continue;
-            //    var discountProductAndQuantity = policy.ApplyPolicy(cart, Guid.Empty, 0, user, _unitOfWork);
-            //    if (discountProductAndQuantity != null /*&& discountProductAndQuantity.Item1.Product.Name.Equals("Discount - cart")*/)
-            //        cart.AddProductToCart(discountProductAndQuantity.Item1, discountProductAndQuantity.Item2);
-            //}
-
-
             foreach (IDiscountPolicy policy in shop.DiscountPolicies)
             {
                 bool alreadyAddedDiscount = false;
                 foreach (Tuple<ShopProduct, int> record in tempPurchasedProducts)
                 {
-                    //if (policy.GetType() == typeof(CartDiscountPolicy)) continue;
                     var discountProductAndQuantity = policy.ApplyPolicy(cart, record.Item1.Guid, record.Item2, user, _unitOfWork);
                     if (discountProductAndQuantity != null && !alreadyAddedDiscount)
                     {
@@ -87,8 +62,9 @@ namespace DomainLayer.Domains
             {
                 cart.PurchasedProducts.Add(sp);
             }
+            _unitOfWork.BagRepository.Update(bag);
         }
-            public void AddProductToCart(ShoppingBag bag, Guid shopGuid, ShopProduct actualProduct, int quantity)
+        public void AddProductToCart(ShoppingBag bag, Guid shopGuid, ShopProduct actualProduct, int quantity)
         {
             var cart = bag.GetShoppingCartAndCreateIfNeededForGuestOnlyOrInBagDomain(shopGuid);
             cart.AddProductToCart(actualProduct, quantity);

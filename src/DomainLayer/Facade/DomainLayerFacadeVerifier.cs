@@ -155,7 +155,10 @@ namespace DomainLayer.Facade
             //var user = VerifyLoggedInUser(userIdentifier.Guid, new UserNotFoundException());
             var shop = VerifyShopExists(shopGuid, new ShopNotFoundException());
             shop.VerifyShopIsActive();
-            var cart = GetCartExistsAndCreateIfNeeded(userIdentifier, shopGuid);
+            var cart = userIdentifier.IsGuest ?
+                DomainData.GuestsBagsCollection.GetShoppingBagAndCreateIfNeeded(userIdentifier.Guid).
+                    GetShoppingCartAndCreateIfNeededForGuestOnlyOrInBagDomain(shopGuid) 
+                        : GetCartExistsAndCreateIfNeeded(userIdentifier, shopGuid);
             foreach (var purchasedProduct in cart.PurchasedProducts)
             {
                 int purchasedQuantity = purchasedProduct.Item2;
@@ -906,9 +909,8 @@ namespace DomainLayer.Facade
 
         private void VerifySearchInput(ICollection<string> toMatch, ICloneableException<Exception> e)
         {
-            var isEmpty = toMatch.Count == 0;
-            var validStrings = toMatch.All(s => !string.IsNullOrWhiteSpace(s));
-            if (isEmpty || !validStrings)
+            var validStrings = toMatch.All(s => s!=null);
+            if (!validStrings)
             {
                 StackTrace stackTrace = new StackTrace();
                 var msg = $"Search must have input, input must be valid," +

@@ -36,9 +36,6 @@
                     <td>
                         @Html.DisplayFor(modelItem => item.Product.Name)
                     </td>
-                    @*<td>
-                            @Html.DisplayFor(modelItem => item.Quantity)
-                        </td>*@
                     <td>
                         <form asp-action="EditCartProduct" method="post" class="form-horizontal" id="editProductAmountFrom">
                             <input type="hidden" name="shopGuid" value="@cartProductTuple.Item1.ShopGuid" />
@@ -48,6 +45,8 @@
                     </td>
                     <td>
                         @(item.Price * item.Quantity)
+                    </td>
+                    <td>
                     </td>
                     <td>
                         <input type="submit" name="edit" value="Update" form="editProductAmountFrom"/>
@@ -63,9 +62,11 @@
     </table>
     <form asp-action="BuyNow" method="post" class="form-control" style="height:44px; padding:6px 12px">
         Total Price: @cartProductTuple.Item2.Aggregate(0, (total, next) => total += next.Quantity * (int)next.Price)
-        After Discount: @Model.AfterDiscount.ElementAt(i);
+        After Discount: @Model.AfterDiscount.ElementAt(i)
         <input type="hidden" name="ShopId" value="@cartProductTuple.Item1.ShopGuid" />
         <input type="submit" value="Buy Now!" class="btn" />
     </form>
-    @(i++)
+    <div class="hidden">
+        @(i++)
+    </div>
 }

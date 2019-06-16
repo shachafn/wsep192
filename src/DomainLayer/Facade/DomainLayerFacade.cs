@@ -123,7 +123,6 @@ namespace DomainLayer.Facade
             UpdateCenter.RaiseEvent(newEvent);
         }
 
-
         public void CloseShopPermanently(UserIdentifier userIdentifier, Guid shopGuid)
         {
             VerifySystemIsInitialized();
@@ -141,11 +140,16 @@ namespace DomainLayer.Facade
             _verifier.VerifyMe(MethodBase.GetCurrentMethod(), userIdentifier, shopGuid);
             // Need to actually pay for products
             // if success clear all carts
-            _logger.LogInformation($"{GetUserName(userIdentifier.Guid)} purchased cart from shop {GetShopName(shopGuid)} successfuly.");
             //var newEvent = new PurchasedCartEvent(userIdentifier.Guid, shopGuid);
             //newEvent.SetMessages(DomainData.ShopsCollection.Values, DomainData.RegisteredUsersCollection.Values);
             //UpdateCenter.RaiseEvent(newEvent);
-            return _userDomain.GetUserObject(userIdentifier).PurchaseCart(shopGuid); ;
+            var res =  _userDomain.GetUserObject(userIdentifier).PurchaseCart(shopGuid);
+            if(res)
+                _logger.LogInformation($"{GetUserName(userIdentifier.Guid)} purchased cart from shop {GetShopName(shopGuid)} successfuly.");
+            else
+                _logger.LogInformation($"{GetUserName(userIdentifier.Guid)} failed to purchase cart from shop {GetShopName(shopGuid)} successfuly.");
+            return res;
+
         }
 
         public double GetCartPrice(UserIdentifier userIdentifier, Guid shopGuid)

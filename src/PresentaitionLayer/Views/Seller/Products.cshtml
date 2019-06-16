@@ -89,20 +89,15 @@
         </label>
         <label>
             Price
-            <input type="number" name="Price" placeholder="0" />
+            <input type="number" step="0.01" min="0.01" name="Price" placeholder="0" />
         </label>
         <label>
             Quantity
-            <input type="number" name="StoredQuantity" placeholder="0" />
+            <input type="number" min="1" name="StoredQuantity" placeholder="1" />
         </label>
         <label>
             Category
-            <select name="Category" required>
-                <option value="good things"> good things</option>
-                <option value="pro things"> pro things</option>
-                <option value="superb things"> superb things</option>
-                <option value="nice things"> nice things</option>
-            </select>
+            <input type="text" name="Category" value="Everything" required>
         </label>
         <input type="hidden" name="shopId" value="@ViewData["ShopId"]" />
         <input type="submit" value="Add new Item" class="btn" />

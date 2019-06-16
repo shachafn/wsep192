@@ -44,8 +44,13 @@
             <li><a asp-area="" asp-controller="Buyer" asp-action="Shops">Shops</a></li>
             <li><a asp-area="" asp-controller="Home" asp-action="Debug">Debug</a></li>
             <li>
-                <form class="form-inline" asp-controller="Buyer" asp-action="Search" method="post">
-                    <input name="searchString" type="text" class="form-control" aria-label="Search" placeholder="Search" style="margin:8px 0;" />
+                <form class="form-inline" asp-controller="Buyer" asp-action="Search" method="post" style="margin:8px 8px">
+                    <input name="searchString" type="text" class="form-control" aria-label="Search" placeholder="Search"  />
+                    <label><select name="searchType" value="searchType" class="form-control" aria-label="Search" required>
+                        <option value="Name">Name</option>
+                        <option value="Category">Category</option>
+                        <option value="Keywords">Keywords</option>
+                    </select></label>
                     <input type="submit" value="Search" class="btn btn-sm">
                 </form>
             </li>
@@ -105,8 +110,15 @@ else
         <li><a asp-area="" asp-controller="Buyer" asp-action="Shops">Shops</a></li>
         <li><a asp-area="" asp-controller="Home" asp-action="Debug">Debug</a></li>
         <li>
-            <form class="form-inline" asp-controller="Buyer" asp-action="Search" method="post">
-                <input name="searchString" type="text" class="form-control" aria-label="Search" placeholder="Search" style="margin:8px 0;" />
+            <form class="form-inline" asp-controller="Buyer" asp-action="Search" method="post" style="margin:8px 8px">
+                <input name="searchString" type="text" class="form-control" aria-label="Search" placeholder="Search" />
+                <label>
+                    <select name="searchType" value="searchType" class="form-control" aria-label="Search" required>
+                        <option value="Name">Name</option>
+                        <option value="Category">Category</option>
+                        <option value="Keywords">Keywords</option>
+                    </select>
+                </label>
                 <input type="submit" value="Search" class="btn btn-sm">
             </form>
         </li>

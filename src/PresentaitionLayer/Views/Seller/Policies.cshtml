@@ -78,14 +78,14 @@
 
 <div style="margin: 40px 0">
     <h3>Add Compound Purchase Policy</h3>
-    <form asp-action="AddCompoundPurhcasePolicy" method="post" class="form-control" style="height:120px; padding:6px 12px">
+    <form asp-action="AddCompoundPurchasePolicy" method="post" class="form-control" style="height:120px; padding:6px 12px">
         <label>
             Description
-            <input type="number" class="input" name="Description" placeholder="Policy Description" style="height:30px; width:1000px;" />
+            <input type="text" class="input" name="Description" placeholder="Policy Description" style="height:30px; width:1000px;" />
         </label>
         <label>
             policy1
-            <input type="number" class="input" name="guid1" placeholder="Policy Guid" style="height:30px; width:400px;" min="1"/>
+            <input type="number" class="input" name="policy1 #" placeholder="Policy Guid" style="height:30px; width:400px;" min="1"/>
         </label>
         <label>
             operator
@@ -98,7 +98,7 @@
         </label>
         <label>
             policy2
-            <input type="number" class="input" name="guid2" placeholder="Policy Number" style="height:30px; width:400px;" />
+            <input type="number" class="input" name="policy2 #" placeholder="Policy Number" style="height:30px; width:400px;" />
         </label>
 
         <input type="hidden" name="shopId" value="@ViewData["ShopId"]" />
@@ -115,7 +115,7 @@
         </label>
         <label>
             policy1
-            <input id="disc1" type="number" class="input" name="guid1" placeholder="1st Policy Number" style="height:30px; min="1" required width:400px;" onchange="updateDiscount1()" />
+            <input id="disc1" type="number" class="input" name="policy1 #" placeholder="1st Policy Number" style="height:30px; min="1" required width:400px;" onchange="updateDiscount1()" />
         </label>
         <label>
             operator
@@ -128,7 +128,7 @@
         </label>
         <label>
             policy2
-            <input id="disc2" type="number" class="input" name="guid2" placeholder="2nd Policy number" min="1" required style="height:30px; width:400px;" onchange="updateDiscount2()" />
+            <input id="disc2" type="number" class="input" name="policy2 #" placeholder="2nd Policy number" min="1" required style="height:30px; width:400px;" onchange="updateDiscount2()" />
         </label>
         <label>
             percentage
@@ -159,7 +159,7 @@
         </label>
         <label>
             Percentage
-            <input type="number" name="Percent" placeholder="0" max="100" min="0" />%
+            <input type="number" name="Percent" value="0" placeholder="0" max="100" min="0" />%
         </label>
         <input type="hidden" name="shopId" value="@ViewData["ShopId"]" />
         <input type="submit" value="Add new Item" class="btn" />

@@ -1,6 +1,6 @@
 ﻿namespace DomainLayer.Operators
 {
-    class BiggerThan : IArithmeticOperator
+    public class BiggerThan : IArithmeticOperator
     {
         public bool IsValid(double expected, double input)
         {

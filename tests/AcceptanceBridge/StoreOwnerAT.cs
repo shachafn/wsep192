@@ -217,21 +217,21 @@ namespace Tests
             var productGuid1 = Tester.PBridge.AddProductToShop(cookie, shopGuid, "Iphone X", "Cellphones", 3000, 7);
             var policyGuid = Tester.PBridge.AddNewPurchasePolicy(cookie, shopGuid, "Product purchase policy", productGuid, ">", 1, "Must buy more than 1 Galaxy9");
             var policyGuid1 = Tester.PBridge.AddNewPurchasePolicy(cookie, shopGuid, "Product purchase policy", productGuid1, ">", 2, "Must buy more than 2 Iphone X");
-           // Guid res = Tester.PBridge.AddNewPurchasePolicy(cookie, shopGuid, "Compound purchase policy", policyGuid, "^", policyGuid1, "Must buy more than 1 Galaxy9 XOR more than 2 Iphone X");
-           // Assert.AreNotEqual(Guid.Empty, res);
+            Guid res = Tester.PBridge.AddNewPurchasePolicy(cookie, shopGuid, "Compound purchase policy", policyGuid, "^", policyGuid1, "Must buy more than 1 Galaxy9 XOR more than 2 Iphone X");
+            Assert.AreNotEqual(Guid.Empty, res);
 
             UserAT.GenerateRandoms(out var cookieBuyer, out var usernameBuyer, out var passwordBuyer);
             Guid buyerGuid = UserAT.RegisterUser(cookieBuyer, usernameBuyer, passwordBuyer);
             UserAT.LoginUser(cookieBuyer, usernameBuyer, passwordBuyer);
             Tester.PBridge.AddProductToCart(cookieBuyer, shopGuid, productGuid, 2);
-            Tester.PBridge.AddProductToCart(cookieBuyer, shopGuid, productGuid1, 3);
+            Tester.PBridge.AddProductToCart(cookieBuyer, shopGuid, productGuid1, 1);
             Assert.IsTrue(Tester.PBridge.PurchaseCart(cookieBuyer, shopGuid));
 
 
             Tester.PBridge.AddProductToCart(cookieBuyer, shopGuid, productGuid, 2);
-            Tester.PBridge.AddProductToCart(cookieBuyer, shopGuid, productGuid1, 1);
+            Tester.PBridge.AddProductToCart(cookieBuyer, shopGuid, productGuid1, 3);
             Assert.IsFalse(Tester.PBridge.PurchaseCart(cookieBuyer, shopGuid));
-            
+
         }
 
         [Test]
@@ -245,7 +245,31 @@ namespace Tests
             UserAT.GenerateRandoms(out var anotherCookie, out var anotherUsername, out var anotherPassword);
             Assert.Throws<UserNotFoundException>(() => Tester.PBridge.AddNewPurchasePolicy(anotherCookie, shopGuid, "Product purchase policy", productGuid, "<", 2, "Must buy less than 2 Galaxy9"));
         }
+        [Test]
+        public static void AddPurchasePolicyAT3()
+        {
+            UserAT.GenerateRandoms(out var cookie, out var username, out var password);
+            UserAT.RegisterUser(cookie, username, password);
+            UserAT.LoginUser(cookie, username, password);
+            var shopGuid = Tester.PBridge.OpenShop(cookie, "Name");
+            var productGuid = Tester.PBridge.AddProductToShop(cookie, shopGuid, "Cool Hat", "Accessories", 200, 5);
+            var productGuid1 = Tester.PBridge.AddProductToShop(cookie, shopGuid, "Stick Light", "Cellphones", 10, 80);
+            var policyGuid = Tester.PBridge.AddNewPurchasePolicy(cookie, shopGuid, "Cart purchase policy", ">", 6, "Cart size must be beyond 6");
+            Assert.AreNotEqual(Guid.Empty, policyGuid);
 
+            UserAT.GenerateRandoms(out var cookieBuyer, out var usernameBuyer, out var passwordBuyer);
+            Guid buyerGuid = UserAT.RegisterUser(cookieBuyer, usernameBuyer, passwordBuyer);
+            UserAT.LoginUser(cookieBuyer, usernameBuyer, passwordBuyer);
+            Tester.PBridge.AddProductToCart(cookieBuyer, shopGuid, productGuid, 2);
+            Tester.PBridge.AddProductToCart(cookieBuyer, shopGuid, productGuid1, 5);
+            Assert.IsTrue(Tester.PBridge.PurchaseCart(cookieBuyer, shopGuid));
+
+
+            Tester.PBridge.AddProductToCart(cookieBuyer, shopGuid, productGuid, 1);
+            Tester.PBridge.AddProductToCart(cookieBuyer, shopGuid, productGuid1, 3);
+            Assert.IsFalse(Tester.PBridge.PurchaseCart(cookieBuyer, shopGuid));
+
+        }
         #endregion
         #region GR 4.2.2 Shop owner can define discount policy in his store
         [Test]
@@ -276,7 +300,7 @@ namespace Tests
             var policyDisc = Tester.PBridge.AddNewDiscountPolicy(cookie, shopGuid, "Product discount policy", productDisc, ">", 0, 0, "Buy Disc");
             var policyHammerAndScrew_OrDisc = Tester.PBridge.AddNewDiscountPolicy(cookie, shopGuid, "Compound discount policy", policyHammerAndScrew, "|", policyDisc, 0, "Buy (Hammer and Screwdriver) or Disc");
             var policyNail = Tester.PBridge.AddNewDiscountPolicy(cookie, shopGuid, "Product discount policy", productNail, ">", 0, 0, "Buy Nails");
-            var policyHammerAndScrew_OrDisc_impliesNail = Tester.PBridge.AddNewDiscountPolicy(cookie, shopGuid, "Compound discount policy", policyHammerAndScrew_OrDisc, "->", policyNail, 60, "Buy (Hammer and Screwdriver) or Disc implies 60% on Nails");
+            var policyHammerAndScrew_OrDisc_impliesNail = Tester.PBridge.AddNewDiscountPolicy(cookie, shopGuid, "Compound discount policy", policyHammerAndScrew_OrDisc, "&", policyNail, 60, "Buy (Hammer and Screwdriver) or Disc implies 60% on Nails");
             Assert.AreNotEqual(Guid.Empty, policyHammerAndScrew_OrDisc_impliesNail);
 
             //Buy According to the policy and check that the discount applies
@@ -286,21 +310,10 @@ namespace Tests
             Tester.PBridge.AddProductToCart(cookieBuyer, shopGuid, productDisc, 2);
             Tester.PBridge.AddProductToCart(cookieBuyer, shopGuid, productNail, 2);
 
-            Tester.PBridge.PurchaseCart(cookieBuyer, shopGuid);
-            /*
-             * TEST-FIX
-            var buyerPurchaseHistory = ApplicationCore.Data.DomainData.LoggedInUsersEntityCollection[buyerGuid].GetPurchaseHistory();
-            bool thereIsDiscount = false;
-            foreach (Tuple<Guid, ApplicationCore.Entitites.ShopProduct, int> item in buyerPurchaseHistory)
-            {
-                if (item.Item1 == shopGuid && item.Item2.Price == -6 && item.Item3 == 2)
-                {
-                    thereIsDiscount = true;
-                }
-            }
-            Assert.IsTrue(thereIsDiscount);
-            */
+            double priceAfterDiscount = Tester.PBridge.GetCartPrice(cookieBuyer, shopGuid);
+            Assert.AreEqual(408, priceAfterDiscount);
 
+            Tester.PBridge.PurchaseCart(cookieBuyer, shopGuid);
         }
 
         [Test]
@@ -315,8 +328,106 @@ namespace Tests
             Assert.Throws<UserNotFoundException>(() => Tester.PBridge.AddNewDiscountPolicy(anotherCookie, shopGuid, "Product discount policy", productGuid, ">", 0, 20, "20% on Galaxy S9"));
         }
 
+        [Test]
+        public static void AddDiscountPolicyAT3()
+        {
+            UserAT.GenerateRandoms(out var cookie, out var username, out var password);
+            UserAT.RegisterUser(cookie, username, password);
+            UserAT.LoginUser(cookie, username, password);
+            var shopGuid = Tester.PBridge.OpenShop(cookie, "Name");
+            var productHammer = Tester.PBridge.AddProductToShop(cookie, shopGuid, "Hammer", "Tools", 100, 5);
+            var productScrewDriver = Tester.PBridge.AddProductToShop(cookie, shopGuid, "Screwdriver", "Tools", 90, 7);
+            var productNail = Tester.PBridge.AddProductToShop(cookie, shopGuid, "Nail", "Tools", 10, 100);
+            var productDisc = Tester.PBridge.AddProductToShop(cookie, shopGuid, "Disc", "Tools", 200, 4);
+            var policyCart = Tester.PBridge.AddNewDiscountPolicy(cookie, shopGuid, "Cart discount policy", ">", 99, 20, "20% discount on purchases > 99");
+
+            UserAT.GenerateRandoms(out var cookieBuyer, out var usernameBuyer, out var passwordBuyer);
+            Guid buyerGuid = UserAT.RegisterUser(cookieBuyer, usernameBuyer, passwordBuyer);
+            UserAT.LoginUser(cookieBuyer, usernameBuyer, passwordBuyer);
+            Tester.PBridge.AddProductToCart(cookieBuyer, shopGuid, productDisc, 2);
+            Tester.PBridge.AddProductToCart(cookieBuyer, shopGuid, productNail, 5);
+
+            double priceAfterDiscount = Tester.PBridge.GetCartPrice(cookieBuyer, shopGuid);
+            Assert.AreEqual(360, priceAfterDiscount);
+            Tester.PBridge.PurchaseCart(cookieBuyer, shopGuid);
+        }
+        [Test]
+        public static void AddDiscountPolicyAT4()
+        {
+            UserAT.GenerateRandoms(out var cookie, out var username, out var password);
+            UserAT.RegisterUser(cookie, username, password);
+            UserAT.LoginUser(cookie, username, password);
+            var shopGuid = Tester.PBridge.OpenShop(cookie, "Name");
+            var productHammer = Tester.PBridge.AddProductToShop(cookie, shopGuid, "Hammer", "Tools", 100, 5);
+            var productScrewDriver = Tester.PBridge.AddProductToShop(cookie, shopGuid, "Screwdriver", "Tools", 90, 7);
+            var productNail = Tester.PBridge.AddProductToShop(cookie, shopGuid, "Nail", "Tools", 10, 100);
+            var productDisc = Tester.PBridge.AddProductToShop(cookie, shopGuid, "Disc", "Tools", 200, 4);
+            var policyHammer = Tester.PBridge.AddNewDiscountPolicy(cookie, shopGuid, "Product discount policy", productHammer, ">", 0, 0, "Buy Hammer");
+            var policyScrewDriver = Tester.PBridge.AddNewDiscountPolicy(cookie, shopGuid, "Product discount policy", productScrewDriver, ">", 0, 0, "Buy Screwdriver");
+            var policyHammerAndScrew = Tester.PBridge.AddNewDiscountPolicy(cookie, shopGuid, "Compound discount policy", policyHammer, "&", policyScrewDriver, 0, "Buy Hammer and Screwdriver");
+            var policyDisc = Tester.PBridge.AddNewDiscountPolicy(cookie, shopGuid, "Product discount policy", productDisc, ">", 0, 0, "Buy Disc");
+            var policyHammerAndScrew_OrDisc = Tester.PBridge.AddNewDiscountPolicy(cookie, shopGuid, "Compound discount policy", policyHammerAndScrew, "|", policyDisc, 0, "Buy (Hammer and Screwdriver) or Disc");
+            var policyCart = Tester.PBridge.AddNewDiscountPolicy(cookie, shopGuid, "Cart discount policy", ">", -1, 0, "discount on cart");
+            var policyHammerAndScrew_OrDisc_implies32PrecentOnCart = Tester.PBridge.AddNewDiscountPolicy(cookie, shopGuid, "Compound discount policy", policyHammerAndScrew_OrDisc, "&", policyCart, 32, "Buy (Hammer and Screwdriver) or Disc implies 32% on Cart");
+            Assert.AreNotEqual(Guid.Empty, policyHammerAndScrew_OrDisc_implies32PrecentOnCart);
+
+            //Buy According to the policy and check that the discount applies
+            UserAT.GenerateRandoms(out var cookieBuyer, out var usernameBuyer, out var passwordBuyer);
+            Guid buyerGuid = UserAT.RegisterUser(cookieBuyer, usernameBuyer, passwordBuyer);
+            UserAT.LoginUser(cookieBuyer, usernameBuyer, passwordBuyer);
+            Tester.PBridge.AddProductToCart(cookieBuyer, shopGuid, productHammer, 2);
+            Tester.PBridge.AddProductToCart(cookieBuyer, shopGuid, productScrewDriver, 1);
+            Tester.PBridge.AddProductToCart(cookieBuyer, shopGuid, productNail, 2);
+
+            double priceAfterDiscount = Tester.PBridge.GetCartPrice(cookieBuyer, shopGuid);
+            Assert.AreEqual(310*68/100.0, priceAfterDiscount);
+
+            Tester.PBridge.PurchaseCart(cookieBuyer, shopGuid);
+        }
+        [Test]
+        public static void AddDiscountPolicyAT5()
+        {
+            UserAT.GenerateRandoms(out var cookie, out var username, out var password);
+            UserAT.RegisterUser(cookie, username, password);
+            UserAT.LoginUser(cookie, username, password);
+            var shopGuid = Tester.PBridge.OpenShop(cookie, "Name");
+            var productHammer = Tester.PBridge.AddProductToShop(cookie, shopGuid, "Hammer", "Tools", 100, 5);
+            var productScrewDriver = Tester.PBridge.AddProductToShop(cookie, shopGuid, "Screwdriver", "Tools", 90, 7);
+            var productNail = Tester.PBridge.AddProductToShop(cookie, shopGuid, "Nail", "Tools", 10, 100);
+            var productDisc = Tester.PBridge.AddProductToShop(cookie, shopGuid, "Disc", "Tools", 200, 4);
+            var policyHammer = Tester.PBridge.AddNewDiscountPolicy(cookie, shopGuid, "Product discount policy", productHammer, ">", 0, 0, "Buy Hammer");
+            var policyScrewDriver = Tester.PBridge.AddNewDiscountPolicy(cookie, shopGuid, "Product discount policy", productScrewDriver, ">", 0, 0, "Buy Screwdriver");
+            var policyHammerAndScrew = Tester.PBridge.AddNewDiscountPolicy(cookie, shopGuid, "Compound discount policy", policyHammer, "&", policyScrewDriver, 0, "Buy Hammer and Screwdriver");
+            var policyDisc = Tester.PBridge.AddNewDiscountPolicy(cookie, shopGuid, "Product discount policy", productDisc, ">", 0, 0, "Buy Disc");
+            var policyHammerAndScrew_OrDisc = Tester.PBridge.AddNewDiscountPolicy(cookie, shopGuid, "Compound discount policy", policyHammerAndScrew, "|", policyDisc, 0, "Buy (Hammer and Screwdriver) or Disc");
+            var policyCart = Tester.PBridge.AddNewDiscountPolicy(cookie, shopGuid, "Cart discount policy", ">", 0, 0, "discount on cart");
+            var policyHammerAndScrew_OrDisc_implies30PrecentOnCart = Tester.PBridge.AddNewDiscountPolicy(cookie, shopGuid, "Compound discount policy", policyHammerAndScrew_OrDisc, "&", policyCart, 32, "Buy (Hammer and Screwdriver) or Disc implies 32% on Cart");
+            Assert.AreNotEqual(Guid.Empty, policyHammerAndScrew_OrDisc_implies30PrecentOnCart);
+
+            //Buy According to the policy and check that the discount applies
+            UserAT.GenerateRandoms(out var cookieBuyer, out var usernameBuyer, out var passwordBuyer);
+            Guid buyerGuid = UserAT.RegisterUser(cookieBuyer, usernameBuyer, passwordBuyer);
+            UserAT.LoginUser(cookieBuyer, usernameBuyer, passwordBuyer);
+            Tester.PBridge.AddProductToCart(cookieBuyer, shopGuid, productHammer, 2);
 
 
+            double priceAfterDiscount = Tester.PBridge.GetCartPrice(cookieBuyer, shopGuid);
+            Assert.AreEqual(200, priceAfterDiscount);
+
+            Tester.PBridge.PurchaseCart(cookieBuyer, shopGuid);
+
+            var buyerPurchaseHistory = Tester.PBridge.GetPurchaseHistory(cookieBuyer);
+            bool thereIsDiscount = false;
+            foreach (Tuple<Guid, ApplicationCore.Entitites.ShopProduct, int> item in buyerPurchaseHistory)
+            {
+                if (item.Item1 == shopGuid && item.Item2.Price < 0 && item.Item3 > 0)
+                {
+                    thereIsDiscount = true;
+                }
+            }
+            Assert.IsFalse(thereIsDiscount);
+
+        }
 
 
         #endregion

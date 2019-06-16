@@ -83,6 +83,10 @@ namespace ATBridge
         {
             return _real == null ? false : _real.PurchaseCart(userGuid, shopGuid);
         }
+        public double GetCartPrice(Guid userGuid, Guid shopGuid)
+        {
+            return _real == null ? -1 : _real.GetCartPrice(userGuid, shopGuid);
+        }
 
         public Guid Register(Guid userGuid, string username, string password)
         {

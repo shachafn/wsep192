@@ -43,6 +43,15 @@ namespace DomainLayer.Users
             //External payment pay, if not true ---- rollback
             return true;
         }
+        public double GetCartPrice(Guid shopGuid)
+        {
+            var bag = _unitOfWork.BagRepository.GetShoppingBagAndCreateIfNeeded(Guid);
+            var shop = _unitOfWork.ShopRepository.FindByIdOrNull(shopGuid);
+            _shopDomain.ShoppingBagDomain.CheckDiscountPolicyWithoutUpdate(bag, shopGuid);
+            double totalPrice = _shopDomain.GetCartPrice(shop, bag.GetShoppingCartAndCreateIfNeededForGuestOnlyOrInBagDomain(shopGuid));
+            _shopDomain.ShoppingBagDomain.ClearAllDiscounts(bag, shopGuid);
+            return totalPrice;
+        }
 
         public bool AddProductToCart(Guid shopGuid, Guid shopProductGuid, int quantity)
         {

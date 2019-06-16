@@ -27,6 +27,7 @@ namespace ApplicationCore.Entities.Users
         void CloseShop(Guid shopGuid);
         void CloseShopPermanently(Guid shopGuid);
         bool PurchaseCart(Guid shopGuid);
+        double GetCartPrice(Guid shopGuid);
         bool RemoveProductFromCart(Guid shopGuid, Guid shopProductGuid);
         bool RemoveProductFromShop(Guid shopGuid, Guid shopProductGuid);
         bool RemoveShopManager(Guid shopGuid, Guid managerToRemoveGuid);

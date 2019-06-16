@@ -142,6 +142,11 @@ namespace ServiceLayer
             var userGuid = _sessionManager.ResolveCookie(cookie);
             return _serviceFacade.PurchaseCart(userGuid, shopGuid);
         }
+        public double GetCartPrice(Guid cookie, Guid shopGuid)
+        {
+            var userGuid = _sessionManager.ResolveCookie(cookie);
+            return _serviceFacade.GetCartPrice(userGuid, shopGuid);
+        }
 
         public Guid Register(Guid cookie, string username, string password)
         {

@@ -152,6 +152,10 @@ namespace ServiceLayer
         {
             return _domainLayerFacade.PurchaseCart(userIdentifier, shopGuid);
         }
+        public double GetCartPrice(UserIdentifier userIdentifier, Guid shopGuid)
+        {
+            return _domainLayerFacade.GetCartPrice(userIdentifier, shopGuid);
+        }
         #endregion
 
         #region Utils

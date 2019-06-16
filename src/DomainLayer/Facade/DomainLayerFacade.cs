@@ -148,6 +148,14 @@ namespace DomainLayer.Facade
             return _userDomain.GetUserObject(userIdentifier).PurchaseCart(shopGuid); ;
         }
 
+        public double GetCartPrice(UserIdentifier userIdentifier, Guid shopGuid)
+        {
+            VerifySystemIsInitialized();
+            _verifier.VerifyMe(MethodBase.GetCurrentMethod(), userIdentifier, shopGuid);
+            _logger.LogInformation($"{GetUserName(userIdentifier.Guid)} got cart price from shop {GetShopName(shopGuid)} successfuly.");
+            return _userDomain.GetUserObject(userIdentifier).GetCartPrice(shopGuid); ;
+        }
+
         public Guid Initialize(UserIdentifier userIdentifier, string username, string password)
         {
             username = username.ToLower();
@@ -378,7 +386,6 @@ namespace DomainLayer.Facade
         public ICollection<Tuple<Guid, ShopProduct, int>> GetPurchaseHistory(UserIdentifier userIdentifier)
         {
             VerifySystemIsInitialized();
-            _verifier.VerifyMe(MethodBase.GetCurrentMethod(), userIdentifier);
             _logger.LogInformation($"Got purchase history for {GetUserName(userIdentifier.Guid)}.");
             return _userDomain.GetUserObject(userIdentifier).GetPurchaseHistory();
         }

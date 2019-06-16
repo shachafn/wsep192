@@ -96,6 +96,10 @@ namespace ATBridge
         {
             return _serviceFacade.PurchaseCart(userGuid, shopGuid);
         }
+        public double GetCartPrice(Guid userGuid, Guid shopGuid)
+        {
+            return _serviceFacade.GetCartPrice(userGuid, shopGuid);
+        }
 
         public Guid Register(Guid userGuid, string username, string password)
         {

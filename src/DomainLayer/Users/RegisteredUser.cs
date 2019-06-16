@@ -180,8 +180,8 @@ namespace DomainLayer.Users
                 throw new IllegalOperationException("Tried to add new purchase policy to a shop that doesn't belong to him");
             }
             var res = shop.AddNewPurchasePolicy(newPolicy);
-            //if (!res.Equals(Guid.Empty))
-            //    _unitOfWork.ShopRepository.Update(shop);
+            if (!res.Equals(Guid.Empty))
+                _unitOfWork.ShopRepository.Update(shop);
             return res;
         }
 
@@ -193,8 +193,8 @@ namespace DomainLayer.Users
                 throw new IllegalOperationException("Tried to add new discount policy to a shop that doesn't belong to him");
             }
             var res = shop.AddNewDiscountPolicy(newPolicy);
-            //if (!res.Equals(Guid.Empty))
-            //    _unitOfWork.ShopRepository.Update(shop);
+            if (!res.Equals(Guid.Empty))
+                _unitOfWork.ShopRepository.Update(shop);
             return res;
         }
 

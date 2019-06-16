@@ -86,7 +86,7 @@ namespace Tests
         }
 
         //cookie tries to add benCookie and let him AppointManagers.
-        [Test]
+/*        [Test]
         public static void AddShopManagerAT_4()
         {
             UserAT.GenerateRandoms(out var cookie, out var username, out var password);
@@ -104,7 +104,7 @@ namespace Tests
             var lironGuid = UserAT.RegisterUser(lironCookie, lironUsername, lironPassword);
             bool res = Tester.PBridge.AddShopManager(benCookie, shopGuid, lironGuid, onlyAppointManagers);
             Assert.IsTrue(res);
-        }
+        }*/
 
         //anotherCookie tries to add benCookie and let him AppointManagers in the shop of cookie.
         //should fail
@@ -124,7 +124,7 @@ namespace Tests
             var benGuid = UserAT.RegisterUser(benCookie, benUsername, benPassword);
             UserAT.LoginUser(benCookie, benUsername, benPassword);
             List<bool> onlyAppointManagers = new List<bool> { false, false, false, true };
-            Assert.Throws<BadStateException>( ()=>Tester.PBridge.AddShopManager(anothercookie, shopGuid, benGuid, onlyAppointManagers));
+            Assert.Throws<NoPrivilegesException>( ()=>Tester.PBridge.AddShopManager(anothercookie, shopGuid, benGuid, onlyAppointManagers));
         }
 
         //cookie tries to add benCookie and let him AppointManagers but ben thinks he is

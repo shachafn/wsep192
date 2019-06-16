@@ -159,6 +159,13 @@ namespace DomainLayer.Facade
                 VerifyIntEqualOrGreaterThan0(availableQuantity - purchasedQuantity, new IllegalArgumentException());
             }
         }
+        public void GetCartPrice(UserIdentifier userIdentifier, Guid shopGuid)
+        {
+            //var user = VerifyLoggedInUser(userIdentifier.Guid, new UserNotFoundException());
+            var shop = VerifyShopExists(shopGuid, new ShopNotFoundException());
+            shop.VerifyShopIsActive();
+            var cart = GetCartExistsAndCreateIfNeeded(userIdentifier, shopGuid);
+        }
 
         /// <constraints>
         /// 1. checked
@@ -475,11 +482,22 @@ namespace DomainLayer.Facade
                     policy = new UserPurchasePolicy((string)field1, field2, (string)field3);
                     break;
                 case "Product purchase policy":
+                    /*
+                     field1 = product Guid
+                     field2 = arithmetic operator
+                     field3 = value
+                     field4 = description
+                     */
                     VerifyProductPurchasePolicy(new IllegalArgumentException(), field1, field2, field3, field4);
                     policy = new ProductPurchasePolicy((Guid)field1, GetArithmeticOperator((string)field2), (int)field3, (string)field4);
 
                     break;
                 case "Cart purchase policy":
+                    /*
+                     field1 = arithmetic operator
+                     field2 = sum of cart
+                     field3 = description
+                     */
                     if (!(typeof(int) == field2.GetType()))
                         throw new IllegalArgumentException("Invalid sum of cart");
                     policy = new CartPurchasePolicy((int)field2, GetArithmeticOperator((string)field1), (string)field3);
@@ -529,7 +547,7 @@ namespace DomainLayer.Facade
                     //field3 = discount percentage
                     //field4 = description
                     VerifyCartDiscountPolicy(new IllegalArgumentException(), field1, field2, field3, field4);
-                    policy = new CartDiscountPolicy(GetArithmeticOperator((string)field1), (double)field2, (int)field3, (string)field4);
+                    policy = new CartDiscountPolicy(GetArithmeticOperator((string)field1), Convert.ToDouble(field2), (int)field3, (string)field4);
                     break;
                 case "User discount policy":
                     //field1 = field name

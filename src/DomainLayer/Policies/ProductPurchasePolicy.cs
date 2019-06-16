@@ -28,7 +28,13 @@ namespace DomainLayer.Policies
 
         public bool CheckPolicy(ShoppingCart cart, Guid productGuid, int quantity, BaseUser user, IUnitOfWork unitOfWork)
         {
-            return productGuid.CompareTo(ProductGuid) == 0 ? Operator.IsValid(ExpectedQuantity, quantity) : true;
+            foreach (Tuple<ShopProduct, int> sp in cart.PurchasedProducts)
+            {
+                if (sp.Item1.Guid.Equals(ProductGuid))
+                    return Operator.IsValid(ExpectedQuantity, sp.Item2);
+                //return productGuid.CompareTo(ProductGuid) == 0 ? Operator.IsValid(ExpectedQuantity, quantity) : true;
+            }
+            return false;
         }
     }
 }

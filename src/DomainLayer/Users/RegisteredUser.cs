@@ -48,6 +48,28 @@ namespace DomainLayer.Users
             //External payment pay, if not true ---- rollback
             return true;
         }
+        public double GetCartPrice(Guid shopGuid)
+        {
+            var cart = _unitOfWork.BagRepository.Query()
+                .First(bag => bag.UserGuid.Equals(Guid))
+                .ShoppingCarts
+                .First(c => c.ShopGuid.Equals(shopGuid));
+
+            var shop = _unitOfWork.ShopRepository.FindByIdOrNull(shopGuid);
+
+            ShoppingCart tempCart = new ShoppingCart(cart.UserGuid, cart.ShopGuid);
+            foreach (Tuple<ShopProduct, int> record in cart.PurchasedProducts)
+            {
+                tempCart.PurchasedProducts.Add(record);
+            }
+
+            _shopDomain.ShoppingCartDomain.CheckDiscountPolicy(tempCart);
+            double totalPrice = _shopDomain.GetCartPrice(shop, tempCart);
+            tempCart.UserGuid = Guid.Empty;
+            tempCart.ShopGuid = Guid.Empty;
+            tempCart.PurchasedProducts.Clear();
+            return totalPrice;
+        }
 
         public bool AddProductToCart(Guid shopGuid, Guid shopProductGuid, int quantity)
         {

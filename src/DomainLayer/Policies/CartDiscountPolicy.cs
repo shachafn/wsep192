@@ -39,7 +39,8 @@ namespace DomainLayer.Policies
             double totalSum = 0;
             foreach (Tuple<ShopProduct, int> record in cart.PurchasedProducts)
             {
-                totalSum += (record.Item1.Price * record.Item2);
+                if(record.Item1.Price > 0)
+                    totalSum += (record.Item1.Price * record.Item2);
             }
             return totalSum;
         }
@@ -49,7 +50,7 @@ namespace DomainLayer.Policies
             if (CheckPolicy(cart, productGuid, quantity, user, unitOfWork))
             {
                 double totalSum = CalculateSumBeforeDiscount(cart);
-                double discountValue = -totalSum * (DiscountPercentage / 100);
+                double discountValue = -totalSum * (DiscountPercentage / 100.0);
                 if (discountValue == 0) return null;
                 Product discountProduct = new Product("Discount - cart", "Discount");
                 var discountShopProduct = new ShopProduct(discountProduct, discountValue, 1);

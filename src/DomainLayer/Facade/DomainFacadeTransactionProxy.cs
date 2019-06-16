@@ -817,7 +817,29 @@ namespace DomainLayer.Facade
                 throw new GeneralServerError("An error has occured. Please try again.", e);
             }
         }
-
+        public double GetCartPrice(UserIdentifier userIdentifier, Guid shopGuid)
+        {
+            var session = _unitOfWork.Context.StartSession();
+            try
+            {
+                session.StartTransaction();
+                var result = _domainLayerFacade.GetCartPrice(userIdentifier, shopGuid);
+                session.CommitTransaction();
+                return result;
+            }
+            catch (BaseException e)
+            {
+                session.AbortTransaction();
+                _logger.LogWarning("GetCartPrice Failed.", e);
+                throw e;
+            }
+            catch (Exception e)
+            {
+                session.AbortTransaction();
+                _logger.LogWarning("GetCartPrice Failed Due to unknown error.", e);
+                throw new GeneralServerError("An error has occured. Please try again.", e);
+            }
+        }
         public Guid Register(UserIdentifier userIdentifier, string username, string password)
         {
             var session = _unitOfWork.Context.StartSession();

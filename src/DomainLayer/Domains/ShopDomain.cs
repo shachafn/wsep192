@@ -197,7 +197,7 @@ namespace DomainLayer.Domains
                 //check purchase policies
                 var quantity = productAndAmountBought.Item2;
                 foreach (IPurchasePolicy policy in shop.PurchasePolicies)
-                    if (!policy.CheckPolicy(cart, productAndAmountBought.Item1.Guid, quantity, user, _unitOfWork))
+                    if (!policy.CheckPolicy(cart, productAndAmountBought.Item1.Guid, quantity, user, _unitOfWork) && !policyInCompound(shop,policy))
                         canPurchaseCart = false;
             }
             if (!canPurchaseCart)
@@ -222,12 +222,30 @@ namespace DomainLayer.Domains
                 }
 
             }
-            double total_price = cart.PurchasedProducts.Aggregate(0, (total, p) => total += (int)p.Item1.Price * p.Item2);
+            double total_price = cart.PurchasedProducts.Aggregate(0d, (total, p) => total += Convert.ToDouble(p.Item1.Price) * p.Item2);
             var newEvent = new PurchasedCartEvent(cart.UserGuid, cart.ShopGuid, total_price);
             newEvent.SetMessages(_unitOfWork);
             UpdateCenter.RaiseEvent(newEvent);
             cart.PurchaseCart();
             return true;
         }
+        private bool policyInCompound(Shop shop, IPurchasePolicy policy)
+        {
+            foreach(IPurchasePolicy p in shop.PurchasePolicies)
+            {
+                if(p.GetType() == typeof(CompositePurchasePolicy))
+                {
+                    if (((CompositePurchasePolicy)p).PurchasePolicy1.Guid.CompareTo(policy.Guid) == 0 || ((CompositePurchasePolicy)p).PurchasePolicy2.Guid.CompareTo(policy.Guid)==0)
+                        return true;
+                }
+            }
+            return false;
+        }
+        public double GetCartPrice(Shop shop, ShoppingCart cart)
+        {
+            double total_price = cart.PurchasedProducts.Aggregate(0d, (total, p) => total += Convert.ToDouble(p.Item1.Price) * p.Item2);
+            return total_price;
+        }
+
     }
 }

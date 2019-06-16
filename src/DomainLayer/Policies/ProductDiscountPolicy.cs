@@ -33,27 +33,36 @@ namespace DomainLayer.Policies
         //Discount by percentage only!
         public bool CheckPolicy(ShoppingCart cart, Guid productGuid, int quantity, BaseUser user, IUnitOfWork unitOfWork)
         {
+            foreach (Tuple<ShopProduct, int> sp in cart.PurchasedProducts)
+            {
+                if(sp.Item1.Guid.CompareTo(ProductGuid) == 0)
+                   return Operator.IsValid(ExpectedQuantitiy, quantity);
+            }
+            return false;
+        }
+            private bool CheckPolicyHelper(ShoppingCart cart, Guid productGuid, int quantity, BaseUser user, IUnitOfWork unitOfWork)
+        {
             return productGuid.CompareTo(ProductGuid) == 0 && Operator.IsValid(ExpectedQuantitiy, quantity);
         }
 
         public Tuple<ShopProduct, int> ApplyPolicy(ShoppingCart cart, Guid productGuid, int quantity
             , BaseUser user, IUnitOfWork unitOfWork)
         {
-            if (CheckPolicy(cart, productGuid, quantity, user, unitOfWork))
-            {
+            foreach(Tuple<ShopProduct,int> sp in cart.PurchasedProducts) {
+                if (!CheckPolicyHelper(cart, sp.Item1.Guid, sp.Item2, user, unitOfWork)) continue;
                 Product p = null;
                 Shop s = unitOfWork.ShopRepository.FindByIdOrNull(cart.ShopGuid);
                 double shopProductPrice = 0;
                 foreach (ShopProduct shopProduct in s.ShopProducts)
                 {
-                    if (shopProduct.Guid.CompareTo(productGuid) == 0)
+                    if (shopProduct.Guid.CompareTo(sp.Item1.Guid) == 0)
                     {
                         p = shopProduct.Product;
                         shopProductPrice = shopProduct.Price;
                         break;
                     }
                 }
-                double discountValue = -((double)DiscountPercentage / 100.0) * shopProductPrice;
+                double discountValue = -(DiscountPercentage / 100.0) * shopProductPrice;
                 if (discountValue == 0) return null;
                 Product discountProduct = new Product("Discount - " + p.Name, "Discount");
                 ShopProduct discountRecord = new ShopProduct(discountProduct, discountValue, 1);

@@ -10,9 +10,9 @@ namespace DomainLayer.Policies
     class CompositePurchasePolicy : IPurchasePolicy
     {
         public Guid Guid { get; private set; }
-        private IPurchasePolicy PurchasePolicy1 { get; }
+        public IPurchasePolicy PurchasePolicy1 { get; private set; }
         private ILogicOperator Operator { get; }
-        private IPurchasePolicy PurchasePolicy2 { get; }
+        public IPurchasePolicy PurchasePolicy2 { get; private set; }
         public string Description { get; }
 
 

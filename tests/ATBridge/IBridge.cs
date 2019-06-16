@@ -119,6 +119,7 @@ namespace ATBridge
         /////Implements General Requirement 2.8. Not entirely, only purchase of the entier bag.
         /////////////// REDO CONSTRAINTS, CHANGED FROM CART TO BAG ////////////////////////
         bool PurchaseCart(Guid cookie, Guid shopGuid);
+        double GetCartPrice(Guid cookie, Guid shopGuid);
         Guid GetUserGuid(string ownerName);
 
         /////Implements General Requirement 1.1

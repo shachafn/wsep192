@@ -326,7 +326,7 @@ namespace DomainLayer.Facade
             shop.VerifyShopProductExists(shopProductGuid, new ProductNotFoundException());
             VerifyIntGreaterThan0(quantity, new IllegalArgumentException());
             var cart = GetCartExistsAndCreateIfNeeded(userIdentifier, shopGuid);
-            VerifyShopProductDoesNotExist(cart, shopProductGuid, new ProductNotFoundException());
+            VerifyShopProductDoesNotExist(cart, shopProductGuid, new BrokenConstraintException());
         }
 
         /// <constraints>

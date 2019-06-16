@@ -16,7 +16,7 @@ using System.Reflection;
 
 namespace DomainLayer.Facade
 {
-    public class DomainLayerFacade
+    public class DomainLayerFacade : IDomainLayerFacade
     {
         IUserDomain _userDomain;
         DomainLayerFacadeVerifier _verifier;
@@ -492,7 +492,7 @@ namespace DomainLayer.Facade
             return purchasePoicyGuid;
         }
 
-        public IEnumerable<Tuple<ShoppingCart, IEnumerable<ShopProduct>>> GetUserBag(UserIdentifier userIdentifier, bool isGuest = false)
+        public IEnumerable<Tuple<ShoppingCart, IEnumerable<ShopProduct>>> GetUserBag(UserIdentifier userIdentifier)
         {
             VerifySystemIsInitialized();
             _logger.LogInformation($"Got purchase history for {GetUserName(userIdentifier.Guid)}.");
@@ -530,9 +530,9 @@ namespace DomainLayer.Facade
             _unitOfWork.ShopRepository.FindByIdOrNull(shopGuid).candidate = null;
         }
 
-        public bool IsUserAdmin(Guid id)
+        public bool IsUserAdmin(UserIdentifier userIdentifier)
         {
-            var user =_unitOfWork.BaseUserRepository.FindByIdOrNull(id);
+            var user =_unitOfWork.BaseUserRepository.FindByIdOrNull(userIdentifier.Guid);
             if (user!=null)
             {
                 return user.IsAdmin;

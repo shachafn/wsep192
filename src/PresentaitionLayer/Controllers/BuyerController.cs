@@ -1,8 +1,10 @@
 ﻿using ApplicationCore.Entitites;
+using ApplicationCore.Exceptions;
 using ApplicationCore.Interfaces.ServiceLayer;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
+using PresentaitionLayer.Models;
 using PresentaitionLayer.Models.BuyerModels;
 using PresentaitionLayer.Models.SellerModels;
 using System;
@@ -34,36 +36,103 @@ namespace PresentaitionLayer.Controllers
             ViewData["searched"] = searchstring;
             List<string> strings = new List<string>();
             strings.Add(searchstring);
-            var results =_serviceFacade.SearchProduct(new Guid(HttpContext.Session.Id), strings, "Name");
-            return View(results);
+
+            try
+            {
+                var results = _serviceFacade.SearchProduct(new Guid(HttpContext.Session.Id), strings, "Name");
+                return View(results);
+            }
+            catch(IllegalArgumentException)
+            {
+                var redirect = this.Url.Action("Index", "Buyer");
+                var message = new UserMessage(redirect, "Please do a valid search operation.");
+                return View("UserMessage", message);
+            }
+            catch (GeneralServerError)
+            {
+                var redirect = this.Url.Action("Index", "Buyer");
+                var message = new UserMessage(redirect, "An error has occured. Please refresh and try again.");
+                return View("UserMessage", message);
+            }
+            catch(DatabaseConnectionTimeoutException)
+            {
+                var redirect = this.Url.Action("Index", "Buyer");
+                var message = new UserMessage(redirect, "An error has occured. Please refresh and try again. (Database connection lost).");
+                return View("UserMessage", message);
+            }
         }
 
         [AllowAnonymous]
         public IActionResult Shops()
         {
-            var shops = _serviceFacade.GetAllShops(new Guid(HttpContext.Session.Id));
-            return View(shops);
+            try
+            {
+                var shops = _serviceFacade.GetAllShops(new Guid(HttpContext.Session.Id));
+                return View(shops);
+            }
+            catch (GeneralServerError)
+            {
+                var redirect = this.Url.Action("Index", "Buyer");
+                var message = new UserMessage(redirect, "An error has occured. Please refresh and try again.");
+                return View("UserMessage", message);
+            }
+            catch (DatabaseConnectionTimeoutException)
+            {
+                var redirect = this.Url.Action("Index", "Buyer");
+                var message = new UserMessage(redirect, "An error has occured. Please refresh and try again. (Database connection lost).");
+                return View("UserMessage", message);
+            }
         }
 
         [AllowAnonymous]
         public IActionResult ViewShop(string ShopId)
         {
-            var products = _serviceFacade.GetShopProducts(new Guid(HttpContext.Session.Id), new Guid(ShopId));
-            ViewData["ShopId"] = ShopId;
-            return View(products);
+            try
+            {
+                var products = _serviceFacade.GetShopProducts(new Guid(HttpContext.Session.Id), new Guid(ShopId));
+                ViewData["ShopId"] = ShopId;
+                return View(products);
+            }
+            catch (GeneralServerError)
+            {
+                var redirect = this.Url.Action("Index", "Buyer");
+                var message = new UserMessage(redirect, "An error has occured. Please refresh and try again.");
+                return View("UserMessage", message);
+            }
+            catch (DatabaseConnectionTimeoutException)
+            {
+                var redirect = this.Url.Action("Index", "Buyer");
+                var message = new UserMessage(redirect, "An error has occured. Please refresh and try again. (Database connection lost).");
+                return View("UserMessage", message);
+            }
         }
 
         [AllowAnonymous]
         public IActionResult Policies(string ShopId)
         {
-            ViewData["ShopId"] = ShopId;
-            var shops = _serviceFacade.GetUserShops(new Guid(HttpContext.Session.Id));
-            var shop = shops.FirstOrDefault(currshop => currshop.Guid.Equals(new Guid(ShopId)));
-            PoliciesModel model = new PoliciesModel();
-            model.PurchasePolicies = shop.PurchasePolicies;
-            model.DiscountPolicies = shop.DiscountPolicies;
-            model.name = shop.ShopName;
-            return View(model);
+            try
+            {
+                ViewData["ShopId"] = ShopId;
+                var shops = _serviceFacade.GetUserShops(new Guid(HttpContext.Session.Id));
+                var shop = shops.FirstOrDefault(currshop => currshop.Guid.Equals(new Guid(ShopId)));
+                PoliciesModel model = new PoliciesModel();
+                model.PurchasePolicies = shop.PurchasePolicies;
+                model.DiscountPolicies = shop.DiscountPolicies;
+                model.name = shop.ShopName;
+                return View(model);
+            }
+            catch (GeneralServerError)
+            {
+                var redirect = this.Url.Action("Index", "Buyer");
+                var message = new UserMessage(redirect, "An error has occured. Please refresh and try again.");
+                return View("UserMessage", message);
+            }
+            catch (DatabaseConnectionTimeoutException)
+            {
+                var redirect = this.Url.Action("Index", "Buyer");
+                var message = new UserMessage(redirect, "An error has occured. Please refresh and try again. (Database connection lost).");
+                return View("UserMessage", message);
+            }
         }
         /*  [AllowAnonymous]
           public IActionResult Details(Guid ItemId,Guid)
@@ -76,45 +145,150 @@ namespace PresentaitionLayer.Controllers
         [HttpPost]
         public IActionResult AddToCart( int Quantity,string ShopId,string ItemId)
         {
-            _serviceFacade.AddProductToCart(new Guid(HttpContext.Session.Id), new Guid(ShopId), new Guid(ItemId), Quantity);
-            if(User.IsInRole("Buyer"))
+            try
             {
-                return RedirectToAction("Index", "Buyer");
+                _serviceFacade.AddProductToCart(new Guid(HttpContext.Session.Id), new Guid(ShopId), new Guid(ItemId), Quantity);
+                if (User.IsInRole("Buyer"))
+                {
+                    return RedirectToAction("Index", "Buyer");
+                }
+                return RedirectToAction("Index", "Home");
             }
-            return RedirectToAction("Index", "Home");
+            catch (BrokenConstraintException)
+            {
+                var redirect = this.Url.Action("Index", "Buyer");
+                var message = new UserMessage(redirect, "Cant buy the same product.");
+                return View("UserMessage", message);
+            }
+            catch (IllegalArgumentException)
+            {
+                var redirect = this.Url.Action("Index", "Buyer");
+                var message = new UserMessage(redirect, "Please buy more than 0 products.");
+                return View("UserMessage", message);
+            }
+            catch (ShopStateException)
+            {
+                var redirect = this.Url.Action("Index", "Buyer");
+                var message = new UserMessage(redirect, "Cant add products to cart from a closed shop.");
+                return View("UserMessage", message);
+            }
+            catch (GeneralServerError)
+            {
+                var redirect = this.Url.Action("Index", "Buyer");
+                var message = new UserMessage(redirect, "An error has occured. Please refresh and try again.");
+                return View("UserMessage", message);
+            }
+            catch (DatabaseConnectionTimeoutException)
+            {
+                var redirect = this.Url.Action("Index", "Buyer");
+                var message = new UserMessage(redirect, "An error has occured. Please refresh and try again. (Database connection lost).");
+                return View("UserMessage", message);
+            }
         }
 
         [AllowAnonymous]
         public IActionResult ShoppingCart()
         {
-            IEnumerable<Tuple<ShoppingCart, IEnumerable<ShopProduct>>> bag = _serviceFacade.GetUserBag(new Guid(HttpContext.Session.Id));
-            CheckoutModel model = new CheckoutModel(bag);
-            return View(model);
+            try
+            {
+                IEnumerable<Tuple<ShoppingCart, IEnumerable<ShopProduct>>> bag = _serviceFacade.GetUserBag(new Guid(HttpContext.Session.Id));
+                CheckoutModel model = new CheckoutModel(bag);
+                return View(model);
+            }
+            catch (GeneralServerError)
+            {
+                var redirect = this.Url.Action("Index", "Buyer");
+                var message = new UserMessage(redirect, "An error has occured. Please refresh and try again.");
+                return View("UserMessage", message);
+            }
+            catch (DatabaseConnectionTimeoutException)
+            {
+                var redirect = this.Url.Action("Index", "Buyer");
+                var message = new UserMessage(redirect, "An error has occured. Please refresh and try again. (Database connection lost).");
+                return View("UserMessage", message);
+            }
         }
 
         [HttpPost]
         [AllowAnonymous]
         public IActionResult BuyNow(string ShopId)
         {
-            _serviceFacade.PurchaseCart(new Guid(HttpContext.Session.Id),new Guid(ShopId));
-            return RedirectToAction("ShoppingCart","Buyer");
+            try
+            {
+                _serviceFacade.PurchaseCart(new Guid(HttpContext.Session.Id), new Guid(ShopId));
+                return RedirectToAction("ShoppingCart", "Buyer");
+            }
+            catch (GeneralServerError)
+            {
+                var redirect = this.Url.Action("Index", "Buyer");
+                var message = new UserMessage(redirect, "An error has occured. Please refresh and try again.");
+                return View("UserMessage", message);
+            }
+            catch (DatabaseConnectionTimeoutException)
+            {
+                var redirect = this.Url.Action("Index", "Buyer");
+                var message = new UserMessage(redirect, "An error has occured. Please refresh and try again. (Database connection lost).");
+                return View("UserMessage", message);
+            }
         }
 
         [AllowAnonymous]
         [HttpPost]
         public IActionResult DeleteCartProduct(string shopGuid, string shopProductGuid)
         {
-            _serviceFacade.RemoveProductFromCart(new Guid(HttpContext.Session.Id), new Guid(shopGuid), new Guid(shopProductGuid));
-            return RedirectToAction("ShoppingCart", "Buyer");
+            try
+            {
+                _serviceFacade.RemoveProductFromCart(new Guid(HttpContext.Session.Id), new Guid(shopGuid), new Guid(shopProductGuid));
+                return RedirectToAction("ShoppingCart", "Buyer");
+            }
+            catch(ShopStateException)
+            {
+                var redirect = this.Url.Action("Index", "Buyer");
+                var message = new UserMessage(redirect, "Cannot edit a cart of a closed shop.");
+                return View("UserMessage", message);
+            }
+            catch (GeneralServerError)
+            {
+                var redirect = this.Url.Action("Index", "Buyer");
+                var message = new UserMessage(redirect, "An error has occured. Please refresh and try again.");
+                return View("UserMessage", message);
+            }
+            catch (DatabaseConnectionTimeoutException)
+            {
+                var redirect = this.Url.Action("Index", "Buyer");
+                var message = new UserMessage(redirect, "An error has occured. Please refresh and try again. (Database connection lost).");
+                return View("UserMessage", message);
+            }
         }
 
         [AllowAnonymous]
         [HttpPost]
         public IActionResult EditCartProduct(string shopGuid, string shopProductGuid, string newAmount)
         {
-            _serviceFacade.EditProductInCart(new Guid(HttpContext.Session.Id), new Guid(shopGuid),
-                new Guid(shopProductGuid), int.Parse(newAmount));
-            return RedirectToAction("ShoppingCart", "Buyer");
+            try
+            {
+                _serviceFacade.EditProductInCart(new Guid(HttpContext.Session.Id), new Guid(shopGuid),
+                    new Guid(shopProductGuid), int.Parse(newAmount));
+                return RedirectToAction("ShoppingCart", "Buyer");
+            }
+            catch(ShopStateException)
+            {
+                var redirect = this.Url.Action("Index", "Buyer");
+                var message = new UserMessage(redirect, "Cannot edit a cart of a closed shop.");
+                return View("UserMessage", message);
+            }
+            catch (GeneralServerError)
+            {
+                var redirect = this.Url.Action("Index", "Buyer");
+                var message = new UserMessage(redirect, "An error has occured. Please refresh and try again.");
+                return View("UserMessage", message);
+            }
+            catch (DatabaseConnectionTimeoutException)
+            {
+                var redirect = this.Url.Action("Index", "Buyer");
+                var message = new UserMessage(redirect, "An error has occured. Please refresh and try again. (Database connection lost).");
+                return View("UserMessage", message);
+            }
         }
     }
 }

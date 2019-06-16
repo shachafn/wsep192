@@ -1,8 +1,10 @@
 ﻿using ApplicationCore.Entitites;
+using ApplicationCore.Exceptions;
 using ApplicationCore.Interfaces.ServiceLayer;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
+using PresentaitionLayer.Models;
 using PresentaitionLayer.Models.SellerModels;
 using System;
 using System.Collections.Generic;
@@ -26,45 +28,120 @@ namespace PresentaitionLayer.Controllers
         }
         public IActionResult MyShops()
         {
-            var shops = _serviceFacade.GetUserShops(new Guid(HttpContext.Session.Id));
-            return View(shops);
+            try
+            {
+                var shops = _serviceFacade.GetUserShops(new Guid(HttpContext.Session.Id));
+                return View(shops);
+            }
+            catch (GeneralServerError)
+            {
+                var redirect = this.Url.Action("Index", "Seller");
+                var message = new UserMessage(redirect, "An error has occured. Please refresh and try again.");
+                return View("UserMessage", message);
+            }
+            catch (DatabaseConnectionTimeoutException)
+            {
+                var redirect = this.Url.Action("Index", "Seller");
+                var message = new UserMessage(redirect, "An error has occured. Please refresh and try again. (Database connection lost).");
+                return View("UserMessage", message);
+            }
         }
 
         [HttpPost]
         public IActionResult OpenShop(string ShopName)
         {
-            _serviceFacade.OpenShop(new Guid(HttpContext.Session.Id),ShopName);
-            return RedirectToAction("MyShops", "Seller");
+            try
+            {
+                _serviceFacade.OpenShop(new Guid(HttpContext.Session.Id), ShopName);
+                return RedirectToAction("MyShops", "Seller");
+            }
+            catch (GeneralServerError)
+            {
+                var redirect = this.Url.Action("Index", "Seller");
+                var message = new UserMessage(redirect, "An error has occured. Please refresh and try again.");
+                return View("UserMessage", message);
+            }
+            catch (DatabaseConnectionTimeoutException)
+            {
+                var redirect = this.Url.Action("Index", "Seller");
+                var message = new UserMessage(redirect, "An error has occured. Please refresh and try again. (Database connection lost).");
+                return View("UserMessage", message);
+            }
         }
 
         public IActionResult ReOpenShop(string shopId)
         {
-            _serviceFacade.ReopenShop(new Guid(HttpContext.Session.Id), new Guid(shopId));
-            return RedirectToAction("MyShops", "Seller");
+            try
+            {
+                _serviceFacade.ReopenShop(new Guid(HttpContext.Session.Id), new Guid(shopId));
+                return RedirectToAction("MyShops", "Seller");
+            }
+            catch (GeneralServerError)
+            {
+                var redirect = this.Url.Action("Index", "Seller");
+                var message = new UserMessage(redirect, "An error has occured. Please refresh and try again.");
+                return View("UserMessage", message);
+            }
+            catch (DatabaseConnectionTimeoutException)
+            {
+                var redirect = this.Url.Action("Index", "Seller");
+                var message = new UserMessage(redirect, "An error has occured. Please refresh and try again. (Database connection lost).");
+                return View("UserMessage", message);
+            }
         }
         public IActionResult CloseShop(string shopId)
         {
-            _serviceFacade.CloseShop(new Guid(HttpContext.Session.Id), new Guid(shopId));
-            return RedirectToAction("MyShops", "Seller");
+            try
+            {
+                _serviceFacade.CloseShop(new Guid(HttpContext.Session.Id), new Guid(shopId));
+                return RedirectToAction("MyShops", "Seller");
+            }
+            catch (GeneralServerError)
+            {
+                var redirect = this.Url.Action("Index", "Seller");
+                var message = new UserMessage(redirect, "An error has occured. Please refresh and try again.");
+                return View("UserMessage", message);
+            }
+            catch (DatabaseConnectionTimeoutException)
+            {
+                var redirect = this.Url.Action("Index", "Seller");
+                var message = new UserMessage(redirect, "An error has occured. Please refresh and try again. (Database connection lost).");
+                return View("UserMessage", message);
+            }
         }
         // [HttpPost]
         public IActionResult Manage(string shopId)
         {
-            ViewData["ShopId"] = shopId;
-            ViewData["UserName"] = User.Identity.Name;
-            var shops = _serviceFacade.GetUserShops(new Guid(HttpContext.Session.Id));
-            var shop = shops.FirstOrDefault(currshop => currshop.Guid.Equals(new Guid(shopId)));
-            ShopManageIndexModel model = new ShopManageIndexModel(shop)
+            try
             {
-                Owners = GetOwnerNames(shop),
-                Managers = GetManagerNames(shop)
-            };
-            if (shop.candidate != null)
-            {
-                model.OwnerCandidate = (_serviceFacade.GetUserName(shop.candidate.OwnerGuid), _serviceFacade.GetUserName(shop.candidate.AppointerGuid));
+                ViewData["ShopId"] = shopId;
+                ViewData["UserName"] = User.Identity.Name;
+                var shops = _serviceFacade.GetUserShops(new Guid(HttpContext.Session.Id));
+                var shop = shops.FirstOrDefault(currshop => currshop.Guid.Equals(new Guid(shopId)));
+                ShopManageIndexModel model = new ShopManageIndexModel(shop)
+                {
+                    Owners = GetOwnerNames(shop),
+                    Managers = GetManagerNames(shop)
+                };
+                if (shop.candidate != null)
+                {
+                    model.OwnerCandidate = (_serviceFacade.GetUserName(shop.candidate.OwnerGuid), _serviceFacade.GetUserName(shop.candidate.AppointerGuid));
+                }
+                model.CreatorName = _serviceFacade.GetUserName(shop.Creator.OwnerGuid);
+                return View(model);
             }
-            model.CreatorName = _serviceFacade.GetUserName(shop.Creator.OwnerGuid);
-            return View(model);
+            catch (GeneralServerError)
+            {
+                var redirect = this.Url.Action("Index", "Seller");
+                var message = new UserMessage(redirect, "An error has occured. Please refresh and try again.");
+                return View("UserMessage", message);
+            }
+            catch (DatabaseConnectionTimeoutException)
+            {
+                var redirect = this.Url.Action("Index", "Seller");
+                var message = new UserMessage(redirect, "An error has occured. Please refresh and try again. (Database connection lost).");
+                return View("UserMessage", message);
+            }
         }
         private List<(string, string,Guid)> GetOwnerNames(Shop shop)
         {
@@ -87,15 +164,51 @@ namespace PresentaitionLayer.Controllers
         }
         public IActionResult Products(string ShopId)
         {
-            var products = _serviceFacade.GetShopProducts(new Guid(HttpContext.Session.Id), new Guid(ShopId));
-            ViewData["ShopId"] = ShopId;
-            return View(products);
+            try
+            {
+                var products = _serviceFacade.GetShopProducts(new Guid(HttpContext.Session.Id), new Guid(ShopId));
+                ViewData["ShopId"] = ShopId;
+                return View(products);
+            }
+            catch (GeneralServerError)
+            {
+                var redirect = this.Url.Action("Index", "Seller");
+                var message = new UserMessage(redirect, "An error has occured. Please refresh and try again.");
+                return View("UserMessage", message);
+            }
+            catch (DatabaseConnectionTimeoutException)
+            {
+                var redirect = this.Url.Action("Index", "Seller");
+                var message = new UserMessage(redirect, "An error has occured. Please refresh and try again. (Database connection lost).");
+                return View("UserMessage", message);
+            }
         }
         [HttpPost]
         public IActionResult CreateItem(string ProductName,double Price,int StoredQuantity,string Category, string shopId)
         {
-            _serviceFacade.AddProductToShop(new Guid(HttpContext.Session.Id), new Guid(shopId),ProductName,Category,Price, StoredQuantity);
-            return RedirectToAction("Products","Seller",new { ShopId=shopId});
+            try
+            {
+                _serviceFacade.AddProductToShop(new Guid(HttpContext.Session.Id), new Guid(shopId), ProductName, Category, Price, StoredQuantity);
+                return RedirectToAction("Products", "Seller", new { ShopId = shopId });
+            }
+            catch(IllegalArgumentException)
+            {
+                var redirect = this.Url.Action("Index", "Seller");
+                var message = new UserMessage(redirect, "Please fill in all required fields in a valid manner.");
+                return View("UserMessage", message);
+            }
+            catch (GeneralServerError)
+            {
+                var redirect = this.Url.Action("Index", "Seller");
+                var message = new UserMessage(redirect, "An error has occured. Please refresh and try again.");
+                return View("UserMessage", message);
+            }
+            catch (DatabaseConnectionTimeoutException)
+            {
+                var redirect = this.Url.Action("Index", "Seller");
+                var message = new UserMessage(redirect, "An error has occured. Please refresh and try again. (Database connection lost).");
+                return View("UserMessage", message);
+            }
         }
 
         [HttpPost]
@@ -116,48 +229,144 @@ namespace PresentaitionLayer.Controllers
         [HttpPost]
         public IActionResult PostEditItem(ShopProduct product,string ShopId)
         {
-            ViewData["ShopId"] = ShopId;
-            _serviceFacade.EditProductInShop(new Guid(HttpContext.Session.Id), new Guid(ShopId), product.Guid,product.Price,product.Quantity);
-            return RedirectToAction("Products","Seller", new { ShopId = ShopId});
+            try
+            {
+                ViewData["ShopId"] = ShopId;
+                _serviceFacade.EditProductInShop(new Guid(HttpContext.Session.Id), new Guid(ShopId), product.Guid, product.Price, product.Quantity);
+                return RedirectToAction("Products", "Seller", new { ShopId = ShopId });
+            }
+            catch (IllegalArgumentException)
+            {
+                var redirect = this.Url.Action("Index", "Seller");
+                var message = new UserMessage(redirect, "Please fill in all required fields in a valid manner.");
+                return View("UserMessage", message);
+            }
+            catch (GeneralServerError)
+            {
+                var redirect = this.Url.Action("Index", "Seller");
+                var message = new UserMessage(redirect, "An error has occured. Please refresh and try again.");
+                return View("UserMessage", message);
+            }
+            catch (DatabaseConnectionTimeoutException)
+            {
+                var redirect = this.Url.Action("Index", "Seller");
+                var message = new UserMessage(redirect, "An error has occured. Please refresh and try again. (Database connection lost).");
+                return View("UserMessage", message);
+            }
         }
         [HttpPost]
         public IActionResult DeleteItem(string ShopId, string ProductId)
         {
-            _serviceFacade.RemoveProductFromShop(new Guid(HttpContext.Session.Id), new Guid(ShopId), new Guid(ProductId));
-            return RedirectToAction("Products", "Seller", new { ShopId = ShopId });
+            try
+            {
+                _serviceFacade.RemoveProductFromShop(new Guid(HttpContext.Session.Id), new Guid(ShopId), new Guid(ProductId));
+                return RedirectToAction("Products", "Seller", new { ShopId = ShopId });
+            }
+            catch (GeneralServerError)
+            {
+                var redirect = this.Url.Action("Index", "Seller");
+                var message = new UserMessage(redirect, "An error has occured. Please refresh and try again.");
+                return View("UserMessage", message);
+            }
+            catch (DatabaseConnectionTimeoutException)
+            {
+                var redirect = this.Url.Action("Index", "Seller");
+                var message = new UserMessage(redirect, "An error has occured. Please refresh and try again. (Database connection lost).");
+                return View("UserMessage", message);
+            }
         }
 
         
         public IActionResult Policies(string ShopId)
         {
-            ViewData["ShopId"] = ShopId;
-            var shops = _serviceFacade.GetUserShops(new Guid(HttpContext.Session.Id));
-            var shop = shops.FirstOrDefault(currshop => currshop.Guid.Equals(new Guid(ShopId)));
-            PoliciesModel model = new PoliciesModel();
-            model.PurchasePolicies = shop.PurchasePolicies;
-            model.DiscountPolicies = shop.DiscountPolicies;
-            model.name = shop.ShopName;
-            return View(model);
+            try
+            {
+                ViewData["ShopId"] = ShopId;
+                var shops = _serviceFacade.GetUserShops(new Guid(HttpContext.Session.Id));
+                var shop = shops.FirstOrDefault(currshop => currshop.Guid.Equals(new Guid(ShopId)));
+                PoliciesModel model = new PoliciesModel();
+                model.PurchasePolicies = shop.PurchasePolicies;
+                model.DiscountPolicies = shop.DiscountPolicies;
+                model.name = shop.ShopName;
+                return View(model);
+            }
+            catch (GeneralServerError)
+            {
+                var redirect = this.Url.Action("Index", "Seller");
+                var message = new UserMessage(redirect, "An error has occured. Please refresh and try again.");
+                return View("UserMessage", message);
+            }
+            catch (DatabaseConnectionTimeoutException)
+            {
+                var redirect = this.Url.Action("Index", "Seller");
+                var message = new UserMessage(redirect, "An error has occured. Please refresh and try again. (Database connection lost).");
+                return View("UserMessage", message);
+            }
         }
         [HttpPost]
         public IActionResult AddCartDiscountPolicy(string Description, string Sign, int Than, int Percent, string ShopId)
         {
-            _serviceFacade.AddNewDiscountPolicy(new Guid(HttpContext.Session.Id), new Guid(ShopId), (object)"Cart discount policy", (object)Sign, (object)Than, (object)Percent, (object)Description,(object)null);
-            return RedirectToAction("Policies", "Seller", new { ShopId });
+            try
+            {
+                _serviceFacade.AddNewDiscountPolicy(new Guid(HttpContext.Session.Id), new Guid(ShopId), (object)"Cart discount policy", (object)Sign, (object)Than, (object)Percent, (object)Description, (object)null);
+                return RedirectToAction("Policies", "Seller", new { ShopId });
+            }
+            catch (GeneralServerError)
+            {
+                var redirect = this.Url.Action("Index", "Seller");
+                var message = new UserMessage(redirect, "An error has occured. Please refresh and try again.");
+                return View("UserMessage", message);
+            }
+            catch (DatabaseConnectionTimeoutException)
+            {
+                var redirect = this.Url.Action("Index", "Seller");
+                var message = new UserMessage(redirect, "An error has occured. Please refresh and try again. (Database connection lost).");
+                return View("UserMessage", message);
+            }
         }
 
         [HttpPost]
         public IActionResult AddCompoundDiscountPolicy(string Description, string guid1,string Sign, string guid2, int Percent, string ShopId)
         {
-            _serviceFacade.AddNewDiscountPolicy(new Guid(HttpContext.Session.Id), new Guid(ShopId), (object)"Compound discount policy",(object) new Guid(guid1),(object)Sign, (object)new Guid(guid1), (object)Percent, (object)Description);
-            return RedirectToAction("Policies", "Seller", new {  ShopId });
+            try
+            {
+                _serviceFacade.AddNewDiscountPolicy(new Guid(HttpContext.Session.Id), new Guid(ShopId), (object)"Compound discount policy", (object)new Guid(guid1), (object)Sign, (object)new Guid(guid1), (object)Percent, (object)Description);
+                return RedirectToAction("Policies", "Seller", new { ShopId });
+            }
+            catch (GeneralServerError)
+            {
+                var redirect = this.Url.Action("Index", "Seller");
+                var message = new UserMessage(redirect, "An error has occured. Please refresh and try again.");
+                return View("UserMessage", message);
+            }
+            catch (DatabaseConnectionTimeoutException)
+            {
+                var redirect = this.Url.Action("Index", "Seller");
+                var message = new UserMessage(redirect, "An error has occured. Please refresh and try again. (Database connection lost).");
+                return View("UserMessage", message);
+            }
         }
 
         [HttpPost]
         public IActionResult AddCompoundPurchasePolicy(string Description, string guid1, string Sign, string guid2, int Percent, string ShopId)
         {
-            _serviceFacade.AddNewPurchasePolicy(new Guid(HttpContext.Session.Id), new Guid(ShopId), (object)"Compound discount policy", (object)new Guid(guid1), (object)Sign, (object)new Guid(guid1), (object)Description);
-            return RedirectToAction("Policies", "Seller", new { ShopId = ShopId });
+            try
+            {
+                _serviceFacade.AddNewPurchasePolicy(new Guid(HttpContext.Session.Id), new Guid(ShopId), (object)"Compound discount policy", (object)new Guid(guid1), (object)Sign, (object)new Guid(guid1), (object)Description);
+                return RedirectToAction("Policies", "Seller", new { ShopId = ShopId });
+            }
+            catch (GeneralServerError)
+            {
+                var redirect = this.Url.Action("Index", "Seller");
+                var message = new UserMessage(redirect, "An error has occured. Please refresh and try again.");
+                return View("UserMessage", message);
+            }
+            catch (DatabaseConnectionTimeoutException)
+            {
+                var redirect = this.Url.Action("Index", "Seller");
+                var message = new UserMessage(redirect, "An error has occured. Please refresh and try again. (Database connection lost).");
+                return View("UserMessage", message);
+            }
         }
         /*
                 [HttpPost]
@@ -177,54 +386,165 @@ namespace PresentaitionLayer.Controllers
         [HttpPost]
         public IActionResult AddProductPurchasePolicies(string Description,string Sign,int Than, string ProductId,string ShopId)
         {
-            _serviceFacade.AddNewPurchasePolicy(new Guid(HttpContext.Session.Id), new Guid(ShopId), (object)"Product purchase policy",(object)new Guid(ProductId), (object)Sign, (object)Than, (object)Description);
-            return RedirectToAction("Products", "Seller", new { ShopId });
+            try
+            {
+                _serviceFacade.AddNewPurchasePolicy(new Guid(HttpContext.Session.Id), new Guid(ShopId), (object)"Product purchase policy", (object)new Guid(ProductId), (object)Sign, (object)Than, (object)Description);
+                return RedirectToAction("Products", "Seller", new { ShopId });
+            }
+            catch (GeneralServerError)
+            {
+                var redirect = this.Url.Action("Index", "Seller");
+                var message = new UserMessage(redirect, "An error has occured. Please refresh and try again.");
+                return View("UserMessage", message);
+            }
+            catch (DatabaseConnectionTimeoutException)
+            {
+                var redirect = this.Url.Action("Index", "Seller");
+                var message = new UserMessage(redirect, "An error has occured. Please refresh and try again. (Database connection lost).");
+                return View("UserMessage", message);
+            }
         }
 
         [HttpPost]
         public IActionResult AddProductDiscountPolicies(string Description, string Sign, int Than,int Percent, string ProductId, string ShopId)
         {
-            _serviceFacade.AddNewDiscountPolicy(new Guid(HttpContext.Session.Id), new Guid(ShopId), (object)"Product discount policy", (object)new Guid(ProductId), (object)Sign, (object)Than,(object)Percent, (object)Description);
-            return RedirectToAction("Products", "Seller", new {  ShopId });
+            try
+            {
+                _serviceFacade.AddNewDiscountPolicy(new Guid(HttpContext.Session.Id), new Guid(ShopId), (object)"Product discount policy", (object)new Guid(ProductId), (object)Sign, (object)Than, (object)Percent, (object)Description);
+                return RedirectToAction("Products", "Seller", new { ShopId });
+            }
+            catch (GeneralServerError)
+            {
+                var redirect = this.Url.Action("Index", "Seller");
+                var message = new UserMessage(redirect, "An error has occured. Please refresh and try again.");
+                return View("UserMessage", message);
+            }
+            catch (DatabaseConnectionTimeoutException)
+            {
+                var redirect = this.Url.Action("Index", "Seller");
+                var message = new UserMessage(redirect, "An error has occured. Please refresh and try again. (Database connection lost).");
+                return View("UserMessage", message);
+            }
         }
 
         [HttpPost]
         public IActionResult DeleteOwner(string OwnerId, string ShopId)
         {
-            _serviceFacade.CascadeRemoveShopOwner(new Guid(HttpContext.Session.Id), new Guid(ShopId), new Guid(OwnerId));
-            return RedirectToAction("Manage", "Seller", new {  ShopId });
+            try
+            {
+                _serviceFacade.CascadeRemoveShopOwner(new Guid(HttpContext.Session.Id), new Guid(ShopId), new Guid(OwnerId));
+                return RedirectToAction("Manage", "Seller", new { ShopId });
+            }
+            catch (GeneralServerError)
+            {
+                var redirect = this.Url.Action("Index", "Seller");
+                var message = new UserMessage(redirect, "An error has occured. Please refresh and try again.");
+                return View("UserMessage", message);
+            }
+            catch (DatabaseConnectionTimeoutException)
+            {
+                var redirect = this.Url.Action("Index", "Seller");
+                var message = new UserMessage(redirect, "An error has occured. Please refresh and try again. (Database connection lost).");
+                return View("UserMessage", message);
+            }
         }
 
         [HttpPost]
         public IActionResult AddOwner(string OwnerName, string ShopId)
         {
-            Guid OwnerId = _serviceFacade.GetUserGuid(OwnerName); //need to adress the empty guid thingy
-            _serviceFacade.AddShopOwner(new Guid(HttpContext.Session.Id), new Guid(ShopId), OwnerId);
-            return RedirectToAction("Manage", "Seller", new { ShopId });
+            try
+            {
+                Guid OwnerId = _serviceFacade.GetUserGuid(OwnerName); //need to adress the empty guid thingy
+                _serviceFacade.AddShopOwner(new Guid(HttpContext.Session.Id), new Guid(ShopId), OwnerId);
+                return RedirectToAction("Manage", "Seller", new { ShopId });
+            }
+            catch (GeneralServerError)
+            {
+                var redirect = this.Url.Action("Index", "Seller");
+                var message = new UserMessage(redirect, "An error has occured. Please refresh and try again.");
+                return View("UserMessage", message);
+            }
+            catch (DatabaseConnectionTimeoutException)
+            {
+                var redirect = this.Url.Action("Index", "Seller");
+                var message = new UserMessage(redirect, "An error has occured. Please refresh and try again. (Database connection lost).");
+                return View("UserMessage", message);
+            }
         }
 
         public IActionResult AddShopManager(string ManagerName, string ShopId, bool manageProducts = false,
             bool manageShopState = false, bool managePolicies = false, bool appointManagers = false)
         {
-            Guid OwnerId = _serviceFacade.GetUserGuid(ManagerName); //need to adress the empty guid thingy
-            ICollection<bool> privileges = new List<bool>
+            try
             {
+                Guid OwnerId = _serviceFacade.GetUserGuid(ManagerName); //need to adress the empty guid thingy
+                ICollection<bool> privileges = new List<bool>
+                {
                 manageProducts, manageShopState, managePolicies, appointManagers
-            };
-            _serviceFacade.AddShopManager(new Guid(HttpContext.Session.Id), new Guid(ShopId), OwnerId, privileges.ToList());
-            return RedirectToAction("Manage", "Seller", new { ShopId });
+                };
+                _serviceFacade.AddShopManager(new Guid(HttpContext.Session.Id), new Guid(ShopId), OwnerId, privileges.ToList());
+                return RedirectToAction("Manage", "Seller", new { ShopId });
+            }
+            catch(BrokenConstraintException)
+            {
+                var redirect = this.Url.Action("Index", "Seller");
+                var message = new UserMessage(redirect, "User is already a manager.");
+                return View("UserMessage", message);
+            }
+            catch (GeneralServerError)
+            {
+                var redirect = this.Url.Action("Index", "Seller");
+                var message = new UserMessage(redirect, "An error has occured. Please refresh and try again.");
+                return View("UserMessage", message);
+            }
+            catch (DatabaseConnectionTimeoutException)
+            {
+                var redirect = this.Url.Action("Index", "Seller");
+                var message = new UserMessage(redirect, "An error has occured. Please refresh and try again. (Database connection lost).");
+                return View("UserMessage", message);
+            }
         }
 
         public IActionResult DeleteManager(string ManagerId, string ShopId)
         {
-            _serviceFacade.RemoveShopManager(new Guid(HttpContext.Session.Id), new Guid(ShopId), new Guid(ManagerId));
-            return RedirectToAction("Manage", "Seller", new { ShopId });
+            try
+            {
+                _serviceFacade.RemoveShopManager(new Guid(HttpContext.Session.Id), new Guid(ShopId), new Guid(ManagerId));
+                return RedirectToAction("Manage", "Seller", new { ShopId });
+            }
+            catch (GeneralServerError)
+            {
+                var redirect = this.Url.Action("Index", "Seller");
+                var message = new UserMessage(redirect, "An error has occured. Please refresh and try again.");
+                return View("UserMessage", message);
+            }
+            catch (DatabaseConnectionTimeoutException)
+            {
+                var redirect = this.Url.Action("Index", "Seller");
+                var message = new UserMessage(redirect, "An error has occured. Please refresh and try again. (Database connection lost).");
+                return View("UserMessage", message);
+            }
         }
 
         public IActionResult CancelOwnerAssignment(string ShopId)
         {
-            _serviceFacade.cancelOwnerAssignment(new Guid(HttpContext.Session.Id), new Guid(ShopId));
-            return RedirectToAction("Manage", "Seller", new { ShopId });
+            try
+            {
+                _serviceFacade.cancelOwnerAssignment(new Guid(HttpContext.Session.Id), new Guid(ShopId));
+                return RedirectToAction("Manage", "Seller", new { ShopId });
+            }
+            catch (GeneralServerError)
+            {
+                var redirect = this.Url.Action("Index", "Seller");
+                var message = new UserMessage(redirect, "An error has occured. Please refresh and try again.");
+                return View("UserMessage", message);
+            }
+            catch (DatabaseConnectionTimeoutException)
+            {
+                var redirect = this.Url.Action("Index", "Seller");
+                var message = new UserMessage(redirect, "An error has occured. Please refresh and try again. (Database connection lost).");
+                return View("UserMessage", message);
+            }
         }
     }
 }

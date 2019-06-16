@@ -23,7 +23,8 @@ namespace TestsUtils
                             uoW
                         ),
                         new NullLogger<DomainFacadeTransactionProxy>(),
-                        uoW
+                        uoW,
+                        new DefaultExternalServicesManager()
                     );
         }
 
@@ -44,7 +45,8 @@ namespace TestsUtils
                             uoW
                         ),
                         new NullLogger<DomainFacadeTransactionProxy>(),
-                        uoW
+                        uoW,
+                        new DefaultExternalServicesManager()
                     ),
                     NullLogger<ServiceFacade>.Instance
                 ),

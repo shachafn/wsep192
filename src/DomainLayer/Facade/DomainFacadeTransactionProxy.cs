@@ -16,14 +16,17 @@ namespace DomainLayer.Facade
         DomainLayerFacade _domainLayerFacade;
         ILogger<DomainFacadeTransactionProxy> _logger;
         IUnitOfWork _unitOfWork;
+        IExternalServicesManager _externalServicesManager;
 
         const int _maxRetriesCount = 3;
 
-        public DomainFacadeTransactionProxy(DomainLayerFacade domainLayerFacade, ILogger<DomainFacadeTransactionProxy> logger, IUnitOfWork unitOfWork)
+        public DomainFacadeTransactionProxy(DomainLayerFacade domainLayerFacade, ILogger<DomainFacadeTransactionProxy> logger, IUnitOfWork unitOfWork
+            , IExternalServicesManager externalServicesManager)
         {
             _domainLayerFacade = domainLayerFacade;
             _logger = logger;
             _unitOfWork = unitOfWork;
+            _externalServicesManager = externalServicesManager;
         }
 
         public Guid AddNewDiscountPolicy(UserIdentifier userGuid, Guid shopGuid, object policyType, object field1, object field2, object field3, object field4, object field5)
@@ -1461,23 +1464,43 @@ namespace DomainLayer.Facade
                 catch (BaseException e)
                 {
                     session.AbortTransaction();
+                    if (isSuccess) //Error in CommitTransaction
+                    {
+                        _externalServicesManager.PaymentSystem.CancelPayment();
+                        _externalServicesManager.SupplySystem.CancelSupply();
+                    }
                     _logger.LogWarning("PurchaseCart Constraints Failed.", e);
                     throw e;
                 }
                 catch (MongoCommandException mongoExc)
                 {
                     session.AbortTransaction();
+                    if (isSuccess) //Error in CommitTransaction
+                    {
+                        _externalServicesManager.PaymentSystem.CancelPayment();
+                        _externalServicesManager.SupplySystem.CancelSupply();
+                    }
                     HandleMongoException(mongoExc);
                 }
                 catch (TimeoutException e)
                 {
                     session.AbortTransaction();
+                    if (isSuccess) //Error in CommitTransaction
+                    {
+                        _externalServicesManager.PaymentSystem.CancelPayment();
+                        _externalServicesManager.SupplySystem.CancelSupply();
+                    }
                     _logger.LogCritical("Got timeout from DB.", e);
                     throw new DatabaseConnectionTimeoutException();
                 }
                 catch (Exception e)
                 {
                     session.AbortTransaction();
+                    if (isSuccess) //Error in CommitTransaction
+                    {
+                        _externalServicesManager.PaymentSystem.CancelPayment();
+                        _externalServicesManager.SupplySystem.CancelSupply();
+                    }
                     _logger.LogWarning("PurchaseCart Failed Due to unknown error.", e);
                     throw new GeneralServerError("An error has occured. Please try again.", e);
                 }

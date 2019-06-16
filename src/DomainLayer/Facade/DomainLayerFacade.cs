@@ -143,13 +143,18 @@ namespace DomainLayer.Facade
             //var newEvent = new PurchasedCartEvent(userIdentifier.Guid, shopGuid);
             //newEvent.SetMessages(DomainData.ShopsCollection.Values, DomainData.RegisteredUsersCollection.Values);
             //UpdateCenter.RaiseEvent(newEvent);
-            var res =  _userDomain.GetUserObject(userIdentifier).PurchaseCart(shopGuid);
-            if(res)
+            var res = _userDomain.GetUserObject(userIdentifier).PurchaseCart(shopGuid);
+            if (res)
+            {
                 _logger.LogInformation($"{GetUserName(userIdentifier.Guid)} purchased cart from shop {GetShopName(shopGuid)} successfuly.");
+                if (_externalServicesManager.PaymentSystem.Pay() == -1)
+                    throw new ExternalServiceFaultException("Payment",ExternalServiceFaultException.ExternalServiceType.Payment);
+                if (_externalServicesManager.SupplySystem.Supply() == -1)
+                    throw new ExternalServiceFaultException("Supply", ExternalServiceFaultException.ExternalServiceType.Supply);
+            }
             else
                 _logger.LogInformation($"{GetUserName(userIdentifier.Guid)} failed to purchase cart from shop {GetShopName(shopGuid)} successfuly.");
             return res;
-
         }
 
         public double GetCartPrice(UserIdentifier userIdentifier, Guid shopGuid)

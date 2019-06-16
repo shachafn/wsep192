@@ -17,26 +17,41 @@ namespace Infrastructure.ExternalServices
 
         public Int32 Supply()
         {
-            var postContent = new Dictionary<string, string>
+            try
             {
-                { "action_type", "supply" },
-                { "name", "Israel Israelovice" },
-                { "address", "Rager Blvd 12" },
-                { "city", "Beer Sheva" },
-                { "country", "Israel" },
-                { "zip", "8458527" }
-            };
-            return Int32.Parse(base.Post(postContent));
+                var postContent = new Dictionary<string, string>
+                {
+                    { "action_type", "supply" },
+                    { "name", "Israel Israelovice" },
+                    { "address", "Rager Blvd 12" },
+                    { "city", "Beer Sheva" },
+                    { "country", "Israel" },
+                    { "zip", "8458527" }
+                };
+
+                return Int32.Parse(base.Post(postContent));
+            }
+            catch
+            {
+                return -1;
+            }
         }
 
         public bool CancelSupply()
         {
-            var postContent = new Dictionary<string, string>
+            try
             {
-                { "action_type", "cancel_supply" },
-                { "transaction_id", "30525" }
-            };
-            return Int32.Parse(base.Post(postContent)) == 1;
+                var postContent = new Dictionary<string, string>
+                {
+                    { "action_type", "cancel_supply" },
+                    { "transaction_id", "30525" }
+                };
+                return Int32.Parse(base.Post(postContent)) == 1;
+            }
+            catch
+            {
+                return false;
+            }
         }
     }
 }

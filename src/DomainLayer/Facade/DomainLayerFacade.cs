@@ -472,6 +472,7 @@ namespace DomainLayer.Facade
             else
                 _logger.LogInformation($"{GetUserName(userIdentifier.Guid)} failed to add new discount policy " +
                     $"of type {policyType.GetType()} to {GetShopName(shopGuid)}.");
+
             return discountPolicyGuid;
         }
 
@@ -548,6 +549,16 @@ namespace DomainLayer.Facade
         {
             _verifier.VerifyMe(MethodBase.GetCurrentMethod(), userIdentifier, shopGuid);
             _unitOfWork.ShopRepository.FindByIdOrNull(shopGuid).candidate = null;
+        }
+
+        public bool IsUserAdmin(Guid id)
+        {
+            var user =_unitOfWork.BaseUserRepository.FindByIdOrNull(id);
+            if (user!=null)
+            {
+                return user.IsAdmin;
+            }
+            return false;
         }
     }
 }

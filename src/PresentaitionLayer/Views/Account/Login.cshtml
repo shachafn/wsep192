@@ -28,14 +28,14 @@
                 </div>
 
                 <div class="form-group">
-                    <label for="account_type">User Type<br><label />
+                    <label for="account_type">View:<br><label />
                         @foreach (var item in Html.GetEnumSelectList<LoginModel.AccountType>())
                          {
                             @if (item.Text == "Buyer")
                             {
                                 <input type="radio" class="radio-inline"  asp-for="UserType" value="@item.Text" checked />@item.Text
                             }
-                            else
+                            else if(item.Text != "Admin")
                             {
                                 <input type="radio"  class="radio-inline"  asp-for="UserType" value="@item.Text" />@item.Text
                             }

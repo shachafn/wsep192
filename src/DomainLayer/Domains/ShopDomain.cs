@@ -12,13 +12,13 @@ namespace DomainLayer.Domains
 {
     public class ShopDomain
     {
-        public ShoppingCartDomain ShoppingCartDomain;
+        public ShoppingCartDomain ShoppingBagDomain;
         protected IUnitOfWork _unitOfWork;
         protected ILogger<ShopDomain> _logger;
 
         public ShopDomain(ShoppingCartDomain shoppingCartDomain, IUnitOfWork unitOfWork, ILogger<ShopDomain> logger)
         {
-            ShoppingCartDomain = shoppingCartDomain;
+            ShoppingBagDomain = shoppingCartDomain;
             _unitOfWork = unitOfWork;
             _logger = logger;
         }
@@ -28,20 +28,24 @@ namespace DomainLayer.Domains
             //throw new NotImplementedException();
             shop.VerifyShopIsActive(); ////MOVE TO DOMAINLAYERFACADEVERIFIER WHEN A USE-CASE TO CHANGE SHOP STATUS IS IMPLEMENTED
             shop.ShopState = Shop.ShopStateEnum.Closed;
+            _unitOfWork.ShopRepository.Update(shop);
         }
         public void ClosePermanently(Shop shop)
         {
             shop.ShopState = Shop.ShopStateEnum.PermanentlyClosed;
+            _unitOfWork.ShopRepository.Update(shop);
         }
         public void Reopen(Shop shop)
         {
             shop.ShopState = Shop.ShopStateEnum.Active;
+            _unitOfWork.ShopRepository.Update(shop);
         }
 
         public Guid AddProductToShop(Shop shop, Guid userGuid, Product product, double price, int quantity)
         {
             var newShopProduct = new ShopProduct(product, price, quantity);
             shop.AddProductToShop(newShopProduct);
+            _unitOfWork.ShopRepository.Update(shop);
             return newShopProduct.Guid;
         }
         public void EditProductInShop(Shop shop, Guid userGuid, Guid shopProductGuid, double newPrice, int newQuantity)
@@ -49,6 +53,7 @@ namespace DomainLayer.Domains
             var toEdit = shop.ShopProducts.FirstOrDefault(p => p.Guid.Equals(shopProductGuid));
             toEdit.Price = newPrice;
             toEdit.Quantity = newQuantity;
+            _unitOfWork.ShopRepository.Update(shop);
         }
 
         public void RemoveProductFromShop(Shop shop, Guid userGuid, Guid shopProductGuid)
@@ -56,6 +61,7 @@ namespace DomainLayer.Domains
             var toRemove = shop.ShopProducts.FirstOrDefault(p => p.Guid.Equals(shopProductGuid));
             //Need to remove from all users' cart in this shop first, to not break constraint
             shop.ShopProducts.Remove(toRemove);
+            _unitOfWork.ShopRepository.Update(shop);
         }
 
         public ICollection<Tuple<Guid, ShopProduct, int>> GetPurchaseHistory(Shop shop, Guid userGuid)
@@ -66,6 +72,7 @@ namespace DomainLayer.Domains
                 if (userGuid.Equals(purchase.Item1))
                     toReturn.Add(new Tuple<Guid, ShopProduct, int>(shop.Guid, purchase.Item2, purchase.Item3));
             }
+            _unitOfWork.ShopRepository.Update(shop);
             return toReturn;
         }
 
@@ -78,6 +85,7 @@ namespace DomainLayer.Domains
                 newEvent.SetMessages(_unitOfWork);
                 UpdateCenter.RaiseEvent(newEvent);
             }
+            _unitOfWork.ShopRepository.Update(shop);
             return true;
         }
 
@@ -85,22 +93,28 @@ namespace DomainLayer.Domains
         {
             var newOwner = new ShopOwner(newOwnerGuid, userGuid, shop.Guid);
             shop.AddShopOwner(newOwner);
+            _unitOfWork.ShopRepository.Update(shop);
         }
 
         public bool RemoveShopManager(Shop shop, Guid userGuid, Guid managerToRemoveGuid)
         {
-            return shop.RemoveShopManager(userGuid, managerToRemoveGuid);
+            var result = shop.RemoveShopManager(userGuid, managerToRemoveGuid);
+            _unitOfWork.ShopRepository.Update(shop);
+            return result;
         }
 
         public void AddShopManager(Shop shop, Guid userGuid, Guid newManagaerGuid, List<bool> priviliges)
         {
             var newManager = new ShopOwner(newManagaerGuid, userGuid, shop.Guid, priviliges);
             shop.AddShopManager(newManager);
+            _unitOfWork.ShopRepository.Update(shop);
         }
 
         public ShopOwner GetOwner(Shop shop, Guid userGuid)
         {
-            return shop.GetOwner(userGuid);
+            var result = shop.GetOwner(userGuid);
+            _unitOfWork.ShopRepository.Update(shop);
+            return result;
         }
         public bool IsOwner(Shop shop, Guid userGuid)
         {
@@ -111,6 +125,7 @@ namespace DomainLayer.Domains
 
         public bool AddOwner(Shop shop, Guid appointerGuid, Guid newOwnerGuid)
         {
+            var result = false;
             int signatures_required = shop.Owners.Count() + 1;//+1 for the shop creator
             if (shop.candidate == null && signatures_required > 1) // a new candidate
             {
@@ -136,7 +151,9 @@ namespace DomainLayer.Domains
                 var newOwner = new ShopOwner(newOwnerGuid, appointerGuid, shop.Guid);
                 shop.Owners.Add(newOwner);
             }
-            return true;
+            result = true;
+            _unitOfWork.ShopRepository.Update(shop);
+            return result;
         }
 
         public bool RemoveOwner(Shop shop, Guid toRemoveOwnerGuid)
@@ -155,6 +172,7 @@ namespace DomainLayer.Domains
                 }
             }
             shop.Owners.Remove(ownerToRemove);// remove the owner from the owners list
+            _unitOfWork.ShopRepository.Update(shop);
             return true;
         }
 
@@ -165,6 +183,7 @@ namespace DomainLayer.Domains
                 shop.PurchasePolicies = new List<IPurchasePolicy>();
             }
             shop.PurchasePolicies.Add(newPurchasePolicy);
+            _unitOfWork.ShopRepository.Update(shop);
             return newPurchasePolicy.Guid;
         }
 
@@ -175,11 +194,13 @@ namespace DomainLayer.Domains
                 shop.DiscountPolicies = new List<IDiscountPolicy>();
             }
             shop.DiscountPolicies.Add(newDiscountPolicy);
+            _unitOfWork.ShopRepository.Update(shop);
             return newDiscountPolicy.Guid;
         }
 
-        public bool PurchaseCart(Shop shop, ShoppingCart cart)
+        public bool PurchaseCart(Shop shop, ShoppingBag bag)
         {
+            var cart = bag.GetShoppingCartAndCreateIfNeededForGuestOnlyOrInBagDomain(shop.Guid);
             bool canPurchaseCart = true;
 
             foreach (var productAndAmountBought in cart.PurchasedProducts)
@@ -201,7 +222,11 @@ namespace DomainLayer.Domains
                         canPurchaseCart = false;
             }
             if (!canPurchaseCart)
+            {
+                _unitOfWork.ShopRepository.Update(shop);
+                _unitOfWork.BagRepository.Update(bag);
                 return false;
+            }
 
             foreach (var productAndAmountBought in cart.PurchasedProducts)
             {
@@ -226,7 +251,8 @@ namespace DomainLayer.Domains
             var newEvent = new PurchasedCartEvent(cart.UserGuid, cart.ShopGuid, total_price);
             newEvent.SetMessages(_unitOfWork);
             UpdateCenter.RaiseEvent(newEvent);
-            cart.PurchaseCart();
+            ShoppingBagDomain.PurchaseCart(bag, shop.Guid);
+            _unitOfWork.ShopRepository.Update(shop);
             return true;
         }
         private bool policyInCompound(Shop shop, IPurchasePolicy policy)

@@ -280,5 +280,11 @@ namespace ServiceLayer
             var userIdentifier = _sessionManager.ResolveCookie(cookie);
             _serviceFacade.cancelOwnerAssignment(userIdentifier,shopId);
         }
+
+        public bool IsUserAdmin(Guid cookie)
+        {
+            var userIdentfier = _sessionManager.ResolveCookie(cookie);
+            return _serviceFacade.IsUserAdmin(userIdentfier);
+        }
     }
 }

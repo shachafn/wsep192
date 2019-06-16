@@ -6,14 +6,14 @@ using DomainLayer.Operators;
 
 namespace DomainLayer.Policies
 {
-    class CompositeDiscountPolicy : IDiscountPolicy
+    public class CompositeDiscountPolicy : IDiscountPolicy
     {
-        public Guid Guid { get; private set; }
-        private IDiscountPolicy DiscountPolicy1 { get; }
-        private ILogicOperator Operator { get; } //Discount can be conditioned by purchase
-        private IDiscountPolicy DiscountPolicy2 { get; }
+        public Guid Guid { get; set; }
+        public IDiscountPolicy DiscountPolicy1 { get; set; }
+        public ILogicOperator Operator { get; set; } //Discount can be conditioned by purchase
+        public IDiscountPolicy DiscountPolicy2 { get; set; }
         public int DiscountPercentage { get; set; }
-        public string Description { get; }
+        public string Description { get; set; }
 
         public CompositeDiscountPolicy(IDiscountPolicy discountPolicy1, ILogicOperator @operator, IDiscountPolicy discountPolicy2, int discountPercentage, string description)
         {

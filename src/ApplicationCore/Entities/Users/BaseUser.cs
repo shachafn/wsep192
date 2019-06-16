@@ -8,8 +8,8 @@ namespace ApplicationCore.Entities.Users
         public string Username { get; private set; }
         // We only keep the password's hash, you can check if a password is
         // this user's password using the CheckPass function
-        private string _passHash;
-        public bool IsAdmin { get; private set; }
+        public string _passHash { get; set; }
+        public bool IsAdmin { get; set; }
 
         public BaseUser(string username, string password, bool isAdmin)
         {

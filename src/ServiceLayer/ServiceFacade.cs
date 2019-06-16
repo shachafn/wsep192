@@ -229,5 +229,10 @@ namespace ServiceLayer
         {
              _domainLayerFacade.cancelOwnerAssignment(userIdentifier,shopId);
         }
+
+        internal bool IsUserAdmin(UserIdentifier id)
+        {
+            return _domainLayerFacade.IsUserAdmin(id);
+        }
     }
 }

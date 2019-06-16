@@ -202,9 +202,9 @@ namespace ATBridge
             return _real == null ? null : _real.GetAllShops(cookie);
         }
 
-        public IEnumerable<Tuple<ShoppingCart, IEnumerable<ShopProduct>>> getUserBag(Guid cookie)
+        public IEnumerable<Tuple<ShoppingCart, IEnumerable<ShopProduct>>> GetUserBag(Guid cookie)
         {
-            return _real == null ? null : _real.getUserBag(cookie);
+            return _real == null ? null : _real.GetUserBag(cookie);
         }
 
         public void cancelOwnerAssignment(Guid cookie, Guid shopId)

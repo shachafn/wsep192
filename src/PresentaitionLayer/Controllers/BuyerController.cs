@@ -87,7 +87,7 @@ namespace PresentaitionLayer.Controllers
         [AllowAnonymous]
         public IActionResult ShoppingCart()
         {
-            IEnumerable<Tuple<ShoppingCart, IEnumerable<ShopProduct>>> bag = _serviceFacade.getUserBag(new Guid(HttpContext.Session.Id));
+            IEnumerable<Tuple<ShoppingCart, IEnumerable<ShopProduct>>> bag = _serviceFacade.GetUserBag(new Guid(HttpContext.Session.Id));
             CheckoutModel model = new CheckoutModel(bag);
             return View(model);
         }

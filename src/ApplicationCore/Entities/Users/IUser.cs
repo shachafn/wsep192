@@ -35,6 +35,7 @@ namespace ApplicationCore.Entities.Users
         Guid AddNewPurchasePolicy(Guid userGuid , Guid shopGuid, IPurchasePolicy newPolicy);
         Guid AddNewDiscountPolicy(Guid userGuid ,Guid shopGuid, IDiscountPolicy newPolicy);
         ICollection<Tuple<Guid, ShopProduct, int>> GetPurchaseHistory();
+        IEnumerable<Tuple<ShoppingCart, IEnumerable<ShopProduct>>> GetUserBag();
         #endregion
     }
 }

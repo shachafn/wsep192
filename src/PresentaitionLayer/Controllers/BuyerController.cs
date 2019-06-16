@@ -89,6 +89,12 @@ namespace PresentaitionLayer.Controllers
         {
             IEnumerable<Tuple<ShoppingCart, IEnumerable<ShopProduct>>> bag = _serviceFacade.GetUserBag(new Guid(HttpContext.Session.Id));
             CheckoutModel model = new CheckoutModel(bag);
+            IEnumerable<double> discountPrices = new List<double>();
+            foreach (Tuple<ShoppingCart, IEnumerable<ShopProduct>> tup in bag)
+            {
+                discountPrices.Append(_serviceFacade.GetCartPrice(new Guid(HttpContext.Session.Id), tup.Item1.ShopGuid));
+            }
+            model.AfterDiscount = discountPrices;
             return View(model);
         }
 

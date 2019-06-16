@@ -1,5 +1,5 @@
 ﻿@model IEnumerable<PresentaitionLayer.Models.AdminModels.AdminShopDisplayModel>
-
+@using ApplicationCore.Entitites;
 @{
     ViewData["Title"] = "Shops";
     Layout = "~/Views/Shared/_Layout.cshtml";
@@ -14,10 +14,10 @@
     <thead>
         <tr>
             <th>
-                @Html.DisplayNameFor(model => model.Guid)
+                @Html.DisplayNameFor(model => model.ShopName)
             </th>
             <th>
-                @Html.DisplayNameFor(model => model.CreatorGuid)
+                @Html.DisplayNameFor(model => model.CreatorName)
             </th>
             <th>
                 @Html.DisplayNameFor(model => model.State)
@@ -29,17 +29,20 @@
 @foreach (var item in Model) {
         <tr>
             <td>
-                @Html.DisplayFor(modelItem => item.Guid)
+                @Html.DisplayFor(modelItem => item.ShopName)
             </td>
             <td>
-                @Html.DisplayFor(modelItem => item.CreatorGuid)
+                @Html.DisplayFor(modelItem => item.CreatorName)
             </td>
             <td>
                 @Html.DisplayFor(modelItem => item.State)
             </td>
-            <td>
-                <input type="button" class="btn-lg" value="Close Permanently" onclick="location.href='@Url.Action("CloseShop","Admin",new { shopGuid = item.Guid})'" />
-            </td>
+            @if (!item.State.Equals(Shop.ShopStateEnum.PermanentlyClosed))
+            {
+                <td>
+                    <input type="button" class="btn-lg" value="Close Permanently" onclick="location.href='@Url.Action("CloseShop","Admin",new { shopGuid = item.Guid})'" />
+                </td>
+            }
         </tr>
 }
     </tbody>

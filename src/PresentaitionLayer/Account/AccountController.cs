@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Security.Claims;
 using System.Threading.Tasks;
+using ApplicationCore.Exceptions;
 using ApplicationCore.Interfaces.ServiceLayer;
 using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Authentication.Cookies;
@@ -59,29 +60,44 @@ namespace PresentaitionLayer.Account
 
         private IActionResult redirectAccordingToState(string userType,LoginModel model)
         {
-            switch (userType)
+            try
             {
-                case "Buyer":
-                    return RedirectToAction("Index", "Buyer");
-                case "Seller":
-                    if (!_serviceFacade.ChangeUserState(new Guid(HttpContext.Session.Id), "SellerUserState"))
-                    {
-                        ModelState.AddModelError("Incorrect User type", "Incorrect User type");
-                        _serviceFacade.Logout(new Guid(HttpContext.Session.Id));
+                switch (userType)
+                {
+                    case "Buyer":
+                        return RedirectToAction("Index", "Buyer");
+                    case "Seller":
+                        if (!_serviceFacade.ChangeUserState(new Guid(HttpContext.Session.Id), "SellerUserState"))
+                        {
+                            ModelState.AddModelError("Incorrect User type", "Incorrect User type");
+                            _serviceFacade.Logout(new Guid(HttpContext.Session.Id));
+                            return View(model);
+                        }
+                        return RedirectToAction("Index", "Seller");
+                    case "Admin":
+                        if (!_serviceFacade.ChangeUserState(new Guid(HttpContext.Session.Id), "AdminUserState"))
+                        {
+                            ModelState.AddModelError("Incorrect User type", "Incorrect User type");
+                            _serviceFacade.Logout(new Guid(HttpContext.Session.Id));
+                            return View(model);
+                        }
+                        return RedirectToAction("Index", "Admin");
+                    default:
+                        ModelState.AddModelError("an error occured", "an error occured");
                         return View(model);
-                    }
-                    return RedirectToAction("Index", "Seller");
-                case "Admin":
-                    if (!_serviceFacade.ChangeUserState(new Guid(HttpContext.Session.Id), "AdminUserState"))
-                    {
-                        ModelState.AddModelError("Incorrect User type", "Incorrect User type");
-                        _serviceFacade.Logout(new Guid(HttpContext.Session.Id));
-                        return View(model);
-                    }
-                    return RedirectToAction("Index", "Admin");
-                 default:
-                    ModelState.AddModelError("an error occured", "an error occured");
-                    return View(model);
+                }
+            }
+            catch (GeneralServerError)
+            {
+                var redirect = this.Url.Action("Index", "Seller");
+                var message = new UserMessage(redirect, "An error has occured. Please refresh and try again.");
+                return View("UserMessage", message);
+            }
+            catch (DatabaseConnectionTimeoutException)
+            {
+                var redirect = this.Url.Action("Index", "Seller");
+                var message = new UserMessage(redirect, "An error has occured. Please refresh and try again. (Database connection lost).");
+                return View("UserMessage", message);
             }
         }
 
@@ -122,19 +138,34 @@ namespace PresentaitionLayer.Account
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Logout()
         {
-            if (User.Identity.IsAuthenticated)
+            try
             {
-                await HttpContext.SignOutAsync(CookieAuthenticationDefaults.AuthenticationScheme);
-                try
+                if (User.Identity.IsAuthenticated)
                 {
-                    _serviceFacade.Logout(new Guid(HttpContext.Session.Id));
-                }
-                catch (Exception)
-                {
+                    await HttpContext.SignOutAsync(CookieAuthenticationDefaults.AuthenticationScheme);
+                    try
+                    {
+                        _serviceFacade.Logout(new Guid(HttpContext.Session.Id));
+                    }
+                    catch (Exception)
+                    {
 
+                    }
                 }
+                return RedirectToAction("Index", "Home");
             }
-            return RedirectToAction("Index", "Home");
+            catch (GeneralServerError)
+            {
+                var redirect = this.Url.Action("Index", "Seller");
+                var message = new UserMessage(redirect, "An error has occured. Please refresh and try again.");
+                return View("UserMessage", message);
+            }
+            catch (DatabaseConnectionTimeoutException)
+            {
+                var redirect = this.Url.Action("Index", "Seller");
+                var message = new UserMessage(redirect, "An error has occured. Please refresh and try again. (Database connection lost).");
+                return View("UserMessage", message);
+            }
         }
 
         [Route("Register")]
@@ -173,34 +204,47 @@ namespace PresentaitionLayer.Account
         [Route("NewState")]
         public async Task<IActionResult> NewStateAsync(string userType)
         {
-            
-            switch (userType)
+            try
             {
-                case "Buyer":
-                    if (!User.IsInRole("Buyer") && _serviceFacade.ChangeUserState(new Guid(HttpContext.Session.Id), "BuyerUserState"))
-                    {
-                        await changeRoleAsync(userType);
-                        return RedirectToAction("Index", "Buyer");
-                    }
-                    return User.IsInRole("Seller") ? RedirectToAction("Index", "Seller") : RedirectToAction("Index", "Admin");
-                case "Seller":
-                    if (!User.IsInRole("Seller") && _serviceFacade.ChangeUserState(new Guid(HttpContext.Session.Id), "SellerUserState"))
-                    {
-                        await changeRoleAsync(userType);
-                        return RedirectToAction("Index", "Seller");
-                    }
-                    return User.IsInRole("Buyer") ? RedirectToAction("Index", "Buyer") : RedirectToAction("Index", "Admin");
-                case "Admin":
-                    if (!User.IsInRole("Admin") && _serviceFacade.ChangeUserState(new Guid(HttpContext.Session.Id), "AdminUserState"))
-                    {
-                        await changeRoleAsync(userType);
-                        return RedirectToAction("Index", "Admin");
-                    }
-                    return User.IsInRole("Seller") ? RedirectToAction("Index", "Seller") : RedirectToAction("Index", "Buyer");
-                default:
-                    return RedirectToAction("Index", "Home");
+                switch (userType)
+                {
+                    case "Buyer":
+                        if (!User.IsInRole("Buyer") && _serviceFacade.ChangeUserState(new Guid(HttpContext.Session.Id), "BuyerUserState"))
+                        {
+                            await changeRoleAsync(userType);
+                            return RedirectToAction("Index", "Buyer");
+                        }
+                        return User.IsInRole("Seller") ? RedirectToAction("Index", "Seller") : RedirectToAction("Index", "Admin");
+                    case "Seller":
+                        if (!User.IsInRole("Seller") && _serviceFacade.ChangeUserState(new Guid(HttpContext.Session.Id), "SellerUserState"))
+                        {
+                            await changeRoleAsync(userType);
+                            return RedirectToAction("Index", "Seller");
+                        }
+                        return User.IsInRole("Buyer") ? RedirectToAction("Index", "Buyer") : RedirectToAction("Index", "Admin");
+                    case "Admin":
+                        if (!User.IsInRole("Admin") && _serviceFacade.ChangeUserState(new Guid(HttpContext.Session.Id), "AdminUserState"))
+                        {
+                            await changeRoleAsync(userType);
+                            return RedirectToAction("Index", "Admin");
+                        }
+                        return User.IsInRole("Seller") ? RedirectToAction("Index", "Seller") : RedirectToAction("Index", "Buyer");
+                    default:
+                        return RedirectToAction("Index", "Home");
+                }
             }
-
+            catch (GeneralServerError)
+            {
+                var redirect = this.Url.Action("Index", "Seller");
+                var message = new UserMessage(redirect, "An error has occured. Please refresh and try again.");
+                return View("UserMessage", message);
+            }
+            catch (DatabaseConnectionTimeoutException)
+            {
+                var redirect = this.Url.Action("Index", "Seller");
+                var message = new UserMessage(redirect, "An error has occured. Please refresh and try again. (Database connection lost).");
+                return View("UserMessage", message);
+            }
         }
 
         private async Task changeRoleAsync(string userType)

@@ -155,10 +155,7 @@ namespace DomainLayer.Facade
             //var user = VerifyLoggedInUser(userIdentifier.Guid, new UserNotFoundException());
             var shop = VerifyShopExists(shopGuid, new ShopNotFoundException());
             shop.VerifyShopIsActive();
-            var cart = userIdentifier.IsGuest ?
-                DomainData.GuestsBagsCollection.GetShoppingBagAndCreateIfNeeded(userIdentifier.Guid).
-                    GetShoppingCartAndCreateIfNeededForGuestOnlyOrInBagDomain(shopGuid) 
-                        : GetCartExistsAndCreateIfNeeded(userIdentifier, shopGuid);
+            ShoppingCart cart = GetCartForGuestOrRegistered(userIdentifier, shopGuid);
             foreach (var purchasedProduct in cart.PurchasedProducts)
             {
                 int purchasedQuantity = purchasedProduct.Item2;
@@ -166,6 +163,15 @@ namespace DomainLayer.Facade
                 VerifyIntEqualOrGreaterThan0(availableQuantity - purchasedQuantity, new IllegalArgumentException());
             }
         }
+
+        private ShoppingCart GetCartForGuestOrRegistered(UserIdentifier userIdentifier, Guid shopGuid)
+        {
+            return userIdentifier.IsGuest ?
+                            DomainData.GuestsBagsCollection.GetShoppingBagAndCreateIfNeeded(userIdentifier.Guid).
+                                GetShoppingCartAndCreateIfNeededForGuestOnlyOrInBagDomain(shopGuid)
+                                    : GetCartExistsAndCreateIfNeeded(userIdentifier, shopGuid);
+        }
+
         public void GetCartPrice(UserIdentifier userIdentifier, Guid shopGuid)
         {
             //var user = VerifyLoggedInUser(userIdentifier.Guid, new UserNotFoundException());
@@ -325,7 +331,7 @@ namespace DomainLayer.Facade
             shop.VerifyShopIsActive();
             shop.VerifyShopProductExists(shopProductGuid, new ProductNotFoundException());
             VerifyIntGreaterThan0(quantity, new IllegalArgumentException());
-            var cart = GetCartExistsAndCreateIfNeeded(userIdentifier, shopGuid);
+            var cart = GetCartForGuestOrRegistered(userIdentifier, shopGuid);
             VerifyShopProductDoesNotExist(cart, shopProductGuid, new BrokenConstraintException());
         }
 
@@ -357,7 +363,7 @@ namespace DomainLayer.Facade
             //VerifyLoggedInUser(userIdentifier.Guid, new UserNotFoundException());
             var shop = VerifyShopExists(shopGuid, new ShopNotFoundException());
             shop.VerifyShopIsActive();
-            var cart = GetCartExistsAndCreateIfNeeded(userIdentifier, shopGuid);
+            var cart = GetCartForGuestOrRegistered(userIdentifier, shopGuid);
             VerifyShopProductExistsInCart(cart, shopProductGuid, new ProductNotFoundException());
         }
 
@@ -376,7 +382,7 @@ namespace DomainLayer.Facade
             var shop = VerifyShopExists(shopGuid, new ShopNotFoundException());
             shop.VerifyShopIsActive();
             VerifyIntGreaterThan0(newAmount, new IllegalArgumentException());
-            var cart = GetCartExistsAndCreateIfNeeded(userIdentifier, shopGuid);
+            var cart = GetCartForGuestOrRegistered(userIdentifier, shopGuid);
             VerifyShopProductExistsInCart(cart, shopProductGuid, new ProductNotFoundException());
         }
 

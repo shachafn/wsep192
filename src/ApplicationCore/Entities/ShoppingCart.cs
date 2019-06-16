@@ -26,7 +26,7 @@ namespace ApplicationCore.Entitites
 
         public bool EditProductInCart(Guid shopProductGuid, int newAmount)
         {
-            var purchasedProduct = PurchasedProducts.FirstOrDefault(p => p.Item1.Guid.Equals(shopProductGuid));
+            var purchasedProduct = PurchasedProducts.FirstOrDefault(p => p.Item1.Equals(shopProductGuid));
             PurchasedProducts.Remove(purchasedProduct);
             PurchasedProducts.Add(new Tuple<ShopProduct, int>(purchasedProduct.Item1, newAmount));
             //Tuple is immutable so create new one and add it

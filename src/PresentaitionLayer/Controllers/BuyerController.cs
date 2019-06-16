@@ -99,22 +99,5 @@ namespace PresentaitionLayer.Controllers
             _serviceFacade.PurchaseCart(new Guid(HttpContext.Session.Id),new Guid(ShopId));
             return RedirectToAction("ShoppingCart","Buyer");
         }
-
-        [AllowAnonymous]
-        [HttpPost]
-        public IActionResult DeleteCartProduct(string shopGuid, string shopProductGuid)
-        {
-            _serviceFacade.RemoveProductFromCart(new Guid(HttpContext.Session.Id), new Guid(shopGuid), new Guid(shopProductGuid));
-            return RedirectToAction("ShoppingCart", "Buyer");
-        }
-
-        [AllowAnonymous]
-        [HttpPost]
-        public IActionResult EditCartProduct(string shopGuid, string shopProductGuid, string newAmount)
-        {
-            _serviceFacade.EditProductInCart(new Guid(HttpContext.Session.Id), new Guid(shopGuid),
-                new Guid(shopProductGuid), int.Parse(newAmount));
-            return RedirectToAction("ShoppingCart", "Buyer");
-        }
     }
 }

@@ -203,6 +203,12 @@ namespace PresentaitionLayer.Controllers
                 model.AfterDiscount = discountPrices;
                 return View(model);
             }
+            catch(ShopStateException)
+            {
+                var redirect = this.Url.Action("Index", "Buyer");
+                var message = new UserMessage(redirect, "Can't purchase a cart of an inactive shop");
+                return View("UserMessage", message);
+            }
             catch (GeneralServerError)
             {
                 var redirect = this.Url.Action("Index", "Buyer");

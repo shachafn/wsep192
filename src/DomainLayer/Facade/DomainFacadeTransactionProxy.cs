@@ -312,6 +312,7 @@ namespace DomainLayer.Facade
                     _domainLayerFacade.cancelOwnerAssignment(userIdentifier, shopGuid);
                     session.CommitTransaction();
                     isSuccess = true;
+                    return;
                 }
                 catch (BaseException e)
                 {
@@ -443,6 +444,7 @@ namespace DomainLayer.Facade
                     _domainLayerFacade.ClearSystem();
                     session.CommitTransaction();
                     isSuccess = true;
+                    return;
                 }
                 catch (BaseException e)
                 {
@@ -486,6 +488,7 @@ namespace DomainLayer.Facade
                     _domainLayerFacade.CloseShop(userIdentifier, shopGuid);
                     session.CommitTransaction();
                     isSuccess = true;
+                    return;
                 }
                 catch (BaseException e)
                 {
@@ -529,6 +532,7 @@ namespace DomainLayer.Facade
                     _domainLayerFacade.CloseShopPermanently(userIdentifier, shopGuid);
                     session.CommitTransaction();
                     isSuccess = true;
+                    return;
                 }
                 catch (BaseException e)
                 {
@@ -1759,6 +1763,7 @@ namespace DomainLayer.Facade
                     _domainLayerFacade.ReopenShop(userIdentifier, shopGuid);
                     session.CommitTransaction();
                     isSuccess = true;
+                    return;
                 }
                 catch (BaseException e)
                 {
@@ -1843,7 +1848,7 @@ namespace DomainLayer.Facade
                 try
                 {
                     session.StartTransaction();
-                    var result = _domainLayerFacade.IsUserAdmin(id.Guid);
+                    var result = _domainLayerFacade.IsUserAdmin(id);
                     session.CommitTransaction();
                     isSuccess = true;
                     return result;

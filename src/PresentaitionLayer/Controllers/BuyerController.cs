@@ -87,7 +87,7 @@ namespace PresentaitionLayer.Controllers
         [AllowAnonymous]
         public IActionResult ShoppingCart()
         {
-            IEnumerable<Tuple<ShoppingCart, IEnumerable<ShopProduct>>> bag = _serviceFacade.getUserBag(new Guid(HttpContext.Session.Id));
+            IEnumerable<Tuple<ShoppingCart, IEnumerable<ShopProduct>>> bag = _serviceFacade.GetUserBag(new Guid(HttpContext.Session.Id));
             CheckoutModel model = new CheckoutModel(bag);
             return View(model);
         }
@@ -98,6 +98,23 @@ namespace PresentaitionLayer.Controllers
         {
             _serviceFacade.PurchaseCart(new Guid(HttpContext.Session.Id),new Guid(ShopId));
             return RedirectToAction("ShoppingCart","Buyer");
+        }
+
+        [AllowAnonymous]
+        [HttpPost]
+        public IActionResult DeleteCartProduct(string shopGuid, string shopProductGuid)
+        {
+            _serviceFacade.RemoveProductFromCart(new Guid(HttpContext.Session.Id), new Guid(shopGuid), new Guid(shopProductGuid));
+            return RedirectToAction("ShoppingCart", "Buyer");
+        }
+
+        [AllowAnonymous]
+        [HttpPost]
+        public IActionResult EditCartProduct(string shopGuid, string shopProductGuid, string newAmount)
+        {
+            _serviceFacade.EditProductInCart(new Guid(HttpContext.Session.Id), new Guid(shopGuid),
+                new Guid(shopProductGuid), int.Parse(newAmount));
+            return RedirectToAction("ShoppingCart", "Buyer");
         }
     }
 }

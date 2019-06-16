@@ -70,6 +70,7 @@ namespace ApplicationCore.Interfaces.ServiceLayer
         /// <returns>Guid of the created shop.</returns>
 
         Guid OpenShop(Guid cookie, string shopName);
+        bool IsUserAdmin(Guid id);
 
         /////Implements General Requirement 4.7
         /// <summary>
@@ -119,6 +120,7 @@ namespace ApplicationCore.Interfaces.ServiceLayer
         /////Implements General Requirement 2.8. Not entirely, only purchase of the entier bag.
         /////////////// REDO CONSTRAINTS, CHANGED FROM CART TO BAG ////////////////////////
         bool PurchaseCart(Guid cookie, Guid shopGuid);
+        double GetCartPrice(Guid cookie, Guid shopGuid);
         Guid GetUserGuid(string ownerName);
 
         /////Implements General Requirement 1.1
@@ -531,7 +533,7 @@ namespace ApplicationCore.Interfaces.ServiceLayer
         string GetUserName(Guid userGuid);
         IEnumerable<ShopProduct> GetShopProducts(Guid id,Guid shopGuid);
         ICollection<Shop> GetAllShops(Guid cookie);
-        IEnumerable<Tuple<ShoppingCart, IEnumerable<ShopProduct>>> getUserBag(Guid cookie);
+        IEnumerable<Tuple<ShoppingCart, IEnumerable<ShopProduct>>> GetUserBag(Guid cookie);
         void cancelOwnerAssignment(Guid cookie,Guid shopId);
     }
 }

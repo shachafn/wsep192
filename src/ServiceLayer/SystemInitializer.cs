@@ -136,7 +136,9 @@ namespace ServiceLayer
 
             ShopProduct product = new ShopProduct(new Product(name, category), price, quantity);
 
-            _unitOfWork.ShopRepository.FindByIdOrNull(shopId).ShopProducts.Add(product);
+            var shop = _unitOfWork.ShopRepository.FindByIdOrNull(shopId);
+            shop.ShopProducts.Add(product);
+            _unitOfWork.ShopRepository.Update(shop);
 
         }
 
@@ -194,7 +196,12 @@ namespace ServiceLayer
 
             var userId = _results[op.args[0]];
 
-            _unitOfWork.BaseUserRepository.FindByIdOrNull(userId).makeAdmin();
+           var user = _unitOfWork.BaseUserRepository.FindByIdOrNull(userId);
+            if(user!=null)
+            {
+                user.IsAdmin = true;
+            }
+            _unitOfWork.BaseUserRepository.Update(user);
 
         }
 

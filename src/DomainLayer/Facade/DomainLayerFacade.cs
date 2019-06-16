@@ -148,6 +148,14 @@ namespace DomainLayer.Facade
             return _userDomain.GetUserObject(userIdentifier).PurchaseCart(shopGuid); ;
         }
 
+        public double GetCartPrice(UserIdentifier userIdentifier, Guid shopGuid)
+        {
+            VerifySystemIsInitialized();
+            _verifier.VerifyMe(MethodBase.GetCurrentMethod(), userIdentifier, shopGuid);
+            _logger.LogInformation($"{GetUserName(userIdentifier.Guid)} got cart price from shop {GetShopName(shopGuid)} successfuly.");
+            return _userDomain.GetUserObject(userIdentifier).GetCartPrice(shopGuid); ;
+        }
+
         public Guid Initialize(UserIdentifier userIdentifier, string username, string password)
         {
             username = username.ToLower();
@@ -378,7 +386,6 @@ namespace DomainLayer.Facade
         public ICollection<Tuple<Guid, ShopProduct, int>> GetPurchaseHistory(UserIdentifier userIdentifier)
         {
             VerifySystemIsInitialized();
-            _verifier.VerifyMe(MethodBase.GetCurrentMethod(), userIdentifier);
             _logger.LogInformation($"Got purchase history for {GetUserName(userIdentifier.Guid)}.");
             return _userDomain.GetUserObject(userIdentifier).GetPurchaseHistory();
         }
@@ -485,32 +492,11 @@ namespace DomainLayer.Facade
             return purchasePoicyGuid;
         }
 
-        public IEnumerable<Tuple<ShoppingCart, IEnumerable<ShopProduct>>> getUserBag(UserIdentifier userIdentifier)
+        public IEnumerable<Tuple<ShoppingCart, IEnumerable<ShopProduct>>> GetUserBag(UserIdentifier userIdentifier, bool isGuest = false)
         {
-            var bag = _unitOfWork.BagRepository.GetShoppingBagAndCreateIfNeeded(userIdentifier.Guid);
-            List<Tuple<ShoppingCart, IEnumerable<ShopProduct>>> result = new List<Tuple<ShoppingCart, IEnumerable<ShopProduct>>>();
-            if (bag != null && bag.ShoppingCarts != null)
-            {
-                foreach (var cart in bag.ShoppingCarts)
-                {
-                    List<ShopProduct> products = new List<ShopProduct>();
-                    var shop = _unitOfWork.ShopRepository.FindByIdOrNull(cart.ShopGuid);
-                    foreach (var item in cart.PurchasedProducts)
-                    {
-                        //ShopProduct currProduct = shop.ShopProducts.FirstOrDefault(prod => prod.Guid.Equals(item.Item1));
-                        ShopProduct currProduct = item.Item1;
-                        ShopProduct product = new ShopProduct();
-                        product.Product = new Product(currProduct.Product.Name, currProduct.Product.Category);
-                        product.Guid = currProduct.Guid;
-                        product.Price = currProduct.Price;
-                        product.Quantity = item.Item2;
-                        products.Add(product);
-                    }
-                    result.Add(new Tuple<ShoppingCart, IEnumerable<ShopProduct>>(cart, products));
-                }
-            }
-            _logger.LogDebug($"Got the bag of user {GetUserName(userIdentifier.Guid)}.");
-            return result;
+            VerifySystemIsInitialized();
+            _logger.LogInformation($"Got purchase history for {GetUserName(userIdentifier.Guid)}.");
+            return _userDomain.GetUserObject(userIdentifier).GetUserBag();
         }
 
         public string GetUserName(Guid userGuid)
@@ -542,6 +528,16 @@ namespace DomainLayer.Facade
         {
             _verifier.VerifyMe(MethodBase.GetCurrentMethod(), userIdentifier, shopGuid);
             _unitOfWork.ShopRepository.FindByIdOrNull(shopGuid).candidate = null;
+        }
+
+        public bool IsUserAdmin(Guid id)
+        {
+            var user =_unitOfWork.BaseUserRepository.FindByIdOrNull(id);
+            if (user!=null)
+            {
+                return user.IsAdmin;
+            }
+            return false;
         }
     }
 }

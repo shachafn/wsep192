@@ -578,26 +578,26 @@ namespace DomainLayer.Facade
             }
         }
 
-        public IEnumerable<Tuple<ShoppingCart, IEnumerable<ShopProduct>>> getUserBag(UserIdentifier userIdentifier)
+        public IEnumerable<Tuple<ShoppingCart, IEnumerable<ShopProduct>>> GetUserBag(UserIdentifier userIdentifier)
         {
             var session = _unitOfWork.Context.StartSession();
             try
             {
                 session.StartTransaction();
-                var result = _domainLayerFacade.getUserBag(userIdentifier);
+                var result = _domainLayerFacade.GetUserBag(userIdentifier);
                 session.CommitTransaction();
                 return result;
             }
             catch (BaseException e)
             {
                 session.AbortTransaction();
-                _logger.LogWarning("getUserBag Failed.", e);
+                _logger.LogWarning("GetUserBag Failed.", e);
                 throw e;
             }
             catch (Exception e)
             {
                 session.AbortTransaction();
-                _logger.LogWarning("getUserBag Failed Due to unknown error.", e);
+                _logger.LogWarning("GetUserBag Failed Due to unknown error.", e);
                 throw new GeneralServerError("An error has occured. Please try again.", e);
             }
         }
@@ -817,7 +817,29 @@ namespace DomainLayer.Facade
                 throw new GeneralServerError("An error has occured. Please try again.", e);
             }
         }
-
+        public double GetCartPrice(UserIdentifier userIdentifier, Guid shopGuid)
+        {
+            var session = _unitOfWork.Context.StartSession();
+            try
+            {
+                session.StartTransaction();
+                var result = _domainLayerFacade.GetCartPrice(userIdentifier, shopGuid);
+                session.CommitTransaction();
+                return result;
+            }
+            catch (BaseException e)
+            {
+                session.AbortTransaction();
+                _logger.LogWarning("GetCartPrice Failed.", e);
+                throw e;
+            }
+            catch (Exception e)
+            {
+                session.AbortTransaction();
+                _logger.LogWarning("GetCartPrice Failed Due to unknown error.", e);
+                throw new GeneralServerError("An error has occured. Please try again.", e);
+            }
+        }
         public Guid Register(UserIdentifier userIdentifier, string username, string password)
         {
             var session = _unitOfWork.Context.StartSession();
@@ -981,6 +1003,30 @@ namespace DomainLayer.Facade
             {
                 session.AbortTransaction();
                 _logger.LogWarning("SearchProduct Failed Due to unknown error.", e);
+                throw new GeneralServerError("An error has occured. Please try again.", e);
+            }
+        }
+
+        public bool IsUserAdmin(UserIdentifier id)
+        {
+            var session = _unitOfWork.Context.StartSession();
+            try
+            {
+                session.StartTransaction();
+                var result = _domainLayerFacade.IsUserAdmin(id.Guid);
+                session.CommitTransaction();
+                return result;
+            }
+            catch (BaseException e)
+            {
+                session.AbortTransaction();
+                _logger.LogWarning("GetUserName Failed.", e);
+                throw e;
+            }
+            catch (Exception e)
+            {
+                session.AbortTransaction();
+                _logger.LogWarning("GetUserName Failed Due to unknown error.", e);
                 throw new GeneralServerError("An error has occured. Please try again.", e);
             }
         }

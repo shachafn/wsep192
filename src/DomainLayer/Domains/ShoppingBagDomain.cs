@@ -22,6 +22,12 @@ namespace DomainLayer.Domains
 
         public void CheckDiscountPolicy(ShoppingBag bag, Guid shopGuid)
         {
+            CheckDiscountPolicyWithoutUpdate(bag, shopGuid);
+
+            _unitOfWork.BagRepository.Update(bag);
+        }
+        public void CheckDiscountPolicyWithoutUpdate(ShoppingBag bag, Guid shopGuid)
+        {
             var cart = bag.GetShoppingCartAndCreateIfNeededForGuestOnlyOrInBagDomain(shopGuid);
             Shop shop = _unitOfWork.ShopRepository.FindByIdOrNull(shopGuid);
             BaseUser user = _unitOfWork.BaseUserRepository.FindByIdOrNull(bag.UserGuid);
@@ -34,20 +40,55 @@ namespace DomainLayer.Domains
             }
 
 
-            foreach (Tuple<ShopProduct, int> record in tempPurchasedProducts)
+            //foreach (Tuple<ShopProduct, int> record in tempPurchasedProducts)
+            //{
+            //    foreach (IDiscountPolicy policy in shop.DiscountPolicies)
+            //    {
+            //        var discountProductAndQuantity = policy.ApplyPolicy(cart, record.Item1.Guid, record.Item2, user, _unitOfWork);
+            //        if (discountProductAndQuantity != null)
+            //            cart.AddProductToCart(discountProductAndQuantity.Item1, discountProductAndQuantity.Item2);
+            //    }
+            //}
+            //Copy the list so you can iterate and add the discount to it
+
+
+            //First Apply CartDiscountPolicy
+            //foreach (IDiscountPolicy policy in shop.DiscountPolicies)
+            //{
+            //    if (policy.GetType() != typeof(CartDiscountPolicy)) continue;
+            //    var discountProductAndQuantity = policy.ApplyPolicy(cart, Guid.Empty, 0, user, _unitOfWork);
+            //    if (discountProductAndQuantity != null /*&& discountProductAndQuantity.Item1.Product.Name.Equals("Discount - cart")*/)
+            //        cart.AddProductToCart(discountProductAndQuantity.Item1, discountProductAndQuantity.Item2);
+            //}
+
+
+            foreach (IDiscountPolicy policy in shop.DiscountPolicies)
             {
-                foreach (IDiscountPolicy policy in shop.DiscountPolicies)
+                bool alreadyAddedDiscount = false;
+                foreach (Tuple<ShopProduct, int> record in tempPurchasedProducts)
                 {
+                    //if (policy.GetType() == typeof(CartDiscountPolicy)) continue;
                     var discountProductAndQuantity = policy.ApplyPolicy(cart, record.Item1.Guid, record.Item2, user, _unitOfWork);
-                    if (discountProductAndQuantity != null)
+                    if (discountProductAndQuantity != null && !alreadyAddedDiscount)
+                    {
                         cart.AddProductToCart(discountProductAndQuantity.Item1, discountProductAndQuantity.Item2);
+                        alreadyAddedDiscount = true;
+                    }
                 }
             }
 
-            _unitOfWork.BagRepository.Update(bag);
         }
-
-        public void AddProductToCart(ShoppingBag bag, Guid shopGuid, ShopProduct actualProduct, int quantity)
+        public void ClearAllDiscounts(ShoppingBag bag, Guid shopGuid)
+        {
+            var cart = bag.GetShoppingCartAndCreateIfNeededForGuestOnlyOrInBagDomain(shopGuid);
+            var tmp= cart.PurchasedProducts.Where(sp => sp.Item1.Price > 0);
+            cart.PurchasedProducts.Clear();
+            foreach(Tuple<ShopProduct,int> sp in tmp)
+            {
+                cart.PurchasedProducts.Add(sp);
+            }
+        }
+            public void AddProductToCart(ShoppingBag bag, Guid shopGuid, ShopProduct actualProduct, int quantity)
         {
             var cart = bag.GetShoppingCartAndCreateIfNeededForGuestOnlyOrInBagDomain(shopGuid);
             cart.AddProductToCart(actualProduct, quantity);
@@ -66,6 +107,8 @@ namespace DomainLayer.Domains
         {
             var cart = bag.GetShoppingCartAndCreateIfNeededForGuestOnlyOrInBagDomain(shopGuid);
             var result = cart.RemoveProductFromCart(shopProductGuid);
+            if (cart.PurchasedProducts.Count == 0)
+                bag.ShoppingCarts.Remove(cart);
             _unitOfWork.BagRepository.Update(bag);
             return result;
         }
@@ -74,6 +117,7 @@ namespace DomainLayer.Domains
         {
             var cart = bag.GetShoppingCartAndCreateIfNeededForGuestOnlyOrInBagDomain(shopGuid);
             cart.PurchaseCart();
+            bag.ShoppingCarts.Remove(cart);
             _unitOfWork.BagRepository.Update(bag);
         }
     }

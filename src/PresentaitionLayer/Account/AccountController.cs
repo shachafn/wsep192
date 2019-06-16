@@ -35,7 +35,6 @@ namespace PresentaitionLayer.Account
         [Route("Login")]
         public IActionResult Login(string returnUrl)
         {
-            var nice = this.Url.Action("Login", "Account");
             return View(new LoginModel());
         }
 
@@ -52,7 +51,7 @@ namespace PresentaitionLayer.Account
                     await LoginAsync(user);
                     return redirectAccordingToState(model.UserType.ToString(),model);
                 }
-                ModelState.AddModelError("InvalidCredentials", "Invalid credentials.");
+                ModelState.AddModelError("InvalidCredentials", "invalid credentials");
             }
 
             return View(model);
@@ -100,7 +99,11 @@ namespace PresentaitionLayer.Account
                 new Claim(ClaimTypes.Name, user.UserName),
                 new Claim(ClaimTypes.Role,user.UserType)
             };
-
+            var isAdmin = _serviceFacade.IsUserAdmin(new Guid(HttpContext.Session.Id));
+            if(isAdmin)
+            {
+                claims.Add(new Claim(ClaimTypes.Country, "adminia"));
+            }
             var identity = new ClaimsIdentity(claims, CookieAuthenticationDefaults.AuthenticationScheme);
             var principal = new ClaimsPrincipal(identity);
             await HttpContext.SignInAsync(principal, properties);
@@ -150,12 +153,21 @@ namespace PresentaitionLayer.Account
                 var (isValid, user) = await _userServices.ValidateUserRegisterAsync(model.UserName, model.Password,new Guid(HttpContext.Session.Id));
                 if (isValid)
                 {
-                    return RedirectToAction("Index", "Home");
+                    var redirect = this.Url.Action("Index", "Home");
+                    var message = new UserMessage(redirect, "you have been registered successfully");
+                    return View("UserMessage",message);
+                    //return RedirectToAction("Index", "Home");
                 }
-                ModelState.AddModelError("InvalidCredentials", "Invalid credentials.");
+                ModelState.AddModelError("InvalidCredentials", "Registration failed, chosen username already exsists");
             }
 
             return View(model);
+        }
+
+        [Route("UserMessage")]
+        public async Task<IActionResult> UserMessage(UserMessage message)
+        {
+            return View(message);
         }
 
         [Route("NewState")]
@@ -206,7 +218,11 @@ namespace PresentaitionLayer.Account
                 new Claim(ClaimTypes.Name,User.Claims.First(c=>c.Type==ClaimTypes.Name).Value),
                 new Claim(ClaimTypes.Role,userType)
             };
-
+            var isAdmin = _serviceFacade.IsUserAdmin(new Guid(HttpContext.Session.Id));
+            if (isAdmin)
+            {
+                claims.Add(new Claim(ClaimTypes.Country, "adminia"));
+            }
             var identity = new ClaimsIdentity(claims, CookieAuthenticationDefaults.AuthenticationScheme);
             var principal = new ClaimsPrincipal(identity);
             await HttpContext.SignInAsync(principal, properties);

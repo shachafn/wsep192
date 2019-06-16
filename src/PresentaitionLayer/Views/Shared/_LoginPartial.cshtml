@@ -30,10 +30,13 @@
         <ul class="nav navbar-nav navbar-right">
             <li class="btn btn-link navbar-btn navbar-link" onclick="dropDown()">Buyer</li>
         </ul>
-        <div class="dropdown-menu dropdown-menu-right" id="dropdown" style="margin: 0px 100px; display:none;">
+        <div class="dropdown-menu dropdown-menu-right" id="dropdown" style="margin: 0px 150px; display:none;">
             <a class="btn btn-link" style="text-align:left; color:black" onclick="location.href='@Url.Action("NewState","Account",new {userType="Seller"})'">Change to: Seller</a>
             <br />
-            <a class="btn btn-link" style="text-align:left; color:black" onclick="location.href='@Url.Action("NewState","Account",new {userType="Admin"})'">Change to: Admin</a>
+            @if (User.Claims.Any(c => c.Value.Equals("adminia")))
+            {
+            <a class="btn btn-link" style="text-align:left; color:black" onclick="location.href='@Url.Action("NewState", "Account", new { userType = "Admin" })'">Change to: Admin</a>
+            }
         </div>
         <ul class="nav navbar-nav">
             <li><a asp-area="" asp-controller="Home" asp-action="Index">Home</a></li>
@@ -59,7 +62,7 @@
         <ul class="nav navbar-nav navbar-right">
             <li class="btn btn-link navbar-btn navbar-link" onclick="dropDown()">Admin</li>
         </ul>
-        <div class="dropdown-menu dropdown-menu-right" id="dropdown" style="margin: 0px 100px; display:none;">
+        <div class="dropdown-menu dropdown-menu-right" id="dropdown" style="margin: 0px 150px; display:none;">
             <a class="btn btn-link" style="text-align:left; color:black" onclick="location.href='@Url.Action("NewState","Account",new {userType="Buyer"})'">Change to: Buyer</a>
             <br />
             <a class="btn btn-link" style="text-align:left; color:black" onclick="location.href='@Url.Action("NewState","Account",new {userType="Seller"})'">Change to: Seller</a>
@@ -79,11 +82,14 @@
         <ul class="nav navbar-nav navbar-right">
             <li class="btn btn-link navbar-btn navbar-link" onclick="dropDown()">Seller</li>
         </ul>
-        <div class="dropdown-menu dropdown-menu-right" id="dropdown" style="margin: 0px 100px; display:none;">
+        <div class="dropdown-menu dropdown-menu-right" id="dropdown" style="margin: 0px 150px; display:none;">
             <a class="btn btn-link" style="text-align:left; color:black" onclick="location.href='@Url.Action("NewState","Account",new {userType="Buyer"})'">Change to: Buyer</a>
             <br />
-            <a class="btn btn-link" style="text-align:left; color:black" onclick="location.href='@Url.Action("NewState","Account",new {userType="Admin"})'">Change to: Admin</a>
-        </div>
+            @if (User.Claims.Any(c => c.Value.Equals("adminia")))
+            {
+                <a class="btn btn-link" style="text-align:left; color:black" onclick="location.href='@Url.Action("NewState", "Account", new { userType = "Admin" })'">Change to: Admin</a>
+            }
+            </div>
         <ul class="nav navbar-nav">
             <li><a asp-area="" asp-controller="Seller" asp-action="Index">Home</a></li>
             <li><a asp-area="" asp-controller="Seller" asp-action="MyShops">My Shops</a></li>

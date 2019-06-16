@@ -19,6 +19,9 @@ using DomainLayer.External_Services;
 using Infrastructure.ExternalServices;
 using DataAccessLayer;
 using ApplicationCore.Interfaces.DataAccessLayer;
+using MongoDB.Bson.Serialization;
+using DomainLayer.Policies;
+using DomainLayer.Operators;
 
 namespace PresentaitionLayer
 {
@@ -62,10 +65,33 @@ namespace PresentaitionLayer
         }
         private static void SetupDbInjections(IServiceCollection services)
         {
+            SetupClassRegistrations();
             services.AddScoped<IContext, MongoDbContext>();
             services.AddScoped<MongoDbContext>();
             services.AddScoped<IUnitOfWork,UnitOfWork>();
         }
+
+        private static void SetupClassRegistrations()
+        {
+            BsonClassMap.RegisterClassMap<CartDiscountPolicy>();
+            BsonClassMap.RegisterClassMap<ProductDiscountPolicy>();
+            BsonClassMap.RegisterClassMap<UserDiscountPolicy>();
+            BsonClassMap.RegisterClassMap<CompositeDiscountPolicy>();
+
+            BsonClassMap.RegisterClassMap<CartPurchasePolicy>();
+            BsonClassMap.RegisterClassMap<UserPurchasePolicy>();
+            BsonClassMap.RegisterClassMap<ProductPurchasePolicy>();
+            BsonClassMap.RegisterClassMap<CompositePurchasePolicy>();
+
+            BsonClassMap.RegisterClassMap<BiggerThan>();
+            BsonClassMap.RegisterClassMap<SmallerThan>();
+
+            BsonClassMap.RegisterClassMap<Implies>();
+            BsonClassMap.RegisterClassMap<Xor>();
+            BsonClassMap.RegisterClassMap<Or>();
+            BsonClassMap.RegisterClassMap<And>();
+        }
+
         private static void SetupDbConfiguration(IServiceCollection services)
         {
             IConfigurationRoot configuration = GetConfigurationAccordingToEnvironmentVariable();

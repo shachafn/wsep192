@@ -45,24 +45,11 @@ namespace DomainLayer.Users
         }
         public double GetCartPrice(Guid shopGuid)
         {
-            var cart = _unitOfWork.BagRepository.Query()
-                .First(bag => bag.UserGuid.Equals(Guid))
-                .ShoppingCarts
-                .First(c => c.ShopGuid.Equals(shopGuid));
-
+            var bag = _unitOfWork.BagRepository.GetShoppingBagAndCreateIfNeeded(Guid);
             var shop = _unitOfWork.ShopRepository.FindByIdOrNull(shopGuid);
-
-            ShoppingCart tempCart = new ShoppingCart(cart.UserGuid, cart.ShopGuid);
-            foreach (Tuple<ShopProduct, int> record in cart.PurchasedProducts)
-            {
-                tempCart.PurchasedProducts.Add(record);
-            }
-
-            _shopDomain.ShoppingCartDomain.CheckDiscountPolicy(tempCart);
-            double totalPrice = _shopDomain.GetCartPrice(shop, tempCart);
-            tempCart.UserGuid = Guid.Empty;
-            tempCart.ShopGuid = Guid.Empty;
-            tempCart.PurchasedProducts.Clear();
+            _shopDomain.ShoppingBagDomain.CheckDiscountPolicyWithoutUpdate(bag, shopGuid);
+            double totalPrice = _shopDomain.GetCartPrice(shop, bag.GetShoppingCartAndCreateIfNeededForGuestOnlyOrInBagDomain(shopGuid));
+            _shopDomain.ShoppingBagDomain.ClearAllDiscounts(bag, shopGuid);
             return totalPrice;
         }
 

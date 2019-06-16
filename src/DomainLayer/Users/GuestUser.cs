@@ -66,20 +66,12 @@ namespace ApplicationCore.Entities.Users
         }
         public double GetCartPrice(Guid shopGuid)
         {
-            var cart = GetGuestCartAndCreateIfNeeded(shopGuid);
+            var bag = GetGuestBagAndCreateIfNeeded(shopGuid);
             var shop = _unitOfWork.ShopRepository.FindByIdOrNull(shopGuid);
-            ShoppingCart tempCart = new ShoppingCart(cart.UserGuid, cart.ShopGuid);
-            foreach (Tuple<ShopProduct, int> record in cart.PurchasedProducts)
-            {
-                tempCart.PurchasedProducts.Add(record);
-            }
 
-
-            _shopDomain.ShoppingCartDomain.CheckDiscountPolicy(tempCart);
-            double totalPrice= _shopDomain.GetCartPrice(shop, tempCart);
-            tempCart.UserGuid = Guid.Empty;
-            tempCart.ShopGuid = Guid.Empty;
-            tempCart.PurchasedProducts.Clear();
+            _shopDomain.ShoppingBagDomain.CheckDiscountPolicyWithoutUpdate(bag, shopGuid);
+            double totalPrice = _shopDomain.GetCartPrice(shop, bag.GetShoppingCartAndCreateIfNeededForGuestOnlyOrInBagDomain(shopGuid));
+            _shopDomain.ShoppingBagDomain.ClearAllDiscounts(bag, shopGuid);
             return totalPrice;
         }
         public bool RemoveUser(Guid userToRemoveGuid)

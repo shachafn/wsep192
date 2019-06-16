@@ -13,12 +13,12 @@ using System.Linq;
 
 namespace PresentaitionLayer.Controllers
 {
-    [Authorize(Roles ="Buyer")]
+    [Authorize(Roles = "Buyer")]
     public class BuyerController : Controller
     {
         ILogger<BuyerController> _logger;
         IServiceFacade _serviceFacade;
-        public BuyerController(IServiceFacade serviceFacade,ILogger<BuyerController> logger)
+        public BuyerController(IServiceFacade serviceFacade, ILogger<BuyerController> logger)
         {
             _logger = logger;
             _serviceFacade = serviceFacade;
@@ -31,18 +31,19 @@ namespace PresentaitionLayer.Controllers
 
         [HttpPost]
         [AllowAnonymous]
-        public IActionResult Search(string searchstring)
+        public IActionResult Search(string searchstring, string searchType)
         {
             ViewData["searched"] = searchstring;
-            List<string> strings = new List<string>();
-            strings.Add(searchstring);
-
+            List<string> strings = new List<string>
+            {
+                searchstring == null ? "" : searchstring
+            };
             try
             {
                 var results = _serviceFacade.SearchProduct(new Guid(HttpContext.Session.Id), strings, "Name");
                 return View(results);
             }
-            catch(IllegalArgumentException)
+            catch (IllegalArgumentException)
             {
                 var redirect = this.Url.Action("Index", "Buyer");
                 var message = new UserMessage(redirect, "Please do a valid search operation.");
@@ -54,7 +55,7 @@ namespace PresentaitionLayer.Controllers
                 var message = new UserMessage(redirect, "An error has occured. Please refresh and try again.");
                 return View("UserMessage", message);
             }
-            catch(DatabaseConnectionTimeoutException)
+            catch (DatabaseConnectionTimeoutException)
             {
                 var redirect = this.Url.Action("Index", "Buyer");
                 var message = new UserMessage(redirect, "An error has occured. Please refresh and try again. (Database connection lost).");
@@ -143,7 +144,7 @@ namespace PresentaitionLayer.Controllers
 
         [AllowAnonymous]
         [HttpPost]
-        public IActionResult AddToCart( int Quantity,string ShopId,string ItemId)
+        public IActionResult AddToCart(int Quantity, string ShopId, string ItemId)
         {
             try
             {
@@ -191,16 +192,16 @@ namespace PresentaitionLayer.Controllers
         {
             try
             {
-            IEnumerable<Tuple<ShoppingCart, IEnumerable<ShopProduct>>> bag = _serviceFacade.GetUserBag(new Guid(HttpContext.Session.Id));
-            CheckoutModel model = new CheckoutModel(bag);
-            IList<double> discountPrices = new List<double>();
-            foreach (Tuple<ShoppingCart, IEnumerable<ShopProduct>> tup in bag)
-            {
-                var disc = _serviceFacade.GetCartPrice(new Guid(HttpContext.Session.Id), tup.Item1.ShopGuid);
-                discountPrices.Add(disc);
-            }
-            model.AfterDiscount = discountPrices;
-            return View(model);
+                IEnumerable<Tuple<ShoppingCart, IEnumerable<ShopProduct>>> bag = _serviceFacade.GetUserBag(new Guid(HttpContext.Session.Id));
+                CheckoutModel model = new CheckoutModel(bag);
+                IList<double> discountPrices = new List<double>();
+                foreach (Tuple<ShoppingCart, IEnumerable<ShopProduct>> tup in bag)
+                {
+                    var disc = _serviceFacade.GetCartPrice(new Guid(HttpContext.Session.Id), tup.Item1.ShopGuid);
+                    discountPrices.Add(disc);
+                }
+                model.AfterDiscount = discountPrices;
+                return View(model);
             }
             catch (GeneralServerError)
             {
@@ -263,7 +264,7 @@ namespace PresentaitionLayer.Controllers
                 _serviceFacade.RemoveProductFromCart(new Guid(HttpContext.Session.Id), new Guid(shopGuid), new Guid(shopProductGuid));
                 return RedirectToAction("ShoppingCart", "Buyer");
             }
-            catch(ShopStateException)
+            catch (ShopStateException)
             {
                 var redirect = this.Url.Action("Index", "Buyer");
                 var message = new UserMessage(redirect, "Cannot edit a cart of a closed shop.");
@@ -293,7 +294,7 @@ namespace PresentaitionLayer.Controllers
                     new Guid(shopProductGuid), int.Parse(newAmount));
                 return RedirectToAction("ShoppingCart", "Buyer");
             }
-            catch(ShopStateException)
+            catch (ShopStateException)
             {
                 var redirect = this.Url.Action("Index", "Buyer");
                 var message = new UserMessage(redirect, "Cannot edit a cart of a closed shop.");

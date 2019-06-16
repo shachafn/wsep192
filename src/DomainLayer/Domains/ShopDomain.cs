@@ -223,8 +223,8 @@ namespace DomainLayer.Domains
             }
             if (!canPurchaseCart)
             {
-                _unitOfWork.ShopRepository.Update(shop);
-                _unitOfWork.BagRepository.Update(bag);
+                //_unitOfWork.ShopRepository.Update(shop);
+                //_unitOfWork.BagRepository.Update(bag);
                 return false;
             }
 

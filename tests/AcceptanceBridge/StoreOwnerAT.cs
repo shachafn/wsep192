@@ -314,19 +314,6 @@ namespace Tests
             Assert.AreEqual(408, priceAfterDiscount);
 
             Tester.PBridge.PurchaseCart(cookieBuyer, shopGuid);
-
-            var buyerPurchaseHistory = Tester.PBridge.GetPurchaseHistory(cookieBuyer);
-            bool thereIsDiscount = false;
-            foreach (Tuple<Guid, ApplicationCore.Entitites.ShopProduct, int> item in buyerPurchaseHistory)
-            {
-                if (item.Item1 == shopGuid && item.Item2.Price == -6 && item.Item3 == 2)
-                {
-                    thereIsDiscount = true;
-                }
-            }
-            Assert.IsTrue(thereIsDiscount);
-
-
         }
 
         [Test]
@@ -363,18 +350,6 @@ namespace Tests
             double priceAfterDiscount = Tester.PBridge.GetCartPrice(cookieBuyer, shopGuid);
             Assert.AreEqual(360, priceAfterDiscount);
             Tester.PBridge.PurchaseCart(cookieBuyer, shopGuid);
-
-            var buyerPurchaseHistory = Tester.PBridge.GetPurchaseHistory(cookieBuyer);
-            bool thereIsDiscount = false;
-            foreach (Tuple<Guid, ApplicationCore.Entitites.ShopProduct, int> item in buyerPurchaseHistory)
-            {
-                if (item.Item1 == shopGuid && item.Item2.Price == -90 && item.Item3 == 1)
-                {
-                    thereIsDiscount = true;
-                }
-            }
-            Assert.IsTrue(thereIsDiscount);
-
         }
         [Test]
         public static void AddDiscountPolicyAT4()
@@ -408,18 +383,6 @@ namespace Tests
             Assert.AreEqual(310*68/100.0, priceAfterDiscount);
 
             Tester.PBridge.PurchaseCart(cookieBuyer, shopGuid);
-
-            var buyerPurchaseHistory = Tester.PBridge.GetPurchaseHistory(cookieBuyer);
-            bool thereIsDiscount = false;
-            foreach (Tuple<Guid, ApplicationCore.Entitites.ShopProduct, int> item in buyerPurchaseHistory)
-            {
-                if (item.Item1 == shopGuid && item.Item2.Price == -310 * 32 / 100.0 && item.Item3 == 1)
-                {
-                    thereIsDiscount = true;
-                }
-            }
-            Assert.IsTrue(thereIsDiscount);
-
         }
         [Test]
         public static void AddDiscountPolicyAT5()

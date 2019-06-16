@@ -122,6 +122,7 @@ namespace DomainLayer.Users
         {
             var shop = _unitOfWork.ShopRepository.FindByIdOrNull(shopGuid);
             shop.ClosePermanently();
+            _unitOfWork.ShopRepository.Update(shop);
         }
 
 

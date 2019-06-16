@@ -7,6 +7,8 @@ namespace PresentaitionLayer.Models.AdminModels
     {
         public Guid Guid { get; set; }
         public Guid CreatorGuid { get; set; }
+        public string ShopName { get; set; }
+        public string CreatorName { get; set; }
         public ShopStateEnum State { get; set; }
     }
 }

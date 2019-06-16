@@ -1,4 +1,5 @@
 ﻿using ApplicationCore.Interfaces.ExternalServices;
+using Microsoft.Extensions.Logging;
 using System;
 using System.Collections.Generic;
 
@@ -6,6 +7,11 @@ namespace Infrastructure.ExternalServices
 {
     public class SupplyService : BaseHttpClient, ISupplySystem
     {
+
+        public SupplyService(ILogger<BaseHttpClient> logger) : base(logger)
+        {
+        }
+
         public bool IsAvailable()
         {
             var values = new Dictionary<string, string>

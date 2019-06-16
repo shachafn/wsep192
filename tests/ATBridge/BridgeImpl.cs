@@ -96,6 +96,10 @@ namespace ATBridge
         {
             return _serviceFacade.PurchaseCart(userGuid, shopGuid);
         }
+        public double GetCartPrice(Guid userGuid, Guid shopGuid)
+        {
+            return _serviceFacade.GetCartPrice(userGuid, shopGuid);
+        }
 
         public Guid Register(Guid userGuid, string username, string password)
         {
@@ -198,9 +202,9 @@ namespace ATBridge
             return _serviceFacade.GetAllShops(cookie);
         }
 
-        public IEnumerable<Tuple<ShoppingCart, IEnumerable<ShopProduct>>> getUserBag(Guid cookie)
+        public IEnumerable<Tuple<ShoppingCart, IEnumerable<ShopProduct>>> GetUserBag(Guid cookie)
         {
-            return _serviceFacade.getUserBag(cookie);
+            return _serviceFacade.GetUserBag(cookie);
         }
 
         public void cancelOwnerAssignment(Guid cookie, Guid shopId)

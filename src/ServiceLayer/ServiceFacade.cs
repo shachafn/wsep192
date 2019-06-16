@@ -152,6 +152,10 @@ namespace ServiceLayer
         {
             return _domainLayerFacade.PurchaseCart(userIdentifier, shopGuid);
         }
+        public double GetCartPrice(UserIdentifier userIdentifier, Guid shopGuid)
+        {
+            return _domainLayerFacade.GetCartPrice(userIdentifier, shopGuid);
+        }
         #endregion
 
         #region Utils
@@ -186,7 +190,7 @@ namespace ServiceLayer
         }
         public IEnumerable<Tuple<ShoppingCart, IEnumerable<ShopProduct>>> GetUserBag(UserIdentifier userIdentifier)
         {
-            return _domainLayerFacade.getUserBag(userIdentifier);
+            return _domainLayerFacade.GetUserBag(userIdentifier);
         }
         #endregion
 

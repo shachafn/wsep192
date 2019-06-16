@@ -42,6 +42,15 @@ namespace DomainLayer.Users
             //External payment pay, if not true ---- rollback
             return true;
         }
+        public double GetCartPrice(Guid shopGuid)
+        {
+            var bag = _unitOfWork.BagRepository.GetShoppingBagAndCreateIfNeeded(Guid);
+            var shop = _unitOfWork.ShopRepository.FindByIdOrNull(shopGuid);
+            _shopDomain.ShoppingBagDomain.CheckDiscountPolicyWithoutUpdate(bag, shopGuid);
+            double totalPrice = _shopDomain.GetCartPrice(shop, bag.GetShoppingCartAndCreateIfNeededForGuestOnlyOrInBagDomain(shopGuid));
+            _shopDomain.ShoppingBagDomain.ClearAllDiscounts(bag, shopGuid);
+            return totalPrice;
+        }
 
         public bool AddProductToCart(Guid shopGuid, Guid shopProductGuid, int quantity)
         {
@@ -192,6 +201,33 @@ namespace DomainLayer.Users
         public ICollection<Tuple<Guid, ShopProduct, int>> GetPurchaseHistory()
         {
             return _unitOfWork.ShopRepository.Query().SelectMany(shop => shop.GetPurchaseHistory(Guid)).ToList();
+        }
+
+        public IEnumerable<Tuple<ShoppingCart, IEnumerable<ShopProduct>>> GetUserBag()
+        {
+            var bag = _unitOfWork.BagRepository.GetShoppingBagAndCreateIfNeeded(Guid);
+            List<Tuple<ShoppingCart, IEnumerable<ShopProduct>>> result = new List<Tuple<ShoppingCart, IEnumerable<ShopProduct>>>();
+            if (bag != null && bag.ShoppingCarts != null)
+            {
+                foreach (var cart in bag.ShoppingCarts)
+                {
+                    List<ShopProduct> products = new List<ShopProduct>();
+                    var shop = _unitOfWork.ShopRepository.FindByIdOrNull(cart.ShopGuid);
+                    foreach (var item in cart.PurchasedProducts)
+                    {
+                        //ShopProduct currProduct = shop.ShopProducts.FirstOrDefault(prod => prod.Guid.Equals(item.Item1));
+                        ShopProduct currProduct = item.Item1;
+                        ShopProduct product = new ShopProduct();
+                        product.Product = new Product(currProduct.Product.Name, currProduct.Product.Category);
+                        product.Guid = currProduct.Guid;
+                        product.Price = currProduct.Price;
+                        product.Quantity = item.Item2;
+                        products.Add(product);
+                    }
+                    result.Add(new Tuple<ShoppingCart, IEnumerable<ShopProduct>>(cart, products));
+                }
+            }
+            return result;
         }
 
         #endregion

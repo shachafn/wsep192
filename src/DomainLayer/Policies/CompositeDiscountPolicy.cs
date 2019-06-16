@@ -36,9 +36,9 @@ namespace DomainLayer.Policies
             {
                 int prevDiscountPercentage = DiscountPolicy2.DiscountPercentage;
                 DiscountPolicy2.DiscountPercentage = DiscountPercentage;
-                var deiscountProductAndQuantity = DiscountPolicy2.ApplyPolicy(cart, productGuid, quantity, user, unitOfWork);
+                var discountProductAndQuantity = DiscountPolicy2.ApplyPolicy(cart, productGuid, quantity, user, unitOfWork);
                 DiscountPolicy2.DiscountPercentage = prevDiscountPercentage;
-                return deiscountProductAndQuantity;
+                return discountProductAndQuantity;
             }
             return null;
         }

@@ -19,6 +19,7 @@ namespace ApplicationCore.Interfaces.DomainLayer
         Guid OpenShop(UserIdentifier userIdentifier, string shopName);
         void ReopenShop(UserIdentifier userIdentifier, Guid shopGuid);
         bool PurchaseCart(UserIdentifier userIdentifier, Guid shopGuid);
+        double GetCartPrice(UserIdentifier userIdentifier, Guid shopGuid);
         Guid Initialize(UserIdentifier userIdentifier, string username, string password);
         bool RemoveUser(UserIdentifier userIdentifier, Guid userToRemoveGuid);
         bool ConnectToPaymentSystem(UserIdentifier userIdentifier);
@@ -46,7 +47,7 @@ namespace ApplicationCore.Interfaces.DomainLayer
         ICollection<Shop> GetAllShops(UserIdentifier userIdentifier);
         void CloseShop(UserIdentifier userIdentifier, Guid shopGuid);
         void CloseShopPermanently(UserIdentifier userIdentifier, Guid shopGuid);
-        IEnumerable<Tuple<ShoppingCart, IEnumerable<ShopProduct>>> getUserBag(UserIdentifier userIdentifier);
+        IEnumerable<Tuple<ShoppingCart, IEnumerable<ShopProduct>>> GetUserBag(UserIdentifier userIdentifier);
         string GetUserName(Guid userGuid);
         Guid GetUserGuid(string userName);
         string GetShopName(Guid shopGuid);

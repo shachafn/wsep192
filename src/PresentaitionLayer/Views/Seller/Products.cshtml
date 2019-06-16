@@ -97,12 +97,7 @@
         </label>
         <label>
             Category
-            <select name="Category" required>
-                <option value="good things"> good things</option>
-                <option value="pro things"> pro things</option>
-                <option value="superb things"> superb things</option>
-                <option value="nice things"> nice things</option>
-            </select>
+            <input type="text" name="Category" value="Everything" required>
         </label>
         <input type="hidden" name="shopId" value="@ViewData["ShopId"]" />
         <input type="submit" value="Add new Item" class="btn" />

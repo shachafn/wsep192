@@ -38,9 +38,6 @@
                     <td>
                         @Html.DisplayFor(modelItem => item.Product.Name)
                     </td>
-                    @*<td>
-                            @Html.DisplayFor(modelItem => item.Quantity)
-                        </td>*@
                     <td>
                         <form asp-action="EditCartProduct" method="post" class="form-horizontal" id="editProductAmountFrom">
                             <input type="hidden" name="shopGuid" value="@cartProductTuple.Item1.ShopGuid" />
@@ -50,6 +47,8 @@
                     </td>
                     <td>
                         @(item.Price * item.Quantity)
+                    </td>
+                    <td>
                     </td>
                     <td>
                         <input type="submit" name="edit" value="Update" form="editProductAmountFrom"/>

@@ -906,9 +906,8 @@ namespace DomainLayer.Facade
 
         private void VerifySearchInput(ICollection<string> toMatch, ICloneableException<Exception> e)
         {
-            var isEmpty = toMatch.Count == 0;
-            var validStrings = toMatch.All(s => !string.IsNullOrWhiteSpace(s));
-            if (isEmpty || !validStrings)
+            var validStrings = toMatch.All(s => s!=null);
+            if (!validStrings)
             {
                 StackTrace stackTrace = new StackTrace();
                 var msg = $"Search must have input, input must be valid," +

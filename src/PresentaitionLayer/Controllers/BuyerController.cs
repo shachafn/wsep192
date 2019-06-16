@@ -29,12 +29,14 @@ namespace PresentaitionLayer.Controllers
 
         [HttpPost]
         [AllowAnonymous]
-        public IActionResult Search(string searchstring)
+        public IActionResult Search(string searchstring, string searchType)
         {
             ViewData["searched"] = searchstring;
-            List<string> strings = new List<string>();
-            strings.Add(searchstring);
-            var results =_serviceFacade.SearchProduct(new Guid(HttpContext.Session.Id), strings, "Name");
+            List<string> strings = new List<string>
+            {
+                searchstring == null ? "" : searchstring
+            };
+            var results =_serviceFacade.SearchProduct(new Guid(HttpContext.Session.Id), strings, searchType);
             return View(results);
         }
 

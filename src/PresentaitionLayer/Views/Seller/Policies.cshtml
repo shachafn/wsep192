@@ -75,35 +75,6 @@
         }
     </tbody>
 </table>
-@*
-    <div style="margin: 40px 0">
-        <h3>Add Cart Discount Policy</h3>
-        <form asp-action="AddCartDiscountPolicy" method="post" class="form-control" style="height:80px; padding:6px 12px">
-            <label>
-                Description
-                <input type="text" class="input" name="Description" placeholder="Policy Description" style="height:30px; width:1000px;" />
-            </label>
-            <label>
-                bigger/lesser
-                <select name="Sign" required>
-                    <option value=">"> ></option>
-                    <option value="<"> <</option>
-                </select>
-            </label>
-            <label>
-                than
-                <input type="number" name="Than" placeholder="0" max="100" min="0" />
-            </label>
-            <label>
-                percentage
-                <input type="number" name="Percent" placeholder="0" max="100" min="0" />%
-            </label>
-
-            <input type="hidden" name="shopId" value="@ViewData["ShopId"]" />
-            <input type="submit" value="Add new Item" class="btn" />
-        </form>
-    </div>*@
-
 
 <div style="margin: 40px 0">
     <h3>Add Compound Purchase Policy</h3>
@@ -114,7 +85,7 @@
         </label>
         <label>
             policy1
-            <input type="text" class="input" name="guid1" placeholder="Policy Guid" style="height:30px; width:400px;" />
+            <input type="text" class="input" name="guid1" placeholder="Policy Number" style="height:30px; width:400px;" />
         </label>
         <label>
             operator
@@ -127,14 +98,13 @@
         </label>
         <label>
             policy2
-            <input type="text" class="input" name="guid2" placeholder="Policy Guid" style="height:30px; width:400px;" />
+            <input type="text" class="input" name="guid2" placeholder="Policy Number" style="height:30px; width:400px;" />
         </label>
 
         <input type="hidden" name="shopId" value="@ViewData["ShopId"]" />
         <input type="submit" value="Add new Item" class="btn" />
     </form>
 </div>
-
 
 <div style="margin: 40px 0">
     <h3>Add Compound Discount Policy</h3>

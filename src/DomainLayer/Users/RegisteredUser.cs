@@ -38,7 +38,10 @@ namespace DomainLayer.Users
             var shop = _unitOfWork.ShopRepository.FindByIdOrNull(shopGuid);
             _shopDomain.ShoppingBagDomain.CheckDiscountPolicy(bag, shopGuid);
             if (!_shopDomain.PurchaseCart(shop, bag))
+            {
+                _shopDomain.ShoppingBagDomain.ClearAllDiscounts(bag, shopGuid);
                 return false;
+            }
             //External payment pay, if not true ---- rollback
             return true;
         }

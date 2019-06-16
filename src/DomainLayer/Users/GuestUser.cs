@@ -60,7 +60,10 @@ namespace ApplicationCore.Entities.Users
             // if the user fails to pay later, we can delete the purchase and revert the shop quantities and cart content
             _shopDomain.ShoppingBagDomain.CheckDiscountPolicy(bag, shopGuid);
             if (!_shopDomain.PurchaseCart(shop, bag))
+            {
+                _shopDomain.ShoppingBagDomain.ClearAllDiscounts(bag, shopGuid);
                 return false;
+            }
             //External payment pay, if not true ---- rollback
             return true;
         }

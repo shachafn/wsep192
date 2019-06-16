@@ -123,7 +123,6 @@ namespace DomainLayer.Facade
             UpdateCenter.RaiseEvent(newEvent);
         }
 
-
         public void CloseShopPermanently(UserIdentifier userIdentifier, Guid shopGuid)
         {
             VerifySystemIsInitialized();

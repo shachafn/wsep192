@@ -47,6 +47,8 @@ namespace PresentaitionLayer.Controllers
             {
                 Guid = s.Guid,
                 CreatorGuid = s.Creator.OwnerGuid,
+                ShopName = s.ShopName,
+                CreatorName = _facade.GetUserName(s.Creator.OwnerGuid),
                 State = s.ShopState
             }).ToList());
         }

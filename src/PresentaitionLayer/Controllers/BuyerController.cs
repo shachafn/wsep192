@@ -191,9 +191,16 @@ namespace PresentaitionLayer.Controllers
         {
             try
             {
-                IEnumerable<Tuple<ShoppingCart, IEnumerable<ShopProduct>>> bag = _serviceFacade.GetUserBag(new Guid(HttpContext.Session.Id));
-                CheckoutModel model = new CheckoutModel(bag);
-                return View(model);
+            IEnumerable<Tuple<ShoppingCart, IEnumerable<ShopProduct>>> bag = _serviceFacade.GetUserBag(new Guid(HttpContext.Session.Id));
+            CheckoutModel model = new CheckoutModel(bag);
+            IList<double> discountPrices = new List<double>();
+            foreach (Tuple<ShoppingCart, IEnumerable<ShopProduct>> tup in bag)
+            {
+                var disc = _serviceFacade.GetCartPrice(new Guid(HttpContext.Session.Id), tup.Item1.ShopGuid);
+                discountPrices.Add(disc);
+            }
+            model.AfterDiscount = discountPrices;
+            return View(model);
             }
             catch (GeneralServerError)
             {

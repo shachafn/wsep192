@@ -25,7 +25,7 @@ namespace DataAccessLayer
         public void Delete<T>(T entity, ISession session) where T : BaseEntity
         {
             var collection = _mongoDbContext.GetMongoDatabase().GetCollection<T>(typeof(T).Name);
-            collection.InsertOne(((MySession)session).MongoSession, entity);
+            collection.DeleteOne(((MySession)session).MongoSession, Builders<T>.Filter.Eq(ent => ent.Guid, entity.Guid));
         }
 
         public ICollection<T> FetchAll<T>(ISession session) where T : BaseEntity

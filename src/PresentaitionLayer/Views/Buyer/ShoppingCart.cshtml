@@ -2,6 +2,7 @@
 
 @{
     ViewData["Title"] = "ShoppingCart";
+    var i = 0;
 }
 
 <h2>ShoppingCart</h2>
@@ -21,9 +22,6 @@
                 </th>
                 <th>
                     Total Price
-                </th>
-                <th>
-                    Total Price After Discount
                 </th>
                 <th></th>
             </tr>
@@ -65,7 +63,9 @@
     </table>
     <form asp-action="BuyNow" method="post" class="form-control" style="height:44px; padding:6px 12px">
         Total Price: @cartProductTuple.Item2.Aggregate(0, (total, next) => total += next.Quantity * (int)next.Price)
+        After Discount: @Model.AfterDiscount.ElementAt(i);
         <input type="hidden" name="ShopId" value="@cartProductTuple.Item1.ShopGuid" />
         <input type="submit" value="Buy Now!" class="btn" />
     </form>
+    @(i++)
 }

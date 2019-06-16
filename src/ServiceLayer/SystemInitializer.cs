@@ -34,6 +34,11 @@ namespace ServiceLayer
 
             var session = _unitOfWork.Context.StartSession();
             session.StartTransaction();
+            if(_unitOfWork.BaseUserRepository.IsUserExistsByUsername("avi")|| _unitOfWork.BaseUserRepository.IsUserExistsByUsername("moti"))
+            {
+                session.CommitTransaction();
+                return;
+            }
             try
             {
                 runOperations(jsonList);

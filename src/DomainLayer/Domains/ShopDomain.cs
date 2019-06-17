@@ -105,6 +105,7 @@ namespace DomainLayer.Domains
                 {
                     var newOwner = new ShopOwner(newOwnerGuid, candidate.AppointerGuid, shop.Guid);
                     shop.Owners.Add(newOwner);
+                    shop.candidate = null;
                 }
                 else if (!candidate.Signatures.Values.Contains(userGuid)) //if not already signed , sign the candidate
                 {

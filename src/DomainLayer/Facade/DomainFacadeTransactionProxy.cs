@@ -1464,32 +1464,17 @@ namespace DomainLayer.Facade
                 catch (BaseException e)
                 {
                     session.AbortTransaction();
-                    if (isSuccess) //Error in CommitTransaction
-                    {
-                        _externalServicesManager.PaymentSystem.CancelPayment();
-                        _externalServicesManager.SupplySystem.CancelSupply();
-                    }
                     _logger.LogWarning(e, "PurchaseCart Constraints Failed.");
                     throw e;
                 }
                 catch (MongoCommandException mongoExc)
                 {
                     session.AbortTransaction();
-                    if (isSuccess) //Error in CommitTransaction
-                    {
-                        _externalServicesManager.PaymentSystem.CancelPayment();
-                        _externalServicesManager.SupplySystem.CancelSupply();
-                    }
                     HandleMongoException(mongoExc);
                 }
                 catch (TimeoutException e)
                 {
                     session.AbortTransaction();
-                    if (isSuccess) //Error in CommitTransaction
-                    {
-                        _externalServicesManager.PaymentSystem.CancelPayment();
-                        _externalServicesManager.SupplySystem.CancelSupply();
-                    }
                     _logger.LogCritical(e, "Got timeout from DB.");
                     throw new DatabaseConnectionTimeoutException();
                 }

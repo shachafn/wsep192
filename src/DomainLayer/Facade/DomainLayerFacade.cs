@@ -148,9 +148,15 @@ namespace DomainLayer.Facade
             {
                 _logger.LogInformation($"{GetUserName(userIdentifier.Guid)} purchased cart from shop {GetShopName(shopGuid)} successfuly.");
                 if (_externalServicesManager.PaymentSystem.Pay() == -1)
-                    throw new ExternalServiceFaultException("Payment",ExternalServiceFaultException.ExternalServiceType.Payment);
+                {
+                    _externalServicesManager.PaymentSystem.CancelPayment();
+                    throw new ExternalServiceFaultException("Payment", ExternalServiceFaultException.ExternalServiceType.Payment);
+                }
                 if (_externalServicesManager.SupplySystem.Supply() == -1)
-                    throw new ExternalServiceFaultException("Supply", ExternalServiceFaultException.ExternalServiceType.Supply);
+                {
+                    _externalServicesManager.SupplySystem.CancelSupply();
+                    throw new ExternalServiceFaultException("Payment", ExternalServiceFaultException.ExternalServiceType.Payment);
+                }
             }
             else
                 _logger.LogInformation($"{GetUserName(userIdentifier.Guid)} failed to purchase cart from shop {GetShopName(shopGuid)} successfuly.");

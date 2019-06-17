@@ -92,8 +92,8 @@ namespace DomainLayer.Domains
 
         public void AddShopOwner(Shop shop, Guid userGuid, Guid newOwnerGuid, string appointerUsername)
         {
-            int signatures_required = shop.Owners.Count();
-            if (shop.candidate == null && signatures_required > 0) // a new candidate
+            int signatures_required = shop.Owners.Count() + 1; //+1 For Creator
+            if (shop.candidate == null && signatures_required > 1) // a new candidate
             {
                 var newCandidate = new OwnerCandidate(newOwnerGuid, shop.Guid, userGuid, signatures_required, appointerUsername);
                 shop.candidate = newCandidate;
@@ -106,7 +106,7 @@ namespace DomainLayer.Domains
                     var newOwner = new ShopOwner(newOwnerGuid, candidate.AppointerGuid, shop.Guid);
                     shop.Owners.Add(newOwner);
                 }
-                else if (!candidate.Signatures.ContainsKey(appointerUsername)) //if not already signed , sign the candidate
+                else if (!candidate.Signatures.Values.Contains(userGuid)) //if not already signed , sign the candidate
                 {
                     candidate.Signatures.Add(appointerUsername, userGuid);
                 }

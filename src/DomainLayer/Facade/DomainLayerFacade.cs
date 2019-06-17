@@ -542,7 +542,9 @@ namespace DomainLayer.Facade
         public void CancelOwnerAssignment(UserIdentifier userIdentifier, Guid shopGuid)
         {
             _verifier.VerifyMe(MethodBase.GetCurrentMethod(), userIdentifier, shopGuid);
-            _unitOfWork.ShopRepository.FindByIdOrNull(shopGuid).candidate = null;
+            var shop = _unitOfWork.ShopRepository.FindByIdOrNull(shopGuid);
+            shop.candidate = null;
+            _unitOfWork.ShopRepository.Update(shop);
         }
 
         public bool IsUserAdmin(UserIdentifier userIdentifier)

@@ -77,6 +77,12 @@ namespace PresentaitionLayer.Controllers
                 _serviceFacade.ReopenShop(new Guid(HttpContext.Session.Id), new Guid(shopId));
                 return RedirectToAction("MyShops", "Seller");
             }
+            catch (NoPrivilegesException)
+            {
+                var redirect = this.Url.Action("Index", "Seller");
+                var message = new UserMessage(redirect, "You haven't sufficient priviliges. Cannot complete the request.");
+                return View("UserMessage", message);
+            }
             catch (GeneralServerError)
             {
                 var redirect = this.Url.Action("Index", "Seller");
@@ -96,6 +102,12 @@ namespace PresentaitionLayer.Controllers
             {
                 _serviceFacade.CloseShop(new Guid(HttpContext.Session.Id), new Guid(shopId));
                 return RedirectToAction("MyShops", "Seller");
+            }
+            catch (NoPrivilegesException)
+            {
+                var redirect = this.Url.Action("Index", "Seller");
+                var message = new UserMessage(redirect, "You haven't sufficient priviliges. Cannot complete the request.");
+                return View("UserMessage", message);
             }
             catch (GeneralServerError)
             {
@@ -130,6 +142,12 @@ namespace PresentaitionLayer.Controllers
                 }
                 model.CreatorName = _serviceFacade.GetUserName(shop.Creator.OwnerGuid);
                 return View(model);
+            }
+            catch(NoPrivilegesException)
+            {
+                var redirect = this.Url.Action("Index", "Seller");
+                var message = new UserMessage(redirect, "You haven't sufficient priviliges. Cannot complete the request.");
+                return View("UserMessage", message);
             }
             catch (GeneralServerError)
             {
@@ -192,7 +210,13 @@ namespace PresentaitionLayer.Controllers
                 _serviceFacade.AddProductToShop(new Guid(HttpContext.Session.Id), new Guid(shopId), ProductName, Category, Price, StoredQuantity);
                 return RedirectToAction("Products", "Seller", new { ShopId = shopId });
             }
-            catch(IllegalArgumentException)
+            catch (NoPrivilegesException)
+            {
+                var redirect = this.Url.Action("Index", "Seller");
+                var message = new UserMessage(redirect, "You haven't sufficient priviliges. Cannot complete the request.");
+                return View("UserMessage", message);
+            }
+            catch (IllegalArgumentException)
             {
                 var redirect = this.Url.Action("Index", "Seller");
                 var message = new UserMessage(redirect, "Please fill in all required fields in a valid manner.");
@@ -236,6 +260,12 @@ namespace PresentaitionLayer.Controllers
                 _serviceFacade.EditProductInShop(new Guid(HttpContext.Session.Id), new Guid(ShopId), product.Guid, product.Price, product.Quantity);
                 return RedirectToAction("Products", "Seller", new { ShopId = ShopId });
             }
+            catch (NoPrivilegesException)
+            {
+                var redirect = this.Url.Action("Index", "Seller");
+                var message = new UserMessage(redirect, "You haven't sufficient priviliges. Cannot complete the request.");
+                return View("UserMessage", message);
+            }
             catch (IllegalArgumentException)
             {
                 var redirect = this.Url.Action("Index", "Seller");
@@ -262,6 +292,12 @@ namespace PresentaitionLayer.Controllers
             {
                 _serviceFacade.RemoveProductFromShop(new Guid(HttpContext.Session.Id), new Guid(ShopId), new Guid(ProductId));
                 return RedirectToAction("Products", "Seller", new { ShopId = ShopId });
+            }
+            catch (NoPrivilegesException)
+            {
+                var redirect = this.Url.Action("Index", "Seller");
+                var message = new UserMessage(redirect, "You haven't sufficient priviliges. Cannot complete the request.");
+                return View("UserMessage", message);
             }
             catch (GeneralServerError)
             {
@@ -312,6 +348,12 @@ namespace PresentaitionLayer.Controllers
                 _serviceFacade.AddNewDiscountPolicy(new Guid(HttpContext.Session.Id), new Guid(ShopId), (object)"Cart discount policy", (object)Sign, (object)Than, (object)Percent, (object)Description, (object)null);
                 return RedirectToAction("Policies", "Seller", new { ShopId });
             }
+            catch (NoPrivilegesException)
+            {
+                var redirect = this.Url.Action("Index", "Seller");
+                var message = new UserMessage(redirect, "You haven't sufficient priviliges. Cannot complete the request.");
+                return View("UserMessage", message);
+            }
             catch (GeneralServerError)
             {
                 var redirect = this.Url.Action("Index", "Seller");
@@ -337,6 +379,12 @@ namespace PresentaitionLayer.Controllers
                 policy.DiscountPolicies = shop.DiscountPolicies;
                 _serviceFacade.AddNewDiscountPolicy(new Guid(HttpContext.Session.Id), new Guid(ShopId), (object)"Compound discount policy", (object)policy.DiscountPolicies.ElementAt(guid1 - 1).Guid, (object)Sign, (object)policy.DiscountPolicies.ElementAt(guid2 - 1).Guid, (object)Percent, (object)Description);
                 return RedirectToAction("Policies", "Seller", new { ShopId });
+            }
+            catch (NoPrivilegesException)
+            {
+                var redirect = this.Url.Action("Index", "Seller");
+                var message = new UserMessage(redirect, "You haven't sufficient priviliges. Cannot complete the request.");
+                return View("UserMessage", message);
             }
             catch (GeneralServerError)
             {
@@ -364,6 +412,12 @@ namespace PresentaitionLayer.Controllers
                 policy.PurchasePolicies = shop.PurchasePolicies;
                 _serviceFacade.AddNewPurchasePolicy(new Guid(HttpContext.Session.Id), new Guid(ShopId), (object)"Compound discount policy", policy.PurchasePolicies.ElementAt(guid2 - 1).Guid, (object)Sign, policy.PurchasePolicies.ElementAt(guid2 - 1).Guid, (object)Description);
                 return RedirectToAction("Policies", "Seller", new { ShopId = ShopId });
+            }
+            catch (NoPrivilegesException)
+            {
+                var redirect = this.Url.Action("Index", "Seller");
+                var message = new UserMessage(redirect, "You haven't sufficient priviliges. Cannot complete the request.");
+                return View("UserMessage", message);
             }
             catch (GeneralServerError)
             {
@@ -402,6 +456,12 @@ namespace PresentaitionLayer.Controllers
                 _serviceFacade.AddNewPurchasePolicy(new Guid(HttpContext.Session.Id), new Guid(ShopId), (object)"Product purchase policy", (object)new Guid(ProductId), (object)Sign, (object)Than, (object)Description);
                 return RedirectToAction("Products", "Seller", new { ShopId });
             }
+            catch (NoPrivilegesException)
+            {
+                var redirect = this.Url.Action("Index", "Seller");
+                var message = new UserMessage(redirect, "You haven't sufficient priviliges. Cannot complete the request.");
+                return View("UserMessage", message);
+            }
             catch (GeneralServerError)
             {
                 var redirect = this.Url.Action("Index", "Seller");
@@ -423,6 +483,12 @@ namespace PresentaitionLayer.Controllers
             {
                 _serviceFacade.AddNewDiscountPolicy(new Guid(HttpContext.Session.Id), new Guid(ShopId), (object)"Product discount policy", (object)new Guid(ProductId), (object)Sign, (object)Than, (object)Percent, (object)Description);
                 return RedirectToAction("Products", "Seller", new { ShopId });
+            }
+            catch (NoPrivilegesException)
+            {
+                var redirect = this.Url.Action("Index", "Seller");
+                var message = new UserMessage(redirect, "You haven't sufficient priviliges. Cannot complete the request.");
+                return View("UserMessage", message);
             }
             catch (GeneralServerError)
             {
@@ -452,6 +518,12 @@ namespace PresentaitionLayer.Controllers
                 var message = new UserMessage(redirect, "An error has occured. Please refresh and try again.");
                 return View("UserMessage", message);
             }
+            catch (NoPrivilegesException)
+            {
+                var redirect = this.Url.Action("Index", "Seller");
+                var message = new UserMessage(redirect, "You haven't sufficient priviliges. Cannot complete the request.");
+                return View("UserMessage", message);
+            }
             catch (DatabaseConnectionTimeoutException)
             {
                 var redirect = this.Url.Action("Index", "Seller");
@@ -468,6 +540,12 @@ namespace PresentaitionLayer.Controllers
                 Guid OwnerId = _serviceFacade.GetUserGuid(OwnerName); //need to adress the empty guid thingy
                 _serviceFacade.AddShopOwner(new Guid(HttpContext.Session.Id), new Guid(ShopId), OwnerId);
                 return RedirectToAction("Manage", "Seller", new { ShopId });
+            }
+            catch (NoPrivilegesException)
+            {
+                var redirect = this.Url.Action("Index", "Seller");
+                var message = new UserMessage(redirect, "You haven't sufficient priviliges. Cannot complete the request.");
+                return View("UserMessage", message);
             }
             catch (GeneralServerError)
             {
@@ -496,7 +574,13 @@ namespace PresentaitionLayer.Controllers
                 _serviceFacade.AddShopManager(new Guid(HttpContext.Session.Id), new Guid(ShopId), OwnerId, privileges.ToList());
                 return RedirectToAction("Manage", "Seller", new { ShopId });
             }
-            catch(BrokenConstraintException)
+            catch (NoPrivilegesException)
+            {
+                var redirect = this.Url.Action("Index", "Seller");
+                var message = new UserMessage(redirect, "You haven't sufficient priviliges. Cannot complete the request.");
+                return View("UserMessage", message);
+            }
+            catch (BrokenConstraintException)
             {
                 var redirect = this.Url.Action("Index", "Seller");
                 var message = new UserMessage(redirect, "User is already a manager.");
@@ -523,6 +607,12 @@ namespace PresentaitionLayer.Controllers
                 _serviceFacade.RemoveShopManager(new Guid(HttpContext.Session.Id), new Guid(ShopId), new Guid(ManagerId));
                 return RedirectToAction("Manage", "Seller", new { ShopId });
             }
+            catch (NoPrivilegesException)
+            {
+                var redirect = this.Url.Action("Index", "Seller");
+                var message = new UserMessage(redirect, "You haven't sufficient priviliges. Cannot complete the request.");
+                return View("UserMessage", message);
+            }
             catch (GeneralServerError)
             {
                 var redirect = this.Url.Action("Index", "Seller");
@@ -543,6 +633,12 @@ namespace PresentaitionLayer.Controllers
             {
                 _serviceFacade.CancelOwnerAssignment(new Guid(HttpContext.Session.Id), new Guid(ShopId));
                 return RedirectToAction("Manage", "Seller", new { ShopId });
+            }
+            catch (NoPrivilegesException)
+            {
+                var redirect = this.Url.Action("Index", "Seller");
+                var message = new UserMessage(redirect, "You haven't sufficient priviliges. Cannot complete the request.");
+                return View("UserMessage", message);
             }
             catch (GeneralServerError)
             {

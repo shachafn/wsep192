@@ -47,7 +47,7 @@ namespace DomainLayer.Facade
                 catch (BaseException e)
                 {
                     session.AbortTransaction();
-                    _logger.LogWarning("AddNewDiscountPolicy Constraints Failed.", e);
+                    _logger.LogWarning(e, "AddNewDiscountPolicy Constraints Failed.");
                     throw e;
                 }
                 catch(MongoCommandException mongoExc)
@@ -58,13 +58,13 @@ namespace DomainLayer.Facade
                 catch(TimeoutException e)
                 {
                     session.AbortTransaction();
-                    _logger.LogCritical("Got timeout from DB.", e);
+                    _logger.LogCritical(e, "Got timeout from DB.");
                     throw new DatabaseConnectionTimeoutException();
                 }
                 catch (Exception e)
                 {
                     session.AbortTransaction();
-                    _logger.LogWarning("AddNewDiscountPolicy Failed Due to unknown error.", e);
+                    _logger.LogWarning(e, "AddNewDiscountPolicy Failed Due to unknown error.");
                     throw new GeneralServerError("An error has occured. Please try again.", e);
                 }
                 triesCount++;
@@ -100,7 +100,7 @@ namespace DomainLayer.Facade
                 catch (BaseException e)
                 {
                     session.AbortTransaction();
-                    _logger.LogWarning("AddNewPurchasePolicy Constraints Failed.", e);
+                    _logger.LogWarning(e, "AddNewPurchasePolicy Constraints Failed.");
                     throw e;
                 }
                 catch (MongoCommandException mongoExc)
@@ -111,13 +111,13 @@ namespace DomainLayer.Facade
                 catch (TimeoutException e)
                 {
                     session.AbortTransaction();
-                    _logger.LogCritical("Got timeout from DB.", e);
+                    _logger.LogCritical(e, "Got timeout from DB.");
                     throw new DatabaseConnectionTimeoutException();
                 }
                 catch (Exception e)
                 {
                     session.AbortTransaction();
-                    _logger.LogWarning("AddNewPurchasePolicy Failed Due to unknown error.", e);
+                    _logger.LogWarning(e, "AddNewPurchasePolicy Failed Due to unknown error.");
                     throw new GeneralServerError("An error has occured. Please try again.", e);
                 }
                 triesCount++;
@@ -144,7 +144,7 @@ namespace DomainLayer.Facade
                 catch (BaseException e)
                 {
                     session.AbortTransaction();
-                    _logger.LogWarning("AddProductToCart Constraints Failed.", e);
+                    _logger.LogWarning(e, "AddProductToCart Constraints Failed.");
                     throw e;
                 }
                 catch (MongoCommandException mongoExc)
@@ -155,13 +155,13 @@ namespace DomainLayer.Facade
                 catch (TimeoutException e)
                 {
                     session.AbortTransaction();
-                    _logger.LogCritical("Got timeout from DB.", e);
+                    _logger.LogCritical(e, "Got timeout from DB.");
                     throw new DatabaseConnectionTimeoutException();
                 }
                 catch (Exception e)
                 {
                     session.AbortTransaction();
-                    _logger.LogWarning("AddProductToCart Failed Due to unknown error.", e);
+                    _logger.LogWarning(e, "AddProductToCart Failed Due to unknown error.");
                     throw new GeneralServerError("An error has occured. Please try again.", e);
                 }
                 triesCount++;
@@ -188,7 +188,7 @@ namespace DomainLayer.Facade
                 catch (BaseException e)
                 {
                     session.AbortTransaction();
-                    _logger.LogWarning("AddProductToCart Constraints Failed.", e);
+                    _logger.LogWarning(e, "AddProductToCart Constraints Failed.");
                     throw e;
                 }
                 catch (MongoCommandException mongoExc)
@@ -199,13 +199,13 @@ namespace DomainLayer.Facade
                 catch (TimeoutException e)
                 {
                     session.AbortTransaction();
-                    _logger.LogCritical("Got timeout from DB.", e);
+                    _logger.LogCritical(e, "Got timeout from DB.");
                     throw new DatabaseConnectionTimeoutException();
                 }
                 catch (Exception e)
                 {
                     session.AbortTransaction();
-                    _logger.LogWarning("AddProductToCart Failed Due to unknown error.", e);
+                    _logger.LogWarning(e, "AddProductToCart Failed Due to unknown error.");
                     throw new GeneralServerError("An error has occured. Please try again.", e);
                 }
                 triesCount++;
@@ -232,7 +232,7 @@ namespace DomainLayer.Facade
                 catch (BaseException e)
                 {
                     session.AbortTransaction();
-                    _logger.LogWarning("AddShopManager Constraints Failed.", e);
+                    _logger.LogWarning(e, "AddShopManager Constraints Failed.");
                     throw e;
                 }
                 catch (MongoCommandException mongoExc)
@@ -243,13 +243,13 @@ namespace DomainLayer.Facade
                 catch (TimeoutException e)
                 {
                     session.AbortTransaction();
-                    _logger.LogCritical("Got timeout from DB.", e);
+                    _logger.LogCritical(e, "Got timeout from DB.");
                     throw new DatabaseConnectionTimeoutException();
                 }
                 catch (Exception e)
                 {
                     session.AbortTransaction();
-                    _logger.LogWarning("AddShopManager Failed Due to unknown error.", e);
+                    _logger.LogWarning(e, "AddShopManager Failed Due to unknown error.");
                     throw new GeneralServerError("An error has occured. Please try again.", e);
                 }
                 triesCount++;
@@ -276,7 +276,7 @@ namespace DomainLayer.Facade
                 catch (BaseException e)
                 {
                     session.AbortTransaction();
-                    _logger.LogWarning("AddShopOwner Constraints Failed.", e);
+                    _logger.LogWarning(e, "AddShopOwner Constraints Failed.");
                     throw e;
                 }
                 catch (MongoCommandException mongoExc)
@@ -287,13 +287,13 @@ namespace DomainLayer.Facade
                 catch (TimeoutException e)
                 {
                     session.AbortTransaction();
-                    _logger.LogCritical("Got timeout from DB.", e);
+                    _logger.LogCritical(e, "Got timeout from DB.");
                     throw new DatabaseConnectionTimeoutException();
                 }
                 catch (Exception e)
                 {
                     session.AbortTransaction();
-                    _logger.LogWarning("AddShopOwner Failed Due to unknown error.", e);
+                    _logger.LogWarning(e, "AddShopOwner Failed Due to unknown error.");
                     throw new GeneralServerError("An error has occured. Please try again.", e);
                 }
                 triesCount++;
@@ -320,7 +320,7 @@ namespace DomainLayer.Facade
                 catch (BaseException e)
                 {
                     session.AbortTransaction();
-                    _logger.LogWarning("cancelOwnerAssignment Constraints Failed.", e);
+                    _logger.LogWarning(e, "cancelOwnerAssignment Constraints Failed.");
                     throw e;
                 }
                 catch (MongoCommandException mongoExc)
@@ -331,13 +331,13 @@ namespace DomainLayer.Facade
                 catch (TimeoutException e)
                 {
                     session.AbortTransaction();
-                    _logger.LogCritical("Got timeout from DB.", e);
+                    _logger.LogCritical(e, "Got timeout from DB.");
                     throw new DatabaseConnectionTimeoutException();
                 }
                 catch (Exception e)
                 {
                     session.AbortTransaction();
-                    _logger.LogWarning("cancelOwnerAssignment Failed Due to unknown error.", e);
+                    _logger.LogWarning(e, "cancelOwnerAssignment Failed Due to unknown error.");
                     throw new GeneralServerError("An error has occured. Please try again.", e);
                 }
                 triesCount++;
@@ -364,7 +364,7 @@ namespace DomainLayer.Facade
                 catch (BaseException e)
                 {
                     session.AbortTransaction();
-                    _logger.LogWarning("AddProductToCart Constraints Failed.", e);
+                    _logger.LogWarning(e, "AddProductToCart Constraints Failed.");
                     throw e;
                 }
                 catch (MongoCommandException mongoExc)
@@ -375,13 +375,13 @@ namespace DomainLayer.Facade
                 catch (TimeoutException e)
                 {
                     session.AbortTransaction();
-                    _logger.LogCritical("Got timeout from DB.", e);
+                    _logger.LogCritical(e, "Got timeout from DB.");
                     throw new DatabaseConnectionTimeoutException();
                 }
                 catch (Exception e)
                 {
                     session.AbortTransaction();
-                    _logger.LogWarning("AddProductToCart Failed Due to unknown error.", e);
+                    _logger.LogWarning(e, "AddProductToCart Failed Due to unknown error.");
                     throw new GeneralServerError("An error has occured. Please try again.", e);
                 }
                 triesCount++;
@@ -408,7 +408,7 @@ namespace DomainLayer.Facade
                 catch (BaseException e)
                 {
                     session.AbortTransaction();
-                    _logger.LogWarning("ChangeUserState Constraints Failed.", e);
+                    _logger.LogWarning(e, "ChangeUserState Constraints Failed.");
                     throw e;
                 }
                 catch (MongoCommandException mongoExc)
@@ -419,13 +419,13 @@ namespace DomainLayer.Facade
                 catch (TimeoutException e)
                 {
                     session.AbortTransaction();
-                    _logger.LogCritical("Got timeout from DB.", e);
+                    _logger.LogCritical(e, "Got timeout from DB.");
                     throw new DatabaseConnectionTimeoutException();
                 }
                 catch (Exception e)
                 {
                     session.AbortTransaction();
-                    _logger.LogWarning("ChangeUserState Failed Due to unknown error.", e);
+                    _logger.LogWarning(e, "ChangeUserState Failed Due to unknown error.");
                     throw new GeneralServerError("An error has occured. Please try again.", e);
                 }
                 triesCount++;
@@ -452,7 +452,7 @@ namespace DomainLayer.Facade
                 catch (BaseException e)
                 {
                     session.AbortTransaction();
-                    _logger.LogWarning("ClearSystem Constraints Failed.", e);
+                    _logger.LogWarning(e, "ClearSystem Constraints Failed.");
                     throw e;
                 }
                 catch (MongoCommandException mongoExc)
@@ -463,13 +463,13 @@ namespace DomainLayer.Facade
                 catch (TimeoutException e)
                 {
                     session.AbortTransaction();
-                    _logger.LogCritical("Got timeout from DB.", e);
+                    _logger.LogCritical(e, "Got timeout from DB.");
                     throw new DatabaseConnectionTimeoutException();
                 }
                 catch (Exception e)
                 {
                     session.AbortTransaction();
-                    _logger.LogWarning("ClearSystem Failed Due to unknown error.", e);
+                    _logger.LogWarning(e, "ClearSystem Failed Due to unknown error.");
                     throw new GeneralServerError("An error has occured. Please try again.", e);
                 }
                 triesCount++;
@@ -496,7 +496,7 @@ namespace DomainLayer.Facade
                 catch (BaseException e)
                 {
                     session.AbortTransaction();
-                    _logger.LogWarning("CloseShop Constraints Failed.", e);
+                    _logger.LogWarning(e, "CloseShop Constraints Failed.");
                     throw e;
                 }
                 catch (MongoCommandException mongoExc)
@@ -507,13 +507,13 @@ namespace DomainLayer.Facade
                 catch (TimeoutException e)
                 {
                     session.AbortTransaction();
-                    _logger.LogCritical("Got timeout from DB.", e);
+                    _logger.LogCritical(e, "Got timeout from DB.");
                     throw new DatabaseConnectionTimeoutException();
                 }
                 catch (Exception e)
                 {
                     session.AbortTransaction();
-                    _logger.LogWarning("CloseShop Failed Due to unknown error.", e);
+                    _logger.LogWarning(e, "CloseShop Failed Due to unknown error.");
                     throw new GeneralServerError("An error has occured. Please try again.", e);
                 }
                 triesCount++;
@@ -540,7 +540,7 @@ namespace DomainLayer.Facade
                 catch (BaseException e)
                 {
                     session.AbortTransaction();
-                    _logger.LogWarning("CloseShopPermanently Constraints Failed.", e);
+                    _logger.LogWarning(e, "CloseShopPermanently Constraints Failed.");
                     throw e;
                 }
                 catch (MongoCommandException mongoExc)
@@ -551,13 +551,13 @@ namespace DomainLayer.Facade
                 catch (TimeoutException e)
                 {
                     session.AbortTransaction();
-                    _logger.LogCritical("Got timeout from DB.", e);
+                    _logger.LogCritical(e, "Got timeout from DB.");
                     throw new DatabaseConnectionTimeoutException();
                 }
                 catch (Exception e)
                 {
                     session.AbortTransaction();
-                    _logger.LogWarning("CloseShopPermanently Failed Due to unknown error.", e);
+                    _logger.LogWarning(e, "CloseShopPermanently Failed Due to unknown error.");
                     throw new GeneralServerError("An error has occured. Please try again.", e);
                 }
                 triesCount++;
@@ -584,7 +584,7 @@ namespace DomainLayer.Facade
                 catch (BaseException e)
                 {
                     session.AbortTransaction();
-                    _logger.LogWarning("ConnectToPaymentSystem Constraints Failed.", e);
+                    _logger.LogWarning(e, "ConnectToPaymentSystem Constraints Failed.");
                     throw e;
                 }
                 catch (MongoCommandException mongoExc)
@@ -595,13 +595,13 @@ namespace DomainLayer.Facade
                 catch (TimeoutException e)
                 {
                     session.AbortTransaction();
-                    _logger.LogCritical("Got timeout from DB.", e);
+                    _logger.LogCritical(e, "Got timeout from DB.");
                     throw new DatabaseConnectionTimeoutException();
                 }
                 catch (Exception e)
                 {
                     session.AbortTransaction();
-                    _logger.LogWarning("ConnectToPaymentSystem Failed Due to unknown error.", e);
+                    _logger.LogWarning(e, "ConnectToPaymentSystem Failed Due to unknown error.");
                     throw new GeneralServerError("An error has occured. Please try again.", e);
                 }
                 triesCount++;
@@ -628,7 +628,7 @@ namespace DomainLayer.Facade
                 catch (BaseException e)
                 {
                     session.AbortTransaction();
-                    _logger.LogWarning("ConnectToSupplySystem Constraints Failed.", e);
+                    _logger.LogWarning(e, "ConnectToSupplySystem Constraints Failed.");
                     throw e;
                 }
                 catch (MongoCommandException mongoExc)
@@ -639,13 +639,13 @@ namespace DomainLayer.Facade
                 catch (TimeoutException e)
                 {
                     session.AbortTransaction();
-                    _logger.LogCritical("Got timeout from DB.", e);
+                    _logger.LogCritical(e, "Got timeout from DB.");
                     throw new DatabaseConnectionTimeoutException();
                 }
                 catch (Exception e)
                 {
                     session.AbortTransaction();
-                    _logger.LogWarning("ConnectToSupplySystem Failed Due to unknown error.", e);
+                    _logger.LogWarning(e, "ConnectToSupplySystem Failed Due to unknown error.");
                     throw new GeneralServerError("An error has occured. Please try again.", e);
                 }
                 triesCount++;
@@ -672,7 +672,7 @@ namespace DomainLayer.Facade
                 catch (BaseException e)
                 {
                     session.AbortTransaction();
-                    _logger.LogWarning("EditProductInCart Constraints Failed.", e);
+                    _logger.LogWarning(e, "EditProductInCart Constraints Failed.");
                     throw e;
                 }
                 catch (MongoCommandException mongoExc)
@@ -683,13 +683,13 @@ namespace DomainLayer.Facade
                 catch (TimeoutException e)
                 {
                     session.AbortTransaction();
-                    _logger.LogCritical("Got timeout from DB.", e);
+                    _logger.LogCritical(e, "Got timeout from DB.");
                     throw new DatabaseConnectionTimeoutException();
                 }
                 catch (Exception e)
                 {
                     session.AbortTransaction();
-                    _logger.LogWarning("AddProductToCart Failed Due to unknown error.", e);
+                    _logger.LogWarning(e, "AddProductToCart Failed Due to unknown error.");
                     throw new GeneralServerError("An error has occured. Please try again.", e);
                 }
                 triesCount++;
@@ -716,7 +716,7 @@ namespace DomainLayer.Facade
                 catch (BaseException e)
                 {
                     session.AbortTransaction();
-                    _logger.LogWarning("EditProductInShop Constraints Failed.", e);
+                    _logger.LogWarning(e, "EditProductInShop Constraints Failed.");
                     throw e;
                 }
                 catch (MongoCommandException mongoExc)
@@ -727,13 +727,13 @@ namespace DomainLayer.Facade
                 catch (TimeoutException e)
                 {
                     session.AbortTransaction();
-                    _logger.LogCritical("Got timeout from DB.", e);
+                    _logger.LogCritical(e, "Got timeout from DB.");
                     throw new DatabaseConnectionTimeoutException();
                 }
                 catch (Exception e)
                 {
                     session.AbortTransaction();
-                    _logger.LogWarning("EditProductInShop Failed Due to unknown error.", e);
+                    _logger.LogWarning(e, "EditProductInShop Failed Due to unknown error.");
                     throw new GeneralServerError("An error has occured. Please try again.", e);
                 }
                 triesCount++;
@@ -760,7 +760,7 @@ namespace DomainLayer.Facade
                 catch (BaseException e)
                 {
                     session.AbortTransaction();
-                    _logger.LogWarning("GetAllProductsInCart Constraints Failed.", e);
+                    _logger.LogWarning(e, "GetAllProductsInCart Constraints Failed.");
                     throw e;
                 }
                 catch (MongoCommandException mongoExc)
@@ -771,13 +771,13 @@ namespace DomainLayer.Facade
                 catch (TimeoutException e)
                 {
                     session.AbortTransaction();
-                    _logger.LogCritical("Got timeout from DB.", e);
+                    _logger.LogCritical(e, "Got timeout from DB.");
                     throw new DatabaseConnectionTimeoutException();
                 }
                 catch (Exception e)
                 {
                     session.AbortTransaction();
-                    _logger.LogWarning("GetAllProductsInCart Failed Due to unknown error.", e);
+                    _logger.LogWarning(e, "GetAllProductsInCart Failed Due to unknown error.");
                     throw new GeneralServerError("An error has occured. Please try again.", e);
                 }
                 triesCount++;
@@ -804,7 +804,7 @@ namespace DomainLayer.Facade
                 catch (BaseException e)
                 {
                     session.AbortTransaction();
-                    _logger.LogWarning("GetAllShops Constraints Failed.", e);
+                    _logger.LogWarning(e, "GetAllShops Constraints Failed.");
                     throw e;
                 }
                 catch (MongoCommandException mongoExc)
@@ -815,13 +815,13 @@ namespace DomainLayer.Facade
                 catch (TimeoutException e)
                 {
                     session.AbortTransaction();
-                    _logger.LogCritical("Got timeout from DB.", e);
+                    _logger.LogCritical(e, "Got timeout from DB.");
                     throw new DatabaseConnectionTimeoutException();
                 }
                 catch (Exception e)
                 {
                     session.AbortTransaction();
-                    _logger.LogWarning("GetAllShops Failed Due to unknown error.", e);
+                    _logger.LogWarning(e, "GetAllShops Failed Due to unknown error.");
                     throw new GeneralServerError("An error has occured. Please try again.", e);
                 }
                 triesCount++;
@@ -848,7 +848,7 @@ namespace DomainLayer.Facade
                 catch (BaseException e)
                 {
                     session.AbortTransaction();
-                    _logger.LogWarning("GetAllUsersExceptMe Constraints Failed.", e);
+                    _logger.LogWarning(e, "GetAllUsersExceptMe Constraints Failed.");
                     throw e;
                 }
                 catch (MongoCommandException mongoExc)
@@ -859,13 +859,13 @@ namespace DomainLayer.Facade
                 catch (TimeoutException e)
                 {
                     session.AbortTransaction();
-                    _logger.LogCritical("Got timeout from DB.", e);
+                    _logger.LogCritical(e, "Got timeout from DB.");
                     throw new DatabaseConnectionTimeoutException();
                 }
                 catch (Exception e)
                 {
                     session.AbortTransaction();
-                    _logger.LogWarning("GetAllUsersExceptMe Failed Due to unknown error.", e);
+                    _logger.LogWarning(e, "GetAllUsersExceptMe Failed Due to unknown error.");
                     throw new GeneralServerError("An error has occured. Please try again.", e);
                 }
                 triesCount++;
@@ -892,7 +892,7 @@ namespace DomainLayer.Facade
                 catch (BaseException e)
                 {
                     session.AbortTransaction();
-                    _logger.LogWarning("GetPurchaseHistory Constraints Failed.", e);
+                    _logger.LogWarning(e, "GetPurchaseHistory Constraints Failed.");
                     throw e;
                 }
                 catch (MongoCommandException mongoExc)
@@ -903,13 +903,13 @@ namespace DomainLayer.Facade
                 catch (TimeoutException e)
                 {
                     session.AbortTransaction();
-                    _logger.LogCritical("Got timeout from DB.", e);
+                    _logger.LogCritical(e, "Got timeout from DB.");
                     throw new DatabaseConnectionTimeoutException();
                 }
                 catch (Exception e)
                 {
                     session.AbortTransaction();
-                    _logger.LogWarning("GetPurchaseHistory Failed Due to unknown error.", e);
+                    _logger.LogWarning(e, "GetPurchaseHistory Failed Due to unknown error.");
                     throw new GeneralServerError("An error has occured. Please try again.", e);
                 }
                 triesCount++;
@@ -936,7 +936,7 @@ namespace DomainLayer.Facade
                 catch (BaseException e)
                 {
                     session.AbortTransaction();
-                    _logger.LogWarning("GetShopGuid Constraints Failed.", e);
+                    _logger.LogWarning(e, "GetShopGuid Constraints Failed.");
                     throw e;
                 }
                 catch (MongoCommandException mongoExc)
@@ -947,13 +947,13 @@ namespace DomainLayer.Facade
                 catch (TimeoutException e)
                 {
                     session.AbortTransaction();
-                    _logger.LogCritical("Got timeout from DB.", e);
+                    _logger.LogCritical(e, "Got timeout from DB.");
                     throw new DatabaseConnectionTimeoutException();
                 }
                 catch (Exception e)
                 {
                     session.AbortTransaction();
-                    _logger.LogWarning("GetShopGuid Failed Due to unknown error.", e);
+                    _logger.LogWarning(e, "GetShopGuid Failed Due to unknown error.");
                     throw new GeneralServerError("An error has occured. Please try again.", e);
                 }
                 triesCount++;
@@ -980,7 +980,7 @@ namespace DomainLayer.Facade
                 catch (BaseException e)
                 {
                     session.AbortTransaction();
-                    _logger.LogWarning("GetShopName Constraints Failed.", e);
+                    _logger.LogWarning(e, "GetShopName Constraints Failed.");
                     throw e;
                 }
                 catch (MongoCommandException mongoExc)
@@ -991,13 +991,13 @@ namespace DomainLayer.Facade
                 catch (TimeoutException e)
                 {
                     session.AbortTransaction();
-                    _logger.LogCritical("Got timeout from DB.", e);
+                    _logger.LogCritical(e, "Got timeout from DB.");
                     throw new DatabaseConnectionTimeoutException();
                 }
                 catch (Exception e)
                 {
                     session.AbortTransaction();
-                    _logger.LogWarning("GetShopName Failed Due to unknown error.", e);
+                    _logger.LogWarning(e, "GetShopName Failed Due to unknown error.");
                     throw new GeneralServerError("An error has occured. Please try again.", e);
                 }
                 triesCount++;
@@ -1024,7 +1024,7 @@ namespace DomainLayer.Facade
                 catch (BaseException e)
                 {
                     session.AbortTransaction();
-                    _logger.LogWarning("GetShopProducts Constraints Failed.", e);
+                    _logger.LogWarning(e, "GetShopProducts Constraints Failed.");
                     throw e;
                 }
                 catch (MongoCommandException mongoExc)
@@ -1035,13 +1035,13 @@ namespace DomainLayer.Facade
                 catch (TimeoutException e)
                 {
                     session.AbortTransaction();
-                    _logger.LogCritical("Got timeout from DB.", e);
+                    _logger.LogCritical(e, "Got timeout from DB.");
                     throw new DatabaseConnectionTimeoutException();
                 }
                 catch (Exception e)
                 {
                     session.AbortTransaction();
-                    _logger.LogWarning("GetShopProducts Failed Due to unknown error.", e);
+                    _logger.LogWarning(e, "GetShopProducts Failed Due to unknown error.");
                     throw new GeneralServerError("An error has occured. Please try again.", e);
                 }
                 triesCount++;
@@ -1068,7 +1068,7 @@ namespace DomainLayer.Facade
                 catch (BaseException e)
                 {
                     session.AbortTransaction();
-                    _logger.LogWarning("GetUserBag Constraints Failed.", e);
+                    _logger.LogWarning(e, "GetUserBag Constraints Failed.");
                     throw e;
                 }
                 catch (MongoCommandException mongoExc)
@@ -1079,13 +1079,13 @@ namespace DomainLayer.Facade
                 catch (TimeoutException e)
                 {
                     session.AbortTransaction();
-                    _logger.LogCritical("Got timeout from DB.", e);
+                    _logger.LogCritical(e, "Got timeout from DB.");
                     throw new DatabaseConnectionTimeoutException();
                 }
                 catch (Exception e)
                 {
                     session.AbortTransaction();
-                    _logger.LogWarning("GetUserBag Failed Due to unknown error.", e);
+                    _logger.LogWarning(e, "GetUserBag Failed Due to unknown error.");
                     throw new GeneralServerError("An error has occured. Please try again.", e);
                 }
                 triesCount++;
@@ -1112,7 +1112,7 @@ namespace DomainLayer.Facade
                 catch (BaseException e)
                 {
                     session.AbortTransaction();
-                    _logger.LogWarning("GetUserGuid Constraints Failed.", e);
+                    _logger.LogWarning(e, "GetUserGuid Constraints Failed.");
                     throw e;
                 }
                 catch (MongoCommandException mongoExc)
@@ -1123,13 +1123,13 @@ namespace DomainLayer.Facade
                 catch (TimeoutException e)
                 {
                     session.AbortTransaction();
-                    _logger.LogCritical("Got timeout from DB.", e);
+                    _logger.LogCritical(e, "Got timeout from DB.");
                     throw new DatabaseConnectionTimeoutException();
                 }
                 catch (Exception e)
                 {
                     session.AbortTransaction();
-                    _logger.LogWarning("GetUserGuid Failed Due to unknown error.", e);
+                    _logger.LogWarning(e, "GetUserGuid Failed Due to unknown error.");
                     throw new GeneralServerError("An error has occured. Please try again.", e);
                 }
                 triesCount++;
@@ -1156,7 +1156,7 @@ namespace DomainLayer.Facade
                 catch (BaseException e)
                 {
                     session.AbortTransaction();
-                    _logger.LogWarning("GetUserName Constraints Failed.", e);
+                    _logger.LogWarning(e, "GetUserName Constraints Failed.");
                     throw e;
                 }
                 catch (MongoCommandException mongoExc)
@@ -1167,13 +1167,13 @@ namespace DomainLayer.Facade
                 catch (TimeoutException e)
                 {
                     session.AbortTransaction();
-                    _logger.LogCritical("Got timeout from DB.", e);
+                    _logger.LogCritical(e, "Got timeout from DB.");
                     throw new DatabaseConnectionTimeoutException();
                 }
                 catch (Exception e)
                 {
                     session.AbortTransaction();
-                    _logger.LogWarning("GetUserName Failed Due to unknown error.", e);
+                    _logger.LogWarning(e, "GetUserName Failed Due to unknown error.");
                     throw new GeneralServerError("An error has occured. Please try again.", e);
                 }
                 triesCount++;
@@ -1200,7 +1200,7 @@ namespace DomainLayer.Facade
                 catch (BaseException e)
                 {
                     session.AbortTransaction();
-                    _logger.LogWarning("GetUserShops Constraints Failed.", e);
+                    _logger.LogWarning(e, "GetUserShops Constraints Failed.");
                     throw e;
                 }
                 catch (MongoCommandException mongoExc)
@@ -1211,13 +1211,13 @@ namespace DomainLayer.Facade
                 catch (TimeoutException e)
                 {
                     session.AbortTransaction();
-                    _logger.LogCritical("Got timeout from DB.", e);
+                    _logger.LogCritical(e, "Got timeout from DB.");
                     throw new DatabaseConnectionTimeoutException();
                 }
                 catch (Exception e)
                 {
                     session.AbortTransaction();
-                    _logger.LogWarning("GetUserShops Failed Due to unknown error.", e);
+                    _logger.LogWarning(e, "GetUserShops Failed Due to unknown error.");
                     throw new GeneralServerError("An error has occured. Please try again.", e);
                 }
                 triesCount++;
@@ -1244,7 +1244,7 @@ namespace DomainLayer.Facade
                 catch (BaseException e)
                 {
                     session.AbortTransaction();
-                    _logger.LogWarning("Initialize Constraints Failed.", e);
+                    _logger.LogWarning(e, "Initialize Constraints Failed.");
                     throw e;
                 }
                 catch (MongoCommandException mongoExc)
@@ -1255,13 +1255,13 @@ namespace DomainLayer.Facade
                 catch (TimeoutException e)
                 {
                     session.AbortTransaction();
-                    _logger.LogCritical("Got timeout from DB.", e);
+                    _logger.LogCritical(e, "Got timeout from DB.");
                     throw new DatabaseConnectionTimeoutException();
                 }
                 catch (Exception e)
                 {
                     session.AbortTransaction();
-                    _logger.LogWarning("Initialize Failed Due to unknown error.", e);
+                    _logger.LogWarning(e, "Initialize Failed Due to unknown error.");
                     throw new GeneralServerError("An error has occured. Please try again.", e);
                 }
                 triesCount++;
@@ -1288,7 +1288,7 @@ namespace DomainLayer.Facade
                 catch (BaseException e)
                 {
                     session.AbortTransaction();
-                    _logger.LogWarning("Login Constraints Failed.", e);
+                    _logger.LogWarning(e, "Login Constraints Failed.");
                     throw e;
                 }
                 catch (MongoCommandException mongoExc)
@@ -1299,13 +1299,13 @@ namespace DomainLayer.Facade
                 catch (TimeoutException e)
                 {
                     session.AbortTransaction();
-                    _logger.LogCritical("Got timeout from DB.", e);
+                    _logger.LogCritical(e, "Got timeout from DB.");
                     throw new DatabaseConnectionTimeoutException();
                 }
                 catch (Exception e)
                 {
                     session.AbortTransaction();
-                    _logger.LogWarning("Login Failed Due to unknown error.", e);
+                    _logger.LogWarning(e, "Login Failed Due to unknown error.");
                     throw new GeneralServerError("An error has occured. Please try again.", e);
                 }
                 triesCount++;
@@ -1332,7 +1332,7 @@ namespace DomainLayer.Facade
                 catch (BaseException e)
                 {
                     session.AbortTransaction();
-                    _logger.LogWarning("Logout Constraints Failed.", e);
+                    _logger.LogWarning(e, "Logout Constraints Failed.");
                     throw e;
                 }
                 catch (MongoCommandException mongoExc)
@@ -1343,13 +1343,13 @@ namespace DomainLayer.Facade
                 catch (TimeoutException e)
                 {
                     session.AbortTransaction();
-                    _logger.LogCritical("Got timeout from DB.", e);
+                    _logger.LogCritical(e, "Got timeout from DB.");
                     throw new DatabaseConnectionTimeoutException();
                 }
                 catch (Exception e)
                 {
                     session.AbortTransaction();
-                    _logger.LogWarning("Logout Failed Due to unknown error.", e);
+                    _logger.LogWarning(e, "Logout Failed Due to unknown error.");
                     throw new GeneralServerError("An error has occured. Please try again.", e);
                 }
                 triesCount++;
@@ -1376,7 +1376,7 @@ namespace DomainLayer.Facade
                 catch (BaseException e)
                 {
                     session.AbortTransaction();
-                    _logger.LogWarning("OpenShop Constraints Failed.", e);
+                    _logger.LogWarning(e, "OpenShop Constraints Failed.");
                     throw e;
                 }
                 catch (MongoCommandException mongoExc)
@@ -1387,13 +1387,13 @@ namespace DomainLayer.Facade
                 catch (TimeoutException e)
                 {
                     session.AbortTransaction();
-                    _logger.LogCritical("Got timeout from DB.", e);
+                    _logger.LogCritical(e, "Got timeout from DB.");
                     throw new DatabaseConnectionTimeoutException();
                 }
                 catch (Exception e)
                 {
                     session.AbortTransaction();
-                    _logger.LogWarning("OpenShop Failed Due to unknown error.", e);
+                    _logger.LogWarning(e, "OpenShop Failed Due to unknown error.");
                     throw new GeneralServerError("An error has occured. Please try again.", e);
                 }
                 triesCount++;
@@ -1420,7 +1420,7 @@ namespace DomainLayer.Facade
                 catch (BaseException e)
                 {
                     session.AbortTransaction();
-                    _logger.LogWarning("OpenShop Constraints Failed.", e);
+                    _logger.LogWarning(e, "OpenShop Constraints Failed.");
                     throw e;
                 }
                 catch (MongoCommandException mongoExc)
@@ -1431,13 +1431,13 @@ namespace DomainLayer.Facade
                 catch (TimeoutException e)
                 {
                     session.AbortTransaction();
-                    _logger.LogCritical("Got timeout from DB.", e);
+                    _logger.LogCritical(e, "Got timeout from DB.");
                     throw new DatabaseConnectionTimeoutException();
                 }
                 catch (Exception e)
                 {
                     session.AbortTransaction();
-                    _logger.LogWarning("OpenShop Failed Due to unknown error.", e);
+                    _logger.LogWarning(e, "OpenShop Failed Due to unknown error.");
                     throw new GeneralServerError("An error has occured. Please try again.", e);
                 }
                 triesCount++;
@@ -1469,7 +1469,7 @@ namespace DomainLayer.Facade
                         _externalServicesManager.PaymentSystem.CancelPayment();
                         _externalServicesManager.SupplySystem.CancelSupply();
                     }
-                    _logger.LogWarning("PurchaseCart Constraints Failed.", e);
+                    _logger.LogWarning(e, "PurchaseCart Constraints Failed.");
                     throw e;
                 }
                 catch (MongoCommandException mongoExc)
@@ -1490,7 +1490,7 @@ namespace DomainLayer.Facade
                         _externalServicesManager.PaymentSystem.CancelPayment();
                         _externalServicesManager.SupplySystem.CancelSupply();
                     }
-                    _logger.LogCritical("Got timeout from DB.", e);
+                    _logger.LogCritical(e, "Got timeout from DB.");
                     throw new DatabaseConnectionTimeoutException();
                 }
                 catch (Exception e)
@@ -1501,7 +1501,7 @@ namespace DomainLayer.Facade
                         _externalServicesManager.PaymentSystem.CancelPayment();
                         _externalServicesManager.SupplySystem.CancelSupply();
                     }
-                    _logger.LogWarning("PurchaseCart Failed Due to unknown error.", e);
+                    _logger.LogWarning(e, "PurchaseCart Failed Due to unknown error.");
                     throw new GeneralServerError("An error has occured. Please try again.", e);
                 }
                 triesCount++;
@@ -1527,7 +1527,7 @@ namespace DomainLayer.Facade
                 catch (BaseException e)
                 {
                     session.AbortTransaction();
-                    _logger.LogWarning("GetCartPrice Constraints Failed.", e);
+                    _logger.LogWarning(e, "GetCartPrice Constraints Failed.");
                     throw e;
                 }
                 catch (MongoCommandException mongoExc)
@@ -1538,13 +1538,13 @@ namespace DomainLayer.Facade
                 catch (TimeoutException e)
                 {
                     session.AbortTransaction();
-                    _logger.LogCritical("Got timeout from DB.", e);
+                    _logger.LogCritical(e, "Got timeout from DB.");
                     throw new DatabaseConnectionTimeoutException();
                 }
                 catch (Exception e)
                 {
                     session.AbortTransaction();
-                    _logger.LogWarning("GetCartPrice Failed Due to unknown error.", e);
+                    _logger.LogWarning(e, "GetCartPrice Failed Due to unknown error.");
                     throw new GeneralServerError("An error has occured. Please try again.", e);
                 }
                 triesCount++;
@@ -1570,7 +1570,7 @@ namespace DomainLayer.Facade
                 catch (BaseException e)
                 {
                     session.AbortTransaction();
-                    _logger.LogWarning("Register Constraints Failed.", e);
+                    _logger.LogWarning(e, "Register Constraints Failed.");
                     throw e;
                 }
                 catch (MongoCommandException mongoExc)
@@ -1581,13 +1581,13 @@ namespace DomainLayer.Facade
                 catch (TimeoutException e)
                 {
                     session.AbortTransaction();
-                    _logger.LogCritical("Got timeout from DB.", e);
+                    _logger.LogCritical(e, "Got timeout from DB.");
                     throw new DatabaseConnectionTimeoutException();
                 }
                 catch (Exception e)
                 {
                     session.AbortTransaction();
-                    _logger.LogWarning("Register Failed Due to unknown error.", e);
+                    _logger.LogWarning(e, "Register Failed Due to unknown error.");
                     throw new GeneralServerError("An error has occured. Please try again.", e);
                 }
                 triesCount++;
@@ -1614,7 +1614,7 @@ namespace DomainLayer.Facade
                 catch (BaseException e)
                 {
                     session.AbortTransaction();
-                    _logger.LogWarning("RemoveProductFromCart Constraints Failed.", e);
+                    _logger.LogWarning(e, "RemoveProductFromCart Constraints Failed.");
                     throw e;
                 }
                 catch (MongoCommandException mongoExc)
@@ -1625,13 +1625,13 @@ namespace DomainLayer.Facade
                 catch (TimeoutException e)
                 {
                     session.AbortTransaction();
-                    _logger.LogCritical("Got timeout from DB.", e);
+                    _logger.LogCritical(e, "Got timeout from DB.");
                     throw new DatabaseConnectionTimeoutException();
                 }
                 catch (Exception e)
                 {
                     session.AbortTransaction();
-                    _logger.LogWarning("RemoveProductFromCart Failed Due to unknown error.", e);
+                    _logger.LogWarning(e, "RemoveProductFromCart Failed Due to unknown error.");
                     throw new GeneralServerError("An error has occured. Please try again.", e);
                 }
                 triesCount++;
@@ -1658,7 +1658,7 @@ namespace DomainLayer.Facade
                 catch (BaseException e)
                 {
                     session.AbortTransaction();
-                    _logger.LogWarning("RemoveProductFromShop Constraints Failed.", e);
+                    _logger.LogWarning(e, "RemoveProductFromShop Constraints Failed.");
                     throw e;
                 }
                 catch (MongoCommandException mongoExc)
@@ -1669,13 +1669,13 @@ namespace DomainLayer.Facade
                 catch (TimeoutException e)
                 {
                     session.AbortTransaction();
-                    _logger.LogCritical("Got timeout from DB.", e);
+                    _logger.LogCritical(e, "Got timeout from DB.");
                     throw new DatabaseConnectionTimeoutException();
                 }
                 catch (Exception e)
                 {
                     session.AbortTransaction();
-                    _logger.LogWarning("RemoveProductFromShop Failed Due to unknown error.", e);
+                    _logger.LogWarning(e, "RemoveProductFromShop Failed Due to unknown error.");
                     throw new GeneralServerError("An error has occured. Please try again.", e);
                 }
                 triesCount++;
@@ -1703,7 +1703,7 @@ namespace DomainLayer.Facade
                 catch (BaseException e)
                 {
                     session.AbortTransaction();
-                    _logger.LogWarning("RemoveShopManager Constraints Failed.", e);
+                    _logger.LogWarning(e, "RemoveShopManager Constraints Failed.");
                     throw e;
                 }
                 catch (MongoCommandException mongoExc)
@@ -1714,13 +1714,13 @@ namespace DomainLayer.Facade
                 catch (TimeoutException e)
                 {
                     session.AbortTransaction();
-                    _logger.LogCritical("Got timeout from DB.", e);
+                    _logger.LogCritical(e, "Got timeout from DB.");
                     throw new DatabaseConnectionTimeoutException();
                 }
                 catch (Exception e)
                 {
                     session.AbortTransaction();
-                    _logger.LogWarning("RemoveShopManager Failed Due to unknown error.", e);
+                    _logger.LogWarning(e, "RemoveShopManager Failed Due to unknown error.");
                     throw new GeneralServerError("An error has occured. Please try again.", e);
                 }
                 triesCount++;
@@ -1747,7 +1747,7 @@ namespace DomainLayer.Facade
                 catch (BaseException e)
                 {
                     session.AbortTransaction();
-                    _logger.LogWarning("RemoveUser Constraints Failed.", e);
+                    _logger.LogWarning(e, "RemoveUser Constraints Failed.");
                     throw e;
                 }
                 catch (MongoCommandException mongoExc)
@@ -1758,13 +1758,13 @@ namespace DomainLayer.Facade
                 catch (TimeoutException e)
                 {
                     session.AbortTransaction();
-                    _logger.LogCritical("Got timeout from DB.", e);
+                    _logger.LogCritical(e, "Got timeout from DB.");
                     throw new DatabaseConnectionTimeoutException();
                 }
                 catch (Exception e)
                 {
                     session.AbortTransaction();
-                    _logger.LogWarning("RemoveUser Failed Due to unknown error.", e);
+                    _logger.LogWarning(e, "RemoveUser Failed Due to unknown error.");
                     throw new GeneralServerError("An error has occured. Please try again.", e);
                 }
                 triesCount++;
@@ -1791,7 +1791,7 @@ namespace DomainLayer.Facade
                 catch (BaseException e)
                 {
                     session.AbortTransaction();
-                    _logger.LogWarning("ReopenShop Constraints Failed.", e);
+                    _logger.LogWarning(e, "ReopenShop Constraints Failed.");
                     throw e;
                 }
                 catch (MongoCommandException mongoExc)
@@ -1802,13 +1802,13 @@ namespace DomainLayer.Facade
                 catch (TimeoutException e)
                 {
                     session.AbortTransaction();
-                    _logger.LogCritical("Got timeout from DB.", e);
+                    _logger.LogCritical(e, "Got timeout from DB.");
                     throw new DatabaseConnectionTimeoutException();
                 }
                 catch (Exception e)
                 {
                     session.AbortTransaction();
-                    _logger.LogWarning("ReopenShop Failed Due to unknown error.", e);
+                    _logger.LogWarning(e, "ReopenShop Failed Due to unknown error.");
                     throw new GeneralServerError("An error has occured. Please try again.", e);
                 }
                 triesCount++;
@@ -1835,7 +1835,7 @@ namespace DomainLayer.Facade
                 catch (BaseException e)
                 {
                     session.AbortTransaction();
-                    _logger.LogWarning("SearchProduct Constraints Failed.", e);
+                    _logger.LogWarning(e, "SearchProduct Constraints Failed.");
                     throw e;
                 }
                 catch (MongoCommandException mongoExc)
@@ -1846,13 +1846,13 @@ namespace DomainLayer.Facade
                 catch (TimeoutException e)
                 {
                     session.AbortTransaction();
-                    _logger.LogCritical("Got timeout from DB.", e);
+                    _logger.LogCritical(e, "Got timeout from DB.");
                     throw new DatabaseConnectionTimeoutException();
                 }
                 catch (Exception e)
                 {
                     session.AbortTransaction();
-                    _logger.LogWarning("SearchProduct Failed Due to unknown error.", e);
+                    _logger.LogWarning(e, "SearchProduct Failed Due to unknown error.");
                     throw new GeneralServerError("An error has occured. Please try again.", e);
                 }
                 triesCount++;
@@ -1879,7 +1879,7 @@ namespace DomainLayer.Facade
                 catch (BaseException e)
                 {
                     session.AbortTransaction();
-                    _logger.LogWarning("GetUserName Constraints Failed.", e);
+                    _logger.LogWarning(e, "GetUserName Constraints Failed.");
                     throw e;
                 }
                 catch (MongoCommandException mongoExc)
@@ -1890,13 +1890,13 @@ namespace DomainLayer.Facade
                 catch (TimeoutException e)
                 {
                     session.AbortTransaction();
-                    _logger.LogCritical("Got timeout from DB.", e);
+                    _logger.LogCritical(e, "Got timeout from DB.");
                     throw new DatabaseConnectionTimeoutException();
                 }
                 catch (Exception e)
                 {
                     session.AbortTransaction();
-                    _logger.LogWarning("GetUserName Failed Due to unknown error.", e);
+                    _logger.LogWarning(e, "GetUserName Failed Due to unknown error.");
                     throw new GeneralServerError("An error has occured. Please try again.", e);
                 }
                 triesCount++;

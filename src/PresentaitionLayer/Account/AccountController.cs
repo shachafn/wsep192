@@ -44,18 +44,39 @@ namespace PresentaitionLayer.Account
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Login(LoginModel model)
         {
-            if (ModelState.IsValid)
+            try
             {
-                var (isValid, user) = await _userServices.ValidateUserCredentialsAsync(model.UserName, model.Password,model.UserType.ToString(), new Guid (HttpContext.Session.Id));
-                if (isValid)
+                if (ModelState.IsValid)
                 {
-                    await LoginAsync(user);
-                    return redirectAccordingToState(model.UserType.ToString(),model);
+                    var (isValid, user) = await _userServices.ValidateUserCredentialsAsync(model.UserName, model.Password, model.UserType.ToString(), new Guid(HttpContext.Session.Id));
+                    if (isValid)
+                    {
+                        await LoginAsync(user);
+                        return redirectAccordingToState(model.UserType.ToString(), model);
+                    }
+                    ModelState.AddModelError("InvalidCredentials", "invalid credentials");
                 }
-                ModelState.AddModelError("InvalidCredentials", "invalid credentials");
-            }
 
-            return View(model);
+                return View(model);
+            }
+            catch(CredentialsMismatchException)
+            {
+                var redirect = this.Url.Action("Login", "Account");
+                var message = new UserMessage(redirect, "Wrong credentials, please try again.");
+                return View("UserMessage", message);
+            }
+            catch (GeneralServerError)
+            {
+                var redirect = this.Url.Action("Login", "Account");
+                var message = new UserMessage(redirect, "An error has occured. Please refresh and try again.");
+                return View("UserMessage", message);
+            }
+            catch (DatabaseConnectionTimeoutException)
+            {
+                var redirect = this.Url.Action("Index", "Seller");
+                var message = new UserMessage(redirect, "An error has occured. Please refresh and try again. (Database connection lost).");
+                return View("UserMessage", message);
+            }
         }
 
         private IActionResult redirectAccordingToState(string userType,LoginModel model)
@@ -89,13 +110,13 @@ namespace PresentaitionLayer.Account
             }
             catch (GeneralServerError)
             {
-                var redirect = this.Url.Action("Index", "Seller");
+                var redirect = this.Url.Action("Index", "Home");
                 var message = new UserMessage(redirect, "An error has occured. Please refresh and try again.");
                 return View("UserMessage", message);
             }
             catch (DatabaseConnectionTimeoutException)
             {
-                var redirect = this.Url.Action("Index", "Seller");
+                var redirect = this.Url.Action("Index", "Home");
                 var message = new UserMessage(redirect, "An error has occured. Please refresh and try again. (Database connection lost).");
                 return View("UserMessage", message);
             }
@@ -156,13 +177,13 @@ namespace PresentaitionLayer.Account
             }
             catch (GeneralServerError)
             {
-                var redirect = this.Url.Action("Index", "Seller");
+                var redirect = this.Url.Action("Index", "Home");
                 var message = new UserMessage(redirect, "An error has occured. Please refresh and try again.");
                 return View("UserMessage", message);
             }
             catch (DatabaseConnectionTimeoutException)
             {
-                var redirect = this.Url.Action("Index", "Seller");
+                var redirect = this.Url.Action("Index", "Home");
                 var message = new UserMessage(redirect, "An error has occured. Please refresh and try again. (Database connection lost).");
                 return View("UserMessage", message);
             }
@@ -179,20 +200,35 @@ namespace PresentaitionLayer.Account
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Register(RegisterModel model)
         {
-            if (ModelState.IsValid)
+            try
             {
-                var (isValid, user) = await _userServices.ValidateUserRegisterAsync(model.UserName, model.Password,new Guid(HttpContext.Session.Id));
-                if (isValid)
+                if (ModelState.IsValid)
                 {
-                    var redirect = this.Url.Action("Index", "Home");
-                    var message = new UserMessage(redirect, "you have been registered successfully");
-                    return View("UserMessage",message);
-                    //return RedirectToAction("Index", "Home");
+                    var (isValid, user) = await _userServices.ValidateUserRegisterAsync(model.UserName, model.Password, new Guid(HttpContext.Session.Id));
+                    if (isValid)
+                    {
+                        var redirect = this.Url.Action("Index", "Home");
+                        var message = new UserMessage(redirect, "you have been registered successfully");
+                        return View("UserMessage", message);
+                        //return RedirectToAction("Index", "Home");
+                    }
+                    ModelState.AddModelError("InvalidCredentials", "Registration failed, chosen username already exsists");
                 }
-                ModelState.AddModelError("InvalidCredentials", "Registration failed, chosen username already exsists");
-            }
 
-            return View(model);
+                return View(model);
+            }
+            catch (GeneralServerError)
+            {
+                var redirect = this.Url.Action("Login", "Account");
+                var message = new UserMessage(redirect, "An error has occured. Please refresh and try again.");
+                return View("UserMessage", message);
+            }
+            catch (DatabaseConnectionTimeoutException)
+            {
+                var redirect = this.Url.Action("Index", "Seller");
+                var message = new UserMessage(redirect, "An error has occured. Please refresh and try again. (Database connection lost).");
+                return View("UserMessage", message);
+            }
         }
 
         [Route("UserMessage")]
@@ -235,13 +271,13 @@ namespace PresentaitionLayer.Account
             }
             catch (GeneralServerError)
             {
-                var redirect = this.Url.Action("Index", "Seller");
+                var redirect = this.Url.Action("Index", "Home");
                 var message = new UserMessage(redirect, "An error has occured. Please refresh and try again.");
                 return View("UserMessage", message);
             }
             catch (DatabaseConnectionTimeoutException)
             {
-                var redirect = this.Url.Action("Index", "Seller");
+                var redirect = this.Url.Action("Index", "Home");
                 var message = new UserMessage(redirect, "An error has occured. Please refresh and try again. (Database connection lost).");
                 return View("UserMessage", message);
             }
@@ -249,27 +285,38 @@ namespace PresentaitionLayer.Account
 
         private async Task changeRoleAsync(string userType)
         {
-            await HttpContext.SignOutAsync(CookieAuthenticationDefaults.AuthenticationScheme);
-            var properties = new AuthenticationProperties
+            try
             {
-                //AllowRefresh = false,
-                IsPersistent = true,
-                //ExpiresUtc = DateTimeOffset.UtcNow.AddSeconds(10)
-            };
-            var claims = new List<Claim>
-            {
-                new Claim(ClaimTypes.NameIdentifier, User.Claims.First(c=>c.Type==ClaimTypes.NameIdentifier).Value),
-                new Claim(ClaimTypes.Name,User.Claims.First(c=>c.Type==ClaimTypes.Name).Value),
-                new Claim(ClaimTypes.Role,userType)
-            };
-            var isAdmin = _serviceFacade.IsUserAdmin(new Guid(HttpContext.Session.Id));
-            if (isAdmin)
-            {
-                claims.Add(new Claim(ClaimTypes.Country, "adminia"));
+                await HttpContext.SignOutAsync(CookieAuthenticationDefaults.AuthenticationScheme);
+                var properties = new AuthenticationProperties
+                {
+                    //AllowRefresh = false,
+                    IsPersistent = true,
+                    //ExpiresUtc = DateTimeOffset.UtcNow.AddSeconds(10)
+                };
+                var claims = new List<Claim>
+                {
+                    new Claim(ClaimTypes.NameIdentifier, User.Claims.First(c=>c.Type==ClaimTypes.NameIdentifier).Value),
+                    new Claim(ClaimTypes.Name,User.Claims.First(c=>c.Type==ClaimTypes.Name).Value),
+                    new Claim(ClaimTypes.Role,userType)
+                };
+                var isAdmin = _serviceFacade.IsUserAdmin(new Guid(HttpContext.Session.Id));
+                if (isAdmin)
+                {
+                    claims.Add(new Claim(ClaimTypes.Country, "adminia"));
+                }
+                var identity = new ClaimsIdentity(claims, CookieAuthenticationDefaults.AuthenticationScheme);
+                var principal = new ClaimsPrincipal(identity);
+                await HttpContext.SignInAsync(principal, properties);
             }
-            var identity = new ClaimsIdentity(claims, CookieAuthenticationDefaults.AuthenticationScheme);
-            var principal = new ClaimsPrincipal(identity);
-            await HttpContext.SignInAsync(principal, properties);
+            catch (GeneralServerError)
+            {
+                await Task.CompletedTask;
+            }
+            catch (DatabaseConnectionTimeoutException)
+            {
+                await Task.CompletedTask;
+            }
         }
     }
 }

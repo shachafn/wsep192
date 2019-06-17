@@ -124,7 +124,7 @@ namespace PresentaitionLayer
 
         private static void SetupDomainLayerInjections(IServiceCollection services)
         {
-            services.AddScoped<ShoppingCartDomain>();
+            services.AddScoped<ShoppingBagDomain>();
             services.AddScoped<ShopDomain>();
             services.AddScoped<IUserDomain, UserDomain>();
             services.AddScoped<DomainLayerFacadeVerifier>();

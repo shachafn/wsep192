@@ -9,12 +9,12 @@ using System.Linq;
 
 namespace DomainLayer.Domains
 {
-    public class ShoppingCartDomain
+    public class ShoppingBagDomain
     {
         protected IUnitOfWork _unitOfWork;
-        protected ILogger<ShoppingCartDomain> _logger;
+        protected ILogger<ShoppingBagDomain> _logger;
 
-        public ShoppingCartDomain(IUnitOfWork unitOfWork, ILogger<ShoppingCartDomain> logger)
+        public ShoppingBagDomain(IUnitOfWork unitOfWork, ILogger<ShoppingBagDomain> logger)
         {
             _unitOfWork = unitOfWork;
             _logger = logger;
@@ -64,6 +64,20 @@ namespace DomainLayer.Domains
             }
             _unitOfWork.BagRepository.Update(bag);
         }
+
+        public void RemoveProductFromAllCarts(Guid shopProductGuid)
+        {
+            var bags = _unitOfWork.BagRepository.FetchAll();
+            foreach(var bag in bags)
+            {
+                foreach(var cart in bag.ShoppingCarts)
+                {
+                    cart.RemoveProductFromCart(shopProductGuid);
+                }
+                _unitOfWork.BagRepository.Update(bag);
+            }
+        }
+
         public void AddProductToCart(ShoppingBag bag, Guid shopGuid, ShopProduct actualProduct, int quantity)
         {
             var cart = bag.GetShoppingCartAndCreateIfNeededForGuestOnlyOrInBagDomain(shopGuid);

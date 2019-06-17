@@ -12,11 +12,11 @@ namespace DomainLayer.Domains
 {
     public class ShopDomain
     {
-        public ShoppingCartDomain ShoppingBagDomain;
+        public ShoppingBagDomain ShoppingBagDomain;
         protected IUnitOfWork _unitOfWork;
         protected ILogger<ShopDomain> _logger;
 
-        public ShopDomain(ShoppingCartDomain shoppingCartDomain, IUnitOfWork unitOfWork, ILogger<ShopDomain> logger)
+        public ShopDomain(ShoppingBagDomain shoppingCartDomain, IUnitOfWork unitOfWork, ILogger<ShopDomain> logger)
         {
             ShoppingBagDomain = shoppingCartDomain;
             _unitOfWork = unitOfWork;
@@ -61,6 +61,7 @@ namespace DomainLayer.Domains
             var toRemove = shop.ShopProducts.FirstOrDefault(p => p.Guid.Equals(shopProductGuid));
             //Need to remove from all users' cart in this shop first, to not break constraint
             shop.ShopProducts.Remove(toRemove);
+            ShoppingBagDomain.RemoveProductFromAllCarts(shopProductGuid);
             _unitOfWork.ShopRepository.Update(shop);
         }
 

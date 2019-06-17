@@ -36,7 +36,8 @@ namespace ApplicationCore.Entitites
         public bool RemoveProductFromCart(Guid shopProductGuid)
         {
             var purchasedProduct = PurchasedProducts.FirstOrDefault(p => p.Item1.Guid.Equals(shopProductGuid));
-            PurchasedProducts.Remove(purchasedProduct);
+            if (purchasedProduct != null)
+                PurchasedProducts.Remove(purchasedProduct);
             return true;
         }
         public ICollection<ShopProduct> GetAllProductsInCart()

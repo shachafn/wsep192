@@ -12,7 +12,7 @@ namespace TestsUtils
         public static IDomainLayerFacade GetDomainLayerFacade()
         {
             var uoW = new MockUnitOfWork(new MockContext());
-            var cartDomain = new ShoppingCartDomain(uoW, new NullLogger<ShoppingCartDomain>());
+            var cartDomain = new ShoppingBagDomain(uoW, new NullLogger<ShoppingBagDomain>());
             var shopDomain = new ShopDomain(cartDomain, uoW, new NullLogger<ShopDomain>());
             return new DomainFacadeTransactionProxy(
                         new DomainLayerFacade(
@@ -31,7 +31,7 @@ namespace TestsUtils
         public static IServiceFacade GetServiceFacade()
         {
             var uoW = new MockUnitOfWork(new MockContext());
-            var cartDomain = new ShoppingCartDomain(uoW, new NullLogger<ShoppingCartDomain>());
+            var cartDomain = new ShoppingBagDomain(uoW, new NullLogger<ShoppingBagDomain>());
             var shopDomain = new ShopDomain(cartDomain, uoW, new NullLogger<ShopDomain>());
             return new ServiceFacadeProxy
             (

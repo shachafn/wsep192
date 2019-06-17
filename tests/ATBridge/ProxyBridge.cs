@@ -207,10 +207,10 @@ namespace ATBridge
             return _real == null ? null : _real.GetUserBag(cookie);
         }
 
-        public void cancelOwnerAssignment(Guid cookie, Guid shopId)
+        public void CancelOwnerAssignment(Guid cookie, Guid shopId)
         {
             if (_real != null)
-                _real.cancelOwnerAssignment(cookie, shopId);
+                _real.CancelOwnerAssignment(cookie, shopId);
         }
     }
 }

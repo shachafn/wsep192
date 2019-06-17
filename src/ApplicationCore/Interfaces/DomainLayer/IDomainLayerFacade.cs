@@ -52,7 +52,7 @@ namespace ApplicationCore.Interfaces.DomainLayer
         Guid GetUserGuid(string userName);
         string GetShopName(Guid shopGuid);
         Guid GetShopGuid(string shopName);
-        void cancelOwnerAssignment(UserIdentifier userIdentifier, Guid shopGuid);
+        void CancelOwnerAssignment(UserIdentifier userIdentifier, Guid shopGuid);
         bool IsUserAdmin(UserIdentifier id);
     }
 }

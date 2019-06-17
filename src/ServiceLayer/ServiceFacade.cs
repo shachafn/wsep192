@@ -225,9 +225,9 @@ namespace ServiceLayer
             return _domainLayerFacade.GetAllShops(userIdentifier);
         }
 
-        public void cancelOwnerAssignment(UserIdentifier userIdentifier, Guid shopId)
+        public void CancelOwnerAssignment(UserIdentifier userIdentifier, Guid shopId)
         {
-             _domainLayerFacade.cancelOwnerAssignment(userIdentifier,shopId);
+             _domainLayerFacade.CancelOwnerAssignment(userIdentifier,shopId);
         }
 
         internal bool IsUserAdmin(UserIdentifier id)

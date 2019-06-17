@@ -171,7 +171,7 @@ namespace DomainLayer.Users
         public bool AddShopOwner(Guid shopGuid, Guid newOwnerGuid)
         {
             var shop = _unitOfWork.ShopRepository.FindByIdOrNull(shopGuid);
-            _shopDomain.AddShopOwner(shop, Guid, newOwnerGuid);
+            _shopDomain.AddShopOwner(shop, Guid, newOwnerGuid, _baseUser.Username);
             return true;
         }
 

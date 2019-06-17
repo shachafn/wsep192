@@ -302,7 +302,7 @@ namespace DomainLayer.Facade
             throw new GeneralServerError("An error has occured. Please try again.");
         }
 
-        public void cancelOwnerAssignment(UserIdentifier userIdentifier, Guid shopGuid)
+        public void CancelOwnerAssignment(UserIdentifier userIdentifier, Guid shopGuid)
         {
             var isSuccess = false;
             var triesCount = 0;
@@ -312,7 +312,7 @@ namespace DomainLayer.Facade
                 try
                 {
                     session.StartTransaction();
-                    _domainLayerFacade.cancelOwnerAssignment(userIdentifier, shopGuid);
+                    _domainLayerFacade.CancelOwnerAssignment(userIdentifier, shopGuid);
                     session.CommitTransaction();
                     isSuccess = true;
                     return;
@@ -320,7 +320,7 @@ namespace DomainLayer.Facade
                 catch (BaseException e)
                 {
                     session.AbortTransaction();
-                    _logger.LogWarning(e, "cancelOwnerAssignment Constraints Failed.");
+                    _logger.LogWarning(e, "CancelOwnerAssignment Constraints Failed.");
                     throw e;
                 }
                 catch (MongoCommandException mongoExc)
@@ -337,7 +337,7 @@ namespace DomainLayer.Facade
                 catch (Exception e)
                 {
                     session.AbortTransaction();
-                    _logger.LogWarning(e, "cancelOwnerAssignment Failed Due to unknown error.");
+                    _logger.LogWarning(e, "CancelOwnerAssignment Failed Due to unknown error.");
                     throw new GeneralServerError("An error has occured. Please try again.", e);
                 }
                 triesCount++;

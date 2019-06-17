@@ -89,10 +89,33 @@ namespace DomainLayer.Domains
             return true;
         }
 
-        public void AddShopOwner(Shop shop, Guid userGuid, Guid newOwnerGuid)
+        public void AddShopOwner(Shop shop, Guid userGuid, Guid newOwnerGuid, string appointerUsername)
         {
-            var newOwner = new ShopOwner(newOwnerGuid, userGuid, shop.Guid);
-            shop.AddShopOwner(newOwner);
+            int signatures_required = shop.Owners.Count();
+            if (shop.candidate == null && signatures_required > 0) // a new candidate
+            {
+                var newCandidate = new OwnerCandidate(newOwnerGuid, shop.Guid, userGuid, signatures_required, appointerUsername);
+                shop.candidate = newCandidate;
+            }
+            else if (shop.candidate != null) // there is a candidate, sign it if possible
+            {
+                var candidate = shop.candidate;
+                if (candidate.signature_target - candidate.Signatures.Count() == 1) // last sign , promote the candidate to a shop owner
+                {
+                    var newOwner = new ShopOwner(newOwnerGuid, candidate.AppointerGuid, shop.Guid);
+                    shop.Owners.Add(newOwner);
+                }
+                else if (!candidate.Signatures.ContainsKey(appointerUsername)) //if not already signed , sign the candidate
+                {
+                    candidate.Signatures.Add(appointerUsername, userGuid);
+                }
+            }
+            else// in the case: adding the second shopowner
+            {
+                var newOwner = new ShopOwner(newOwnerGuid, userGuid, shop.Guid);
+                shop.Owners.Add(newOwner);
+            }
+
             _unitOfWork.ShopRepository.Update(shop);
         }
 

@@ -541,7 +541,7 @@ namespace PresentaitionLayer.Controllers
         {
             try
             {
-                _serviceFacade.cancelOwnerAssignment(new Guid(HttpContext.Session.Id), new Guid(ShopId));
+                _serviceFacade.CancelOwnerAssignment(new Guid(HttpContext.Session.Id), new Guid(ShopId));
                 return RedirectToAction("Manage", "Seller", new { ShopId });
             }
             catch (GeneralServerError)

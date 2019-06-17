@@ -533,7 +533,7 @@ namespace ATBridge
         IEnumerable<ShopProduct> GetShopProducts(Guid id, Guid shopGuid);
         ICollection<Shop> GetAllShops(Guid cookie);
         IEnumerable<Tuple<ShoppingCart, IEnumerable<ShopProduct>>> GetUserBag(Guid cookie);
-        void cancelOwnerAssignment(Guid cookie, Guid shopId);
+        void CancelOwnerAssignment(Guid cookie, Guid shopId);
 
     }
 }

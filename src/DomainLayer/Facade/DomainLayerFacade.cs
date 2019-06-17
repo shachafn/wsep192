@@ -533,7 +533,7 @@ namespace DomainLayer.Facade
             return _unitOfWork.ShopRepository.GetShopGuidByName(shopName);
         }
 
-        public void cancelOwnerAssignment(UserIdentifier userIdentifier, Guid shopGuid)
+        public void CancelOwnerAssignment(UserIdentifier userIdentifier, Guid shopGuid)
         {
             _verifier.VerifyMe(MethodBase.GetCurrentMethod(), userIdentifier, shopGuid);
             _unitOfWork.ShopRepository.FindByIdOrNull(shopGuid).candidate = null;

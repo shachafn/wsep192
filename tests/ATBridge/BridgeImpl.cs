@@ -207,9 +207,9 @@ namespace ATBridge
             return _serviceFacade.GetUserBag(cookie);
         }
 
-        public void cancelOwnerAssignment(Guid cookie, Guid shopId)
+        public void CancelOwnerAssignment(Guid cookie, Guid shopId)
         {
-            _serviceFacade.cancelOwnerAssignment(cookie, shopId);
+            _serviceFacade.CancelOwnerAssignment(cookie, shopId);
         }
     }
 }

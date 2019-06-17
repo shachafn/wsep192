@@ -348,6 +348,12 @@ namespace PresentaitionLayer.Controllers
                 _serviceFacade.AddNewDiscountPolicy(new Guid(HttpContext.Session.Id), new Guid(ShopId), (object)"Cart discount policy", (object)Sign, (object)Than, (object)Percent, (object)Description, (object)null);
                 return RedirectToAction("Policies", "Seller", new { ShopId });
             }
+            catch (IllegalArgumentException)
+            {
+                var redirect = this.Url.Action("Index", "Seller");
+                var message = new UserMessage(redirect, "Please fill in all the fields in a valid manner.");
+                return View("UserMessage", message);
+            }
             catch (NoPrivilegesException)
             {
                 var redirect = this.Url.Action("Index", "Seller");
@@ -369,7 +375,7 @@ namespace PresentaitionLayer.Controllers
         }
 
         [HttpPost]
-        public IActionResult AddCompoundDiscountPolicy(string Description, int guid1,string Sign, int guid2, int Percent, string ShopId)
+        public IActionResult AddCompoundDiscountPolicy(string Description, int policy1,string Sign, int policy2, int Percent, string ShopId)
         {
             try
             {
@@ -377,8 +383,14 @@ namespace PresentaitionLayer.Controllers
                 var shops = _serviceFacade.GetUserShops(new Guid(HttpContext.Session.Id));
                 var shop = shops.FirstOrDefault(currshop => currshop.Guid.Equals(new Guid(ShopId)));
                 policy.DiscountPolicies = shop.DiscountPolicies;
-                _serviceFacade.AddNewDiscountPolicy(new Guid(HttpContext.Session.Id), new Guid(ShopId), (object)"Compound discount policy", (object)policy.DiscountPolicies.ElementAt(guid1 - 1).Guid, (object)Sign, (object)policy.DiscountPolicies.ElementAt(guid2 - 1).Guid, (object)Percent, (object)Description);
+                _serviceFacade.AddNewDiscountPolicy(new Guid(HttpContext.Session.Id), new Guid(ShopId), (object)"Compound discount policy", (object)policy.DiscountPolicies.ElementAt(policy1 - 1).Guid, (object)Sign, (object)policy.DiscountPolicies.ElementAt(policy2 - 1).Guid, (object)Percent, (object)Description);
                 return RedirectToAction("Policies", "Seller", new { ShopId });
+            }
+            catch (IllegalArgumentException)
+            {
+                var redirect = this.Url.Action("Index", "Seller");
+                var message = new UserMessage(redirect, "Please fill in all the fields in a valid manner.");
+                return View("UserMessage", message);
             }
             catch (NoPrivilegesException)
             {
@@ -402,7 +414,7 @@ namespace PresentaitionLayer.Controllers
         
 
         [HttpPost]
-        public IActionResult AddCompoundPurchasePolicy(string Description, int guid1, string Sign, int guid2, int Percent, string ShopId)
+        public IActionResult AddCompoundPurchasePolicy(string Description, int policy1, string Sign, int policy2, int Percent, string ShopId)
         {
             try
             {
@@ -410,8 +422,14 @@ namespace PresentaitionLayer.Controllers
                 var shops = _serviceFacade.GetUserShops(new Guid(HttpContext.Session.Id));
                 var shop = shops.FirstOrDefault(currshop => currshop.Guid.Equals(new Guid(ShopId)));
                 policy.PurchasePolicies = shop.PurchasePolicies;
-                _serviceFacade.AddNewPurchasePolicy(new Guid(HttpContext.Session.Id), new Guid(ShopId), (object)"Compound discount policy", policy.PurchasePolicies.ElementAt(guid2 - 1).Guid, (object)Sign, policy.PurchasePolicies.ElementAt(guid2 - 1).Guid, (object)Description);
+                _serviceFacade.AddNewPurchasePolicy(new Guid(HttpContext.Session.Id), new Guid(ShopId), (object)"Compound purchase policy", policy.PurchasePolicies.ElementAt(policy1 - 1).Guid, (object)Sign, policy.PurchasePolicies.ElementAt(policy2 - 1).Guid, (object)Description);
                 return RedirectToAction("Policies", "Seller", new { ShopId = ShopId });
+            }
+            catch (IllegalArgumentException)
+            {
+                var redirect = this.Url.Action("Index", "Seller");
+                var message = new UserMessage(redirect, "Please fill in all the fields in a valid manner.");
+                return View("UserMessage", message);
             }
             catch (NoPrivilegesException)
             {
@@ -483,6 +501,12 @@ namespace PresentaitionLayer.Controllers
             {
                 _serviceFacade.AddNewDiscountPolicy(new Guid(HttpContext.Session.Id), new Guid(ShopId), (object)"Product discount policy", (object)new Guid(ProductId), (object)Sign, (object)Than, (object)Percent, (object)Description);
                 return RedirectToAction("Products", "Seller", new { ShopId });
+            }
+            catch (IllegalArgumentException)
+            {
+                var redirect = this.Url.Action("Index", "Seller");
+                var message = new UserMessage(redirect, "Please fill in all the fields in a valid manner.");
+                return View("UserMessage", message);
             }
             catch (NoPrivilegesException)
             {

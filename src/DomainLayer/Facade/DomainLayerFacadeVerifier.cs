@@ -159,7 +159,7 @@ namespace DomainLayer.Facade
             foreach (var purchasedProduct in cart.PurchasedProducts)
             {
                 int purchasedQuantity = purchasedProduct.Item2;
-                int availableQuantity = purchasedProduct.Item1.Quantity;
+                int availableQuantity = shop.ShopProducts.FirstOrDefault(sp => sp.Guid.Equals(purchasedProduct.Item1.Guid)).Quantity;
                 VerifyIntEqualOrGreaterThan0(availableQuantity - purchasedQuantity, new IllegalArgumentException());
             }
         }

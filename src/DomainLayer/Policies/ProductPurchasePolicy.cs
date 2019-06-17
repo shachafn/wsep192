@@ -34,6 +34,10 @@ namespace DomainLayer.Policies
                     return Operator.IsValid(ExpectedQuantity, sp.Item2);
                 //return productGuid.CompareTo(ProductGuid) == 0 ? Operator.IsValid(ExpectedQuantity, quantity) : true;
             }
+            if(Operator is SmallerThan)
+            {
+                return true;
+            }
             return false;
         }
     }

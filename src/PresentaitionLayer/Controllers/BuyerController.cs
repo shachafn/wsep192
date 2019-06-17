@@ -229,7 +229,13 @@ namespace PresentaitionLayer.Controllers
         {
             try
             {
-                _serviceFacade.PurchaseCart(new Guid(HttpContext.Session.Id), new Guid(ShopId));
+                var result = _serviceFacade.PurchaseCart(new Guid(HttpContext.Session.Id), new Guid(ShopId));
+                if(!result)
+                {
+                    var redirect = this.Url.Action("ShoppingCart", "Buyer");
+                    var message = new UserMessage(redirect, "Couldn't verify purchase policy.");
+                    return View("UserMessage", message);
+                }
                 return RedirectToAction("ShoppingCart", "Buyer");
             }
             catch(ExternalServiceFaultException ex)

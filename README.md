@@ -1,3 +1,4 @@
+[![Build Status](https://travis-ci.com/shachafn/wsep192.svg?branch=master)](https://travis-ci.com/shachafn/wsep192)
 # AviExpress
 An E-Commerce website built using .Net Core and MongoDB.
 

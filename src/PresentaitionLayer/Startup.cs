@@ -63,8 +63,6 @@ namespace PresentaitionLayer
                 options.LogoutPath = "/auth/logout";
             });
             services.AddSession();
-            if (!_systemInitializer.InitSystem())
-                throw new Exception();
             _systemInitializer.InitSystemWithFile();
             UpdateCenter.Subscribe(_notificationsCenter.HandleUpdate);
         }

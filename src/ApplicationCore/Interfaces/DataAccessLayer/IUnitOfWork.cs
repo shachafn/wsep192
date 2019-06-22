@@ -8,5 +8,6 @@
         IBagRepository BagRepository { get; }
 
         void ClearAll();
+        void CreateDatabase();
     }
 }

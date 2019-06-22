@@ -1,4 +1,6 @@
-﻿using ApplicationCore.Interfaces.DataAccessLayer;
+﻿using ApplicationCore.Entities.Users;
+using ApplicationCore.Entitites;
+using ApplicationCore.Interfaces.DataAccessLayer;
 
 namespace DataAccessLayer
 {
@@ -49,6 +51,14 @@ namespace DataAccessLayer
             BaseUserRepository.Clear();
             ShopRepository.Clear();
             BagRepository.Clear();
+        }
+
+        public void CreateDatabase()
+        {
+            ((MongoDbContext)Context).GetMongoDatabase();
+            ((MongoDbContext)Context).GetMongoDatabase().CreateCollection(nameof(Shop));
+            ((MongoDbContext)Context).GetMongoDatabase().CreateCollection(nameof(BaseUser));
+            ((MongoDbContext)Context).GetMongoDatabase().CreateCollection(nameof(ShoppingBag));
         }
     }
 }

@@ -24,5 +24,11 @@ namespace TestsUtils
             BaseUserRepository.Clear();
             BagRepository.Clear();
         }
+
+        public void CreateDatabase()
+        {
+            //Mock shouldnt be used to create the DB. Only happens on system activation.
+            throw new System.NotImplementedException();
+        }
     }
 }

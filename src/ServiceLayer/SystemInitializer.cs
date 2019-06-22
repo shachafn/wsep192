@@ -5,6 +5,7 @@ using Microsoft.Extensions.Logging;
 using System;
 using System.Collections.Generic;
 using System.IO;
+using System.Linq;
 using System.Runtime.Serialization;
 using System.Runtime.Serialization.Json;
 using System.Text;
@@ -29,6 +30,12 @@ namespace ServiceLayer
         public void InitSystemWithFile()
         {
             List<Opertaion> jsonList = readJsonFromInitFile();
+            if (jsonList.Any(op => op.operationName.Equals("createDb")))
+            {
+                CreateDatabase();
+            }
+
+            InitSystem();
 
             var session = _unitOfWork.Context.StartSession();
             session.StartTransaction();
@@ -79,17 +86,19 @@ namespace ServiceLayer
                     break;
 
                 case "addproduct":
-                    addproduct(op);
+                    Addproduct(op);
                     break;
-
                 default:
                     throw new Exception("bad init operation");
             }
         }
 
+        private void CreateDatabase()
+        {
+            _unitOfWork.CreateDatabase();
+        }
 
-
-        private void addproduct(Opertaion op)
+        private void Addproduct(Opertaion op)
         {
             if (op.args.Count != 6)
             {
